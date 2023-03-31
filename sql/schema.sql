@@ -6,13 +6,13 @@ DROP TABLE IF EXISTS history CASCADE;
 
 CREATE TABLE IF NOT EXISTS branches
 (
-    id             BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    branch_head_id BIGINT REFERENCES branches (id),
-    name           VARCHAR(128),
-    description    TEXT,
-    stable         BOOLEAN,
-    deleted        BOOLEAN,
-    created_time   TIMESTAMP
+    id               BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    parent_branch_id BIGINT REFERENCES branches (id),
+    name             VARCHAR(128),
+    description      TEXT,
+    stable           BOOLEAN,
+    deleted          BOOLEAN,
+    created_time     TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS segments
