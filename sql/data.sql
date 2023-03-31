@@ -1,11 +1,11 @@
 -- branches
-INSERT INTO branches (branch_head_id, name, description, stable, deleted, created_time)
+INSERT INTO branches (parent_branch_id, name, description, stable, deleted, created_time)
 VALUES (NULL, 'стабильная', 'по результатам согласования протокол №54 от 2023-03-31', TRUE, FALSE, now());
 
-INSERT INTO branches (branch_head_id, name, description, stable, deleted, created_time)
+INSERT INTO branches (parent_branch_id, name, description, stable, deleted, created_time)
 VALUES (1, 'Test A', 'Укажите разряд VS Ваш разряд', FALSE, FALSE, now());
 
-INSERT INTO branches (branch_head_id, name, description, stable, deleted, created_time)
+INSERT INTO branches (parent_branch_id, name, description, stable, deleted, created_time)
 VALUES (1, 'Test B', 'Водительское удостоверение VS Удостоверение водителя', FALSE, FALSE, now());
 
 -- segments
