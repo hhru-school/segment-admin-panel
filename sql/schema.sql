@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS options CASCADE;
 DROP TABLE IF EXISTS answers CASCADE;
 DROP TABLE IF EXISTS questions CASCADE;
 DROP TABLE IF EXISTS segments CASCADE;
@@ -33,7 +32,8 @@ CREATE TABLE IF NOT EXISTS questions
     name        VARCHAR(128),
     description TEXT,
     segment_id  BIGINT REFERENCES segments (id),
-    type        VARCHAR(15),
+    type_owner  VARCHAR(15),
+    type_answer VARCHAR(15),
     active      BOOLEAN,
     required    BOOLEAN
 );
@@ -43,17 +43,9 @@ CREATE TABLE IF NOT EXISTS answers
     id               BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name             VARCHAR(128),
     description      TEXT,
-    type             VARCHAR(15),
     question_id      BIGINT REFERENCES questions (id),
-    question_next_id BIGINT REFERENCES questions (id)
-);
-
-CREATE TABLE IF NOT EXISTS options
-(
-    id        BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name      VARCHAR(128),
-    checked   BOOLEAN,
-    answer_id BIGINT REFERENCES answers (id)
+    question_next_id BIGINT REFERENCES questions (id),
+    checked          BOOLEAN
 );
 
 CREATE TABLE IF NOT EXISTS history
@@ -61,7 +53,7 @@ CREATE TABLE IF NOT EXISTS history
     id          BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     type        VARCHAR(10),
     name_db     VARCHAR(20),
-    user_id        BIGINT,
+    user_id     BIGINT,
     description TEXT,
     time        TIMESTAMP
 );
