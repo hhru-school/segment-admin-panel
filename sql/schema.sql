@@ -60,7 +60,8 @@ CREATE TABLE IF NOT EXISTS answers
 CREATE TABLE IF NOT EXISTS segments_questions
 (
     id          BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    segment_id  BIGINT REFERENCES segments (id),
+    branch_id   BIGINT REFERENCES branches (id),
+    segment_id  BIGINT REFERENCES branches (id),
     question_id BIGINT REFERENCES questions (id),
     active      BOOLEAN
 );
