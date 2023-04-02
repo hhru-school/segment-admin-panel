@@ -19,23 +19,23 @@ VALUES (1, 'Создание Резюме', 'Сегменты соискател
 
 -- segments
 -- 1
-INSERT INTO segments (commit_id, segment_entrypoint_id, parent_segment_id, role_id, key_value, name, description)
-VALUES (1, 1, NULL, 123123, 'key_value', 'Торговля', 'Все что связанно с торговлей и магазинами');
+INSERT INTO segments (commit_id, parent_segment_id, role_id, key_value, name, description)
+VALUES (1, NULL, 123123, 'key_value', 'Торговля', 'Все что связанно с торговлей и магазинами');
 -- 2
-INSERT INTO segments (commit_id, segment_entrypoint_id, parent_segment_id, role_id, key_value, name, description)
-VALUES (1, 1, 1, 123124, 'key_value', 'Администратор магазина', 'Управляющий персонал');
+INSERT INTO segments (commit_id, parent_segment_id, role_id, key_value, name, description)
+VALUES (1, 1, 123124, 'key_value', 'Администратор магазина', 'Управляющий персонал');
 -- 3
-INSERT INTO segments (commit_id, segment_entrypoint_id, parent_segment_id, role_id, key_value, name, description)
-VALUES (2, 2, 1, 123124, 'key_value', 'Грузчик/экспедитор', 'Обслуживающий персонал');
+INSERT INTO segments (commit_id, parent_segment_id, role_id, key_value, name, description)
+VALUES (2, 1, 123124, 'key_value', 'Грузчик/экспедитор', 'Обслуживающий персонал');
 -- 4
-INSERT INTO segments (commit_id, segment_entrypoint_id, parent_segment_id, role_id, key_value, name, description)
-VALUES (3, 2, NULL, 123124, 'key_value', 'Грузоперевозки', 'Транспортировка грузов');
+INSERT INTO segments (commit_id, parent_segment_id, role_id, key_value, name, description)
+VALUES (3, NULL, 123124, 'key_value', 'Грузоперевозки', 'Транспортировка грузов');
 -- 5
-INSERT INTO segments (commit_id, segment_entrypoint_id, parent_segment_id, role_id, key_value, name, description)
-VALUES (3, 2, 4, 123124, 'key_value', 'Водитель Камаза', 'Водитель с прицепом');
+INSERT INTO segments (commit_id, parent_segment_id, role_id, key_value, name, description)
+VALUES (3, 4, 123124, 'key_value', 'Водитель Камаза', 'Водитель с прицепом');
 -- 8
-INSERT INTO segments (commit_id, segment_entrypoint_id, parent_segment_id, role_id, key_value, name, description)
-VALUES (3, 2, 4, 123124, 'key_value', 'Водитель Фуры', 'Водитель грузовика');
+INSERT INTO segments (commit_id, parent_segment_id, role_id, key_value, name, description)
+VALUES (3, 4, 123124, 'key_value', 'Водитель Фуры', 'Водитель грузовика');
 
 --questions
 -- 1

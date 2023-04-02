@@ -31,7 +31,6 @@ CREATE TABLE IF NOT EXISTS segments
 (
     id                    BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     commit_id             BIGINT REFERENCES commits (id),
-    segment_entrypoint_id BIGINT REFERENCES segment_entrypoint (id),
     parent_segment_id     BIGINT REFERENCES segments (id),
     role_id               BIGINT,
     key_value             VARCHAR(128),
