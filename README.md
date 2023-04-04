@@ -9,35 +9,7 @@
 ### Backend:
 ### Frontend:
 
-
-### Docker
-
-#### Сборка образа
-
-Для сборки docker образа сервиса выполнить команду:
-
-    docker build -t segment-back .
-
-#### Запуск контейнера
-
-Для запуска контейнера на Windows выполнить команду:
-
-    docker run --name <имя контейнера> -p <порт хостовой системы>:8081 segment-back
-
-Пример:
-
-    docker run --name segment-back -p 8081:8081 segment-back
-
-Для проверки сделана тестовая ручка http://localhost:8081/segment
-(вместо 8081 выбранный порт хостовой системы). Get запрос возвращает "Hello!"
-
-#### Остановка контейнера
-
-Для остановки контейнера выполнить команду:
-
-    docker stop segment-back
-
-### Docker compose
+### Docker-compose
 
 #### Сборка образа
 
@@ -47,13 +19,13 @@
 
 Для сборки docker образа сервиса выполнить команду:
 
-    docker compose build
+    docker-compose build
 
 #### Запуск контейнеров
 
 Для запуска контейнера на Windows выполнить команду:
 
-    docker compose up
+    docker-compose up
 
 Для проверки сделана тестовая ручка http://localhost:8081/segment
 (вместо 8081 выбранный порт хостовой системы). Get запрос возвращает "Hello!".
@@ -62,4 +34,4 @@
 
 Для остановки контейнера выполнить команду:
 
-    docker compose stop
+    docker-compose stop
