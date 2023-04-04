@@ -7,7 +7,7 @@ services:
     container_name: main_server
     restart: always
     ports:
-      - ${SERVER_HOST_PORT}:8081
+      - ${SERVER_HOST_PORT}:8080
     depends_on:
       segment-db:
         condition: service_healthy
