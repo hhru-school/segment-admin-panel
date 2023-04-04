@@ -14,7 +14,7 @@
 
 ### Frontend:
 
-### Docker-compose
+### Docker compose
 
 #### Сборка образа
 
@@ -24,13 +24,13 @@
 
 Для сборки docker образа сервиса выполнить команду:
 
-    docker-compose build
+    docker compose build
 
 #### Запуск контейнеров
 
 Для запуска контейнера на Windows выполнить команду:
 
-    docker-compose up
+    docker compose up
 
 Для проверки сделана тестовая ручка http://localhost:8081/segment
 (вместо 8081 выбранный порт хостовой системы). Get запрос возвращает "Hello!".
@@ -39,4 +39,4 @@
 
 Для остановки контейнера выполнить команду:
 
-    docker-compose stop
+    docker compose stop
