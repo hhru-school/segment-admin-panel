@@ -1,5 +1,5 @@
 public enum HistoryType {
-    CREATE,
-    UPDATE,
-    DELETE
+  CREATE,
+  UPDATE,
+  DELETE
 }

@@ -1,6 +1,6 @@
 public enum AnswerType {
-    CHECKBOX,
-    RADIO,
-    TEXT,
-    FILE
+  CHECKBOX,
+  RADIO,
+  TEXT,
+  FILE
 }

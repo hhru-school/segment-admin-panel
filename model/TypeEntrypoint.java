@@ -1,4 +1,4 @@
 public enum TypeEntrypoint {
-    INNER,
-    OUTER
+  INNER,
+  OUTER
 }

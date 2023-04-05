@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS segments
     commit_id         BIGINT REFERENCES commits (id),
     parent_segment_id BIGINT REFERENCES segments (id),
     role_id           BIGINT,
-    title              VARCHAR(128) NOT NULL,
+    title             VARCHAR(128) NOT NULL,
     description       TEXT
 );
 
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS question_activate_links
     segment_id            BIGINT REFERENCES segments (id),
     question_id           BIGINT REFERENCES questions (id),
     segment_entrypoint_id BIGINT REFERENCES segment_entrypoint (id),
-    active                BOOLEAN
+    question_status VARCHAR(20)
 );
 
 CREATE TABLE IF NOT EXISTS history
