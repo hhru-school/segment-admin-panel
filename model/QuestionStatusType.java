@@ -1,5 +1,5 @@
 public enum QuestionStatusType {
-  INACTIVE,
-  ACTIVE_REQUIRED,
-  ACTIVE_OPTIONAL
+    SHOW,
+    HIDE,
+    HIDE_PREFILLED
 }
