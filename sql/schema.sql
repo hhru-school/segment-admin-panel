@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS segments
     title             VARCHAR(255) NOT NULL,
     description       VARCHAR(255),
     role              BIGINT[],
-    tag               TEXT
+    tag VARCHAR(255)[]
 );
 
 CREATE TABLE IF NOT EXISTS questions
