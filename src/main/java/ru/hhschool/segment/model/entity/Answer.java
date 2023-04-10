@@ -26,7 +26,7 @@ public class Answer implements Serializable {
   private boolean isDefault;
   private boolean skipAtResult;
   @ManyToOne
-  Layer layer;
+  private Layer layer;
   @Type(type = "list-array")
   @Column(
       name = "openquestionlist",

@@ -18,7 +18,7 @@ public class Entrypoint implements Serializable {
   private String description;
   private String Type;
   @ManyToOne
-  Layer layer;
+  private Layer layer;
 
   public Entrypoint() {
   }

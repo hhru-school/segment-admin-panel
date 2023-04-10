@@ -14,14 +14,14 @@ public class QuestionActivatorLinks {
   @Column(name = "id", nullable = false, unique = true)
   private Long id;
   @ManyToOne
-  Layer layer;
+ private Layer layer;
   @ManyToOne
-  Segment segment;
+  private Segment segment;
   @ManyToOne
-  Entrypoint entrypoint;
+  private Entrypoint entrypoint;
   @OneToOne(fetch = FetchType.LAZY)
   @MapsId
-  Question question;
+  private Question question;
   private boolean required;
   private boolean visibility;
 }
