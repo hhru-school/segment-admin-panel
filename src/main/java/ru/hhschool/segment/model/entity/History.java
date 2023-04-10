@@ -1,7 +1,11 @@
 package ru.hhschool.segment.model.entity;
 
+import ru.hhschool.segment.model.enums.HistoryType;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,19 +20,13 @@ public class History {
   private Long userId;
   private String nameDb;
   private LocalDateTime time;
-  private String type;
+  @Enumerated(EnumType.STRING)
+  private HistoryType type;
   private String description;
 
   public History() {
   }
 
-  public History(Long userId, String nameDb, LocalDateTime time, String type, String description) {
-    this.userId = userId;
-    this.nameDb = nameDb;
-    this.time = time;
-    this.type = type;
-    this.description = description;
-  }
 
   public Long getId() {
     return id;
@@ -62,12 +60,20 @@ public class History {
     this.time = time;
   }
 
-  public String getType() {
+  public HistoryType getType() {
     return type;
   }
 
-  public void setType(String type) {
+  public void setType(HistoryType type) {
     this.type = type;
+  }
+
+  public History(Long userId, String nameDb, LocalDateTime time, HistoryType type, String description) {
+    this.userId = userId;
+    this.nameDb = nameDb;
+    this.time = time;
+    this.type = type;
+    this.description = description;
   }
 
   public String getDescription() {

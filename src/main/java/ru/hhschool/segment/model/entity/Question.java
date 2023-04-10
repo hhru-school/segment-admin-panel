@@ -3,9 +3,12 @@ package ru.hhschool.segment.model.entity;
 import io.hypersistence.utils.hibernate.type.array.ListArrayType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import ru.hhschool.segment.model.enums.QuestionType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,7 +25,8 @@ public class Question implements Serializable {
   private Long id;
   private String title;
   private String description;
-  private String type;
+  @Enumerated(EnumType.STRING)
+  private QuestionType type;
   private boolean required;
   private String visibility;
 
@@ -39,7 +43,7 @@ public class Question implements Serializable {
   public Question() {
   }
 
-  public Question(String title, String description, String type, boolean required, String visibility, Layer layer, List<Long> possibleAnswerIdList) {
+  public Question(String title, String description, QuestionType type, boolean required, String visibility, Layer layer, List<Long> possibleAnswerIdList) {
     this.title = title;
     this.description = description;
     this.type = type;
@@ -73,11 +77,11 @@ public class Question implements Serializable {
     this.description = description;
   }
 
-  public String getType() {
+  public QuestionType getType() {
     return type;
   }
 
-  public void setType(String type) {
+  public void setType(QuestionType type) {
     this.type = type;
   }
 

@@ -4,6 +4,7 @@ import io.hypersistence.utils.hibernate.type.array.ListArrayType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,6 +42,15 @@ public class Segment implements Serializable {
   private List<Segment> childrenSegmentList;
   @ManyToOne
   private Layer layer;
+  @OneToMany(
+      mappedBy = "segment",
+      cascade = {
+          CascadeType.MERGE,
+          CascadeType.PERSIST,
+          CascadeType.DETACH,
+          CascadeType.REFRESH}
+  )
+  private List<QuestionActivatorLinks> questionActivatorLinksList;
 
   public Segment getParentSegment() {
     return parentSegment;

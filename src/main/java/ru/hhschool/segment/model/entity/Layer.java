@@ -1,5 +1,6 @@
 package ru.hhschool.segment.model.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,12 +28,97 @@ public class Layer implements Serializable {
   private Layer parentLayer;
   @OneToMany(mappedBy = "parentLayer")
   private List<Layer> childrenLayerList;
+  @OneToMany(
+      mappedBy = "layer",
+      cascade = {
+          CascadeType.MERGE,
+          CascadeType.PERSIST,
+          CascadeType.DETACH,
+          CascadeType.REFRESH}
+  )
+  private List<Segment> segmentList;
+  @OneToMany(
+      mappedBy = "layer",
+      cascade = {
+          CascadeType.MERGE,
+          CascadeType.PERSIST,
+          CascadeType.DETACH,
+          CascadeType.REFRESH}
+  )
+  private List<Question> questionList;
+  @OneToMany(
+      mappedBy = "layer",
+      cascade = {
+          CascadeType.MERGE,
+          CascadeType.PERSIST,
+          CascadeType.DETACH,
+          CascadeType.REFRESH}
+  )
+  private List<Entrypoint> entrypointList;
+  @OneToMany(
+      mappedBy = "layer",
+      cascade = {
+          CascadeType.MERGE,
+          CascadeType.PERSIST,
+          CascadeType.DETACH,
+          CascadeType.REFRESH}
+  )
+  private List<Answer> answerList;
+  @OneToMany(
+      mappedBy = "layer",
+      cascade = {
+          CascadeType.MERGE,
+          CascadeType.PERSIST,
+          CascadeType.DETACH,
+          CascadeType.REFRESH}
+  )
+  private List<QuestionActivatorLinks> questionActivatorLinksList;
 
   public Long getId() {
     return id;
   }
 
+  public List<Question> getQuestionList() {
+    return questionList;
+  }
+
+  public void setQuestionList(List<Question> questionList) {
+    this.questionList = questionList;
+  }
+
+  public List<Entrypoint> getEntrypointList() {
+    return entrypointList;
+  }
+
+  public void setEntrypointList(List<Entrypoint> entrypointList) {
+    this.entrypointList = entrypointList;
+  }
+
+  public List<Answer> getAnswerList() {
+    return answerList;
+  }
+
+  public void setAnswerList(List<Answer> answerList) {
+    this.answerList = answerList;
+  }
+
+  public List<QuestionActivatorLinks> getQuestionActivatorLinksList() {
+    return questionActivatorLinksList;
+  }
+
+  public void setQuestionActivatorLinksList(List<QuestionActivatorLinks> questionActivatorLinksList) {
+    this.questionActivatorLinksList = questionActivatorLinksList;
+  }
+
   public Layer() {
+  }
+
+  public List<Segment> getSegmentList() {
+    return segmentList;
+  }
+
+  public void setSegmentList(List<Segment> segmentList) {
+    this.segmentList = segmentList;
   }
 
   public void setId(Long id) {
