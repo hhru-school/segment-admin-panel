@@ -22,6 +22,6 @@ public class QuestionActivatorLinks {
   @OneToOne(fetch = FetchType.LAZY)
   @MapsId
   private Question question;
-  private boolean required;
-  private boolean visibility;
+  private boolean questionRequired;
+  private boolean questionVisibility;
 }
