@@ -50,6 +50,11 @@
             <artifactId>hibernate-core</artifactId>
             <version>5.4.0.Final</version>
         </dependency>
+        <dependency>
+            <groupId>com.opentable.components</groupId>
+            <artifactId>otj-pg-embedded</artifactId>
+            <version>0.13.0</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

@@ -1,19 +1,19 @@
 package ru.hhschool.segment;
 
-
 import org.hibernate.HibernateException;
-import org.hibernate.SessionFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+import ru.hhschool.segment.dao.TestDao;
 
 @SpringBootApplication
 public class SegmentApplication {
-  protected static SessionFactory sessionFactory;
+
   public static void main(String[] args) {
-    SpringApplication.run(SegmentApplication.class, args);
-    sessionFactory = DbFactory.createSessionFactory();
+    ConfigurableApplicationContext context = SpringApplication.run(SegmentApplication.class, args);
     try {
-      System.out.println(sessionFactory.getCurrentSession().getStatistics());;
+      TestDao testDao = context.getBean(TestDao.class);
+      System.out.println(testDao.getSessionFactory().getCurrentSession().getStatistics());;
     } catch (HibernateException hex){
       System.out.println(hex.getMessage());
     }
