@@ -7,14 +7,15 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
+import java.io.Serializable;
 
 @Entity
-public class QuestionActivatorLinks {
+public class QuestionActivatorLinks implements Serializable {
   @Id
   @Column(name = "id", nullable = false, unique = true)
   private Long id;
   @ManyToOne
- private Layer layer;
+  private Layer layer;
   @ManyToOne
   private Segment segment;
   @ManyToOne
