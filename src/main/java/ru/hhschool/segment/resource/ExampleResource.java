@@ -1,4 +1,4 @@
-package ru.hhschool.resource;
+package ru.hhschool.segment.resource;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

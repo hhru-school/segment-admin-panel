@@ -16,7 +16,7 @@ services:
       - WAIT_HOSTS=segment-db:5432
       - SPRING_DATASOURCE_URL=jdbc:postgresql://segment-db:5432/segment
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_PASSWORD=postgres
 
   # Database
   segment-db:
