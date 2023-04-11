@@ -1,4 +1,4 @@
-# segment readme
+# Segment Admin Panel (backend)
 
 ### Описание:
 
@@ -13,4 +13,4 @@
 ### Backend:
 
 ### Frontend:
-
+https://github.com/hhru-school/segment-admin-panel-front
