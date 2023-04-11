@@ -1,57 +1,44 @@
 package ru.hhschool.segment.model.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.List;
 
 @Entity
+@Table(name = "entrypoints")
 public class Entrypoint implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id", nullable = false, unique = true)
+  @Column(name = "entrypoint_id", nullable = false, unique = true)
   private Long id;
+  @Column(name = "title", nullable = false)
   private String title;
+  @Column(name = "description")
   private String description;
-  private String Type;
-  @ManyToOne
-  private Layer layer;
-  @OneToMany(
-      mappedBy = "entrypoint",
-      cascade = {
-          CascadeType.MERGE,
-          CascadeType.PERSIST,
-          CascadeType.DETACH,
-          CascadeType.REFRESH}
-  )
+  @Column(name = "entrypoint_type")
+  private String type;
+  @OneToMany(fetch = FetchType.LAZY)
+  @JoinColumn(name = "entrypoint_id")
   private List<QuestionActivatorLinks> questionActivatorLinksList;
-
-  public Entrypoint() {
-  }
-
-  public Entrypoint(String title, String description, String type, Layer layer) {
-    this.title = title;
-    this.description = description;
-    Type = type;
-    this.layer = layer;
-  }
-
-  public String getType() {
-    return Type;
-  }
-
-  public void setType(String type) {
-    Type = type;
-  }
 
   public Long getId() {
     return id;
+  }
+
+  public List<QuestionActivatorLinks> getQuestionActivatorLinksList() {
+    return questionActivatorLinksList;
+  }
+
+  public void setQuestionActivatorLinksList(List<QuestionActivatorLinks> questionActivatorLinksList) {
+    this.questionActivatorLinksList = questionActivatorLinksList;
   }
 
   public void setId(Long id) {
@@ -74,11 +61,11 @@ public class Entrypoint implements Serializable {
     this.description = description;
   }
 
-  public Layer getLayer() {
-    return layer;
+  public String getType() {
+    return type;
   }
 
-  public void setLayer(Layer layer) {
-    this.layer = layer;
+  public void setType(String type) {
+    this.type = type;
   }
 }

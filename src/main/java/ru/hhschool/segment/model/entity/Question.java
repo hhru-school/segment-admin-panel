@@ -4,66 +4,60 @@ import io.hypersistence.utils.hibernate.type.array.ListArrayType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import ru.hhschool.segment.model.enums.QuestionType;
+import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @TypeDef(name = "list-array", typeClass = ListArrayType.class)
+@Table(name = "questions")
 public class Question implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id", nullable = false, unique = true)
+  @Column(name = "question_id", nullable = false, unique = true)
   private Long id;
+  @Column(name = "question_title", nullable = false)
   private String title;
+  @Column(name = "description")
   private String description;
   @Enumerated(EnumType.STRING)
+  @Column(name = "question_type", nullable = false)
   private QuestionType type;
-  private boolean required;
-  private String visibility;
-
-  @ManyToOne
-  private Layer layer;
-
+  @Column(name = "question_required")
+  private boolean requiredType;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "question_visibility")
+  private QuestionVisibilityType questionVisibilityType;
   @Type(type = "list-array")
   @Column(
-      name = "possibleansweridlist",
+      name = "possible_answers",
       columnDefinition = "bigint[]"
   )
   private List<Long> possibleAnswerIdList;
 
-  @OneToMany(
-      mappedBy = "question",
-      cascade = {
-          CascadeType.MERGE,
-          CascadeType.PERSIST,
-          CascadeType.DETACH,
-          CascadeType.REFRESH}
-  )
-  private List<QuestionActivatorLinks> questionActivatorLinks;
-
-  public Question() {
+  public List<QuestionActivatorLinks> getQuestionActivatorLinksList() {
+    return questionActivatorLinksList;
   }
 
-  public Question(String title, String description, QuestionType type, boolean required, String visibility, Layer layer, List<Long> possibleAnswerIdList) {
-    this.title = title;
-    this.description = description;
-    this.type = type;
-    this.required = required;
-    this.visibility = visibility;
-    this.layer = layer;
-    this.possibleAnswerIdList = possibleAnswerIdList;
+  public void setQuestionActivatorLinksList(List<QuestionActivatorLinks> questionActivatorLinksList) {
+    this.questionActivatorLinksList = questionActivatorLinksList;
   }
+
+  @OneToMany(fetch = FetchType.LAZY)
+  @JoinColumn(name = "question_id")
+  private List<QuestionActivatorLinks> questionActivatorLinksList;
 
   public Long getId() {
     return id;
@@ -75,14 +69,6 @@ public class Question implements Serializable {
 
   public String getTitle() {
     return title;
-  }
-
-  public List<QuestionActivatorLinks> getQuestionActivatorLinks() {
-    return questionActivatorLinks;
-  }
-
-  public void setQuestionActivatorLinks(List<QuestionActivatorLinks> questionActivatorLinks) {
-    this.questionActivatorLinks = questionActivatorLinks;
   }
 
   public void setTitle(String title) {
@@ -105,28 +91,20 @@ public class Question implements Serializable {
     this.type = type;
   }
 
-  public boolean isRequired() {
-    return required;
+  public boolean isRequiredType() {
+    return requiredType;
   }
 
-  public void setRequired(boolean required) {
-    this.required = required;
+  public void setRequiredType(boolean requiredType) {
+    this.requiredType = requiredType;
   }
 
-  public String getVisibility() {
-    return visibility;
+  public QuestionVisibilityType getQuestionVisibilityType() {
+    return questionVisibilityType;
   }
 
-  public void setVisibility(String visibility) {
-    this.visibility = visibility;
-  }
-
-  public Layer getLayer() {
-    return layer;
-  }
-
-  public void setLayer(Layer layer) {
-    this.layer = layer;
+  public void setQuestionVisibilityType(QuestionVisibilityType questionVisibilityType) {
+    this.questionVisibilityType = questionVisibilityType;
   }
 
   public List<Long> getPossibleAnswerIdList() {

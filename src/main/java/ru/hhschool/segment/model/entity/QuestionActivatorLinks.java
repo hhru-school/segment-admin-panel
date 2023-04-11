@@ -1,41 +1,30 @@
 package ru.hhschool.segment.model.entity;
 
+import ru.hhschool.segment.model.enums.QuestionVisibilityType;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
+@Table(name = "question_activate_links")
 public class QuestionActivatorLinks implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false, unique = true)
   private Long id;
-  @ManyToOne
-  private Layer layer;
-  @ManyToOne
-  private Segment segment;
-  @ManyToOne
-  private Entrypoint entrypoint;
-  @ManyToOne
-  private Question question;
+
+  @Column(name = "question_required")
   private boolean questionRequired;
-  private boolean questionVisibility;
-
-  public QuestionActivatorLinks() {
-  }
-
-  public QuestionActivatorLinks(Layer layer, Segment segment, Entrypoint entrypoint, Question question, boolean questionRequired, boolean questionVisibility) {
-    this.layer = layer;
-    this.segment = segment;
-    this.entrypoint = entrypoint;
-    this.question = question;
-    this.questionRequired = questionRequired;
-    this.questionVisibility = questionVisibility;
-  }
+  @Enumerated(EnumType.STRING)
+  @Column(name = "question_visibility")
+  private QuestionVisibilityType questionVisibility;
 
   public Long getId() {
     return id;
@@ -43,38 +32,6 @@ public class QuestionActivatorLinks implements Serializable {
 
   public void setId(Long id) {
     this.id = id;
-  }
-
-  public Layer getLayer() {
-    return layer;
-  }
-
-  public void setLayer(Layer layer) {
-    this.layer = layer;
-  }
-
-  public Segment getSegment() {
-    return segment;
-  }
-
-  public void setSegment(Segment segment) {
-    this.segment = segment;
-  }
-
-  public Entrypoint getEntrypoint() {
-    return entrypoint;
-  }
-
-  public void setEntrypoint(Entrypoint entrypoint) {
-    this.entrypoint = entrypoint;
-  }
-
-  public Question getQuestion() {
-    return question;
-  }
-
-  public void setQuestion(Question question) {
-    this.question = question;
   }
 
   public boolean isQuestionRequired() {
@@ -85,11 +42,11 @@ public class QuestionActivatorLinks implements Serializable {
     this.questionRequired = questionRequired;
   }
 
-  public boolean isQuestionVisibility() {
+  public QuestionVisibilityType getQuestionVisibility() {
     return questionVisibility;
   }
 
-  public void setQuestionVisibility(boolean questionVisibility) {
+  public void setQuestionVisibility(QuestionVisibilityType questionVisibility) {
     this.questionVisibility = questionVisibility;
   }
 }

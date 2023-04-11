@@ -12,61 +12,35 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @TypeDef(name = "list-array", typeClass = ListArrayType.class)
+@Table(name = "answers")
 public class Answer implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id", nullable = false, unique = true)
+  @Column(name = "answer_id", nullable = false, unique = true)
   private Long id;
+  @Column(name = "title")
   private String title;
+  @Column(name = "positive_title")
   private String positiveTitle;
   @Enumerated(EnumType.STRING)
-  private AnswerType Type;
+  @Column(name = "answer_type")
+  private AnswerType answerType;
+  @Column(name = "is_default_answer", nullable = false)
   private boolean isDefault;
+  @Column(name = "skip_at_result")
   private boolean skipAtResult;
-  @ManyToOne
-  private Layer layer;
   @Type(type = "list-array")
   @Column(
-      name = "openquestionlist",
+      name = "open_questions",
       columnDefinition = "bigint[]"
   )
   private List<Long> openQuestionList;
-
-
-  public Answer() {
-  }
-
-  public AnswerType getType() {
-    return Type;
-  }
-
-  public void setType(AnswerType type) {
-    Type = type;
-  }
-
-  public Answer(String title, String positiveTitle, AnswerType type, boolean isDefault, boolean skipAtResult, Layer layer, List<Long> openQuestionList) {
-    this.title = title;
-    this.positiveTitle = positiveTitle;
-    Type = type;
-    this.isDefault = isDefault;
-    this.skipAtResult = skipAtResult;
-    this.layer = layer;
-    this.openQuestionList = openQuestionList;
-  }
-
-  public boolean isDefault() {
-    return isDefault;
-  }
-
-  public void setDefault(boolean aDefault) {
-    isDefault = aDefault;
-  }
 
   public Long getId() {
     return id;
@@ -92,20 +66,28 @@ public class Answer implements Serializable {
     this.positiveTitle = positiveTitle;
   }
 
+  public AnswerType getAnswerType() {
+    return answerType;
+  }
+
+  public void setAnswerType(AnswerType answerType) {
+    this.answerType = answerType;
+  }
+
+  public boolean isDefault() {
+    return isDefault;
+  }
+
+  public void setDefault(boolean aDefault) {
+    isDefault = aDefault;
+  }
+
   public boolean isSkipAtResult() {
     return skipAtResult;
   }
 
   public void setSkipAtResult(boolean skipAtResult) {
     this.skipAtResult = skipAtResult;
-  }
-
-  public Layer getLayer() {
-    return layer;
-  }
-
-  public void setLayer(Layer layer) {
-    this.layer = layer;
   }
 
   public List<Long> getOpenQuestionList() {

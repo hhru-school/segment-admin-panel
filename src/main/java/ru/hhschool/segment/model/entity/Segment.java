@@ -4,93 +4,68 @@ import io.hypersistence.utils.hibernate.type.array.ListArrayType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @TypeDef(name = "list-array", typeClass = ListArrayType.class)
+@Table(name = "segments")
 public class Segment implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id", nullable = false, unique = true)
+  @Column(name = "segment_id", nullable = false, unique = true)
   private Long id;
+  @Column(name = "title", nullable = false)
   private String title;
+  @Column(name = "description")
   private String description;
   @Type(type = "list-array")
   @Column(
-      name = "roleidlist",
+      name = "role",
       columnDefinition = "bigint[]"
   )
   private List<Long> roleIdList;
   @Type(type = "list-array")
   @Column(
-      name = "taglist",
+      name = "tag",
       columnDefinition = "text[]"
   )
   private List<String> tagArrayList;
-  @ManyToOne
-  private Segment parentSegment;
-  @OneToMany(mappedBy = "parentSegment")
-  private List<Segment> childrenSegmentList;
-  @ManyToOne
-  private Layer layer;
-  @OneToMany(
-      mappedBy = "segment",
-      cascade = {
-          CascadeType.MERGE,
-          CascadeType.PERSIST,
-          CascadeType.DETACH,
-          CascadeType.REFRESH}
-  )
+  @ManyToOne(fetch = FetchType.LAZY)
+  private Segment parent;
+
+  @OneToMany(fetch = FetchType.LAZY)
+  @JoinColumn(name = "segment_id")
   private List<QuestionActivatorLinks> questionActivatorLinksList;
-
-  public Segment getParentSegment() {
-    return parentSegment;
-  }
-
-  public Segment() {
-  }
-
-  public Segment(String title, String description, List<Long> roleIdList, List<String> tagArrayList, Segment parentSegment, List<Segment> childrenSegmentList, Layer layer) {
-    this.title = title;
-    this.description = description;
-    this.roleIdList = roleIdList;
-    this.tagArrayList = tagArrayList;
-    this.parentSegment = parentSegment;
-    this.childrenSegmentList = childrenSegmentList;
-    this.layer = layer;
-  }
-
-  public void setParentSegment(Segment parentSegment) {
-    this.parentSegment = parentSegment;
-  }
-
-  public List<Segment> getChildrenSegmentList() {
-    return childrenSegmentList;
-  }
-
-  public void setChildrenSegmentList(List<Segment> childrenSegmentList) {
-    this.childrenSegmentList = childrenSegmentList;
-  }
-
-  public Layer getLayer() {
-    return layer;
-  }
-
-  public void setLayer(Layer layer) {
-    this.layer = layer;
-  }
 
   public Long getId() {
     return id;
+  }
+
+  public List<QuestionActivatorLinks> getQuestionActivatorLinksList() {
+    return questionActivatorLinksList;
+  }
+
+  public void setQuestionActivatorLinksList(List<QuestionActivatorLinks> questionActivatorLinksList) {
+    this.questionActivatorLinksList = questionActivatorLinksList;
+  }
+
+  public Segment getParent() {
+    return parent;
+  }
+
+  public void setParent(Segment parent) {
+    this.parent = parent;
   }
 
   public void setId(Long id) {
@@ -128,4 +103,5 @@ public class Segment implements Serializable {
   public void setTagArrayList(List<String> tagArrayList) {
     this.tagArrayList = tagArrayList;
   }
+
 }
