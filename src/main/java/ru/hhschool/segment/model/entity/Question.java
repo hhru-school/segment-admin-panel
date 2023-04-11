@@ -5,6 +5,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import ru.hhschool.segment.model.enums.QuestionType;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -13,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.io.Serializable;
 import java.util.List;
 
@@ -40,6 +42,16 @@ public class Question implements Serializable {
   )
   private List<Long> possibleAnswerIdList;
 
+  @OneToMany(
+      mappedBy = "question",
+      cascade = {
+          CascadeType.MERGE,
+          CascadeType.PERSIST,
+          CascadeType.DETACH,
+          CascadeType.REFRESH}
+  )
+  private List<QuestionActivatorLinks>  questionActivatorLinks;
+
   public Question() {
   }
 
@@ -63,6 +75,14 @@ public class Question implements Serializable {
 
   public String getTitle() {
     return title;
+  }
+
+  public List<QuestionActivatorLinks> getQuestionActivatorLinks() {
+    return questionActivatorLinks;
+  }
+
+  public void setQuestionActivatorLinks(List<QuestionActivatorLinks> questionActivatorLinks) {
+    this.questionActivatorLinks = questionActivatorLinks;
   }
 
   public void setTitle(String title) {
