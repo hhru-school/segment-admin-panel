@@ -50,7 +50,7 @@ public class Question implements Serializable {
           CascadeType.DETACH,
           CascadeType.REFRESH}
   )
-  private List<QuestionActivatorLinks>  questionActivatorLinks;
+  private List<QuestionActivatorLinks> questionActivatorLinks;
 
   public Question() {
   }
