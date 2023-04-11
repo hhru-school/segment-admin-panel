@@ -14,6 +14,7 @@
 
 ### Frontend:
 
+
 ### Профили
 
 Имеется 2 профиля: dev и prod. Профиль по умолчанию - prod.
@@ -23,7 +24,6 @@ hibernate-dev.properties или hibernate-prod.properties.
 подключения к базе (локальной или встроенной). Для запуска из Idea можно 
 либо запускать maven lifecycle с профилем dev, либо настроить конфигурацию
 отладчика с VM options -Dspring.profiles.active=dev.
-
 
 ### Docker compose
 
