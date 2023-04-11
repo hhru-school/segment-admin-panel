@@ -44,7 +44,7 @@ hibernate-dev.properties или hibernate-prod.properties.
     docker compose up
 
 Для проверки сделана тестовая ручка http://localhost:8080/segment
-(вместо 8081 выбранный порт хостовой системы). Get запрос возвращает "Hello!".
+(вместо 8080 выбранный порт хостовой системы). Get запрос возвращает "Hello!".
 Если backend-сервис имеет корректные настройки подключения к БД, в консоли 
 выведется "SessionStatistics[<Статистика сессии>]"
 
