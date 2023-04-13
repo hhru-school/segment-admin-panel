@@ -46,26 +46,16 @@ public class Question implements Serializable {
       columnDefinition = "bigint[]"
   )
   private List<Long> possibleAnswerIdList;
-  @OneToMany(fetch = FetchType.LAZY)
-  @JoinColumn(name = "question_id")
-  private List<Question> questionList;
-  @OneToMany(fetch = FetchType.LAZY)
-  @JoinColumn(name = "entrypoint_id")
-  private List<Entrypoint> entrypointList;
-  @OneToMany(fetch = FetchType.LAZY)
-  @JoinColumn(name = "segment_id")
-  private List<Segment> segmentList;
 
-  public Question(String title, String description, QuestionType type, boolean required, QuestionVisibilityType questionVisibilityType, List<Long> possibleAnswerIdList, List<Question> questionList, List<Entrypoint> entrypointList, List<Segment> segmentList) {
+
+  public Question(Long id, String title, String description, QuestionType type, boolean required, QuestionVisibilityType questionVisibilityType, List<Long> possibleAnswerIdList) {
+    this.id = id;
     this.title = title;
     this.description = description;
     this.type = type;
     this.required = required;
     this.questionVisibilityType = questionVisibilityType;
     this.possibleAnswerIdList = possibleAnswerIdList;
-    this.questionList = questionList;
-    this.entrypointList = entrypointList;
-    this.segmentList = segmentList;
   }
 
   public Question() {
@@ -125,29 +115,5 @@ public class Question implements Serializable {
 
   public void setPossibleAnswerIdList(List<Long> possibleAnswerIdList) {
     this.possibleAnswerIdList = possibleAnswerIdList;
-  }
-
-  public List<Question> getQuestionList() {
-    return questionList;
-  }
-
-  public void setQuestionList(List<Question> questionList) {
-    this.questionList = questionList;
-  }
-
-  public List<Entrypoint> getEntrypointList() {
-    return entrypointList;
-  }
-
-  public void setEntrypointList(List<Entrypoint> entrypointList) {
-    this.entrypointList = entrypointList;
-  }
-
-  public List<Segment> getSegmentList() {
-    return segmentList;
-  }
-
-  public void setSegmentList(List<Segment> segmentList) {
-    this.segmentList = segmentList;
   }
 }
