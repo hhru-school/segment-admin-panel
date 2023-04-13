@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "question_activate_links")
@@ -30,16 +31,40 @@ public class QuestionActivatorLinks implements Serializable {
   private Long segmentId;
   @Column(name = "question_id")
   private Long questionId;
+  @Column(name = "entrypoint_id")
+  private Long entrypointId;
 
   public QuestionActivatorLinks() {
   }
 
-  public QuestionActivatorLinks(boolean questionRequired, QuestionVisibilityType questionVisibility, Long layerId, Long segmentId, Long questionId) {
+  public QuestionActivatorLinks(boolean questionRequired, QuestionVisibilityType questionVisibility, Long layerId, Long segmentId, Long questionId, Long entrypointId) {
     this.questionRequired = questionRequired;
     this.questionVisibility = questionVisibility;
     this.layerId = layerId;
     this.segmentId = segmentId;
     this.questionId = questionId;
+    this.entrypointId = entrypointId;
+  }
+
+  public Long getEntrypointId() {
+    return entrypointId;
+  }
+
+  public void setEntrypointId(Long entrypointId) {
+    this.entrypointId = entrypointId;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    QuestionActivatorLinks that = (QuestionActivatorLinks) o;
+    return id.equals(that.id) && Objects.equals(layerId, that.layerId) && Objects.equals(segmentId, that.segmentId) && Objects.equals(questionId, that.questionId) && Objects.equals(entrypointId, that.entrypointId);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, layerId, segmentId, questionId, entrypointId);
   }
 
   public Long getId() {

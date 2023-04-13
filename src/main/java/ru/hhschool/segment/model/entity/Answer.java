@@ -41,6 +41,21 @@ public class Answer implements Serializable {
       columnDefinition = "bigint[]"
   )
   private List<Long> openQuestionList;
+  @Column(name = "layer_id")
+  private Long layerId;
+
+  public Answer() {
+  }
+
+  public Answer(String title, String positiveTitle, AnswerType answerType, boolean isDefault, boolean skipAtResult, List<Long> openQuestionList, Long layerId) {
+    this.title = title;
+    this.positiveTitle = positiveTitle;
+    this.answerType = answerType;
+    this.isDefault = isDefault;
+    this.skipAtResult = skipAtResult;
+    this.openQuestionList = openQuestionList;
+    this.layerId = layerId;
+  }
 
   public Long getId() {
     return id;
@@ -96,5 +111,13 @@ public class Answer implements Serializable {
 
   public void setOpenQuestionList(List<Long> openQuestionList) {
     this.openQuestionList = openQuestionList;
+  }
+
+  public Long getLayerId() {
+    return layerId;
+  }
+
+  public void setLayerId(Long layerId) {
+    this.layerId = layerId;
   }
 }

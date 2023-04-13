@@ -31,9 +31,16 @@ public class History {
   @Column(name = "description")
   private String description;
 
-  public History() {
+  public History(Long userId, String nameDb, LocalDateTime time, HistoryType type, String description) {
+    this.userId = userId;
+    this.nameDb = nameDb;
+    this.time = time;
+    this.type = type;
+    this.description = description;
   }
 
+  public History() {
+  }
 
   public Long getId() {
     return id;
@@ -73,14 +80,6 @@ public class History {
 
   public void setType(HistoryType type) {
     this.type = type;
-  }
-
-  public History(Long userId, String nameDb, LocalDateTime time, HistoryType type, String description) {
-    this.userId = userId;
-    this.nameDb = nameDb;
-    this.time = time;
-    this.type = type;
-    this.description = description;
   }
 
   public String getDescription() {

@@ -42,42 +42,32 @@ public class Layer implements Serializable {
   @JoinColumn(name = "layer_id")
   private List<Answer> answerList;
 
-  public Long getId() {
-    return id;
+  public Layer() {
   }
 
-  public List<Answer> getAnswerList() {
-    return answerList;
-  }
-
-  public void setAnswerList(List<Answer> answerList) {
+  public Layer(String title, String description, boolean stable, boolean archive, boolean deleted, LocalDateTime createTime, Layer parent, List<QuestionActivatorLinks> questionActivatorLinksList, List<Answer> answerList) {
+    this.title = title;
+    this.description = description;
+    this.stable = stable;
+    this.archive = archive;
+    this.deleted = deleted;
+    this.createTime = createTime;
+    this.parent = parent;
+    this.questionActivatorLinksList = questionActivatorLinksList;
     this.answerList = answerList;
   }
 
-  public List<QuestionActivatorLinks> getQuestionActivatorLinksList() {
-    return questionActivatorLinksList;
-  }
-
-  public void setQuestionActivatorLinksList(List<QuestionActivatorLinks> questionActivatorLinksList) {
-    this.questionActivatorLinksList = questionActivatorLinksList;
+  public Long getId() {
+    return id;
   }
 
   public void setId(Long id) {
     this.id = id;
   }
 
-  public Layer getParent() {
-    return parent;
-  }
-
-  public void setParent(Layer parent) {
-    this.parent = parent;
-  }
-
   public String getTitle() {
     return title;
   }
-
 
   public void setTitle(String title) {
     this.title = title;
@@ -121,5 +111,29 @@ public class Layer implements Serializable {
 
   public void setCreateTime(LocalDateTime createTime) {
     this.createTime = createTime;
+  }
+
+  public Layer getParent() {
+    return parent;
+  }
+
+  public void setParent(Layer parent) {
+    this.parent = parent;
+  }
+
+  public List<QuestionActivatorLinks> getQuestionActivatorLinksList() {
+    return questionActivatorLinksList;
+  }
+
+  public void setQuestionActivatorLinksList(List<QuestionActivatorLinks> questionActivatorLinksList) {
+    this.questionActivatorLinksList = questionActivatorLinksList;
+  }
+
+  public List<Answer> getAnswerList() {
+    return answerList;
+  }
+
+  public void setAnswerList(List<Answer> answerList) {
+    this.answerList = answerList;
   }
 }

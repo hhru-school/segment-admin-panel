@@ -36,7 +36,7 @@ public class Question implements Serializable {
   @Column(name = "question_type", nullable = false)
   private QuestionType type;
   @Column(name = "question_required")
-  private boolean requiredType;
+  private boolean required;
   @Enumerated(EnumType.STRING)
   @Column(name = "question_visibility")
   private QuestionVisibilityType questionVisibilityType;
@@ -46,18 +46,30 @@ public class Question implements Serializable {
       columnDefinition = "bigint[]"
   )
   private List<Long> possibleAnswerIdList;
-
-  public List<QuestionActivatorLinks> getQuestionActivatorLinksList() {
-    return questionActivatorLinksList;
-  }
-
-  public void setQuestionActivatorLinksList(List<QuestionActivatorLinks> questionActivatorLinksList) {
-    this.questionActivatorLinksList = questionActivatorLinksList;
-  }
-
   @OneToMany(fetch = FetchType.LAZY)
   @JoinColumn(name = "question_id")
-  private List<QuestionActivatorLinks> questionActivatorLinksList;
+  private List<Question> questionList;
+  @OneToMany(fetch = FetchType.LAZY)
+  @JoinColumn(name = "entrypoint_id")
+  private List<Entrypoint> entrypointList;
+  @OneToMany(fetch = FetchType.LAZY)
+  @JoinColumn(name = "segment_id")
+  private List<Segment> segmentList;
+
+  public Question(String title, String description, QuestionType type, boolean required, QuestionVisibilityType questionVisibilityType, List<Long> possibleAnswerIdList, List<Question> questionList, List<Entrypoint> entrypointList, List<Segment> segmentList) {
+    this.title = title;
+    this.description = description;
+    this.type = type;
+    this.required = required;
+    this.questionVisibilityType = questionVisibilityType;
+    this.possibleAnswerIdList = possibleAnswerIdList;
+    this.questionList = questionList;
+    this.entrypointList = entrypointList;
+    this.segmentList = segmentList;
+  }
+
+  public Question() {
+  }
 
   public Long getId() {
     return id;
@@ -91,12 +103,12 @@ public class Question implements Serializable {
     this.type = type;
   }
 
-  public boolean isRequiredType() {
-    return requiredType;
+  public boolean isRequired() {
+    return required;
   }
 
-  public void setRequiredType(boolean requiredType) {
-    this.requiredType = requiredType;
+  public void setRequired(boolean required) {
+    this.required = required;
   }
 
   public QuestionVisibilityType getQuestionVisibilityType() {
@@ -113,5 +125,29 @@ public class Question implements Serializable {
 
   public void setPossibleAnswerIdList(List<Long> possibleAnswerIdList) {
     this.possibleAnswerIdList = possibleAnswerIdList;
+  }
+
+  public List<Question> getQuestionList() {
+    return questionList;
+  }
+
+  public void setQuestionList(List<Question> questionList) {
+    this.questionList = questionList;
+  }
+
+  public List<Entrypoint> getEntrypointList() {
+    return entrypointList;
+  }
+
+  public void setEntrypointList(List<Entrypoint> entrypointList) {
+    this.entrypointList = entrypointList;
+  }
+
+  public List<Segment> getSegmentList() {
+    return segmentList;
+  }
+
+  public void setSegmentList(List<Segment> segmentList) {
+    this.segmentList = segmentList;
   }
 }

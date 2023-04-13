@@ -10,9 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.List;
@@ -34,38 +32,32 @@ public class Segment implements Serializable {
       name = "role",
       columnDefinition = "bigint[]"
   )
-  private List<Long> roleIdList;
+  private List<Long> roleList;
   @Type(type = "list-array")
   @Column(
       name = "tag",
       columnDefinition = "text[]"
   )
-  private List<String> tagArrayList;
+  private List<String> tagList;
   @ManyToOne(fetch = FetchType.LAZY)
   private Segment parent;
+  @Column(name = "layer_id")
+  private Long layerId;
 
-  @OneToMany(fetch = FetchType.LAZY)
-  @JoinColumn(name = "segment_id")
-  private List<QuestionActivatorLinks> questionActivatorLinksList;
+  public Segment(String title, String description, List<Long> roleList, List<String> tagList, Segment parent, Long layerId) {
+    this.title = title;
+    this.description = description;
+    this.roleList = roleList;
+    this.tagList = tagList;
+    this.parent = parent;
+    this.layerId = layerId;
+  }
+
+  public Segment() {
+  }
 
   public Long getId() {
     return id;
-  }
-
-  public List<QuestionActivatorLinks> getQuestionActivatorLinksList() {
-    return questionActivatorLinksList;
-  }
-
-  public void setQuestionActivatorLinksList(List<QuestionActivatorLinks> questionActivatorLinksList) {
-    this.questionActivatorLinksList = questionActivatorLinksList;
-  }
-
-  public Segment getParent() {
-    return parent;
-  }
-
-  public void setParent(Segment parent) {
-    this.parent = parent;
   }
 
   public void setId(Long id) {
@@ -88,20 +80,35 @@ public class Segment implements Serializable {
     this.description = description;
   }
 
-  public List<Long> getRoleIdList() {
-    return roleIdList;
+  public List<Long> getRoleList() {
+    return roleList;
   }
 
-  public void setRoleIdList(List<Long> roleIdList) {
-    this.roleIdList = roleIdList;
+  public void setRoleList(List<Long> roleList) {
+    this.roleList = roleList;
   }
 
-  public List<String> getTagArrayList() {
-    return tagArrayList;
+  public List<String> getTagList() {
+    return tagList;
   }
 
-  public void setTagArrayList(List<String> tagArrayList) {
-    this.tagArrayList = tagArrayList;
+  public void setTagList(List<String> tagList) {
+    this.tagList = tagList;
   }
 
+  public Segment getParent() {
+    return parent;
+  }
+
+  public void setParent(Segment parent) {
+    this.parent = parent;
+  }
+
+  public Long getLayerId() {
+    return layerId;
+  }
+
+  public void setLayerId(Long layerId) {
+    this.layerId = layerId;
+  }
 }

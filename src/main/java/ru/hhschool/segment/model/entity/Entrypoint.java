@@ -2,15 +2,11 @@ package ru.hhschool.segment.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.List;
 
 @Entity
 @Table(name = "entrypoints")
@@ -25,20 +21,18 @@ public class Entrypoint implements Serializable {
   private String description;
   @Column(name = "entrypoint_type")
   private String type;
-  @OneToMany(fetch = FetchType.LAZY)
-  @JoinColumn(name = "entrypoint_id")
-  private List<QuestionActivatorLinks> questionActivatorLinksList;
+  @Column(name = "layer_id")
+  private Long layerId;
+
+  public Entrypoint(String title, String description, String type, Long layerId) {
+    this.title = title;
+    this.description = description;
+    this.type = type;
+    this.layerId = layerId;
+  }
 
   public Long getId() {
     return id;
-  }
-
-  public List<QuestionActivatorLinks> getQuestionActivatorLinksList() {
-    return questionActivatorLinksList;
-  }
-
-  public void setQuestionActivatorLinksList(List<QuestionActivatorLinks> questionActivatorLinksList) {
-    this.questionActivatorLinksList = questionActivatorLinksList;
   }
 
   public void setId(Long id) {
@@ -67,5 +61,16 @@ public class Entrypoint implements Serializable {
 
   public void setType(String type) {
     this.type = type;
+  }
+
+  public Long getLayerId() {
+    return layerId;
+  }
+
+  public void setLayerId(Long layerId) {
+    this.layerId = layerId;
+  }
+
+  public Entrypoint() {
   }
 }
