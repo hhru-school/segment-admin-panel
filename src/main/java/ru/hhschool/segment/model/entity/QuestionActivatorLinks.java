@@ -19,12 +19,28 @@ public class QuestionActivatorLinks implements Serializable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false, unique = true)
   private Long id;
-
   @Column(name = "question_required")
   private boolean questionRequired;
   @Enumerated(EnumType.STRING)
   @Column(name = "question_visibility")
   private QuestionVisibilityType questionVisibility;
+  @Column(name = "layer_id")
+  private Long layerId;
+  @Column(name = "segment_id")
+  private Long segmentId;
+  @Column(name = "question_id")
+  private Long questionId;
+
+  public QuestionActivatorLinks() {
+  }
+
+  public QuestionActivatorLinks(boolean questionRequired, QuestionVisibilityType questionVisibility, Long layerId, Long segmentId, Long questionId) {
+    this.questionRequired = questionRequired;
+    this.questionVisibility = questionVisibility;
+    this.layerId = layerId;
+    this.segmentId = segmentId;
+    this.questionId = questionId;
+  }
 
   public Long getId() {
     return id;
@@ -48,5 +64,29 @@ public class QuestionActivatorLinks implements Serializable {
 
   public void setQuestionVisibility(QuestionVisibilityType questionVisibility) {
     this.questionVisibility = questionVisibility;
+  }
+
+  public Long getLayerId() {
+    return layerId;
+  }
+
+  public void setLayerId(Long layerId) {
+    this.layerId = layerId;
+  }
+
+  public Long getSegmentId() {
+    return segmentId;
+  }
+
+  public void setSegmentId(Long segmentId) {
+    this.segmentId = segmentId;
+  }
+
+  public Long getQuestionId() {
+    return questionId;
+  }
+
+  public void setQuestionId(Long questionId) {
+    this.questionId = questionId;
   }
 }

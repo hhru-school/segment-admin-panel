@@ -37,42 +37,13 @@ public class Layer implements Serializable {
   private Layer parent;
   @OneToMany(fetch = FetchType.LAZY)
   @JoinColumn(name = "layer_id")
-  private List<Entrypoint> entrypointList;
-  @OneToMany(fetch = FetchType.LAZY)
-  @JoinColumn(name = "layer_id")
-  private List<Segment> segmentList;
-  @OneToMany(fetch = FetchType.LAZY)
-  @JoinColumn(name = "layer_id")
-  private List<Question> questionList;
+  private List<QuestionActivatorLinks> questionActivatorLinksList;
   @OneToMany(fetch = FetchType.LAZY)
   @JoinColumn(name = "layer_id")
   private List<Answer> answerList;
-  @OneToMany(fetch = FetchType.LAZY)
-  @JoinColumn(name = "layer_id")
-  private List<QuestionActivatorLinks> questionActivatorLinksList;
 
   public Long getId() {
     return id;
-  }
-
-  public List<Entrypoint> getEntrypointList() {
-    return entrypointList;
-  }
-
-  public List<QuestionActivatorLinks> getQuestionActivatorLinksList() {
-    return questionActivatorLinksList;
-  }
-
-  public void setQuestionActivatorLinksList(List<QuestionActivatorLinks> questionActivatorLinksList) {
-    this.questionActivatorLinksList = questionActivatorLinksList;
-  }
-
-  public List<Segment> getSegmentList() {
-    return segmentList;
-  }
-
-  public List<Question> getQuestionList() {
-    return questionList;
   }
 
   public List<Answer> getAnswerList() {
@@ -83,16 +54,12 @@ public class Layer implements Serializable {
     this.answerList = answerList;
   }
 
-  public void setQuestionList(List<Question> questionList) {
-    this.questionList = questionList;
+  public List<QuestionActivatorLinks> getQuestionActivatorLinksList() {
+    return questionActivatorLinksList;
   }
 
-  public void setSegmentList(List<Segment> segmentList) {
-    this.segmentList = segmentList;
-  }
-
-  public void setEntrypointList(List<Entrypoint> entrypointList) {
-    this.entrypointList = entrypointList;
+  public void setQuestionActivatorLinksList(List<QuestionActivatorLinks> questionActivatorLinksList) {
+    this.questionActivatorLinksList = questionActivatorLinksList;
   }
 
   public void setId(Long id) {
