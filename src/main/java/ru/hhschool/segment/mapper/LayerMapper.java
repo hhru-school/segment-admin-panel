@@ -29,7 +29,7 @@ public class LayerMapper {
     return entityCollection
         .stream()
         .map(LayerMapper::toDtoForMainPage)
-        .sorted(Comparator.comparing(LayerDto::getGroupOfStatusLayer).thenComparing(LayerDto::getId, Comparator.reverseOrder()))
+        .sorted(Comparator.comparing(LayerDto::getGroupOfLayerStatus).thenComparing(LayerDto::getId, Comparator.reverseOrder()))
         .toList();
   }
 }

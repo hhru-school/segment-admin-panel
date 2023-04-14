@@ -52,7 +52,7 @@ public class LayerDto {
     this.layerStatus = layerStatus;
   }
 
-  public LayerStatus.Group getGroupOfStatusLayer() {
+  public LayerStatus.Group getGroupOfLayerStatus() {
     return layerStatus.getGroup();
   }
 }
