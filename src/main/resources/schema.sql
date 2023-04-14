@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS layers
     layer_stable    BOOLEAN,
     layer_archive   BOOLEAN,
     layer_deleted   BOOLEAN,
-    create_time     TIMESTAMP WITH TIME ZONE NOT NULL
+    create_time     TIMESTAMP WITH TIME ZONE NOT NULL,
 );
 
 CREATE TABLE IF NOT EXISTS entrypoints
@@ -36,7 +36,8 @@ CREATE TABLE IF NOT EXISTS segments
     title             VARCHAR(255) NOT NULL,
     description       VARCHAR(255),
     role              BIGINT[],
-    tag VARCHAR(255)[]
+    tag               VARCHAR(255)[],
+    archived          BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS questions
