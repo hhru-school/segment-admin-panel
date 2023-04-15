@@ -1,4 +1,4 @@
-package ru.hhschool.segment.model.dto;
+package ru.hhschool.segment.model.dto.change;
 
 public class SegmentChangeDto {
     private Long id;
