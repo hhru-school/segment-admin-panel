@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS layers
     layer_stable    BOOLEAN,
     layer_archive   BOOLEAN,
     layer_deleted   BOOLEAN,
-    create_time     TIMESTAMP WITH TIME ZONE NOT NULL,
+    create_time TIMESTAMP WITH TIME ZONE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS entrypoints
