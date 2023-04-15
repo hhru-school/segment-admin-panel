@@ -1,17 +1,16 @@
 DROP TABLE IF EXISTS answers CASCADE;
-DROP TABLE IF EXISTS roles CASCADE;
 DROP TABLE IF EXISTS questions CASCADE;
 DROP TABLE IF EXISTS layers CASCADE;
 DROP TABLE IF EXISTS segments CASCADE;
 DROP TABLE IF EXISTS entrypoints CASCADE;
-DROP TABLE IF EXISTS segments_questions CASCADE;
 DROP TABLE IF EXISTS history CASCADE;
+DROP TABLE IF EXISTS question_activate_links CASCADE;
 
 CREATE TABLE IF NOT EXISTS layers
 (
     layer_id        BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     parent_layer_id BIGINT REFERENCES layers (layer_id),
-    title           VARCHAR(255)             NOT NULL,
+    title           VARCHAR(255)         NOT NULL,
     description     VARCHAR(255),
     layer_stable    BOOLEAN,
     layer_archive   BOOLEAN,
