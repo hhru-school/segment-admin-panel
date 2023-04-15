@@ -18,7 +18,7 @@ public class LayerChangeDto {
     private Map<String, List<SegmentChangeDto>> segmentMap;
     private Map<String, List<QuestionChangeDto>> questionMap;
     private Map<String, List<AnswerChangeDto>> answerMap;
-    private Map<String, List<QuestionActivatorLinkChangeDto>> questionActivatorLinksMap;
+    private Map<String, List<QuestionActivatorLinkChangeDto>> questionActivatorLinkMap;
 
     public LayerChangeDto() {
     }
@@ -37,7 +37,7 @@ public class LayerChangeDto {
         segmentMap = Map.of();
         questionMap = Map.of();
         answerMap = Map.of();
-        questionActivatorLinksMap = Map.of();
+        questionActivatorLinkMap = Map.of();
     }
 
     public Long getId() {
@@ -136,11 +136,11 @@ public class LayerChangeDto {
         this.answerMap = answerMap;
     }
 
-    public Map<String, List<QuestionActivatorLinkChangeDto>> getQuestionActivatorLinksMap() {
-        return questionActivatorLinksMap;
+    public Map<String, List<QuestionActivatorLinkChangeDto>> getQuestionActivatorLinkMap() {
+        return questionActivatorLinkMap;
     }
 
-    public void setQuestionActivatorLinksMap(Map<String, List<QuestionActivatorLinkChangeDto>> questionActivatorLinksMap) {
-        this.questionActivatorLinksMap = questionActivatorLinksMap;
+    public void setQuestionActivatorLinkMap(Map<String, List<QuestionActivatorLinkChangeDto>> questionActivatorLinkMap) {
+        this.questionActivatorLinkMap = questionActivatorLinkMap;
     }
 }

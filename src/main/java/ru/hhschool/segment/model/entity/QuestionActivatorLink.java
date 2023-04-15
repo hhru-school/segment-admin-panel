@@ -4,107 +4,94 @@ import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Objects;
 
 @Entity
 @Table(name = "question_activate_links")
 public class QuestionActivatorLink implements Serializable {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id", nullable = false, unique = true)
-  private Long id;
-  @Column(name = "question_required")
-  private boolean questionRequired;
-  @Enumerated(EnumType.STRING)
-  @Column(name = "question_visibility")
-  private QuestionVisibilityType questionVisibility;
-  @Column(name = "layer_id")
-  private Long layerId;
-  @Column(name = "segment_id")
-  private Long segmentId;
-  @Column(name = "question_id")
-  private Long questionId;
-  @Column(name = "entrypoint_id")
-  private Long entrypointId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, unique = true)
+    private Long id;
+    @Column(name = "question_required")
+    private boolean questionRequired;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "question_visibility")
+    private QuestionVisibilityType questionVisibility;
+    @Column(name = "layer_id")
+    private Long layerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Entrypoint entrypoint;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Segment segment;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Question question;
 
-  public QuestionActivatorLink() {
-  }
+    public QuestionActivatorLink() {
+    }
 
-  public QuestionActivatorLink(boolean questionRequired, QuestionVisibilityType questionVisibility, Long layerId, Long segmentId, Long questionId, Long entrypointId) {
-    this.questionRequired = questionRequired;
-    this.questionVisibility = questionVisibility;
-    this.layerId = layerId;
-    this.segmentId = segmentId;
-    this.questionId = questionId;
-    this.entrypointId = entrypointId;
-  }
+    public QuestionActivatorLink(Long id, boolean questionRequired, QuestionVisibilityType questionVisibility, Long layerId, Segment segment, Question question, Entrypoint entrypoint) {
+        this.id = id;
+        this.questionRequired = questionRequired;
+        this.questionVisibility = questionVisibility;
+        this.layerId = layerId;
+        this.segment = segment;
+        this.question = question;
+        this.entrypoint = entrypoint;
+    }
 
-  public Long getEntrypointId() {
-    return entrypointId;
-  }
+    public Long getId() {
+        return id;
+    }
 
-  public void setEntrypointId(Long entrypointId) {
-    this.entrypointId = entrypointId;
-  }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    QuestionActivatorLink that = (QuestionActivatorLink) o;
-    return id.equals(that.id) && Objects.equals(layerId, that.layerId) && Objects.equals(segmentId, that.segmentId) && Objects.equals(questionId, that.questionId) && Objects.equals(entrypointId, that.entrypointId);
-  }
+    public boolean isQuestionRequired() {
+        return questionRequired;
+    }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, layerId, segmentId, questionId, entrypointId);
-  }
+    public void setQuestionRequired(boolean questionRequired) {
+        this.questionRequired = questionRequired;
+    }
 
-  public Long getId() {
-    return id;
-  }
+    public QuestionVisibilityType getQuestionVisibility() {
+        return questionVisibility;
+    }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    public void setQuestionVisibility(QuestionVisibilityType questionVisibility) {
+        this.questionVisibility = questionVisibility;
+    }
 
-  public boolean isQuestionRequired() {
-    return questionRequired;
-  }
+    public Long getLayerId() {
+        return layerId;
+    }
 
-  public void setQuestionRequired(boolean questionRequired) {
-    this.questionRequired = questionRequired;
-  }
+    public void setLayerId(Long layerId) {
+        this.layerId = layerId;
+    }
 
-  public QuestionVisibilityType getQuestionVisibility() {
-    return questionVisibility;
-  }
+    public Segment getSegment() {
+        return segment;
+    }
 
-  public void setQuestionVisibility(QuestionVisibilityType questionVisibility) {
-    this.questionVisibility = questionVisibility;
-  }
+    public void setSegment(Segment segment) {
+        this.segment = segment;
+    }
 
-  public Long getLayerId() {
-    return layerId;
-  }
+    public Question getQuestion() {
+        return question;
+    }
 
-  public void setLayerId(Long layerId) {
-    this.layerId = layerId;
-  }
+    public void setQuestion(Question question) {
+        this.question = question;
+    }
 
-  public Long getSegmentId() {
-    return segmentId;
-  }
+    public Entrypoint getEntrypoint() {
+        return entrypoint;
+    }
 
-  public void setSegmentId(Long segmentId) {
-    this.segmentId = segmentId;
-  }
-
-  public Long getQuestionId() {
-    return questionId;
-  }
-
-  public void setQuestionId(Long questionId) {
-    this.questionId = questionId;
-  }
+    public void setEntrypoint(Entrypoint entrypoint) {
+        this.entrypoint = entrypoint;
+    }
 }

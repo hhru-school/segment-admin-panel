@@ -10,12 +10,12 @@ CREATE TABLE IF NOT EXISTS layers
 (
     layer_id        BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     parent_layer_id BIGINT REFERENCES layers (layer_id),
-    title           VARCHAR(255)         NOT NULL,
+    title           VARCHAR(255)             NOT NULL,
     description     VARCHAR(255),
     layer_stable    BOOLEAN,
     layer_archive   BOOLEAN,
     layer_deleted   BOOLEAN,
-    create_time TIMESTAMP WITH TIME ZONE NOT NULL
+    create_time     TIMESTAMP WITH TIME ZONE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS entrypoints

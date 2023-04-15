@@ -3,7 +3,6 @@ package ru.hhschool.segment.resource;
 import ru.hhschool.segment.service.LayerService;
 
 import javax.inject.Inject;
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -21,11 +20,11 @@ public class LayerResource {
     }
 
     @GET
-    @Path(value = "/{layerId}")
+    @Path(value = "/changes/{layerId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getLayerChange(@NotNull @PathParam(value = "layerId") Long layerId) {
+    public Response getLayerChanges(@PathParam(value = "layerId") Long layerId) {
         return Response
-                .ok(layerService.getLayerChange(layerId))
+                .ok(layerService.getLayerChanges(layerId))
                 .build();
     }
 }

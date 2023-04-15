@@ -1,4 +1,4 @@
-package ru.hhschool.segment.mapper;
+package ru.hhschool.segment.mapper.change;
 
 import ru.hhschool.segment.model.dto.change.SegmentChangeDto;
 import ru.hhschool.segment.model.entity.Segment;
