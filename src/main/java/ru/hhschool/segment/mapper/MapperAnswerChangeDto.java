@@ -1,6 +1,6 @@
 package ru.hhschool.segment.mapper;
 
-import ru.hhschool.segment.model.dto.AnswerChangeDto;
+import ru.hhschool.segment.model.dto.change.AnswerChangeDto;
 import ru.hhschool.segment.model.entity.Answer;
 
 import java.util.ArrayList;

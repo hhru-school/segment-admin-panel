@@ -1,6 +1,6 @@
 package ru.hhschool.segment.mapper;
 
-import ru.hhschool.segment.model.dto.SegmentChangeDto;
+import ru.hhschool.segment.model.dto.change.SegmentChangeDto;
 import ru.hhschool.segment.model.entity.Segment;
 
 import java.util.List;

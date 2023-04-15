@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.mapper.MapperLayerChangeDto;
-import ru.hhschool.segment.model.dto.LayerChangeDto;
+import ru.hhschool.segment.model.dto.change.LayerChangeDto;
 import ru.hhschool.segment.model.entity.Layer;
 
 import javax.inject.Inject;
