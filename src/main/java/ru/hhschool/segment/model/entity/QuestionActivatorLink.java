@@ -2,20 +2,13 @@ package ru.hhschool.segment.model.entity;
 
 import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "question_activate_links")
-public class QuestionActivatorLinks implements Serializable {
+public class QuestionActivatorLink implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false, unique = true)
@@ -34,10 +27,10 @@ public class QuestionActivatorLinks implements Serializable {
   @Column(name = "entrypoint_id")
   private Long entrypointId;
 
-  public QuestionActivatorLinks() {
+  public QuestionActivatorLink() {
   }
 
-  public QuestionActivatorLinks(boolean questionRequired, QuestionVisibilityType questionVisibility, Long layerId, Long segmentId, Long questionId, Long entrypointId) {
+  public QuestionActivatorLink(boolean questionRequired, QuestionVisibilityType questionVisibility, Long layerId, Long segmentId, Long questionId, Long entrypointId) {
     this.questionRequired = questionRequired;
     this.questionVisibility = questionVisibility;
     this.layerId = layerId;
@@ -58,7 +51,7 @@ public class QuestionActivatorLinks implements Serializable {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    QuestionActivatorLinks that = (QuestionActivatorLinks) o;
+    QuestionActivatorLink that = (QuestionActivatorLink) o;
     return id.equals(that.id) && Objects.equals(layerId, that.layerId) && Objects.equals(segmentId, that.segmentId) && Objects.equals(questionId, that.questionId) && Objects.equals(entrypointId, that.entrypointId);
   }
 
