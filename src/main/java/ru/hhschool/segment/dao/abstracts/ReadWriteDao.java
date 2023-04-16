@@ -1,8 +1,7 @@
 package ru.hhschool.segment.dao.abstracts;
 
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ReadWriteDao<T, K> {

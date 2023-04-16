@@ -8,8 +8,8 @@ import ru.hhschool.segment.resource.LayerResource;
 @Configuration
 public class JerseyConfig extends ResourceConfig {
 
-    public JerseyConfig() {
-        register(ExampleResource.class);
-        register(LayerResource.class);
-    }
+  public JerseyConfig() {
+    register(ExampleResource.class);
+    register(LayerResource.class);
+  }
 }

@@ -1,7 +1,6 @@
 package ru.hhschool.segment.model.entity;
 
-import ru.hhschool.segment.model.enums.HistoryType;
-
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -10,7 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
+import ru.hhschool.segment.model.enums.HistoryType;
 
 @Entity
 @Table(name = "history")

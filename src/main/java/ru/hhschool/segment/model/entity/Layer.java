@@ -1,9 +1,18 @@
 package ru.hhschool.segment.model.entity;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "layers")
@@ -45,7 +54,20 @@ public class Layer implements Serializable {
   public Layer() {
   }
 
-  public Layer(String title, String description, boolean stable, boolean archive, boolean deleted, LocalDateTime createTime, Layer parent, List<QuestionActivatorLink> questionActivatorLinkList, List<Answer> answerList, List<Question> questionList, List<Entrypoint> entrypointList, List<Segment> segmentList) {
+  public Layer(
+      String title,
+      String description,
+      boolean stable,
+      boolean archive,
+      boolean deleted,
+      LocalDateTime createTime,
+      Layer parent,
+      List<QuestionActivatorLink> questionActivatorLinkList,
+      List<Answer> answerList,
+      List<Question> questionList,
+      List<Entrypoint> entrypointList,
+      List<Segment> segmentList
+  ) {
     this.title = title;
     this.description = description;
     this.stable = stable;
@@ -60,12 +82,12 @@ public class Layer implements Serializable {
     this.segmentList = segmentList;
   }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
-
   public Long getId() {
     return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public List<Question> getQuestionList() {

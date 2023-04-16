@@ -1,10 +1,8 @@
 package ru.hhschool.segment.model.entity;
 
 import io.hypersistence.utils.hibernate.type.array.ListArrayType;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import ru.hhschool.segment.model.enums.AnswerType;
-
+import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -13,8 +11,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.util.List;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import ru.hhschool.segment.model.enums.AnswerType;
 
 @Entity
 @TypeDef(name = "list-array", typeClass = ListArrayType.class)
@@ -47,7 +46,15 @@ public class Answer implements Serializable {
   public Answer() {
   }
 
-  public Answer(String title, String positiveTitle, AnswerType answerType, boolean isDefault, boolean skipAtResult, List<Long> openQuestionList, Long layerId) {
+  public Answer(
+      String title,
+      String positiveTitle,
+      AnswerType answerType,
+      boolean isDefault,
+      boolean skipAtResult,
+      List<Long> openQuestionList,
+      Long layerId
+  ) {
     this.title = title;
     this.positiveTitle = positiveTitle;
     this.answerType = answerType;

@@ -1,5 +1,7 @@
 package ru.hhschool.segment.configuration;
 
+import java.util.Properties;
+import javax.sql.DataSource;
 import org.hibernate.cfg.Environment;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -8,8 +10,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import javax.sql.DataSource;
-import java.util.Properties;
+import ru.hhschool.segment.dao.abstracts.LayerDao;
+import ru.hhschool.segment.dao.impl.LayerDaoImpl;
+import ru.hhschool.segment.service.LayerService;
 
 @Configuration
 @EnableTransactionManagement
@@ -30,6 +33,16 @@ public class HibernateConfig {
   private String showSql;
 
   @Bean
+  public LayerService getLayerService(LayerDao layerDao) {
+    return new LayerService(layerDao);
+  }
+
+  @Bean
+  public LayerDao getLayerDao() {
+    return new LayerDaoImpl();
+  }
+
+  @Bean
   public LocalSessionFactoryBean getSessionFactory() {
     Properties properties = new Properties();
     properties.put(Environment.DIALECT, dialect);
@@ -40,6 +53,7 @@ public class HibernateConfig {
     factoryBean.setHibernateProperties(properties);
     return factoryBean;
   }
+
   @Bean
   public DataSource dataSource() {
     DriverManagerDataSource dataSource = new DriverManagerDataSource();
