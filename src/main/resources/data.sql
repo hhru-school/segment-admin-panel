@@ -89,8 +89,8 @@ VALUES
 
 INSERT INTO answers (layer_id, open_questions, title, POSITIVE_title, answer_type, is_default_answer, skip_at_result)
 VALUES
-(3, '{8}', 'Да, есть разряд', 'Нет опыта подобной работы', 'POSITIVE', FALSE, FALSE), --11
-(3, NULL, 'Разряда нет', 'Есть опыт подобной работы', 'NEGATIVE', FALSE, FALSE), --12
+(3, '{8}', 'Да, есть разряд', 'Разряд имеется', 'POSITIVE', FALSE, FALSE), --11
+(3, NULL, 'Разряда нет', 'Разряд отстутствует', 'NEGATIVE', FALSE, FALSE), --12
 (3, NULL, '1-й разряд', '1-й разряд', 'POSITIVE', TRUE, FALSE), --13
 (3, NULL, '2-й разряд', '2-й разряд', 'POSITIVE', FALSE, FALSE), --14
 (3, NULL, '3-й разряд', '3-й разряд', 'POSITIVE', FALSE, FALSE), --15
@@ -229,12 +229,38 @@ VALUES
 
 INSERT INTO segments (layer_id, parent_segment_id, title, description, role, tag)
 VALUES
-(7, NULL, 'Психолог', 'Психолог', '{101}', '{"Psychologist", "Life", "Thoughts", "Help"}'); --10
+(7, NULL, 'Психолог', 'Психолог', '{101}', '{"Psychologist", "Life", "Thoughts", "Help"}'), --10
+(7, NULL, 'Технический директор (CTO)', 'Технический директор (CTO)', '{11, 125}', '{"CTO", "Director", "Management"}'); --11
 
 INSERT INTO questions (layer_id, question_title, question_type, description, possible_answers, question_required, question_visibility)
 VALUES
 (7, 'Курсы повышения квалификации', 'SINGLE_CHOICE', 'Факт прохождения курсов повышения квалификации', '{9, 10}', FALSE, 'HIDE_PREFILLED'), --15
-(7, 'Возможен ли прием онлайн', 'SINGLE_CHOICE', 'Проводит ли специалист онлайн приемы пациентов', '{9, 10}', FALSE, 'HIDE'); --16
+(7, 'Возможен ли прием онлайн', 'SINGLE_CHOICE', 'Проводит ли специалист онлайн приемы пациентов', '{9, 10}', FALSE, 'HIDE'), --16
+(7, 'Опыт работы в качестве CTO', 'SINGLE_CHOICE', 'Опыт работы в качестве CTO', '{26}', TRUE, 'SHOW'), --17
+(7, 'Работали ли на других управляющих должностях', 'SINGLE_CHOICE', 'Работали ли на других управляющих должностях', '{9, 10}', TRUE, 'HIDE'), --18
+(7, 'Величина компании, в которой вы работали', 'SINGLE_CHOICE', 'Величина компании, в которой вы работали', '{29, 30, 31, 32}', TRUE, 'HIDE'), --19
+(7, 'Доводилось ли проходить курсы по управлению персоналом', 'SINGLE_CHOICE', 'Доводилось ли проходить курсы по управлению персоналом', '{9, 10}', TRUE, 'HIDE'), --20
+(7, 'Какой формат работы предпочитаете', 'MULTI_SELECT', 'Какой формат работы предпочитаете', '{32, 33, 34, 35}', TRUE, 'HIDE'), --21
+(7, 'Доводилось ли работать в международных компаниях', 'SINGLE_CHOICE', 'Доводилось ли работать в международных компаниях', '{36, 37}', TRUE, 'HIDE'), --22
+(7, 'Уровень английского', 'SINGLE_CHOICE', 'Уровень английского', '{38, 39, 40}', TRUE, 'HIDE'), --23
+(7, 'Владение другими иностранными языками', 'SINGLE_CHOICE', 'Владение другими иностранными языками', '{9, 10}', TRUE, 'HIDE'); --24
+
+INSERT INTO answers (layer_id, open_questions, title, POSITIVE_title, answer_type, is_default_answer, skip_at_result)
+VALUES
+(7, '{19, 20, 22}', 'Да, работал CTO', 'Да, работал CTO', 'POSITIVE', FALSE, FALSE), --27
+(7, '{18, 19, 20}', 'Нет, не работал CTO', 'Нет, не работал CTO', 'NEGATIVE', FALSE, FALSE), --28
+(7, NULL, 'До 100 сотрудников', 'До 100 сотрудников', 'NEUTRAL', FALSE, FALSE), --29
+(7, NULL, 'До 500 сотрудников', 'До 500 сотрудников', 'NEUTRAL', FALSE, FALSE), --30
+(7, NULL, 'До 1000 сотрудников', 'До 1000 сотрудников', 'NEUTRAL', FALSE, FALSE), --31
+(7, NULL, 'Офис', 'Работа в офисе', 'NEUTRAL', FALSE, FALSE), --32
+(7, NULL, 'Удаленная работа', 'Удаленная работа', 'NEUTRAL', FALSE, FALSE), --33
+(7, NULL, 'Гибрид', 'гибридный формат работы', 'NEUTRAL', FALSE, FALSE), --34
+(7, NULL, 'Не важен формат работы', 'Не важен формат работы', 'NEUTRAL', FALSE, FALSE), --35
+(7, '{23, 24}', 'Работал в международной компании', 'Работал в международной компании', 'NEUTRAL', FALSE, FALSE), --36
+(7, '{23, 24}', 'Не работал в международной компании', 'Не работал в международной компании', 'NEUTRAL', FALSE, FALSE), --37
+(7, NULL, 'Низкий', 'Низкий', 'NEUTRAL', FALSE, FALSE), --38
+(7, NULL, 'Средний', 'Средний', 'NEUTRAL', FALSE, FALSE), --39
+(7, NULL, 'Высокий', 'Высокий', 'NEUTRAL', FALSE, FALSE); --40
 
 INSERT INTO question_activate_links (layer_id, segment_id, question_id, entrypoint_id, question_required, question_visibility)
 VALUES
@@ -242,10 +268,26 @@ VALUES
 (7, 10, 2, 1, TRUE, 'SHOW'),
 (7, 10, 15, 1, FALSE, 'HIDE_PREFILLED'),
 (7, 10, 16, 1, FALSE, 'HIDE'),
+(7, 11, 17, 1, FALSE, 'HIDE'),
+(7, 11, 18, 1, FALSE, 'HIDE'),
+(7, 11, 19, 1, FALSE, 'HIDE'),
+(7, 11, 20, 1, FALSE, 'HIDE'),
+(7, 11, 21, 1, FALSE, 'HIDE'),
+(7, 11, 22, 1, FALSE, 'HIDE'),
+(7, 11, 23, 1, FALSE, 'HIDE'),
+(7, 11, 24, 1, FALSE, 'HIDE'),
 (7, 10, 1, 2, TRUE, 'SHOW'),
 (7, 10, 2, 2, TRUE, 'SHOW'),
 (7, 10, 15, 2, FALSE, 'HIDE_PREFILLED'),
-(7, 10, 16, 2, FALSE, 'HIDE');
+(7, 10, 16, 2, FALSE, 'HIDE'),
+(7, 11, 17, 2, FALSE, 'HIDE'),
+(7, 11, 18, 2, FALSE, 'HIDE'),
+(7, 11, 19, 2, FALSE, 'HIDE'),
+(7, 11, 20, 2, FALSE, 'HIDE'),
+(7, 11, 21, 2, FALSE, 'HIDE'),
+(7, 11, 22, 2, FALSE, 'HIDE'),
+(7, 11, 23, 2, FALSE, 'HIDE'),
+(7, 11, 24, 2, FALSE, 'HIDE');
 
 INSERT INTO history (user_id, name_db, time, type, description)
 VALUES
