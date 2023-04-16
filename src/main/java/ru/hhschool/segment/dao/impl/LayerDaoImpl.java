@@ -2,7 +2,6 @@ package ru.hhschool.segment.dao.impl;
 
 import java.util.List;
 import java.util.Optional;
-import javax.transaction.Transactional;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.model.entity.Answer;
 import ru.hhschool.segment.model.entity.Entrypoint;
@@ -11,7 +10,6 @@ import ru.hhschool.segment.model.entity.Question;
 import ru.hhschool.segment.model.entity.QuestionActivatorLink;
 import ru.hhschool.segment.model.entity.Segment;
 
-@Transactional
 public class LayerDaoImpl extends ReadWriteDaoImpl<Layer, Long> implements LayerDao {
   @Override
   public Optional<Layer> findByIdFetchEager(Long layerId) {
