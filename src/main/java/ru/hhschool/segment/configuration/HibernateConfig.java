@@ -10,9 +10,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import ru.hhschool.segment.dao.abstracts.LayerDao;
-import ru.hhschool.segment.dao.impl.LayerDaoImpl;
-import ru.hhschool.segment.service.LayerService;
 
 @Configuration
 @EnableTransactionManagement
@@ -31,16 +28,6 @@ public class HibernateConfig {
   private String dialect;
   @Value("${hibernate.show_sql}")
   private String showSql;
-
-  @Bean
-  public LayerService getLayerService(LayerDao layerDao) {
-    return new LayerService(layerDao);
-  }
-
-  @Bean
-  public LayerDao getLayerDao() {
-    return new LayerDaoImpl();
-  }
 
   @Bean
   public LocalSessionFactoryBean getSessionFactory() {
