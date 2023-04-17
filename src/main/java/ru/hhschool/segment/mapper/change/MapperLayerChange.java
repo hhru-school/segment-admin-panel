@@ -22,10 +22,10 @@ import ru.hhschool.segment.model.entity.Segment;
 /**
  * в этих методах идет формирование и группировка изменений в сущностях,
  * на их основании заполняем layerChangeDto
- * checkEntrypointChange(layer, layerChangeDto);
- * checkSegmentChange(layer, layerChangeDto);
- * checkQuestionAndAnswerChange(layer, layerChangeDto);
- * checkQuestionActivatorLinkChange(layer, layerChangeDto);
+ * setEntrypointChange(layer, layerChangeDto);
+ * setSegmentChange(layer, layerChangeDto);
+ * setQuestionAndAnswerChange(layer, layerChangeDto);
+ * setQuestionActivatorLinkChange(layer, layerChangeDto);
  */
 public class MapperLayerChange {
   private enum Status {
@@ -47,15 +47,15 @@ public class MapperLayerChange {
         layer.getCreateTime()
     );
 
-    checkEntrypointChange(layer, layerChangeDto);
-    checkSegmentChange(layer, layerChangeDto);
-    checkQuestionAndAnswerChange(layer, layerChangeDto);
-    checkQuestionActivatorLinkChange(layer, layerChangeDto);
+    setEntrypointChange(layer, layerChangeDto);
+    setSegmentChange(layer, layerChangeDto);
+    setQuestionAndAnswerChange(layer, layerChangeDto);
+    setQuestionActivatorLinkChange(layer, layerChangeDto);
 
     return layerChangeDto;
   }
 
-  private static void checkQuestionActivatorLinkChange(Layer layer, LayerChangeDto layerChangeDto) {
+  private static void setQuestionActivatorLinkChange(Layer layer, LayerChangeDto layerChangeDto) {
     List<QuestionActivatorLink> activatorLinkList = layer.getQuestionActivatorLinksList();
     if (activatorLinkList != null && activatorLinkList.size() > 0) {
       Map<String, List<QuestionActivatorLinkChangeDto>> segmentGroupMap = activatorLinkList
@@ -69,7 +69,7 @@ public class MapperLayerChange {
     }
   }
 
-  private static void checkQuestionAndAnswerChange(Layer layer, LayerChangeDto layerChangeDto) {
+  private static void setQuestionAndAnswerChange(Layer layer, LayerChangeDto layerChangeDto) {
     List<Answer> answerList = layer.getAnswerList();
     Map<Long, AnswerChangeDto> answerMap = answerListToMap(answerList);
 
@@ -176,7 +176,7 @@ public class MapperLayerChange {
     }
   }
 
-  private static void checkSegmentChange(Layer layer, LayerChangeDto layerChangeDto) {
+  private static void setSegmentChange(Layer layer, LayerChangeDto layerChangeDto) {
     List<Segment> segmentList = layer.getSegmentList();
     if (segmentList != null && segmentList.size() > 0) {
       Map<String, List<SegmentChangeDto>> segmentMap = new HashMap<>();
@@ -197,7 +197,7 @@ public class MapperLayerChange {
     }
   }
 
-  private static void checkEntrypointChange(Layer layer, LayerChangeDto layerChangeDto) {
+  private static void setEntrypointChange(Layer layer, LayerChangeDto layerChangeDto) {
     List<Entrypoint> entrypointList = layer.getEntrypointList();
     Hibernate.initialize(layer.getEntrypointList());
     if (entrypointList != null && entrypointList.size() > 0) {
