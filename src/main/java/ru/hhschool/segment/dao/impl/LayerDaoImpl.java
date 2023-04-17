@@ -12,11 +12,11 @@ public class LayerDaoImpl extends ReadWriteDaoImpl<Layer, Long> implements Layer
   @Override
   @Transactional
   public List<Layer> getAllParents(Long id) {
-    List<Layer> layerList = new ArrayList<>();
     Layer basicLayer = em.find(Layer.class, id);
     if (basicLayer == null){
       return Collections.EMPTY_LIST;
     }
+    List<Layer> layerList = new ArrayList<>();
     layerList.add(basicLayer);
     while (basicLayer.getParent() != null){
       Layer parentLayer = basicLayer.getParent();

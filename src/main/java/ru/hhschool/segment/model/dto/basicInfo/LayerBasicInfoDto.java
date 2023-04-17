@@ -1,5 +1,8 @@
 package ru.hhschool.segment.model.dto.basicInfo;
 
+import ru.hhschool.segment.model.dto.LayerDto;
+import ru.hhschool.segment.model.enums.LayerStatus;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -8,13 +11,13 @@ public class LayerBasicInfoDto {
   private String title;
   private String description;
   private LocalDateTime createTime;
-  private BasicLayerStatus layerStatus;
-  private List<LayerParentDto> parentLayersList;
+  private LayerStatus layerStatus;
+  private List<LayerDto> parentLayersList;
 
   public LayerBasicInfoDto() {
   }
 
-  public LayerBasicInfoDto(Long id, String title, String description, LocalDateTime createTime, BasicLayerStatus layerStatus, List<LayerParentDto> parentLayersList) {
+  public LayerBasicInfoDto(Long id, String title, String description, LocalDateTime createTime, LayerStatus layerStatus, List<LayerDto> parentLayersList) {
     this.id = id;
     this.title = title;
     this.description = description;
@@ -55,19 +58,19 @@ public class LayerBasicInfoDto {
     this.createTime = createTime;
   }
 
-  public BasicLayerStatus getLayerStatus() {
+  public LayerStatus getLayerStatus() {
     return layerStatus;
   }
 
-  public void setLayerStatus(BasicLayerStatus layerStatus) {
+  public void setLayerStatus(LayerStatus layerStatus) {
     this.layerStatus = layerStatus;
   }
 
-  public List<LayerParentDto> getParentLayersList() {
+  public List<LayerDto> getParentLayersList() {
     return parentLayersList;
   }
 
-  public void setParentLayersList(List<LayerParentDto> parentLayersList) {
+  public void setParentLayersList(List<LayerDto> parentLayersList) {
     this.parentLayersList = parentLayersList;
   }
 }

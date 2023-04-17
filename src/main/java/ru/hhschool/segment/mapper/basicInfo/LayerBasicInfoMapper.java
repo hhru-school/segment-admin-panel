@@ -1,8 +1,9 @@
 package ru.hhschool.segment.mapper.basicInfo;
 
-import ru.hhschool.segment.model.dto.basicInfo.BasicLayerStatus;
+import ru.hhschool.segment.mapper.LayerMapper;
 import ru.hhschool.segment.model.dto.basicInfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.entity.Layer;
+import ru.hhschool.segment.model.enums.LayerStatus;
 
 import java.util.Collection;
 
@@ -14,13 +15,13 @@ public class LayerBasicInfoMapper {
     layerBasicInfoDto.setDescription(entity.getDescription());
     layerBasicInfoDto.setCreateTime(entity.getCreateTime());
     if (entity.isStable()) {
-      layerBasicInfoDto.setLayerStatus(BasicLayerStatus.STABLE);
+      layerBasicInfoDto.setLayerStatus(LayerStatus.STABLE);
     } else if (entity.isArchive()) {
-      layerBasicInfoDto.setLayerStatus(BasicLayerStatus.ARCHIVED);
+      layerBasicInfoDto.setLayerStatus(LayerStatus.ARCHIVED);
     } else {
-      layerBasicInfoDto.setLayerStatus(BasicLayerStatus.EXPERIMENTAL);
+      layerBasicInfoDto.setLayerStatus(LayerStatus.EXPERIMENTAL);
     }
-    layerBasicInfoDto.setParentLayersList(LayerParentMapper.toDtoListForBasicPage(parents));
+    layerBasicInfoDto.setParentLayersList(LayerMapper.toDtoListForBasicPage(parents));
     return layerBasicInfoDto;
   }
 }

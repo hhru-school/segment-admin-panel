@@ -5,5 +5,5 @@ import ru.hhschool.segment.model.entity.Layer;
 import java.util.List;
 
 public interface LayerDao extends ReadWriteDao<Layer, Long> {
-  public List<Layer> getAllParents(Long id);
+  List<Layer> getAllParents(Long id);
 }

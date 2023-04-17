@@ -11,6 +11,7 @@ import ru.hhschool.segment.model.entity.Layer;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 
 public class LayerService {
   private final LayerDao layerDao;
@@ -25,12 +26,12 @@ public class LayerService {
     return LayerMapper.toDtoListForMainPage(layerDao.findAll());
   }
 
-  public LayerBasicInfoDto getLayerDtoForBasicInfoPage(Long id) {
-    Layer layer = layerDao.findById(id);
-    if (layer != null){
-      LOGGER.error("LayerId: {} not found.", id);
-      return LayerBasicInfoMapper.toDtoForBasicInfoPage(layer, layerDao.getAllParents(id));
+  public Optional<LayerBasicInfoDto> getLayerDtoForBasicInfoPage(Long id) {
+    Optional<Layer> layer = Optional.ofNullable(layerDao.findById(id));
+    if (layer.isEmpty()){
+      return Optional.empty();
     }
-    return null;
+    LayerBasicInfoDto layerBasicInfoDto = LayerBasicInfoMapper.toDtoForBasicInfoPage(layer.get(), layerDao.getAllParents(id));
+    return Optional.of(layerBasicInfoDto);
   }
 }
