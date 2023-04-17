@@ -1,5 +1,6 @@
 package ru.hhschool.segment.resource;
 
+import java.util.Optional;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -23,11 +24,12 @@ public class LayerResource {
   @Path(value = "/changes/{layerId}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getLayerChanges(@PathParam(value = "layerId") Long layerId) {
-    LayerChangeDto layerChanges = layerService.getLayerChanges(layerId);
+    Optional<LayerChangeDto> layerChanges = layerService.getLayerChanges(layerId);
 
-    if (layerChanges != null) {
-      return Response.ok(layerChanges).build();
+    if (layerChanges.isPresent()) {
+      return Response.ok(layerChanges.get()).build();
     }
+
     return Response.status(Response.Status.BAD_REQUEST).build();
   }
 }

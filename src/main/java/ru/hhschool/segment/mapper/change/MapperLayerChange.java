@@ -31,7 +31,7 @@ public class MapperLayerChange {
   private enum Status {
     CREATED,
     ARCHIVED,
-    NOT_USED
+    NOT_LINKED
   }
 
   public static LayerChangeDto layerChangeToDto(Layer layer) {
@@ -94,7 +94,7 @@ public class MapperLayerChange {
           .stream()
           .filter(answer -> !answerUsedId.contains(answer.getId()))
           .toList();
-      answerChangeMap.put(Status.NOT_USED.name(), anwerChangeList);
+      answerChangeMap.put(Status.NOT_LINKED.name(), anwerChangeList);
       layerChangeDto.setAnswerMap(answerChangeMap);
     }
   }
