@@ -3,7 +3,6 @@ package ru.hhschool.segment.dao.abstracts;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 
-@Repository
 public interface ReadWriteDao<T, K> {
 
   void persist(final T entity);
