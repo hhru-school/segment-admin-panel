@@ -1,11 +1,10 @@
 package ru.hhschool.segment.mapper.basicInfo;
 
+import java.util.Collection;
 import ru.hhschool.segment.mapper.LayerMapper;
 import ru.hhschool.segment.model.dto.basicInfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.enums.LayerStatus;
-
-import java.util.Collection;
 
 public class LayerBasicInfoMapper {
   public static LayerBasicInfoDto toDtoForBasicInfoPage(Layer entity, Collection<Layer> parents) {

@@ -1,27 +1,27 @@
 package ru.hhschool.segment.dao.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
-import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.Answer;
 import ru.hhschool.segment.model.entity.Entrypoint;
+import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.Question;
 import ru.hhschool.segment.model.entity.QuestionActivatorLink;
 import ru.hhschool.segment.model.entity.Segment;
-import java.util.ArrayList;
-import java.util.Collections;
 
 public class LayerDaoImpl extends ReadWriteDaoImpl<Layer, Long> implements LayerDao {
   @Override
   public List<Layer> getAllParents(Long id) {
     Layer basicLayer = em.find(Layer.class, id);
-    if (basicLayer == null){
+    if (basicLayer == null) {
       return Collections.EMPTY_LIST;
     }
     List<Layer> layerList = new ArrayList<>();
     layerList.add(basicLayer);
-    while (basicLayer.getParent() != null){
+    while (basicLayer.getParent() != null) {
       Layer parentLayer = basicLayer.getParent();
       layerList.add(parentLayer);
       basicLayer = parentLayer;

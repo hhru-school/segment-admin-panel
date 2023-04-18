@@ -28,12 +28,6 @@ import ru.hhschool.segment.model.entity.Segment;
  * setQuestionActivatorLinkChange(layer, layerChangeDto);
  */
 public class MapperLayerChange {
-  private enum Status {
-    CREATED,
-    ARCHIVED,
-    NOT_LINKED
-  }
-
   public static LayerChangeDto layerChangeToDto(Layer layer) {
     Long parentId = layer.getParent() == null ? null : layer.getParent().getId();
     LayerChangeDto layerChangeDto = new LayerChangeDto(
@@ -205,6 +199,12 @@ public class MapperLayerChange {
       entrypointMap.put(Status.CREATED.name(), MapperEntrypointChange.entrypointChangeListToDtoList(entrypointList));
       layerChangeDto.setEntrypointMap(entrypointMap);
     }
+  }
+
+  private enum Status {
+    CREATED,
+    ARCHIVED,
+    NOT_LINKED
   }
 
 
