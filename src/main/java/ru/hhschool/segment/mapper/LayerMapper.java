@@ -32,4 +32,13 @@ public class LayerMapper {
         .sorted(Comparator.comparing(LayerDto::getGroupOfLayerStatus).thenComparing(LayerDto::getId, Comparator.reverseOrder()))
         .toList();
   }
+
+  public static List<LayerDto> toDtoListForBasicPage(Collection<Layer> entityCollection) {
+
+    return entityCollection
+        .stream()
+        .map(LayerMapper::toDtoForMainPage)
+        .sorted(Comparator.comparing(LayerDto::getId, Comparator.reverseOrder()))
+        .toList();
+  }
 }

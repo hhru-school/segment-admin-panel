@@ -2,6 +2,7 @@ package ru.hhschool.segment.dao.impl;
 
 import ru.hhschool.segment.dao.abstracts.ReadWriteDao;
 
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.lang.reflect.ParameterizedType;
