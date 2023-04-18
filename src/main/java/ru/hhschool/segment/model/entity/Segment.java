@@ -1,9 +1,8 @@
 package ru.hhschool.segment.model.entity;
 
 import io.hypersistence.utils.hibernate.type.array.ListArrayType;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-
+import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,8 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.util.List;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 @Entity
 @TypeDef(name = "list-array", typeClass = ListArrayType.class)
@@ -43,6 +42,9 @@ public class Segment implements Serializable {
   private Segment parent;
   @Column(name = "layer_id")
   private Long layerId;
+  @Column(name = "archived")
+  private boolean archived;
+
 
   public Segment(String title, String description, List<Long> roleList, List<String> tagList, Segment parent, Long layerId) {
     this.title = title;
@@ -110,5 +112,13 @@ public class Segment implements Serializable {
 
   public void setLayerId(Long layerId) {
     this.layerId = layerId;
+  }
+
+  public boolean isArchived() {
+    return archived;
+  }
+
+  public void setArchived(boolean archived) {
+    this.archived = archived;
   }
 }

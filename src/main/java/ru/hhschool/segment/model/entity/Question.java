@@ -1,11 +1,8 @@
 package ru.hhschool.segment.model.entity;
 
 import io.hypersistence.utils.hibernate.type.array.ListArrayType;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import ru.hhschool.segment.model.enums.QuestionType;
-import ru.hhschool.segment.model.enums.QuestionVisibilityType;
-
+import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,8 +11,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.util.List;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import ru.hhschool.segment.model.enums.QuestionType;
+import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 
 @Entity
 @TypeDef(name = "list-array", typeClass = ListArrayType.class)
@@ -43,9 +42,19 @@ public class Question implements Serializable {
       columnDefinition = "bigint[]"
   )
   private List<Long> possibleAnswerIdList;
+  @Column(name = "layer_id")
+  private Long layerId;
 
 
-  public Question(Long id, String title, String description, QuestionType type, boolean required, QuestionVisibilityType questionVisibilityType, List<Long> possibleAnswerIdList) {
+  public Question(
+      Long id,
+      String title,
+      String description,
+      QuestionType type,
+      boolean required,
+      QuestionVisibilityType questionVisibilityType,
+      List<Long> possibleAnswerIdList
+  ) {
     this.id = id;
     this.title = title;
     this.description = description;
@@ -112,5 +121,13 @@ public class Question implements Serializable {
 
   public void setPossibleAnswerIdList(List<Long> possibleAnswerIdList) {
     this.possibleAnswerIdList = possibleAnswerIdList;
+  }
+
+  public Long getLayerId() {
+    return layerId;
+  }
+
+  public void setLayerId(Long layerId) {
+    this.layerId = layerId;
   }
 }

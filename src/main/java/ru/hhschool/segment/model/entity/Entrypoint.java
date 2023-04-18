@@ -1,12 +1,12 @@
 package ru.hhschool.segment.model.entity;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.Serializable;
 
 @Entity
 @Table(name = "entrypoints")
@@ -29,6 +29,9 @@ public class Entrypoint implements Serializable {
     this.description = description;
     this.type = type;
     this.layerId = layerId;
+  }
+
+  public Entrypoint() {
   }
 
   public Long getId() {
@@ -69,8 +72,5 @@ public class Entrypoint implements Serializable {
 
   public void setLayerId(Long layerId) {
     this.layerId = layerId;
-  }
-
-  public Entrypoint() {
   }
 }

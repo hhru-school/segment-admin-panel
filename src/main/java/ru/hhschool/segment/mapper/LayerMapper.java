@@ -1,12 +1,11 @@
 package ru.hhschool.segment.mapper;
 
-import ru.hhschool.segment.model.dto.LayerDto;
-import ru.hhschool.segment.model.entity.Layer;
-import ru.hhschool.segment.model.enums.LayerStatus;
-
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import ru.hhschool.segment.model.dto.LayerDto;
+import ru.hhschool.segment.model.entity.Layer;
+import ru.hhschool.segment.model.enums.LayerStatus;
 
 public class LayerMapper {
   public static LayerDto toDtoForMainPage(Layer entity) {

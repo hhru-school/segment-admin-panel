@@ -1,8 +1,7 @@
 package ru.hhschool.segment.model.dto;
 
-import ru.hhschool.segment.model.enums.LayerStatus;
-
 import java.time.LocalDateTime;
+import ru.hhschool.segment.model.enums.LayerStatus;
 
 public class LayerDto {
   private Long id;
