@@ -10,6 +10,7 @@ import ru.hhschool.segment.model.dto.basicInfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.entity.Layer;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,7 @@ public class LayerService {
     return LayerMapper.toDtoListForMainPage(layerDao.findAll());
   }
 
+  @Transactional
   public Optional<LayerBasicInfoDto> getLayerDtoForBasicInfoPage(Long id) {
     Optional<Layer> layer = Optional.ofNullable(layerDao.findById(id));
     if (layer.isEmpty()){

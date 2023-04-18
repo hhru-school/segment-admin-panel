@@ -10,7 +10,6 @@ import java.util.List;
 
 public class LayerDaoImpl extends ReadWriteDaoImpl<Layer, Long> implements LayerDao {
   @Override
-  @Transactional
   public List<Layer> getAllParents(Long id) {
     Layer basicLayer = em.find(Layer.class, id);
     if (basicLayer == null){
