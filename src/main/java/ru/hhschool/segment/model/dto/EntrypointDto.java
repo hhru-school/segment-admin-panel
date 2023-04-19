@@ -1,20 +1,20 @@
 package ru.hhschool.segment.model.dto;
 
+import java.util.Objects;
+
 public class EntrypointDto {
   private Long id;
   private String title;
   private String description;
-  private String type;
   private Long layerId;
 
   public EntrypointDto() {
   }
 
-  public EntrypointDto(Long id, String title, String description, String type, Long layerId) {
+  public EntrypointDto(Long id, String title, String description, Long layerId) {
     this.id = id;
     this.title = title;
     this.description = description;
-    this.type = type;
     this.layerId = layerId;
   }
 
@@ -42,19 +42,35 @@ public class EntrypointDto {
     this.description = description;
   }
 
-  public String getType() {
-    return type;
-  }
-
-  public void setType(String type) {
-    this.type = type;
-  }
-
   public Long getLayerId() {
     return layerId;
   }
 
   public void setLayerId(Long layerId) {
     this.layerId = layerId;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    EntrypointDto that = (EntrypointDto) o;
+
+    if (!title.equals(that.title)) {
+      return false;
+    }
+    return Objects.equals(description, that.description);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = title.hashCode();
+    result = 31 * result + (description != null ? description.hashCode() : 0);
+    return result;
   }
 }

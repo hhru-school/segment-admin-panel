@@ -27,7 +27,7 @@ public class SegmentConfig {
   }
 
   @Bean
-  public EntrypointService getEntrypointService(EntrypointDao entrypointDao) {
-    return new EntrypointService(entrypointDao);
+  public EntrypointService getEntrypointService(EntrypointDao entrypointDao, LayerDao layerDao) {
+    return new EntrypointService(entrypointDao, layerDao);
   }
 }

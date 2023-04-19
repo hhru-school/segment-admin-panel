@@ -1,9 +1,10 @@
 package ru.hhschool.segment.resource;
 
-import java.util.List;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -20,10 +21,10 @@ public class EntrypointResource {
   }
 
   @GET
-  @Path(value = "/")
+  @Path(value = "/{layerId}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getAllEntrypoint() {
-    List<EntrypointDto> entrypointList = entrypointService.getAllEntrypoint();
+  public Response getAllEntrypointByLayerId(@PathParam("layerId") Long id) {
+    Set<EntrypointDto> entrypointList = entrypointService.getAllEntrypointByLayerId(id);
     return Response.ok(entrypointList).build();
   }
 

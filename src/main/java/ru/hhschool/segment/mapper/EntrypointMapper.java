@@ -10,7 +10,6 @@ public class EntrypointMapper {
         entrypoint.getId(),
         entrypoint.getTitle(),
         entrypoint.getDescription(),
-        entrypoint.getType(),
         entrypoint.getLayerId()
     );
 

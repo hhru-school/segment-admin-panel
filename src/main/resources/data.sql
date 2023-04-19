@@ -2,9 +2,9 @@
 INSERT INTO layers (parent_layer_id, title, description, layer_stable, layer_archive, layer_deleted, create_time)
 VALUES (NULL, 'Первый слой', 'Базовый слой', TRUE, FALSE, FALSE, '2023-04-12 02:02:00');
 
-INSERT INTO entrypoints (layer_id, title, description, entrypoint_type)
-VALUES (1, 'Onboarding', 'Размещение вакансии работодателем', 1),
-       (1, 'Резюме', 'Размещение резюме соискателем', 2);
+INSERT INTO entrypoints (layer_id, title, description)
+VALUES (1, 'Onboarding', 'Размещение вакансии работодателем'),
+       (1, 'Резюме', 'Размещение резюме соискателем');
 
 INSERT INTO segments (layer_id, parent_segment_id, title, description, role, tag)
 VALUES (1, NULL, 'Программист, разработчик', 'Разработчик программного обеспечения', '{96}', '{"Programmer", "Software", "IT"}'); --1
@@ -140,8 +140,8 @@ VALUES (4, 'segment-db', '2023-04-15 02:02:00', 'UPDATE', 'Новая сесси
 INSERT INTO layers (parent_layer_id, title, description, layer_stable, layer_archive, layer_deleted, create_time)
 VALUES (3, 'Пятый слой', 'Слой, унаследованный от третьего слоя', TRUE, FALSE, FALSE, '2023-04-16 02:02:00');
 
-INSERT INTO entrypoints (layer_id, title, description, entrypoint_type)
-VALUES (5, 'Редактирование резюме', 'Размещение резюме соискателем', 3);
+INSERT INTO entrypoints (layer_id, title, description)
+VALUES (5, 'Редактирование резюме', 'Размещение резюме соискателем');
 
 INSERT INTO segments (layer_id, parent_segment_id, title, description, role, tag)
 VALUES (5, NULL, 'Водитель', 'Водитель транспортного средства', '{21}', '{"Driver", "Car", "Road"}'), --7
