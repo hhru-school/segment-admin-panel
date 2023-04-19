@@ -27,22 +27,4 @@ public class QuestionStatusDto {
     this.questionStatus = questionStatus;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-
-    QuestionStatusDto that = (QuestionStatusDto) o;
-
-    return title.equals(that.title);
-  }
-
-  @Override
-  public int hashCode() {
-    return title.hashCode();
-  }
 }

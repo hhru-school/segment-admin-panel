@@ -1,7 +1,9 @@
 package ru.hhschool.segment.service;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import javax.inject.Inject;
@@ -19,6 +21,7 @@ import ru.hhschool.segment.model.entity.Entrypoint;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.Question;
 import ru.hhschool.segment.model.entity.QuestionActivatorLink;
+import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 
 public class EntrypointService {
   private final EntrypointDao entrypointDao;
@@ -67,42 +70,43 @@ public class EntrypointService {
 
     List<Layer> layerParentList = layerDao.getAllParents(layerId);
 
-    Set<QuestionStatusDto> questionStatusDtoSet = new HashSet<>();
+    Map<String, QuestionStatusDto> questionStatusDtoMap = new HashMap<>();
     for (int i = layerParentList.size() - 1; i >= 0; i--) {
-      saveEntrypointQuestionStatusFromLayerToSet(questionStatusDtoSet, layerParentList.get(i).getId(), entrypointId);
+      saveEntrypointQuestionStatusFromLayerToSet(questionStatusDtoMap, layerParentList.get(i).getId(), entrypointId);
     }
-    saveEntrypointQuestionStatusFromLayerToSet(questionStatusDtoSet, layer.get().getId(), entrypointId);
+    saveEntrypointQuestionStatusFromLayerToSet(questionStatusDtoMap, layer.get().getId(), entrypointId);
 
-    return Optional.of(EntrypointWitchQuestionStatusMapper.questionToQuestionStatusDto(entrypoint.get(), questionStatusDtoSet));
+    return Optional.of(EntrypointWitchQuestionStatusMapper.questionToQuestionStatusDto(entrypoint.get(), questionStatusDtoMap.values()));
   }
 
   /**
-   * Собираем элементы по слоям Каждый слой layerId накладывается на другой, затирая старое значение или создавая новое.
-   * Важно! У questionStatusDto обязательно определен Equals и HashCode на Title.
+   * Собираем элементы по слоям. Каждый слой layerId накладывается на другой,
+   * собирая статусы из каждого слоя.
    */
-  private void saveEntrypointQuestionStatusFromLayerToSet(Set<QuestionStatusDto> questionStatusDtoSet, Long layerId, Long entrypointId) {
+  private void saveEntrypointQuestionStatusFromLayerToSet(Map<String, QuestionStatusDto> questionStatusDtoMap, Long layerId, Long entrypointId) {
     List<QuestionActivatorLink> questionActivatorLinksList = questionActivatorLinkDao.findAllByLayerIdAndEntrypointId(layerId, entrypointId);
+
+
     for (QuestionActivatorLink questionActivatorLink : questionActivatorLinksList) {
       Question question = questionActivatorLink.getQuestion();
       if (question != null) {
         QuestionStatusDto questionStatusDto = QuestionStatusMapper.questionToQuestionStatusDto(question);
 
-        if (questionStatusDtoSet.contains(questionStatusDto)) {
-          questionStatusDtoSet.remove(questionStatusDto);
+        Set<QuestionVisibilityType> questionStatus = questionStatusDto.getQuestionStatus();
+        String questionTitle = questionStatusDto.getTitle();
+
+        questionStatus.add(questionActivatorLink.getQuestionVisibility());
+        if (questionStatusDtoMap.containsKey(questionTitle)) {
+          questionStatus.addAll(questionStatusDtoMap.get(questionTitle).getQuestionStatus());
         }
-        questionStatusDto.getQuestionStatus().add(question.getQuestionVisibilityType());
-        questionStatusDtoSet.add(questionStatusDto);
+        questionStatusDtoMap.put(questionTitle, questionStatusDto);
       }
     }
   }
 
-
   /**
-   * Собираем элементы по слоям Каждый слой layerId накладывается на другой, затирая старое значение или создавая новое.
+   * Собираем элементы по слоям. Каждый слой layerId накладывается на другой, затирая старое значение или создавая новое.
    * Важно! У entrypointDto обязательно определен Equals и HashCode на Title + Description.
-   *
-   * @param entrypointDtoSet
-   * @param layerId
    */
   private void saveEntrypointFromLayerToSet(Set<EntrypointDto> entrypointDtoSet, Long layerId) {
     List<Entrypoint> entrypointList = entrypointDao.findAllByLayerId(layerId);

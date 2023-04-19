@@ -29,7 +29,7 @@ INSERT INTO question_activate_links (layer_id, segment_id, question_id, entrypoi
 VALUES (1, 1, 1, 1, TRUE, 'SHOW'),
        (1, 1, 2, 1, TRUE, 'SHOW'),
        (1, 1, 1, 2, TRUE, 'SHOW'),
-       (1, 1, 2, 2, TRUE, 'SHOW');
+       (1, 1, 2, 2, TRUE, 'HIDE');
 
 INSERT INTO history (user_id, name_db, time, type, description)
 VALUES (1, 'segment-db', '2023-04-12 02:02:00', 'CREATE', 'Новая сессия');
@@ -50,7 +50,7 @@ INSERT INTO question_activate_links (layer_id, segment_id, question_id, entrypoi
 VALUES (2, 2, 2, 1, TRUE, 'SHOW'),
        (2, 2, 3, 1, TRUE, 'SHOW'),
        (2, 2, 4, 1, TRUE, 'HIDE'),
-       (2, 2, 2, 2, TRUE, 'SHOW'),
+       (2, 2, 2, 2, TRUE, 'HIDE_PREFILLED'),
        (2, 2, 3, 2, TRUE, 'SHOW'),
        (2, 2, 4, 2, TRUE, 'HIDE');
 
