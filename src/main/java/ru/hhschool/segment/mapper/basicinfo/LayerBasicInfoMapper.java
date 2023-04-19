@@ -1,8 +1,8 @@
-package ru.hhschool.segment.mapper.basicInfo;
+package ru.hhschool.segment.mapper.basicinfo;
 
 import java.util.Collection;
 import ru.hhschool.segment.mapper.LayerMapper;
-import ru.hhschool.segment.model.dto.basicInfo.LayerBasicInfoDto;
+import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.enums.LayerStatus;
 
