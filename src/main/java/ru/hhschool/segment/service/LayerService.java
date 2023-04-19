@@ -6,10 +6,10 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.mapper.LayerMapper;
-import ru.hhschool.segment.mapper.basicInfo.LayerBasicInfoMapper;
+import ru.hhschool.segment.mapper.basicinfo.LayerBasicInfoMapper;
 import ru.hhschool.segment.mapper.change.MapperLayerChange;
 import ru.hhschool.segment.model.dto.LayerDto;
-import ru.hhschool.segment.model.dto.basicInfo.LayerBasicInfoDto;
+import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.change.LayerChangeDto;
 import ru.hhschool.segment.model.entity.Layer;
 

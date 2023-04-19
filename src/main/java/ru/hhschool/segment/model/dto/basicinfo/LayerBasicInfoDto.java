@@ -1,4 +1,4 @@
-package ru.hhschool.segment.model.dto.basicInfo;
+package ru.hhschool.segment.model.dto.basicinfo;
 
 import java.time.LocalDateTime;
 import java.util.List;
