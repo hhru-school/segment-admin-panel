@@ -28,8 +28,8 @@ public class LayerResource {
   @Path(value = "/")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getLayerDtoListForMainPage() {
-    List<LayerDto> layerDtos = layerService.getLayerDtoListForMainPage();
-    if (!layerDtos.isEmpty()){
+    Optional<List<LayerDto>> layerDtos = Optional.ofNullable(layerService.getLayerDtoListForMainPage());
+    if (layerDtos.isPresent()){
       return Response.ok(layerDtos).build();
     }
     return Response.status(Response.Status.NO_CONTENT).build();
