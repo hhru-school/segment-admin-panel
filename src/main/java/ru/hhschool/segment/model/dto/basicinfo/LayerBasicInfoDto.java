@@ -1,4 +1,4 @@
-package ru.hhschool.segment.model.dto.basicInfo;
+package ru.hhschool.segment.model.dto.basicinfo;
 
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.enums.LayerStatus;
