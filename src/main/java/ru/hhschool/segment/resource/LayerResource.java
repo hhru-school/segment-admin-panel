@@ -1,5 +1,6 @@
 package ru.hhschool.segment.resource;
 
+import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -8,6 +9,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.basicInfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.change.LayerChangeDto;
 import ru.hhschool.segment.service.LayerService;
@@ -21,12 +24,15 @@ public class LayerResource {
     this.layerService = layerService;
   }
 
+  @GET
   @Path(value = "/")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getLayerDtoListForMainPage() {
-    return Response
-        .ok(layerService.getLayerDtoListForMainPage())
-        .build();
+    List<LayerDto> layerDtos = layerService.getLayerDtoListForMainPage();
+    if (layerDtos.isEmpty()){
+      return Response.status(Response.Status.NO_CONTENT).build();
+    }
+    return Response.ok(layerDtos).build();
   }
 
   @GET

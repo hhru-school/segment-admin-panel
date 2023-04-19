@@ -20,7 +20,6 @@ public class LayerDaoImpl extends ReadWriteDaoImpl<Layer, Long> implements Layer
       return Collections.EMPTY_LIST;
     }
     List<Layer> layerList = new ArrayList<>();
-    layerList.add(basicLayer);
     while (basicLayer.getParent() != null) {
       Layer parentLayer = basicLayer.getParent();
       layerList.add(parentLayer);
