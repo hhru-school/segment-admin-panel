@@ -1,0 +1,402 @@
+openapi: 3.0.3
+info:
+  title: Segment 1.0
+  description: |-
+    This is admin panel of Segment.
+  contact:
+    email: baddan@mail.ru
+  version: 1.0.1
+servers:
+  - url: http://localhost
+paths:
+  /layers:
+    get:
+      tags:
+        - layers
+      summary: Получить весь спосок слоёв
+      description:
+      operationId: getLayerDtoListForMainPage
+      parameters:
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LayerDto'
+  /layers/{layerId}:
+    get:
+      tags:
+        - layers
+      summary: Информацию о слое, вместе со всеми родителями.
+      description:
+      operationId: getAllParents
+      parameters:
+        - name: LayerId
+          in: path
+          required: true
+          schema: 
+            type: number
+      responses:
+        '404':
+          description: Not found
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LayerBasicInfoDto'
+
+  /layers/changes/{layerId}:
+    get:
+      tags:
+        - layers
+      summary: Получить изменения слоя
+      description:
+      operationId: getLayerChanges
+      parameters: 
+        - name: LayerId
+          in: path
+          required: true
+          schema: 
+            type: number
+      responses:
+        '404':
+          description: Not found
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LayerCgangeDto'
+# Entrypoints
+  /entrypoints/layer/{layerId}:
+    get:
+      tags:
+        - entrypoints
+      summary: Получить "Точки Входа" слоя
+      description: возвращает имена "Точек входа" слоя включая наследуемые от слоёв родителей.
+      operationId: getAllEntrypointByLayerId
+      parameters: 
+        - name: LayerId
+          in: path
+          required: true
+          schema: 
+            type: number
+      responses:
+        '404':
+          description: Not found
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntrypointDto'
+
+  /entrypoints//{entrypointId}/layer/{layerId}:
+    get:
+      tags:
+        - entrypoints
+      summary: Получить состояния вопросов/полей по "Точке Входа" слоя
+      description: возвращает массив
+      operationId: getEntrypointByIdWithQuestionStatus
+      parameters: 
+        - name: LayerId
+          in: path
+          required: true
+          schema: 
+            type: number
+      responses:
+        '404':
+          description: Not found
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntrypointWitchQuestionStatusDto'
+                  
+components:
+  schemas:
+#Entrypoints
+    EntrypointDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Точка входа onboard
+        description:
+          type: string
+          example: Описание onboard
+        layerId:
+          type: integer
+          format: int64
+          example: 10
+
+    EntrypointWitchQuestionStatusDto:
+      type: object
+      properties:
+        entrypointDto:
+          $ref: '#/components/schemas/EntrypointDto'
+        questionStatusDtoList:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionStatusDto'
+
+    QuestionStatusDto:
+      type: object
+      properties: 
+        questionStatus:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionVisibilityType'
+
+# Layers
+    LayerDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: title #7
+        creationTime:
+          type: string
+          example: 2023-03-01T18:16:15.12312
+        layerStatus:
+          type: string
+          examples: 
+            - EXPEREMENTAL
+            - ARCHIVED
+            - STABLE
+        groupOfStatusLAyer:
+          type: string
+          examples: 
+            - ACTIVE
+            - FINISHED
+# Layers Information
+    LayerBasicInfoDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: title #7
+        description:
+          type: string
+          example: title #7
+        creationTime:
+          type: string
+          example: 2023-03-01T18:16:15.12312
+        layerStatus:
+          type: string
+          examples: 
+            - EXPEREMENTAL
+            - ARCHIVED
+            - STABLE
+        parentLayersList:
+          type: array
+          items:
+            $ref: '#/components/schemas/LayerDto'
+
+# Changes DTO
+    QuestionActivatorLinkChangeDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        questionRequired:
+          type: boolean
+          example: true
+        questionVisibility:
+            $ref: '#/components/schemas/QuestionVisibilityType'
+        entrypointTitle:
+          type: string
+          example: Onboard
+        segmentTitle:
+          type: string
+          example: Водитель
+        questionTitle:
+          type: string
+          example: Умение пользоваться сотовым телефоном
+
+    AnswerChangeDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Ответ Номер 1
+        answerType:
+          type: string
+          examples:
+            - POSITIVE
+            - NEGATIVE
+            - NEUTRAL
+        openQuestionList:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionChangeDto'
+    
+    QuestionChangeDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Вопрос Номер 1
+        description:
+          type: string
+          example: Описание к вопросу Номер 1
+        answerList:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnswerChangeDto'
+             
+    SegmentChangeDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Водитель
+        description:
+          type: string
+          example: грузоперевозки
+
+    EntrypointChangeDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Onboard ABC
+        description:
+          type: string
+          example: Описание Onboard ABC
+        archived:
+          type: boolean
+
+    LayerCgangeDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        parentLayerId:
+          type: integer
+          format: int64
+          example: 2
+        title:
+          type: string
+          example: title #7
+        description:
+          type: string
+          example: тест А добавлен сегмент АБС
+        stable:
+          type: boolean
+          example: true
+        archive:
+          type: boolean
+          example: true
+        deleted:
+          type: boolean
+          example: true
+        creationTime:
+          type: string
+          example: 2023-03-01T18:16:15.12312
+        entrypointMap:
+          type: object
+          properties:
+            status:
+              type: string
+              example: CREATED 
+            entrypointChangeDtoList:
+              type: array
+              items: 
+                $ref: '#/components/schemas/EntrypointChangeDto'
+        segmentMap:
+          type: object
+          properties:
+            status:
+              type: string
+              examples:
+                - CREATED
+                - ARCHIVED 
+            segmentChangeDtoList:
+              type: array
+              items: 
+                $ref: '#/components/schemas/SegmentChangeDto'
+        questionMap:
+          type: object
+          properties:
+            status:
+              type: string
+              example: CREATED 
+            questionChangeDtoList:
+              type: array
+              items: 
+                $ref: '#/components/schemas/QuestionChangeDto'
+        answerMap:
+          type: object
+          properties:
+            status:
+              type: string
+              example: NOT_LINKED 
+            answerChangeDtoList:
+              type: array
+              items:
+                $ref: '#/components/schemas/AnswerChangeDto'
+        questionActivatorLinkMap:
+          type: object
+          properties:
+            status:
+              type: string
+              example: CREATED 
+            questionActivatorLinkChangeDtoList:
+              type: array
+              items:
+                $ref: '#/components/schemas/QuestionActivatorLinkChangeDto'
+
+#enums
+    QuestionVisibilityType:
+      type: string
+      examples: 
+        - SHOW
+        - HIDE
+        - HIDE_PREFILLED
+       
+        
+      
