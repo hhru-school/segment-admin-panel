@@ -2,9 +2,9 @@
 INSERT INTO layers (parent_layer_id, title, description, layer_stable, layer_archive, layer_deleted, create_time)
 VALUES (NULL, 'Первый слой', 'Базовый слой', TRUE, FALSE, FALSE, '2023-04-12 02:02:00');
 
-INSERT INTO entrypoints (layer_id, title, description, entrypoint_type)
-VALUES (1, 'Onboarding', 'Размещение вакансии работодателем', 1),
-       (1, 'Резюме', 'Размещение резюме соискателем', 2);
+INSERT INTO entrypoints (layer_id, title, description)
+VALUES (1, 'Onboarding', 'Размещение вакансии работодателем'),
+       (1, 'Резюме', 'Размещение резюме соискателем');
 
 INSERT INTO segments (layer_id, parent_segment_id, title, description, role, tag)
 VALUES (1, NULL, 'Программист, разработчик', 'Разработчик программного обеспечения', '{96}', '{"Programmer", "Software", "IT"}'); --1
@@ -29,7 +29,7 @@ INSERT INTO question_activate_links (layer_id, segment_id, question_id, entrypoi
 VALUES (1, 1, 1, 1, TRUE, 'SHOW'),
        (1, 1, 2, 1, TRUE, 'SHOW'),
        (1, 1, 1, 2, TRUE, 'SHOW'),
-       (1, 1, 2, 2, TRUE, 'SHOW');
+       (1, 1, 2, 2, TRUE, 'HIDE');
 
 INSERT INTO history (user_id, name_db, time, type, description)
 VALUES (1, 'segment-db', '2023-04-12 02:02:00', 'CREATE', 'Новая сессия');
@@ -50,7 +50,7 @@ INSERT INTO question_activate_links (layer_id, segment_id, question_id, entrypoi
 VALUES (2, 2, 2, 1, TRUE, 'SHOW'),
        (2, 2, 3, 1, TRUE, 'SHOW'),
        (2, 2, 4, 1, TRUE, 'HIDE'),
-       (2, 2, 2, 2, TRUE, 'SHOW'),
+       (2, 2, 2, 2, TRUE, 'HIDE_PREFILLED'),
        (2, 2, 3, 2, TRUE, 'SHOW'),
        (2, 2, 4, 2, TRUE, 'HIDE');
 
@@ -140,8 +140,8 @@ VALUES (4, 'segment-db', '2023-04-15 02:02:00', 'UPDATE', 'Новая сесси
 INSERT INTO layers (parent_layer_id, title, description, layer_stable, layer_archive, layer_deleted, create_time)
 VALUES (3, 'Пятый слой', 'Слой, унаследованный от третьего слоя', TRUE, FALSE, FALSE, '2023-04-16 02:02:00');
 
-INSERT INTO entrypoints (layer_id, title, description, entrypoint_type)
-VALUES (5, 'Редактирование резюме', 'Размещение резюме соискателем', 3);
+INSERT INTO entrypoints (layer_id, title, description)
+VALUES (5, 'Редактирование резюме', 'Размещение резюме соискателем');
 
 INSERT INTO segments (layer_id, parent_segment_id, title, description, role, tag)
 VALUES (5, NULL, 'Водитель', 'Водитель транспортного средства', '{21}', '{"Driver", "Car", "Road"}'), --7
@@ -200,10 +200,12 @@ INSERT INTO segments (layer_id, parent_segment_id, title, description, role, tag
 VALUES (7, NULL, 'Психолог', 'Психолог', '{101}', '{"Psychologist", "Life", "Thoughts", "Help"}'), --10
        (7, NULL, 'Технический директор (CTO)', 'Технический директор (CTO)', '{11, 125}', '{"CTO", "Director", "Management"}'); --11
 
-INSERT INTO questions (layer_id, question_title, question_type, description, possible_answers, question_required, question_visibility)
+INSERT INTO questions (layer_id, question_title, question_type, description, possible_answers, question_required, question_visibility, resume_field)
 VALUES (7, 'Курсы повышения квалификации', 'SINGLE_CHOICE', 'Факт прохождения курсов повышения квалификации', '{9, 10}', FALSE,
-        'HIDE_PREFILLED'),                                                                                                              --15
-       (7, 'Возможен ли прием онлайн', 'SINGLE_CHOICE', 'Проводит ли специалист онлайн приемы пациентов', '{9, 10}', FALSE, 'HIDE'),    --16
+        'HIDE_PREFILLED', TRUE); --15
+
+INSERT INTO questions (layer_id, question_title, question_type, description, possible_answers, question_required, question_visibility)
+VALUES (7, 'Возможен ли прием онлайн', 'SINGLE_CHOICE', 'Проводит ли специалист онлайн приемы пациентов', '{9, 10}', FALSE, 'HIDE'),    --16
        (7, 'Опыт работы в качестве CTO', 'SINGLE_CHOICE', 'Опыт работы в качестве CTO', '{26}', TRUE, 'SHOW'),                          --17
        (7, 'Работали ли на других управляющих должностях', 'SINGLE_CHOICE', 'Работали ли на других управляющих должностях', '{9, 10}', TRUE,
         'HIDE'),                                                                                                                        --18
@@ -247,8 +249,8 @@ VALUES (7, 10, 1, 1, TRUE, 'SHOW'),
        (7, 11, 23, 1, FALSE, 'HIDE'),
        (7, 11, 24, 1, FALSE, 'HIDE'),
        (7, 10, 1, 2, TRUE, 'SHOW'),
-       (7, 10, 2, 2, TRUE, 'SHOW'),
-       (7, 10, 15, 2, FALSE, 'HIDE_PREFILLED'),
+       (7, 10, 2, 2, TRUE, 'HIDE'),
+       (7, 10, 15, 2, FALSE, 'HIDE'),
        (7, 10, 16, 2, FALSE, 'HIDE'),
        (7, 11, 17, 2, FALSE, 'HIDE'),
        (7, 11, 18, 2, FALSE, 'HIDE'),

@@ -20,11 +20,10 @@ CREATE TABLE IF NOT EXISTS layers
 
 CREATE TABLE IF NOT EXISTS entrypoints
 (
-    entrypoint_id   BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    layer_id        BIGINT REFERENCES layers (layer_id),
-    title           VARCHAR(255) NOT NULL,
-    description     VARCHAR(255),
-    entrypoint_type VARCHAR(255)
+    entrypoint_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    layer_id      BIGINT REFERENCES layers (layer_id),
+    title         VARCHAR(255) NOT NULL,
+    description   VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS segments
