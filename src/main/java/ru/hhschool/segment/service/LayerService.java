@@ -25,19 +25,19 @@ public class LayerService {
     return LayerMapper.toDtoListForMainPage(layerDao.findAll());
   }
 
+  @Transactional
   public Optional<LayerChangeDto> getLayerChanges(Long layerId) {
-    Optional<Layer> layer = layerDao.findByIdFetchEager(layerId);
+    Optional<Layer> layer = layerDao.findById(layerId);
     if (layer.isEmpty()) {
       return Optional.empty();
     }
 
-    LayerChangeDto layerChangeDto = MapperLayerChange.layerChangeToDto(layer.get());
-    return Optional.of(layerChangeDto);
+    return layer.map(MapperLayerChange::layerChangeToDto);
   }
 
   @Transactional
   public Optional<LayerBasicInfoDto> getLayerDtoForBasicInfoPage(Long id) {
-    Optional<Layer> layer = Optional.ofNullable(layerDao.findById(id));
+    Optional<Layer> layer = layerDao.findById(id);
     if (layer.isEmpty()) {
       return Optional.empty();
     }

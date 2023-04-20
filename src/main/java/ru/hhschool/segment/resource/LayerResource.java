@@ -9,7 +9,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.basicInfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.change.LayerChangeDto;
@@ -29,7 +28,7 @@ public class LayerResource {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getLayerDtoListForMainPage() {
     List<LayerDto> layerDtos = layerService.getLayerDtoListForMainPage();
-    if (layerDtos.isEmpty()){
+    if (layerDtos.isEmpty()) {
       return Response.status(Response.Status.NO_CONTENT).build();
     }
     return Response.ok(layerDtos).build();
@@ -43,7 +42,7 @@ public class LayerResource {
     if (layerBasicInfoDto.isPresent()) {
       return Response.ok(layerBasicInfoDto).build();
     }
-    return Response.status(Response.Status.BAD_REQUEST).build();
+    return Response.status(Response.Status.NOT_FOUND).build();
   }
 
   @GET
@@ -55,7 +54,7 @@ public class LayerResource {
     if (layerChanges.isPresent()) {
       return Response.ok(layerChanges.get()).build();
     }
-    return Response.status(Response.Status.BAD_REQUEST).build();
+    return Response.status(Response.Status.NOT_FOUND).build();
   }
 
 }

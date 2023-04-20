@@ -46,6 +46,8 @@ public class Question implements Serializable {
   @Column(name = "layer_id")
   private Long layerId;
 
+  @Column(name = "resume_field")
+  private boolean resumeField;
 
   public Question(
       Long id,
@@ -54,7 +56,9 @@ public class Question implements Serializable {
       QuestionType type,
       boolean required,
       QuestionVisibilityType questionVisibilityType,
-      List<Long> possibleAnswerIdList
+      List<Long> possibleAnswerIdList,
+      Long layerId,
+      boolean resumeField
   ) {
     this.id = id;
     this.title = title;
@@ -63,6 +67,8 @@ public class Question implements Serializable {
     this.required = required;
     this.questionVisibilityType = questionVisibilityType;
     this.possibleAnswerIdList = possibleAnswerIdList;
+    this.layerId = layerId;
+    this.resumeField = resumeField;
   }
 
   public Question() {
@@ -143,5 +149,12 @@ public class Question implements Serializable {
   @Override
   public int hashCode() {
     return Objects.hash(id);
+  }
+  public boolean isResumeField() {
+    return resumeField;
+  }
+
+  public void setResumeField(boolean resumeField) {
+    this.resumeField = resumeField;
   }
 }

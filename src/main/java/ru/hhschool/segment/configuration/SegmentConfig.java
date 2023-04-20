@@ -2,10 +2,15 @@ package ru.hhschool.segment.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import ru.hhschool.segment.dao.abstracts.EntrypointDao;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.dao.abstracts.QuestionDao;
+import ru.hhschool.segment.dao.abstracts.QuestionActivatorLinkDao;
+import ru.hhschool.segment.dao.impl.EntrypointDaoImpl;
 import ru.hhschool.segment.dao.impl.LayerDaoImpl;
 import ru.hhschool.segment.dao.impl.QuestionDaoImpl;
+import ru.hhschool.segment.dao.impl.QuestionActivatorLinkDaoImpl;
+import ru.hhschool.segment.service.EntrypointService;
 import ru.hhschool.segment.service.LayerService;
 import ru.hhschool.segment.service.QuestionService;
 
@@ -27,5 +32,19 @@ public class SegmentConfig {
   @Bean
   public QuestionService getQuestionService(LayerDao layerDao,QuestionDao questionDao) {
     return new QuestionService(layerDao, questionDao);
+  }
+  @Bean
+  public EntrypointDao getEntrypointDao() {
+    return new EntrypointDaoImpl();
+  }
+
+  @Bean
+  public EntrypointService getEntrypointService(EntrypointDao entrypointDao, LayerDao layerDao, QuestionActivatorLinkDao questionActivatorLinkDao) {
+    return new EntrypointService(entrypointDao, layerDao, questionActivatorLinkDao);
+  }
+
+  @Bean
+  public QuestionActivatorLinkDao getQuestionActivatorLinkDao() {
+    return new QuestionActivatorLinkDaoImpl();
   }
 }

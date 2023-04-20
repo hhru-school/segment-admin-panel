@@ -19,15 +19,12 @@ public class Entrypoint implements Serializable {
   private String title;
   @Column(name = "description")
   private String description;
-  @Column(name = "entrypoint_type")
-  private String type;
   @Column(name = "layer_id")
   private Long layerId;
 
-  public Entrypoint(String title, String description, String type, Long layerId) {
+  public Entrypoint(String title, String description, Long layerId) {
     this.title = title;
     this.description = description;
-    this.type = type;
     this.layerId = layerId;
   }
 
@@ -56,14 +53,6 @@ public class Entrypoint implements Serializable {
 
   public void setDescription(String description) {
     this.description = description;
-  }
-
-  public String getType() {
-    return type;
-  }
-
-  public void setType(String type) {
-    this.type = type;
   }
 
   public Long getLayerId() {
