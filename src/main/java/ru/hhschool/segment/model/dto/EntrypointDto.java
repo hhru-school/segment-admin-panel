@@ -1,7 +1,5 @@
 package ru.hhschool.segment.model.dto;
 
-import java.util.Objects;
-
 public class EntrypointDto {
   private Long id;
   private String title;
@@ -50,27 +48,4 @@ public class EntrypointDto {
     this.layerId = layerId;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-
-    EntrypointDto that = (EntrypointDto) o;
-
-    if (!title.equals(that.title)) {
-      return false;
-    }
-    return Objects.equals(description, that.description);
-  }
-
-  @Override
-  public int hashCode() {
-    int result = title.hashCode();
-    result = 31 * result + (description != null ? description.hashCode() : 0);
-    return result;
-  }
 }

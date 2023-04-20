@@ -1,9 +1,7 @@
 package ru.hhschool.segment.resource;
 
-import ru.hhschool.segment.model.dto.EntrypointDto;
-import ru.hhschool.segment.model.dto.entrypointinfo.EntrypointWitchQuestionStatusDto;
-import ru.hhschool.segment.service.EntrypointService;
-
+import java.util.Collection;
+import java.util.Optional;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -11,8 +9,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Optional;
-import java.util.Set;
+import ru.hhschool.segment.model.dto.EntrypointDto;
+import ru.hhschool.segment.model.dto.entrypointinfo.EntrypointWitchQuestionStatusDto;
+import ru.hhschool.segment.service.EntrypointService;
 
 @Path("/entrypoints")
 public class EntrypointResource {
@@ -27,7 +26,7 @@ public class EntrypointResource {
   @Path(value = "/layer/{layerId}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getAllEntrypointByLayerId(@PathParam("layerId") Long layerId) {
-    Set<EntrypointDto> entrypointList = entrypointService.getAllEntrypointByLayerId(layerId);
+    Collection<EntrypointDto> entrypointList = entrypointService.getAllEntrypointByLayerId(layerId);
 
     return Response.ok(entrypointList).build();
   }

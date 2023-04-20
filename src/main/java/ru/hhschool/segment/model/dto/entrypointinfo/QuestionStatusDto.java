@@ -5,8 +5,8 @@ import java.util.Set;
 import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 
 public class QuestionStatusDto {
-  private String title;
   Set<QuestionVisibilityType> questionStatus = new HashSet<>();
+  private String title;
 
   public QuestionStatusDto() {
   }

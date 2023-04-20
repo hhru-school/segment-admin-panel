@@ -4,7 +4,7 @@ public enum LayerStatus {
   EXPERIMENTAL(Group.ACTIVE),
   STABLE(Group.FINISHED),
   ARCHIVED(Group.FINISHED);
-  private Group groupOfLayerStatus;
+  private final Group groupOfLayerStatus;
 
   LayerStatus(Group groupOfLayerStatus) {
     this.groupOfLayerStatus = groupOfLayerStatus;
