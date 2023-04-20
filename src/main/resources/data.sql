@@ -200,10 +200,12 @@ INSERT INTO segments (layer_id, parent_segment_id, title, description, role, tag
 VALUES (7, NULL, 'Психолог', 'Психолог', '{101}', '{"Psychologist", "Life", "Thoughts", "Help"}'), --10
        (7, NULL, 'Технический директор (CTO)', 'Технический директор (CTO)', '{11, 125}', '{"CTO", "Director", "Management"}'); --11
 
-INSERT INTO questions (layer_id, question_title, question_type, description, possible_answers, question_required, question_visibility)
+INSERT INTO questions (layer_id, question_title, question_type, description, possible_answers, question_required, question_visibility, resume_field)
 VALUES (7, 'Курсы повышения квалификации', 'SINGLE_CHOICE', 'Факт прохождения курсов повышения квалификации', '{9, 10}', FALSE,
-        'HIDE_PREFILLED'),                                                                                                              --15
-       (7, 'Возможен ли прием онлайн', 'SINGLE_CHOICE', 'Проводит ли специалист онлайн приемы пациентов', '{9, 10}', FALSE, 'HIDE'),    --16
+        'HIDE_PREFILLED', TRUE); --15
+
+INSERT INTO questions (layer_id, question_title, question_type, description, possible_answers, question_required, question_visibility)
+VALUES (7, 'Возможен ли прием онлайн', 'SINGLE_CHOICE', 'Проводит ли специалист онлайн приемы пациентов', '{9, 10}', FALSE, 'HIDE'),    --16
        (7, 'Опыт работы в качестве CTO', 'SINGLE_CHOICE', 'Опыт работы в качестве CTO', '{26}', TRUE, 'SHOW'),                          --17
        (7, 'Работали ли на других управляющих должностях', 'SINGLE_CHOICE', 'Работали ли на других управляющих должностях', '{9, 10}', TRUE,
         'HIDE'),                                                                                                                        --18
@@ -247,8 +249,8 @@ VALUES (7, 10, 1, 1, TRUE, 'SHOW'),
        (7, 11, 23, 1, FALSE, 'HIDE'),
        (7, 11, 24, 1, FALSE, 'HIDE'),
        (7, 10, 1, 2, TRUE, 'SHOW'),
-       (7, 10, 2, 2, TRUE, 'SHOW'),
-       (7, 10, 15, 2, FALSE, 'HIDE_PREFILLED'),
+       (7, 10, 2, 2, TRUE, 'HIDE'),
+       (7, 10, 15, 2, FALSE, 'HIDE'),
        (7, 10, 16, 2, FALSE, 'HIDE'),
        (7, 11, 17, 2, FALSE, 'HIDE'),
        (7, 11, 18, 2, FALSE, 'HIDE'),

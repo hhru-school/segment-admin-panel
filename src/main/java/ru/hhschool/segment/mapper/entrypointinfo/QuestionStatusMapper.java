@@ -8,6 +8,7 @@ public class QuestionStatusMapper {
     QuestionStatusDto questionChangeDto = new QuestionStatusDto();
 
     questionChangeDto.setTitle(question.getTitle());
+    questionChangeDto.setResumeField(question.isResumeField());
 
     return questionChangeDto;
   }

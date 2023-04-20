@@ -23,6 +23,7 @@ import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.Question;
 import ru.hhschool.segment.model.entity.QuestionActivatorLink;
 import ru.hhschool.segment.model.enums.QuestionVisibilityType;
+import ru.hhschool.segment.model.enums.ResumeField;
 
 public class EntrypointService {
   private final EntrypointDao entrypointDao;
@@ -87,8 +88,8 @@ public class EntrypointService {
    * собирая статусы из каждого слоя.
    */
   private void saveEntrypointQuestionStatusFromLayerToSet(Map<String, QuestionStatusDto> questionStatusDtoMap, Long layerId, Long entrypointId) {
-    List<QuestionActivatorLink> questionActivatorLinksList = questionActivatorLinkDao.findAllByLayerIdAndEntrypointId(layerId, entrypointId);
-
+    List<QuestionActivatorLink> questionActivatorLinksList
+        = questionActivatorLinkDao.findAllByLayerIdAndEntrypointIdAndResumeField(layerId, entrypointId, ResumeField.RESUME_FIELD);
 
     for (QuestionActivatorLink questionActivatorLink : questionActivatorLinksList) {
       Question question = questionActivatorLink.getQuestion();
