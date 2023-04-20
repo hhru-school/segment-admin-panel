@@ -26,7 +26,7 @@ public class QuestionService {
 
   @Transactional
   public Set<Question> getListQuestionDtoOfLayerAndParentsWithAnswers(Long layerId) {
-    Optional<Layer> optionalSelectedLayer = Optional.ofNullable(layerDao.findById(layerId));
+    Optional<Layer> optionalSelectedLayer = layerDao.findById(layerId);
     if (optionalSelectedLayer.isEmpty()) {
       return Collections.emptySet();
     }
