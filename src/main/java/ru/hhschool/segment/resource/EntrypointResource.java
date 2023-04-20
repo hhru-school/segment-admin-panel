@@ -1,7 +1,9 @@
 package ru.hhschool.segment.resource;
 
-import java.util.Optional;
-import java.util.Set;
+import ru.hhschool.segment.model.dto.EntrypointDto;
+import ru.hhschool.segment.model.dto.entrypointinfo.EntrypointWitchQuestionStatusDto;
+import ru.hhschool.segment.service.EntrypointService;
+
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -9,9 +11,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import ru.hhschool.segment.model.dto.EntrypointDto;
-import ru.hhschool.segment.model.dto.entrypointinfo.EntrypointWitchQuestionStatusDto;
-import ru.hhschool.segment.service.EntrypointService;
+import java.util.Optional;
+import java.util.Set;
 
 @Path("/entrypoints")
 public class EntrypointResource {
@@ -44,7 +45,7 @@ public class EntrypointResource {
       return Response.ok(entrypointWithQuestionStatus).build();
     }
 
-    return Response.status(Response.Status.BAD_REQUEST).build();
+    return Response.status(Response.Status.NOT_FOUND).build();
   }
 
 }
