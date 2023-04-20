@@ -9,9 +9,9 @@ VALUES (1, 'Onboarding', 'Размещение вакансии работода
 INSERT INTO segments (layer_id, parent_segment_id, title, description, role, tag)
 VALUES (1, NULL, 'Программист, разработчик', 'Разработчик программного обеспечения', '{96}', '{"Programmer", "Software", "IT"}'); --1
 
-INSERT INTO questions (layer_id, question_title, question_type, description, possible_answers, question_required, question_visibility)
-VALUES (1, 'Опыт работы, лет', 'SINGLE_CHOICE', 'Опыт работы на аналогичной должности, указанный в годах', '{1, 2, 3, 7}', TRUE, 'SHOW'), --1
-       (1, 'Высшее образование', 'SINGLE_CHOICE', 'Наличие высшего образования', '{4, 5, 6}', TRUE, 'SHOW'); --2
+INSERT INTO questions (layer_id, question_title, question_type, description, possible_answers, question_required, question_visibility, resume_field)
+VALUES (1, 'Опыт работы, лет', 'SINGLE_CHOICE', 'Опыт работы на аналогичной должности, указанный в годах', '{1, 2, 3, 7}', TRUE, 'SHOW', FALSE), --1
+       (1, 'Высшее образование', 'SINGLE_CHOICE', 'Наличие высшего образования', '{4, 5, 6}', TRUE, 'SHOW', TRUE); --2
 
 INSERT INTO answers (layer_id, open_questions, title, POSITIVE_title, answer_type, is_default_answer, skip_at_result)
 VALUES (1, NULL, 'Менее года', 'Менее года', 'POSITIVE', FALSE, FALSE),                        --1
