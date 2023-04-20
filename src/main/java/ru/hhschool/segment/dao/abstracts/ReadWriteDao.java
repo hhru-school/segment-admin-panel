@@ -1,6 +1,7 @@
 package ru.hhschool.segment.dao.abstracts;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ReadWriteDao<T, K> {
 
@@ -16,7 +17,7 @@ public interface ReadWriteDao<T, K> {
 
   boolean existsById(K id);
 
-  T findById(K id);
+  Optional<T> findById(K id);
 
   List<T> findAll();
 }

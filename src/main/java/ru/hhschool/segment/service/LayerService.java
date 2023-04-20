@@ -27,7 +27,7 @@ public class LayerService {
 
   @Transactional
   public Optional<LayerChangeDto> getLayerChanges(Long layerId) {
-    Optional<Layer> layer = Optional.of(layerDao.findById(layerId));
+    Optional<Layer> layer = layerDao.findById(layerId);
     if (layer.isEmpty()) {
       return Optional.empty();
     }
@@ -37,7 +37,7 @@ public class LayerService {
 
   @Transactional
   public Optional<LayerBasicInfoDto> getLayerDtoForBasicInfoPage(Long id) {
-    Optional<Layer> layer = Optional.ofNullable(layerDao.findById(id));
+    Optional<Layer> layer = layerDao.findById(id);
     if (layer.isEmpty()) {
       return Optional.empty();
     }
