@@ -43,7 +43,7 @@ public class EntrypointService {
 
   @Transactional
   public Collection<EntrypointDto> getAllEntrypointByLayerId(Long layerId) {
-    Optional<Layer> layer = Optional.ofNullable(layerDao.findById(layerId));
+    Optional<Layer> layer = layerDao.findById(layerId);
     if (layer.isEmpty()) {
       return Set.of();
     }
@@ -60,12 +60,12 @@ public class EntrypointService {
 
   @Transactional
   public Optional<EntrypointWitchQuestionStatusDto> getEntrypointByIdWithQuestionStatus(Long entrypointId, Long layerId) {
-    Optional<Layer> layer = Optional.ofNullable(layerDao.findById(layerId));
+    Optional<Layer> layer = layerDao.findById(layerId);
     if (layer.isEmpty()) {
       return Optional.empty();
     }
 
-    Optional<Entrypoint> entrypoint = Optional.ofNullable(entrypointDao.findById(entrypointId));
+    Optional<Entrypoint> entrypoint = entrypointDao.findById(entrypointId);
     if (entrypoint.isEmpty()) {
       return Optional.empty();
     }
