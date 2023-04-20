@@ -7,12 +7,12 @@ import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 public class QuestionStatusDto {
   Set<QuestionVisibilityType> questionStatus = new HashSet<>();
   private String title;
-  private Boolean resumeField;
+  private boolean resumeField;
 
   public QuestionStatusDto() {
   }
 
-  public QuestionStatusDto(Set<QuestionVisibilityType> questionStatus, String title, Boolean resumeField) {
+  public QuestionStatusDto(Set<QuestionVisibilityType> questionStatus, String title, boolean resumeField) {
     this.questionStatus = questionStatus;
     this.title = title;
     this.resumeField = resumeField;
@@ -30,11 +30,15 @@ public class QuestionStatusDto {
     return questionStatus;
   }
 
-  public Boolean getResumeField() {
+  public void setQuestionStatus(Set<QuestionVisibilityType> questionStatus) {
+    this.questionStatus = questionStatus;
+  }
+
+  public boolean isResumeField() {
     return resumeField;
   }
 
-  public void setResumeField(Boolean resumeField) {
+  public void setResumeField(boolean resumeField) {
     this.resumeField = resumeField;
   }
 }

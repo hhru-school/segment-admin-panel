@@ -7,7 +7,7 @@ import ru.hhschool.segment.model.enums.ResumeField;
 
 public class QuestionActivatorLinkDaoImpl extends ReadWriteDaoImpl<QuestionActivatorLink, Long> implements QuestionActivatorLinkDao {
 
-  public List<QuestionActivatorLink> findAllByLayerIdAndEntrypointIdAndResumeField(Long layerId, Long entrypointId, ResumeField resumeField) {
+  public List<QuestionActivatorLink> findAll(Long layerId, Long entrypointId, ResumeField resumeField) {
     List<QuestionActivatorLink> entrypointList = em.createQuery(
             """
                 SELECT e FROM QuestionActivatorLink e 

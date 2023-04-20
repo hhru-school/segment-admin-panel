@@ -89,7 +89,7 @@ public class EntrypointService {
    */
   private void saveEntrypointQuestionStatusFromLayerToSet(Map<String, QuestionStatusDto> questionStatusDtoMap, Long layerId, Long entrypointId) {
     List<QuestionActivatorLink> questionActivatorLinksList
-        = questionActivatorLinkDao.findAllByLayerIdAndEntrypointIdAndResumeField(layerId, entrypointId, ResumeField.RESUME_FIELD);
+        = questionActivatorLinkDao.findAll(layerId, entrypointId, ResumeField.RESUME_FIELD);
 
     for (QuestionActivatorLink questionActivatorLink : questionActivatorLinksList) {
       Question question = questionActivatorLink.getQuestion();
@@ -112,7 +112,7 @@ public class EntrypointService {
    * Собираем элементы по слоям. Каждый слой layerId накладывается на другой, затирая старое значение или создавая новое.
    */
   private void saveEntrypointFromLayerToMap(Map<String, EntrypointDto> entrypointDtoMap, Long layerId) {
-    List<Entrypoint> entrypointList = entrypointDao.findAllByLayerId(layerId);
+    List<Entrypoint> entrypointList = entrypointDao.findAll(layerId);
     List<EntrypointDto> entrypointDtoList = EntrypointMapper.entrypointListToDtoList(entrypointList);
 
     for (EntrypointDto entrypointDto : entrypointDtoList) {
