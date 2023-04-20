@@ -1,11 +1,13 @@
 package ru.hhschool.segment.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.dao.abstracts.QuestionDao;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.Question;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -22,16 +24,17 @@ public class QuestionService {
     this.questionDao = questionDao;
   }
 
+  @Transactional
   public Set<Question> getListQuestionDtoOfLayerAndParentsWithAnswers(Long layerId) {
     Optional<Layer> optionalSelectedLayer = Optional.ofNullable(layerDao.findById(layerId));
     if (optionalSelectedLayer.isEmpty()) {
       return Collections.emptySet();
     }
-    Layer selectedLayer = optionalSelectedLayer.get();
-    List<Layer> parentsOfSelectedLayer = layerDao.getAllParents(layerId);
-    Set<Question> questionSet = new HashSet<>(selectedLayer.getQuestionList());
-    parentsOfSelectedLayer.forEach(layer -> {
-      questionSet.addAll(layer.getQuestionList());
+    Set<Question> questionSet = new HashSet<>();
+    List<Layer> selectedLayerWithParents = new ArrayList<>(List.of(optionalSelectedLayer.get()));
+    selectedLayerWithParents.addAll(layerDao.getAllParents(layerId));
+    selectedLayerWithParents.forEach(layer -> {
+      questionSet.addAll(questionDao.findAllQuestionByLayerId(layer.getId()));
     });
     return questionSet;
   }
