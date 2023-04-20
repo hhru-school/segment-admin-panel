@@ -48,7 +48,8 @@ CREATE TABLE IF NOT EXISTS questions
     description         VARCHAR(255),
     possible_answers    BIGINT[],
     question_required   BOOLEAN,
-    question_visibility VARCHAR(255)
+    question_visibility VARCHAR(255),
+    resume_field        BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS answers
