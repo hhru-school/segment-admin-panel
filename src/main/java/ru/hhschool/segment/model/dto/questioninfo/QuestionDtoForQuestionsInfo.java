@@ -8,12 +8,12 @@ public class QuestionDtoForQuestionsInfo {
   private Long id;
   private String title;
   private String description;
-  private List<AnswerDto> answerDtoList;
+  private List<AnswerDtoForQuestionsInfo> answerDtoList;
 
   public QuestionDtoForQuestionsInfo() {
   }
 
-  public QuestionDtoForQuestionsInfo(Long id, String title, String description, List<AnswerDto> answerDtoList) {
+  public QuestionDtoForQuestionsInfo(Long id, String title, String description, List<AnswerDtoForQuestionsInfo> answerDtoList) {
     this.id = id;
     this.title = title;
     this.description = description;
@@ -44,11 +44,11 @@ public class QuestionDtoForQuestionsInfo {
     this.description = description;
   }
 
-  public List<AnswerDto> getAnswerDtoList() {
+  public List<AnswerDtoForQuestionsInfo> getAnswerDtoList() {
     return answerDtoList;
   }
 
-  public void setAnswerDtoList(List<AnswerDto> answerDtoList) {
+  public void setAnswerDtoList(List<AnswerDtoForQuestionsInfo> answerDtoList) {
     this.answerDtoList = answerDtoList;
   }
 }
