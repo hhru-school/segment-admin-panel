@@ -3,10 +3,8 @@ package ru.hhschool.segment.service;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.dao.abstracts.QuestionActivatorLinkDao;
 import ru.hhschool.segment.dao.abstracts.QuestionDao;
-
 import ru.hhschool.segment.mapper.questionsinfo.QuestionMapperForQuestionsInfo;
-import ru.hhschool.segment.model.dto.QuestionDto;
-import ru.hhschool.segment.model.dto.questioninfo.QuestionDtoForQuestionsInfo;
+import ru.hhschool.segment.model.dto.questioninfo.QuestionDtoForQuestionsPage;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.QuestionActivatorLink;
 
@@ -48,7 +46,7 @@ public class QuestionService {
       questionActivatorLinkListList.add(questionActivatorLinkDao.findAllQusetionActivatorLinkByLayerId(layer.getId()));
     });
 
-    Set<QuestionDtoForQuestionsInfo> questionDtoList = questionActivatorLinkListList
+    Set<QuestionDtoForQuestionsPage> questionDtoList = questionActivatorLinkListList
         .stream()
         .flatMap(Collection::stream)
         .map(questionActivatorLink -> QuestionMapperForQuestionsInfo.toDto(questionActivatorLink.getQuestion(), answerService.getAllAsnwerDtoListByListId(questionActivatorLink.getQuestion().getPossibleAnswerIdList())))

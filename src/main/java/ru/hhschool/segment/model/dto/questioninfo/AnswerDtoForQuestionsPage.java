@@ -4,15 +4,15 @@ import ru.hhschool.segment.model.dto.QuestionDto;
 
 import java.util.List;
 
-public class AnswerDtoForQuestionsInfo {
+public class AnswerDtoForQuestionsPage {
   private Long id;
   private String title;
   private List<QuestionDto> openQuestonDtoList;
 
-  public AnswerDtoForQuestionsInfo() {
+  public AnswerDtoForQuestionsPage() {
   }
 
-  public AnswerDtoForQuestionsInfo(Long id, String title, List<QuestionDto> openQuestonDtoList) {
+  public AnswerDtoForQuestionsPage(Long id, String title, List<QuestionDto> openQuestonDtoList) {
     this.id = id;
     this.title = title;
     this.openQuestonDtoList = openQuestonDtoList;
