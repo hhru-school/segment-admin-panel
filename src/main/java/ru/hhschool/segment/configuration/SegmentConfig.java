@@ -35,8 +35,8 @@ public class SegmentConfig {
   }
 
   @Bean
-  public QuestionService getQuestionService(LayerDao layerDao, QuestionDao questionDao, QuestionActivatorLinkDao questionActivatorLinkDao) {
-    return new QuestionService(layerDao, questionDao, questionActivatorLinkDao);
+  public QuestionService getQuestionService(LayerDao layerDao, QuestionDao questionDao, QuestionActivatorLinkDao questionActivatorLinkDao, AnswerService answerService) {
+    return new QuestionService(layerDao, questionDao, questionActivatorLinkDao, answerService);
   }
 
   @Bean

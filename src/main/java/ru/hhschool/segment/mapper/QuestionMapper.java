@@ -1,14 +1,17 @@
 package ru.hhschool.segment.mapper;
 
+import ru.hhschool.segment.model.dto.AnswerDto;
 import ru.hhschool.segment.model.dto.QuestionDto;
 import ru.hhschool.segment.model.entity.Question;
 
+import java.util.List;
+
 public class QuestionMapper {
-  public static QuestionDto toDto(Question entity) {
+  public static QuestionDto toDto(Question entity, List<AnswerDto> answerDtoList) {
     QuestionDto questionDto = new QuestionDto();
     questionDto.setId(entity.getId());
     questionDto.setTitle(entity.getTitle());
-    questionDto.setAnswerDtoList(AnswerMapper.toAnswerDtoListById(entity.getPossibleAnswerIdList()));
+    questionDto.setAnswerDtoList(answerDtoList);
     return questionDto;
   }
 }
