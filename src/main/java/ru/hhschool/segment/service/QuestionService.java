@@ -49,7 +49,7 @@ public class QuestionService {
     Set<QuestionDtoForQuestionsPage> questionDtoList = questionActivatorLinkListList
         .stream()
         .flatMap(Collection::stream)
-        .map(questionActivatorLink -> QuestionMapperForQuestionsInfo.toDto(questionActivatorLink.getQuestion(), answerService.getAllAsnwerDtoListByListId(questionActivatorLink.getQuestion().getPossibleAnswerIdList())))
+        .map(questionActivatorLink -> QuestionMapperForQuestionsInfo.toDto(questionActivatorLink.getQuestion(), answerService.getAllAnswerDtoListByListId(questionActivatorLink.getQuestion().getPossibleAnswerIdList())))
         .collect(Collectors.toSet());
     return questionDtoList;
   }

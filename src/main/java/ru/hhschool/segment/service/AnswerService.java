@@ -16,7 +16,7 @@ public class AnswerService {
     this.answerDao = answerDao;
   }
 
-  public List<AnswerDtoForQuestionsPage> getAllAsnwerDtoListByListId(List<Long> answersIdList) {
+  public List<AnswerDtoForQuestionsPage> getAllAnswerDtoListByListId(List<Long> answersIdList) {
     List<AnswerDtoForQuestionsPage> answerDtoList = new ArrayList<>();
     answersIdList.forEach(answerId -> {
       answerDtoList.add(AnswerMapperForQuestionsInfo.toDto(answerDao.findById(answerId).orElseGet(null)));
