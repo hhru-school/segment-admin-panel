@@ -30,8 +30,8 @@ public class SegmentConfig {
     return new QuestionDaoImpl();
   }
   @Bean
-  public QuestionService getQuestionService(LayerDao layerDao,QuestionDao questionDao) {
-    return new QuestionService(layerDao, questionDao);
+  public QuestionService getQuestionService(LayerDao layerDao,QuestionDao questionDao, QuestionActivatorLinkDao questionActivatorLinkDao) {
+    return new QuestionService(layerDao, questionDao, questionActivatorLinkDao);
   }
   @Bean
   public EntrypointDao getEntrypointDao() {
