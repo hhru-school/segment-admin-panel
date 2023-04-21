@@ -16,11 +16,5 @@ public class AnswerMapper {
     return answerDto;
   }
 
-  public static List<AnswerDto> toAnswerDtoListById(List<Long> listId) {
-    List<AnswerDto> answerDtoList = new ArrayList<>();
-    listId.stream().forEach(aLong -> {
 
-    });
-    return answerDtoList;
-  }
 }
