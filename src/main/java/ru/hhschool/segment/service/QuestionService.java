@@ -3,20 +3,22 @@ package ru.hhschool.segment.service;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.dao.abstracts.QuestionActivatorLinkDao;
 import ru.hhschool.segment.dao.abstracts.QuestionDao;
+import ru.hhschool.segment.mapper.QuestionMapper;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.QuestionActivatorLink;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class QuestionService {
   private final LayerDao layerDao;
   private final QuestionDao questionDao;
-
   private final QuestionActivatorLinkDao questionActivatorLinkDao;
 
   @Inject
@@ -39,7 +41,10 @@ public class QuestionService {
     selectedLayerWithParents.forEach(layer -> {
       questionActivatorLinkListList.add(questionActivatorLinkDao.findAllQusetionActivatorLinkByLayerId(layer.getId()));
     });
-
-    return questionActivatorLinkDao.findById(1L).get().getQuestion().getTitle();
+    return questionActivatorLinkListList
+        .stream()
+        .flatMap(Collection::stream)
+        .map(questionActivatorLink -> QuestionMapper.toDto(questionActivatorLink.getQuestion()))
+        .collect(Collectors.toSet());
   }
 }
