@@ -1,18 +1,12 @@
 package ru.hhschool.segment.model.dto.change;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 public class LayerChangeDto {
   private Long id;
   private Long parentLayerId;
-  private String title;
-  private String description;
-  private boolean stable;
-  private boolean archive;
-  private boolean deleted;
-  private LocalDateTime createTime;
+  private boolean conflict;
 
   private Map<String, List<EntrypointChangeDto>> entrypointMap;
   private Map<String, List<SegmentChangeDto>> segmentMap;
@@ -23,24 +17,10 @@ public class LayerChangeDto {
   public LayerChangeDto() {
   }
 
-  public LayerChangeDto(
-      Long id,
-      Long parentLayerId,
-      String title,
-      String description,
-      boolean stable,
-      boolean archive,
-      boolean deleted,
-      LocalDateTime createTime
-  ) {
+  public LayerChangeDto(Long id, Long parentLayerId, boolean conflict) {
     this.id = id;
     this.parentLayerId = parentLayerId;
-    this.title = title;
-    this.description = description;
-    this.stable = stable;
-    this.archive = archive;
-    this.deleted = deleted;
-    this.createTime = createTime;
+    this.conflict = conflict;
 
     entrypointMap = Map.of();
     segmentMap = Map.of();
@@ -63,54 +43,6 @@ public class LayerChangeDto {
 
   public void setParentLayerId(Long parentLayerId) {
     this.parentLayerId = parentLayerId;
-  }
-
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
-  public boolean isStable() {
-    return stable;
-  }
-
-  public void setStable(boolean stable) {
-    this.stable = stable;
-  }
-
-  public boolean isArchive() {
-    return archive;
-  }
-
-  public void setArchive(boolean archive) {
-    this.archive = archive;
-  }
-
-  public boolean isDeleted() {
-    return deleted;
-  }
-
-  public void setDeleted(boolean deleted) {
-    this.deleted = deleted;
-  }
-
-  public LocalDateTime getCreateTime() {
-    return createTime;
-  }
-
-  public void setCreateTime(LocalDateTime createTime) {
-    this.createTime = createTime;
   }
 
   public Map<String, List<EntrypointChangeDto>> getEntrypointMap() {
@@ -151,5 +83,13 @@ public class LayerChangeDto {
 
   public void setQuestionActivatorLinkMap(Map<String, List<QuestionActivatorLinkChangeDto>> questionActivatorLinkMap) {
     this.questionActivatorLinkMap = questionActivatorLinkMap;
+  }
+
+  public boolean isConflict() {
+    return conflict;
+  }
+
+  public void setConflict(boolean conflict) {
+    this.conflict = conflict;
   }
 }

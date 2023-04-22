@@ -5,6 +5,7 @@ public class SegmentChangeDto {
   private String title;
   private String description;
   private boolean archived;
+  private boolean conflict;
 
   public SegmentChangeDto() {
   }
@@ -46,5 +47,13 @@ public class SegmentChangeDto {
 
   public void setArchived(boolean archived) {
     this.archived = archived;
+  }
+
+  public boolean isConflict() {
+    return conflict;
+  }
+
+  public void setConflict(boolean conflict) {
+    this.conflict = conflict;
   }
 }

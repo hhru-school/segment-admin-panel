@@ -9,6 +9,7 @@ public class QuestionActivatorLinkChangeDto {
   private String entrypointTitle;
   private String segmentTitle;
   private String questionTitle;
+  private boolean conflict;
 
   public QuestionActivatorLinkChangeDto() {
   }
@@ -75,5 +76,13 @@ public class QuestionActivatorLinkChangeDto {
 
   public void setQuestionTitle(String questionTitle) {
     this.questionTitle = questionTitle;
+  }
+
+  public boolean isConflict() {
+    return conflict;
+  }
+
+  public void setConflict(boolean conflict) {
+    this.conflict = conflict;
   }
 }

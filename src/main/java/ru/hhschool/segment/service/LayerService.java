@@ -12,6 +12,7 @@ import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.basicInfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.change.LayerChangeDto;
 import ru.hhschool.segment.model.entity.Layer;
+import ru.hhschool.segment.model.enums.ConflictStatus;
 
 public class LayerService {
   private final LayerDao layerDao;
@@ -32,7 +33,7 @@ public class LayerService {
       return Optional.empty();
     }
 
-    return layer.map(MapperLayerChange::layerChangeToDto);
+    return Optional.of(MapperLayerChange.layerChangeToDto(layer.get(), ConflictStatus.NONE));
   }
 
   @Transactional
@@ -43,5 +44,15 @@ public class LayerService {
     }
     LayerBasicInfoDto layerBasicInfoDto = LayerBasicInfoMapper.toDtoForBasicInfoPage(layer.get(), layerDao.getAllParents(id));
     return Optional.of(layerBasicInfoDto);
+  }
+
+  public Optional<LayerChangeDto> joinLayer(Long layerId) {
+    Optional<Layer> layer = layerDao.findById(layerId);
+    if (layer.isEmpty()) {
+      return Optional.empty();
+    }
+
+
+    return null;
   }
 }

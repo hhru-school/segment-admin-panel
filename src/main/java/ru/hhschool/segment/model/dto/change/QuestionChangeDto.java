@@ -7,6 +7,7 @@ public class QuestionChangeDto {
   private String title;
   private String description;
   private List<AnswerChangeDto> answerList;
+  private boolean conflict;
 
   public QuestionChangeDto() {
   }
@@ -48,5 +49,13 @@ public class QuestionChangeDto {
 
   public void setAnswerList(List<AnswerChangeDto> answerList) {
     this.answerList = answerList;
+  }
+
+  public boolean isConflict() {
+    return conflict;
+  }
+
+  public void setConflict(boolean conflict) {
+    this.conflict = conflict;
   }
 }

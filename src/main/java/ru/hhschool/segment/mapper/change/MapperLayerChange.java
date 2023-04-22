@@ -18,6 +18,8 @@ import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.Question;
 import ru.hhschool.segment.model.entity.QuestionActivatorLink;
 import ru.hhschool.segment.model.entity.Segment;
+import ru.hhschool.segment.model.enums.ConflictStatus;
+import ru.hhschool.segment.model.enums.EntityStatus;
 
 /**
  * в этих методах идет формирование и группировка изменений в сущностях,
@@ -28,18 +30,10 @@ import ru.hhschool.segment.model.entity.Segment;
  * setQuestionActivatorLinkChange(layer, layerChangeDto);
  */
 public class MapperLayerChange {
-  public static LayerChangeDto layerChangeToDto(Layer layer) {
+
+  public static LayerChangeDto layerChangeToDto(Layer layer, ConflictStatus conflict) {
     Long parentId = layer.getParent() == null ? null : layer.getParent().getId();
-    LayerChangeDto layerChangeDto = new LayerChangeDto(
-        layer.getId(),
-        parentId,
-        layer.getTitle(),
-        layer.getDescription(),
-        layer.isStable(),
-        layer.isArchive(),
-        layer.isDeleted(),
-        layer.getCreateTime()
-    );
+    LayerChangeDto layerChangeDto = new LayerChangeDto(layer.getId(), parentId, conflict.isConflict());
 
     setEntrypointChange(layer, layerChangeDto);
     setSegmentChange(layer, layerChangeDto);
@@ -79,7 +73,7 @@ public class MapperLayerChange {
 
     if (questionChangeList.size() != 0) {
       Map<String, List<QuestionChangeDto>> questionChangeMap = new HashMap<>();
-      questionChangeMap.put(Status.CREATED.name(), questionChangeList);
+      questionChangeMap.put(EntityStatus.CREATED.name(), questionChangeList);
       layerChangeDto.setQuestionMap(questionChangeMap);
     }
     if (answerList.size() != 0) {
@@ -88,7 +82,7 @@ public class MapperLayerChange {
           .stream()
           .filter(answer -> !answerUsedId.contains(answer.getId()))
           .toList();
-      answerChangeMap.put(Status.NOT_LINKED.name(), anwerChangeList);
+      answerChangeMap.put(EntityStatus.NOT_LINKED.name(), anwerChangeList);
       layerChangeDto.setAnswerMap(answerChangeMap);
     }
   }
@@ -179,13 +173,13 @@ public class MapperLayerChange {
           .stream()
           .filter(segment -> !segment.isArchived())
           .toList();
-      segmentMap.put(Status.CREATED.name(), MapperSegmentChange.segmentChangeListToDtoList(segmentCreatedList));
+      segmentMap.put(EntityStatus.CREATED.name(), MapperSegmentChange.segmentChangeListToDtoList(segmentCreatedList));
 
       List<Segment> segmentDisableList = segmentList
           .stream()
           .filter(Segment::isArchived)
           .toList();
-      segmentMap.put(Status.ARCHIVED.name(), MapperSegmentChange.segmentChangeListToDtoList(segmentDisableList));
+      segmentMap.put(EntityStatus.ARCHIVED.name(), MapperSegmentChange.segmentChangeListToDtoList(segmentDisableList));
 
       layerChangeDto.setSegmentMap(segmentMap);
     }
@@ -196,16 +190,9 @@ public class MapperLayerChange {
     Hibernate.initialize(layer.getEntrypointList());
     if (entrypointList != null && entrypointList.size() > 0) {
       Map<String, List<EntrypointChangeDto>> entrypointMap = new HashMap<>();
-      entrypointMap.put(Status.CREATED.name(), MapperEntrypointChange.entrypointChangeListToDtoList(entrypointList));
+      entrypointMap.put(EntityStatus.CREATED.name(), MapperEntrypointChange.entrypointChangeListToDtoList(entrypointList));
       layerChangeDto.setEntrypointMap(entrypointMap);
     }
   }
-
-  private enum Status {
-    CREATED,
-    ARCHIVED,
-    NOT_LINKED
-  }
-
 
 }

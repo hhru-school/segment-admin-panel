@@ -57,4 +57,16 @@ public class LayerResource {
     return Response.status(Response.Status.NOT_FOUND).build();
   }
 
+  @GET
+  @Path(value = "/merge/{layerId}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response joinLayer(@PathParam(value = "layerId") Long layerId) {
+    Optional<LayerChangeDto> layerChanges = layerService.joinLayer(layerId);
+
+    if (layerChanges.isPresent()) {
+      return Response.ok(layerChanges.get()).build();
+    }
+    return Response.status(Response.Status.NOT_FOUND).build();
+  }
+
 }

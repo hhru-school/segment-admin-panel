@@ -4,6 +4,7 @@ public class EntrypointChangeDto {
   private Long id;
   private String title;
   private String description;
+  private boolean conflict;
 
   public EntrypointChangeDto() {
   }
@@ -36,5 +37,13 @@ public class EntrypointChangeDto {
 
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public boolean isConflict() {
+    return conflict;
+  }
+
+  public void setConflict(boolean conflict) {
+    this.conflict = conflict;
   }
 }
