@@ -3,9 +3,11 @@ package ru.hhschool.segment.service;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.dao.abstracts.QuestionActivatorLinkDao;
 import ru.hhschool.segment.dao.abstracts.QuestionDao;
-import ru.hhschool.segment.mapper.questionsinfo.QuestionMapperForQuestionsInfo;
-import ru.hhschool.segment.model.dto.questioninfo.QuestionDtoForQuestionsPage;
+import ru.hhschool.segment.mapper.questionsinfopage.QuestionMapperForQuestionsInfoPage;
+import ru.hhschool.segment.model.dto.questioninfopage.AnswerDtoForQuestionsInfoPage;
+import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfoPage;
 import ru.hhschool.segment.model.entity.Layer;
+import ru.hhschool.segment.model.entity.Question;
 import ru.hhschool.segment.model.entity.QuestionActivatorLink;
 
 import javax.inject.Inject;
@@ -15,7 +17,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class QuestionService {
@@ -46,11 +47,17 @@ public class QuestionService {
       questionActivatorLinkListList.add(questionActivatorLinkDao.findAllQusetionActivatorLinkByLayerId(layer.getId()));
     });
 
-    Set<QuestionDtoForQuestionsPage> questionDtoList = questionActivatorLinkListList
+    return questionActivatorLinkListList
         .stream()
         .flatMap(Collection::stream)
-        .map(questionActivatorLink -> QuestionMapperForQuestionsInfo.toDto(questionActivatorLink.getQuestion(), answerService.getAllAnswerDtoListByListId(questionActivatorLink.getQuestion().getPossibleAnswerIdList())))
+        .map(this::mapQuestionActivatorLinktoQuestionWithAnswers)
         .collect(Collectors.toSet());
-    return questionDtoList;
   }
+
+  public QuestionDtoForQuestionsInfoPage mapQuestionActivatorLinktoQuestionWithAnswers(QuestionActivatorLink questionActivatorLink) {
+    Question question = questionActivatorLink.getQuestion();
+    List<AnswerDtoForQuestionsInfoPage> answerDtoList = answerService.getAllAnswerDtoListByListId(question.getPossibleAnswerIdList());
+    return QuestionMapperForQuestionsInfoPage.toDto(questionActivatorLink.getQuestion(), answerDtoList);
+  }
+
 }

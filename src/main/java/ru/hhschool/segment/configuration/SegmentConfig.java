@@ -60,7 +60,7 @@ public class SegmentConfig {
   }
 
   @Bean
-  public AnswerService getAnswerService(AnswerDao answerDao) {
-    return new AnswerService(answerDao);
+  public AnswerService getAnswerService(AnswerDao answerDao,QuestionDao questionDao) {
+    return new AnswerService(answerDao, questionDao);
   }
 }

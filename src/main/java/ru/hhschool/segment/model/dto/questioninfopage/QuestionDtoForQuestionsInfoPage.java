@@ -1,18 +1,18 @@
-package ru.hhschool.segment.model.dto.questioninfo;
+package ru.hhschool.segment.model.dto.questioninfopage;
 
 import java.util.List;
 import java.util.Objects;
 
-public class QuestionDtoForQuestionsPage {
+public class QuestionDtoForQuestionsInfoPage {
   private Long id;
   private String title;
   private String description;
-  private List<AnswerDtoForQuestionsPage> answerDtoList;
+  private List<AnswerDtoForQuestionsInfoPage> answerDtoList;
 
-  public QuestionDtoForQuestionsPage() {
+  public QuestionDtoForQuestionsInfoPage() {
   }
 
-  public QuestionDtoForQuestionsPage(Long id, String title, String description, List<AnswerDtoForQuestionsPage> answerDtoList) {
+  public QuestionDtoForQuestionsInfoPage(Long id, String title, String description, List<AnswerDtoForQuestionsInfoPage> answerDtoList) {
     this.id = id;
     this.title = title;
     this.description = description;
@@ -43,11 +43,11 @@ public class QuestionDtoForQuestionsPage {
     this.description = description;
   }
 
-  public List<AnswerDtoForQuestionsPage> getAnswerDtoList() {
+  public List<AnswerDtoForQuestionsInfoPage> getAnswerDtoList() {
     return answerDtoList;
   }
 
-  public void setAnswerDtoList(List<AnswerDtoForQuestionsPage> answerDtoList) {
+  public void setAnswerDtoList(List<AnswerDtoForQuestionsInfoPage> answerDtoList) {
     this.answerDtoList = answerDtoList;
   }
 
@@ -55,7 +55,7 @@ public class QuestionDtoForQuestionsPage {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    QuestionDtoForQuestionsPage that = (QuestionDtoForQuestionsPage) o;
+    QuestionDtoForQuestionsInfoPage that = (QuestionDtoForQuestionsInfoPage) o;
     return id.equals(that.id);
   }
 
