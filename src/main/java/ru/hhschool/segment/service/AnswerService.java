@@ -2,10 +2,10 @@ package ru.hhschool.segment.service;
 
 import ru.hhschool.segment.dao.abstracts.AnswerDao;
 import ru.hhschool.segment.dao.abstracts.QuestionDao;
-import ru.hhschool.segment.mapper.questionsinfopage.AnswerMapperForQuestionsInfoPage;
-import ru.hhschool.segment.mapper.questionsinfopage.QuestionMapperForQuestionsInfoPage;
-import ru.hhschool.segment.model.dto.questioninfopage.AnswerDtoForQuestionsInfoPage;
-import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfoPage;
+import ru.hhschool.segment.mapper.AnswerMapper;
+import ru.hhschool.segment.mapper.QuestionMapper;
+import ru.hhschool.segment.model.dto.AnswerDto;
+import ru.hhschool.segment.model.dto.QuestionDto;
 import ru.hhschool.segment.model.entity.Answer;
 import ru.hhschool.segment.model.entity.Question;
 
@@ -24,23 +24,26 @@ public class AnswerService {
     this.questionDao = questionDao;
   }
 
-  public List<AnswerDtoForQuestionsInfoPage> getAllAnswerDtoListByListId(List<Long> answersIdList) {
-    List<AnswerDtoForQuestionsInfoPage> answerDtoList = new ArrayList<>();
+  public List<AnswerDto> getAllAnswerDtoListByListId(List<Long> answersIdList) {
+    if (answersIdList == null) {
+      return Collections.emptyList();
+    }
+    List<AnswerDto> answerDtoList = new ArrayList<>();
     answersIdList.forEach(answerId -> {
       Answer answer = answerDao.findById(answerId).orElseGet(null);
-      answerDtoList.add(AnswerMapperForQuestionsInfoPage.toDto(answer, getAllOpenQuestionForAnswer(answer.getOpenQuestionList())));
+      answerDtoList.add(AnswerMapper.toDto(answer, getAllOpenQuestionForAnswer(answer.getOpenQuestionList())));
     });
     return answerDtoList;
   }
 
-  public List<QuestionDtoForQuestionsInfoPage> getAllOpenQuestionForAnswer(List<Long> openQuestionIdList) {
+  public List<QuestionDto> getAllOpenQuestionForAnswer(List<Long> openQuestionIdList) {
     if (openQuestionIdList == null) {
       return Collections.emptyList();
     }
-    List<QuestionDtoForQuestionsInfoPage> questionDtoList = new ArrayList<>();
+    List<QuestionDto> questionDtoList = new ArrayList<>();
     openQuestionIdList.forEach(questionId -> {
       Question question = questionDao.findById(questionId).orElseGet(null);
-      questionDtoList.add(QuestionMapperForQuestionsInfoPage.toDto(question, getAllAnswerDtoListByListId(question.getPossibleAnswerIdList())));
+      questionDtoList.add(QuestionMapper.toDto(question, getAllAnswerDtoListByListId(question.getPossibleAnswerIdList())));
     });
     return questionDtoList;
   }

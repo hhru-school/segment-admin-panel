@@ -24,7 +24,7 @@ public class QuestionActivatorLinkDaoImpl extends ReadWriteDaoImpl<QuestionActiv
     return entrypointList;
   }
 
-  public List<QuestionActivatorLink> findAllQusetionActivatorLinkByLayerId(Long layerId) {
+  public List<QuestionActivatorLink> findAllQuestionActivatorLinkByLayerId(Long layerId) {
 
     return em.createQuery(
             """
@@ -33,5 +33,19 @@ public class QuestionActivatorLinkDaoImpl extends ReadWriteDaoImpl<QuestionActiv
                 """, QuestionActivatorLink.class)
         .setParameter("layerId", layerId)
         .getResultList();
+  }
+
+  @Override
+  public QuestionActivatorLink findQuestionActivatorLinkByLayerIdAndQuestionId(Long layerId, Long questionId) {
+    return em.createQuery(
+            """
+                SELECT e FROM QuestionActivatorLink e 
+                WHERE e.layerId = :layerId
+                AND e.question.id =:questionId
+                LIMIT 1
+                """, QuestionActivatorLink.class)
+        .setParameter("layerId", layerId)
+        .setParameter("questionId", questionId)
+        .getSingleResult();
   }
 }

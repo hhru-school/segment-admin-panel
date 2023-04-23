@@ -3,7 +3,10 @@ package ru.hhschool.segment.service;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.dao.abstracts.QuestionActivatorLinkDao;
 import ru.hhschool.segment.dao.abstracts.QuestionDao;
-import ru.hhschool.segment.mapper.questionsinfopage.QuestionMapperForQuestionsInfoPage;
+import ru.hhschool.segment.mapper.QuestionMapper;
+import ru.hhschool.segment.model.dto.AnswerDto;
+import ru.hhschool.segment.model.dto.QuestionDto;
+import ru.hhschool.segment.model.dto.questiondetailinfo.QuestionDtoForQuestionDetailInfo;
 import ru.hhschool.segment.model.dto.questioninfopage.AnswerDtoForQuestionsInfoPage;
 import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfoPage;
 import ru.hhschool.segment.model.entity.Layer;
@@ -17,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class QuestionService {
@@ -33,31 +37,31 @@ public class QuestionService {
     this.answerService = answerService;
   }
 
-
   @Transactional
-  public Object getSetQuestionDtoOfLayerAndParentsWithAnswers(Long layerId) {
+  public Set<QuestionDtoForQuestionsInfoPage> getSetQuestionDtoOfLayerAndParentsWithAnswers(Long layerId) {
     Optional<Layer> optionalSelectedLayer = layerDao.findById(layerId);
     if (optionalSelectedLayer.isEmpty()) {
-      return Collections.emptyList();
+      return Collections.emptySet();
     }
     List<List<QuestionActivatorLink>> questionActivatorLinkListList = new ArrayList<>();
     List<Layer> selectedLayerWithParents = new ArrayList<>(List.of(optionalSelectedLayer.get()));
     selectedLayerWithParents.addAll(layerDao.getAllParents(layerId));
     selectedLayerWithParents.forEach(layer -> {
-      questionActivatorLinkListList.add(questionActivatorLinkDao.findAllQusetionActivatorLinkByLayerId(layer.getId()));
+      questionActivatorLinkListList.add(questionActivatorLinkDao.findAllQuestionActivatorLinkByLayerId(layer.getId()));
     });
-
-    return questionActivatorLinkListList
+    Set<QuestionDtoForQuestionsInfoPage> questionDtoSet = questionActivatorLinkListList
         .stream()
         .flatMap(Collection::stream)
-        .map(this::mapQuestionActivatorLinktoQuestionWithAnswers)
+        .map(this::mapQuestionActivatorLinktoQuestionDtoWithAnswers)
+        .map(QuestionMapper::toDtoForQuestionsInfo)
         .collect(Collectors.toSet());
+    return questionDtoSet;
   }
 
-  public QuestionDtoForQuestionsInfoPage mapQuestionActivatorLinktoQuestionWithAnswers(QuestionActivatorLink questionActivatorLink) {
+  public QuestionDto mapQuestionActivatorLinktoQuestionDtoWithAnswers(QuestionActivatorLink questionActivatorLink) {
     Question question = questionActivatorLink.getQuestion();
-    List<AnswerDtoForQuestionsInfoPage> answerDtoList = answerService.getAllAnswerDtoListByListId(question.getPossibleAnswerIdList());
-    return QuestionMapperForQuestionsInfoPage.toDto(questionActivatorLink.getQuestion(), answerDtoList);
+    List<AnswerDto> answerDtoList = answerService.getAllAnswerDtoListByListId(question.getPossibleAnswerIdList());
+    return QuestionMapper.toDto(questionActivatorLink.getQuestion(), answerDtoList);
   }
 
 }

@@ -25,4 +25,12 @@ public class QuestionResource {
   public Response getQuestionDtoListWithAnswers(@PathParam("layerId") Long id) {
     return Response.ok(questionService.getSetQuestionDtoOfLayerAndParentsWithAnswers(id)).build();
   }
+
+  @GET
+  @Path(value = "/info/{layerId}/{questionId}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getQuestionDtoInfoWithAnswers(@PathParam("layerId") Long layerId,
+                                                @PathParam("questionId") Long questionId) {
+    return Response.ok().build();
+  }
 }
