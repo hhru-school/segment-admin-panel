@@ -18,6 +18,9 @@ public class MapperQuestionChange {
   }
 
   public static List<QuestionChangeDto> questionChangeListToDtoList(List<Question> questionList) {
+    if (questionList == null) {
+      return List.of();
+    }
     return questionList
         .stream()
         .map(MapperQuestionChange::questionChangeToDto)

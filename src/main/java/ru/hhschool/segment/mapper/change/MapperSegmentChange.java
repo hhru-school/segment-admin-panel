@@ -8,6 +8,7 @@ public class MapperSegmentChange {
   public static SegmentChangeDto segmentChangeToDto(Segment segment) {
     SegmentChangeDto segmentChangeDto = new SegmentChangeDto(
         segment.getId(),
+        segment.getParent().getId(),
         segment.getTitle(),
         segment.getDescription(),
         segment.isArchived()
@@ -17,6 +18,9 @@ public class MapperSegmentChange {
   }
 
   public static List<SegmentChangeDto> segmentChangeListToDtoList(List<Segment> segmentList) {
+    if (segmentList == null) {
+      return List.of();
+    }
     return segmentList
         .stream()
         .map(MapperSegmentChange::segmentChangeToDto)

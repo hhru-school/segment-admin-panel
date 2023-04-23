@@ -1,7 +1,8 @@
 package ru.hhschool.segment.model.dto.change;
 
-public class SegmentChangeDto {
+public class SegmentChangeDto implements GetterElemet {
   private Long id;
+  private Long parentId;
   private String title;
   private String description;
   private boolean archived;
@@ -10,9 +11,10 @@ public class SegmentChangeDto {
   public SegmentChangeDto() {
   }
 
-  public SegmentChangeDto(Long id, String title, String description, boolean archived) {
+  public SegmentChangeDto(Long id, Long parentId, String title, String description, boolean archived) {
     this.id = id;
     this.title = title;
+    this.parentId = parentId;
     this.description = description;
     this.archived = archived;
   }
@@ -55,5 +57,13 @@ public class SegmentChangeDto {
 
   public void setConflict(boolean conflict) {
     this.conflict = conflict;
+  }
+
+  public Long getParentId() {
+    return parentId;
+  }
+
+  public void setParentId(Long parentId) {
+    this.parentId = parentId;
   }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -61,12 +62,26 @@ public class LayerResource {
   @Path(value = "/merge/{layerId}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response joinLayer(@PathParam(value = "layerId") Long layerId) {
-    Optional<LayerChangeDto> layerChanges = layerService.joinLayer(layerId);
+    try {
+      Optional<LayerChangeDto> layerChanges = layerService.joinLayer(layerId);
 
-    if (layerChanges.isPresent()) {
+      if (layerChanges.isPresent() && layerChanges.get().isConflict()) {
+        return Response
+            .status(Response.Status.CONFLICT)
+            .entity(layerChanges.get())
+            .build();
+      }
       return Response.ok(layerChanges.get()).build();
+
+    } catch (
+        NotFoundException e) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+
+    } catch (
+        IllegalStateException e) {
+      return Response.status(Response.Status.METHOD_NOT_ALLOWED).build();
     }
-    return Response.status(Response.Status.NOT_FOUND).build();
+
   }
 
 }

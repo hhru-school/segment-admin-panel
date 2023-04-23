@@ -16,6 +16,9 @@ public class MapperEntrypointChange {
   }
 
   public static List<EntrypointChangeDto> entrypointChangeListToDtoList(List<Entrypoint> entrypointList) {
+    if (entrypointList == null) {
+      return List.of();
+    }
     return entrypointList
         .stream()
         .map(MapperEntrypointChange::entrypointChangeToDto)

@@ -3,6 +3,7 @@ package ru.hhschool.segment.dao.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.model.entity.Layer;
 
@@ -20,6 +21,20 @@ public class LayerDaoImpl extends ReadWriteDaoImpl<Layer, Long> implements Layer
       basicLayer = parentLayer;
     }
     return layerList;
+  }
+
+  @Override
+  public Optional<Layer> findStableChildById(Long layerId) {
+    Layer layerStableChild = em.createQuery("""
+              SELECT l
+              FROM Layer l
+               WHERE l.parent.id = :layerId
+                AND l.stable = TRUE
+            """, Layer.class)
+        .setParameter("layerId", layerId)
+        .getSingleResult();
+
+    return Optional.of(layerStableChild);
   }
 
 }

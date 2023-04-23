@@ -17,8 +17,11 @@ public class MapperQuestionActivatorLinkChange {
     return questionActivatorLinkChangeDto;
   }
 
-  public static List<QuestionActivatorLinkChangeDto> QuestionActivatorLinkChangeListToDtoList(List<QuestionActivatorLink> QuestionActivatorLinkList) {
-    return QuestionActivatorLinkList
+  public static List<QuestionActivatorLinkChangeDto> QuestionActivatorLinkChangeListToDtoList(List<QuestionActivatorLink> questionActivatorLinkList) {
+    if (questionActivatorLinkList == null) {
+      return List.of();
+    }
+    return questionActivatorLinkList
         .stream()
         .map(MapperQuestionActivatorLinkChange::questionActivatorLinkToDto)
         .toList();
