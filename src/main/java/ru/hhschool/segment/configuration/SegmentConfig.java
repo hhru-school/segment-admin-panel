@@ -14,6 +14,7 @@ import ru.hhschool.segment.dao.impl.QuestionActivatorLinkDaoImpl;
 import ru.hhschool.segment.dao.impl.QuestionDaoImpl;
 import ru.hhschool.segment.service.AnswerService;
 import ru.hhschool.segment.service.EntrypointService;
+import ru.hhschool.segment.service.FilterService;
 import ru.hhschool.segment.service.LayerService;
 import ru.hhschool.segment.service.QuestionService;
 
@@ -35,8 +36,12 @@ public class SegmentConfig {
   }
 
   @Bean
-  public QuestionService getQuestionService(LayerDao layerDao, QuestionDao questionDao, QuestionActivatorLinkDao questionActivatorLinkDao, AnswerService answerService) {
-    return new QuestionService(layerDao, questionDao, questionActivatorLinkDao, answerService);
+  public QuestionService getQuestionService(LayerDao layerDao,
+                                            QuestionDao questionDao,
+                                            QuestionActivatorLinkDao questionActivatorLinkDao,
+                                            AnswerService answerService,
+                                            FilterService filterService) {
+    return new QuestionService(layerDao, questionDao, questionActivatorLinkDao, answerService, filterService);
   }
 
   @Bean
@@ -60,7 +65,12 @@ public class SegmentConfig {
   }
 
   @Bean
-  public AnswerService getAnswerService(AnswerDao answerDao,QuestionDao questionDao) {
+  public AnswerService getAnswerService(AnswerDao answerDao, QuestionDao questionDao) {
     return new AnswerService(answerDao, questionDao);
+  }
+
+  @Bean
+  public FilterService getFilterService() {
+    return new FilterService();
   }
 }

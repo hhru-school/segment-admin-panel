@@ -6,13 +6,14 @@ import ru.hhschool.segment.mapper.AnswerMapper;
 import ru.hhschool.segment.mapper.QuestionMapper;
 import ru.hhschool.segment.model.dto.AnswerDto;
 import ru.hhschool.segment.model.dto.QuestionDto;
-import ru.hhschool.segment.model.entity.Answer;
 import ru.hhschool.segment.model.entity.Question;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class AnswerService {
   private final AnswerDao answerDao;
@@ -28,23 +29,24 @@ public class AnswerService {
     if (answersIdList == null) {
       return Collections.emptyList();
     }
-    List<AnswerDto> answerDtoList = new ArrayList<>();
-    answersIdList.forEach(answerId -> {
-      Answer answer = answerDao.findById(answerId).orElseGet(null);
-      answerDtoList.add(AnswerMapper.toDto(answer, getAllOpenQuestionForAnswer(answer.getOpenQuestionList())));
-    });
-    return answerDtoList;
+    return answersIdList.stream()
+        .map(answerDao::findById)
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .map(answer -> AnswerMapper.toDto(answer, getAllOpenQuestionForAnswer(answer.getOpenQuestionList())))
+        .collect(Collectors.toList());
   }
+
 
   public List<QuestionDto> getAllOpenQuestionForAnswer(List<Long> openQuestionIdList) {
     if (openQuestionIdList == null) {
       return Collections.emptyList();
     }
-    List<QuestionDto> questionDtoList = new ArrayList<>();
-    openQuestionIdList.forEach(questionId -> {
-      Question question = questionDao.findById(questionId).orElseGet(null);
-      questionDtoList.add(QuestionMapper.toDto(question, getAllAnswerDtoListByListId(question.getPossibleAnswerIdList())));
-    });
-    return questionDtoList;
+    return openQuestionIdList.stream()
+        .map(questionDao::findById)
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .map(question -> QuestionMapper.toDto(question, getAllAnswerDtoListByListId(question.getPossibleAnswerIdList())))
+        .collect(Collectors.toList());
   }
 }

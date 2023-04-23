@@ -1,19 +1,21 @@
 package ru.hhschool.segment.model.dto.questioninfopage;
 
 import java.util.List;
+import java.util.Set;
 
 public class AnswerDtoForQuestionsInfoPage {
   private Long id;
   private String title;
   private List<QuestionDtoForQuestionsInfoPage> openQuestonDtoList;
-
+  private boolean searchedObject;
   public AnswerDtoForQuestionsInfoPage() {
   }
 
-  public AnswerDtoForQuestionsInfoPage(Long id, String title, List<QuestionDtoForQuestionsInfoPage> openQuestonDtoList) {
+  public AnswerDtoForQuestionsInfoPage(Long id, String title, List<QuestionDtoForQuestionsInfoPage> openQuestonDtoList, boolean searchedObject) {
     this.id = id;
     this.title = title;
     this.openQuestonDtoList = openQuestonDtoList;
+    this.searchedObject = searchedObject;
   }
 
   public Long getId() {
@@ -38,5 +40,13 @@ public class AnswerDtoForQuestionsInfoPage {
 
   public void setOpenQuestonDtoList(List<QuestionDtoForQuestionsInfoPage> openQuestonDtoList) {
     this.openQuestonDtoList = openQuestonDtoList;
+  }
+
+  public boolean isSearchedObject() {
+    return searchedObject;
+  }
+
+  public void setSearchedObject(boolean searchedObject) {
+    this.searchedObject = searchedObject;
   }
 }

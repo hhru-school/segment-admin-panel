@@ -8,6 +8,7 @@ public class QuestionDtoForQuestionsInfoPage {
   private String title;
   private String description;
   private List<AnswerDtoForQuestionsInfoPage> answerDtoList;
+  private boolean searchedObject;
 
   public QuestionDtoForQuestionsInfoPage() {
   }
@@ -49,6 +50,14 @@ public class QuestionDtoForQuestionsInfoPage {
 
   public void setAnswerDtoList(List<AnswerDtoForQuestionsInfoPage> answerDtoList) {
     this.answerDtoList = answerDtoList;
+  }
+
+  public boolean isSearchedObject() {
+    return searchedObject;
+  }
+
+  public void setSearchedObject(boolean searchedObject) {
+    this.searchedObject = searchedObject;
   }
 
   @Override

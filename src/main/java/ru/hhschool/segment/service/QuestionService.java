@@ -27,45 +27,49 @@ public class QuestionService {
   private final QuestionDao questionDao;
   private final QuestionActivatorLinkDao questionActivatorLinkDao;
   private final AnswerService answerService;
+  private final FilterService filterService;
 
   @Inject
-  public QuestionService(LayerDao layerDao, QuestionDao questionDao, QuestionActivatorLinkDao questionActivatorLinkDao, AnswerService answerService) {
+  public QuestionService(LayerDao layerDao, QuestionDao questionDao, QuestionActivatorLinkDao questionActivatorLinkDao, AnswerService answerService, FilterService filterService) {
     this.layerDao = layerDao;
     this.questionDao = questionDao;
     this.questionActivatorLinkDao = questionActivatorLinkDao;
     this.answerService = answerService;
+    this.filterService = filterService;
   }
 
   @Transactional
-  public Set<QuestionDtoForQuestionsInfoPage> getSetQuestionDtoOfLayerAndParentsWithAnswers(Long layerId) {
+  public Set<QuestionDtoForQuestionsInfoPage> getSetQuestionDtoOfLayerAndParentsWithAnswers(Long layerId, String searchString) {
     Optional<Layer> optionalSelectedLayer = layerDao.findById(layerId);
     if (optionalSelectedLayer.isEmpty()) {
       return Collections.emptySet();
     }
-    List<List<QuestionActivatorLink>> questionActivatorLinkListList = new ArrayList<>();
     List<Layer> selectedLayerWithParents = new ArrayList<>(List.of(optionalSelectedLayer.get()));
     selectedLayerWithParents.addAll(layerDao.getAllParents(layerId));
-    selectedLayerWithParents.forEach(layer -> {
-      questionActivatorLinkListList.add(questionActivatorLinkDao.findAllQuestionActivatorLinkByLayerId(layer.getId()));
-    });
-    Set<QuestionDtoForQuestionsInfoPage> questionDtoSet = questionActivatorLinkListList
+    Set<QuestionDtoForQuestionsInfoPage> questionDtoForQuestionsInfoPageSet = selectedLayerWithParents
         .stream()
+        .map(layer -> questionActivatorLinkDao.findAllQuestionActivatorLinkByLayerId(layer.getId()))
         .flatMap(Collection::stream)
-        .map(this::mapQuestionActivatorLinktoQuestionDtoWithAnswers)
+        .map(this::createQuestionDtoWithAnswers)
         .map(QuestionMapper::toDtoForQuestionsInfo)
         .collect(Collectors.toSet());
-    return questionDtoSet;
+    if (searchString == null || searchString.equals("")) {
+      return questionDtoForQuestionsInfoPageSet;
+    }
+
+    return filterService.filterQuestionDtoSetByString(searchString,questionDtoForQuestionsInfoPageSet);
   }
 
-  public QuestionDto mapQuestionActivatorLinktoQuestionDtoWithAnswers(QuestionActivatorLink questionActivatorLink) {
+  public QuestionDto createQuestionDtoWithAnswers(QuestionActivatorLink questionActivatorLink) {
     Question question = questionActivatorLink.getQuestion();
     List<AnswerDto> answerDtoList = answerService.getAllAnswerDtoListByListId(question.getPossibleAnswerIdList());
     return QuestionMapper.toDto(questionActivatorLink.getQuestion(), answerDtoList);
   }
-@Transactional
-  public QuestionDtoForQuestionDetailInfo getQuestionDtoWithAnswersAndStatus(Long layerId, Long questionId) {
+
+  @Transactional
+  public QuestionDtoForQuestionDetailInfo сreateQuestionDtoWithAnswersAndStatus(Long layerId, Long questionId) {
     QuestionActivatorLink questionActivatorLink = questionActivatorLinkDao.findQuestionActivatorLinkByLayerIdAndQuestionId(layerId, questionId);
-    QuestionDto questionDto = mapQuestionActivatorLinktoQuestionDtoWithAnswers(questionActivatorLink);
+    QuestionDto questionDto = createQuestionDtoWithAnswers(questionActivatorLink);
     return QuestionMapper.toDtoForQuestionDetailInfo(questionDto);
   }
 }
