@@ -17,6 +17,8 @@ public class AnswerMapper {
     answerDto.setOpenQuestonDtoList(openQuestionDtoList);
     answerDto.setAnswerType(entity.getAnswerType());
     answerDto.setDefault(entity.isDefault());
+    answerDto.setPositiveTitle(entity.getPositiveTitle());
+    answerDto.setSkipAtResult(entity.isSkipAtResult());
     return answerDto;
   }
 
@@ -51,8 +53,11 @@ public class AnswerMapper {
     AnswerDtoForQuestionDetailInfo answerDtoForQuestionDetailInfo = new AnswerDtoForQuestionDetailInfo();
     answerDtoForQuestionDetailInfo.setId(answerDto.getId());
     answerDtoForQuestionDetailInfo.setTitle(answerDto.getTitle());
-    answerDtoForQuestionDetailInfo.setOpenQuestonDtoList(QuestionMapper.toDtoListForQuestionsInfo(answerDto.getOpenQuestonDtoList()));
+    answerDtoForQuestionDetailInfo.setOpenQuestonDtoList(QuestionMapper.toDtoListForQuestionDetailInfo(answerDto.getOpenQuestonDtoList()));
     answerDtoForQuestionDetailInfo.setDefault(answerDto.isDefault());
+    answerDtoForQuestionDetailInfo.setAnswerType(answerDto.getAnswerType());
+    answerDtoForQuestionDetailInfo.setPositiveTitle(answerDto.getPositiveTitle());
+    answerDtoForQuestionDetailInfo.setSkipAtResult(answerDto.isSkipAtResult());
     return answerDtoForQuestionDetailInfo;
 
   }

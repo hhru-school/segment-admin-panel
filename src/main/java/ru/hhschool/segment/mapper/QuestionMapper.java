@@ -16,6 +16,9 @@ public class QuestionMapper {
     questionDto.setTitle(entity.getTitle());
     questionDto.setDescription(entity.getDescription());
     questionDto.setAnswerDtoList(answerDtoList);
+    questionDto.setQuestionVisibilityType(entity.getQuestionVisibilityType());
+    questionDto.setRequired(entity.isRequired());
+    questionDto.setType(entity.getType());
     return questionDto;
   }
 
@@ -42,6 +45,9 @@ public class QuestionMapper {
     questionDtoForQuestionDetailInfo.setTitle(questionDto.getTitle());
     questionDtoForQuestionDetailInfo.setDescription(questionDto.getDescription());
     questionDtoForQuestionDetailInfo.setAnswerDtoList(AnswerMapper.toDtoListForQuestionDetailInfo(questionDto.getAnswerDtoList()));
+    questionDtoForQuestionDetailInfo.setQuestionVisibilityType(questionDto.getQuestionVisibilityType());
+    questionDtoForQuestionDetailInfo.setRequired(questionDto.isRequired());
+    questionDtoForQuestionDetailInfo.setType(questionDto.getType());
     return questionDtoForQuestionDetailInfo;
   }
 

@@ -8,7 +8,7 @@ import java.util.List;
 public class AnswerDtoForQuestionDetailInfo {
   private Long id;
   private String title;
-  private List<QuestionDtoForQuestionsInfoPage> openQuestonDtoList;
+  private List<QuestionDtoForQuestionDetailInfo> openQuestonDtoList;
   private String positiveTitle;
   private AnswerType answerType;
   private boolean isDefault;
@@ -17,7 +17,7 @@ public class AnswerDtoForQuestionDetailInfo {
   public AnswerDtoForQuestionDetailInfo() {
   }
 
-  public AnswerDtoForQuestionDetailInfo(Long id, String title, List<QuestionDtoForQuestionsInfoPage> openQuestonDtoList, String positiveTitle, AnswerType answerType, boolean isDefault, boolean skipAtResult) {
+  public AnswerDtoForQuestionDetailInfo(Long id, String title, List<QuestionDtoForQuestionDetailInfo> openQuestonDtoList, String positiveTitle, AnswerType answerType, boolean isDefault, boolean skipAtResult) {
     this.id = id;
     this.title = title;
     this.openQuestonDtoList = openQuestonDtoList;
@@ -43,11 +43,11 @@ public class AnswerDtoForQuestionDetailInfo {
     this.title = title;
   }
 
-  public List<QuestionDtoForQuestionsInfoPage> getOpenQuestonDtoList() {
+  public List<QuestionDtoForQuestionDetailInfo> getOpenQuestonDtoList() {
     return openQuestonDtoList;
   }
 
-  public void setOpenQuestonDtoList(List<QuestionDtoForQuestionsInfoPage> openQuestonDtoList) {
+  public void setOpenQuestonDtoList(List<QuestionDtoForQuestionDetailInfo> openQuestonDtoList) {
     this.openQuestonDtoList = openQuestonDtoList;
   }
 
