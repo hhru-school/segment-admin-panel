@@ -2,6 +2,7 @@ package ru.hhschool.segment.mapper;
 
 import ru.hhschool.segment.model.dto.AnswerDto;
 import ru.hhschool.segment.model.dto.QuestionDto;
+import ru.hhschool.segment.model.dto.questiondetailinfo.QuestionDtoForQuestionDetailInfo;
 import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfoPage;
 import ru.hhschool.segment.model.entity.Question;
 
@@ -34,5 +35,23 @@ public class QuestionMapper {
         .map(QuestionMapper::toDtoForQuestionsInfo)
         .toList();
   }
+
+  public static QuestionDtoForQuestionDetailInfo toDtoForQuestionDetailInfo(QuestionDto questionDto) {
+    QuestionDtoForQuestionDetailInfo questionDtoForQuestionDetailInfo = new QuestionDtoForQuestionDetailInfo();
+    questionDtoForQuestionDetailInfo.setId(questionDto.getId());
+    questionDtoForQuestionDetailInfo.setTitle(questionDto.getTitle());
+    questionDtoForQuestionDetailInfo.setDescription(questionDto.getDescription());
+    questionDtoForQuestionDetailInfo.setAnswerDtoList(AnswerMapper.toDtoListForQuestionDetailInfo(questionDto.getAnswerDtoList()));
+    return questionDtoForQuestionDetailInfo;
+  }
+
+  public static List<QuestionDtoForQuestionDetailInfo> toDtoListForQuestionDetailInfo(Collection<QuestionDto> questionDtoCollection) {
+
+    return questionDtoCollection
+        .stream()
+        .map(QuestionMapper::toDtoForQuestionDetailInfo)
+        .toList();
+  }
+
 }
 

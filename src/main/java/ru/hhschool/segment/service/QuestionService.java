@@ -7,7 +7,6 @@ import ru.hhschool.segment.mapper.QuestionMapper;
 import ru.hhschool.segment.model.dto.AnswerDto;
 import ru.hhschool.segment.model.dto.QuestionDto;
 import ru.hhschool.segment.model.dto.questiondetailinfo.QuestionDtoForQuestionDetailInfo;
-import ru.hhschool.segment.model.dto.questioninfopage.AnswerDtoForQuestionsInfoPage;
 import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfoPage;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.Question;
@@ -63,5 +62,10 @@ public class QuestionService {
     List<AnswerDto> answerDtoList = answerService.getAllAnswerDtoListByListId(question.getPossibleAnswerIdList());
     return QuestionMapper.toDto(questionActivatorLink.getQuestion(), answerDtoList);
   }
-
+@Transactional
+  public QuestionDtoForQuestionDetailInfo getQuestionDtoWithAnswersAndStatus(Long layerId, Long questionId) {
+    QuestionActivatorLink questionActivatorLink = questionActivatorLinkDao.findQuestionActivatorLinkByLayerIdAndQuestionId(layerId, questionId);
+    QuestionDto questionDto = mapQuestionActivatorLinktoQuestionDtoWithAnswers(questionActivatorLink);
+    return QuestionMapper.toDtoForQuestionDetailInfo(questionDto);
+  }
 }

@@ -31,6 +31,6 @@ public class QuestionResource {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getQuestionDtoInfoWithAnswers(@PathParam("layerId") Long layerId,
                                                 @PathParam("questionId") Long questionId) {
-    return Response.ok().build();
+    return Response.ok(questionService.getQuestionDtoWithAnswersAndStatus(layerId, questionId)).build();
   }
 }

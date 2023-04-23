@@ -2,6 +2,7 @@ package ru.hhschool.segment.mapper;
 
 import ru.hhschool.segment.model.dto.AnswerDto;
 import ru.hhschool.segment.model.dto.QuestionDto;
+import ru.hhschool.segment.model.dto.questiondetailinfo.AnswerDtoForQuestionDetailInfo;
 import ru.hhschool.segment.model.dto.questioninfopage.AnswerDtoForQuestionsInfoPage;
 import ru.hhschool.segment.model.entity.Answer;
 
@@ -14,6 +15,8 @@ public class AnswerMapper {
     answerDto.setId(entity.getId());
     answerDto.setTitle(entity.getTitle());
     answerDto.setOpenQuestonDtoList(openQuestionDtoList);
+    answerDto.setAnswerType(entity.getAnswerType());
+    answerDto.setDefault(entity.isDefault());
     return answerDto;
   }
 
@@ -41,6 +44,24 @@ public class AnswerMapper {
     return answerDtoCollection
         .stream()
         .map(AnswerMapper::toDtoForQuestionsInfo)
+        .toList();
+  }
+
+  public static AnswerDtoForQuestionDetailInfo toDtoForQuestionDetailInfo(AnswerDto answerDto) {
+    AnswerDtoForQuestionDetailInfo answerDtoForQuestionDetailInfo = new AnswerDtoForQuestionDetailInfo();
+    answerDtoForQuestionDetailInfo.setId(answerDto.getId());
+    answerDtoForQuestionDetailInfo.setTitle(answerDto.getTitle());
+    answerDtoForQuestionDetailInfo.setOpenQuestonDtoList(QuestionMapper.toDtoListForQuestionsInfo(answerDto.getOpenQuestonDtoList()));
+    answerDtoForQuestionDetailInfo.setDefault(answerDto.isDefault());
+    return answerDtoForQuestionDetailInfo;
+
+  }
+
+  public static List<AnswerDtoForQuestionDetailInfo> toDtoListForQuestionDetailInfo(Collection<AnswerDto> answerDtoCollection) {
+
+    return answerDtoCollection
+        .stream()
+        .map(AnswerMapper::toDtoForQuestionDetailInfo)
         .toList();
   }
 }
