@@ -3,6 +3,7 @@ services:
   # Main
   segment-service:
     build:
+      context: ./
       dockerfile: Dockerfile
     container_name: main_server
     restart: always
@@ -11,6 +12,7 @@ services:
     depends_on:
       segment-db:
         condition: service_healthy
+    image: segmentadminka.ru/segment-backend:latest
 
     environment:
       - WAIT_HOSTS=segment-db:5432
