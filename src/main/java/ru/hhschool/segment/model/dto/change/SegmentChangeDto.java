@@ -2,7 +2,7 @@ package ru.hhschool.segment.model.dto.change;
 
 import java.util.Objects;
 
-public class SegmentChangeDto {
+public class SegmentChangeDto implements ConflictSetter {
   private Long id;
   private Long parentId;
   private String title;
@@ -57,6 +57,7 @@ public class SegmentChangeDto {
     return conflict;
   }
 
+  @Override
   public void setConflict(boolean conflict) {
     this.conflict = conflict;
   }

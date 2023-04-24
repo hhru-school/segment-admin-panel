@@ -1,6 +1,6 @@
 package ru.hhschool.segment.model.dto.change;
 
-public class EntrypointChangeDto {
+public class EntrypointChangeDto implements ConflictSetter {
   private Long id;
   private String title;
   private String description;
@@ -43,7 +43,27 @@ public class EntrypointChangeDto {
     return conflict;
   }
 
+  @Override
   public void setConflict(boolean conflict) {
     this.conflict = conflict;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    EntrypointChangeDto that = (EntrypointChangeDto) o;
+
+    return title.equals(that.title);
+  }
+
+  @Override
+  public int hashCode() {
+    return title.hashCode();
   }
 }

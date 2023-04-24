@@ -12,12 +12,13 @@ public class QuestionActivatorLinkChangeMapper {
         questionActivatorLink.getQuestionVisibility(),
         questionActivatorLink.getEntrypoint().getTitle(),
         questionActivatorLink.getSegment().getTitle(),
+        questionActivatorLink.getSegment().getParent().getId(),
         questionActivatorLink.getQuestion().getTitle()
     );
     return questionActivatorLinkChangeDto;
   }
 
-  public static List<QuestionActivatorLinkChangeDto> QuestionActivatorLinkChangeListToDtoList(List<QuestionActivatorLink> questionActivatorLinkList) {
+  public static List<QuestionActivatorLinkChangeDto> questionActivatorLinkChangeListToDtoList(List<QuestionActivatorLink> questionActivatorLinkList) {
     if (questionActivatorLinkList == null) {
       return List.of();
     }

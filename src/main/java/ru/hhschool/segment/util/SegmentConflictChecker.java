@@ -22,18 +22,19 @@ public class SegmentConflictChecker {
       List<SegmentChangeDto> listLayerA = SegmentChangeMapper.segmentChangeListToDtoList(listA);
       Set<SegmentChangeDto> listLayerB = new HashSet<>(SegmentChangeMapper.segmentChangeListToDtoList(listB));
 
-      boolean conflict = listLayerA.stream()
-          .anyMatch(element -> listLayerB.contains(element));
+      boolean conflict = listLayerA.stream().anyMatch(listLayerB::contains);
+
       if (conflict) {
         Set<SegmentChangeDto> entityB = new HashSet<>(listLayerB);
 
         for (SegmentChangeDto segmentChangeDto : listLayerA) {
-          if (entityB.contains(segmentChangeDto.getTitle())) {
+          if (entityB.contains(segmentChangeDto)) {
             segmentChangeDto.setConflict(ConflictStatus.CONFLICT.isConflict());
             conflictList.add(segmentChangeDto);
           }
         }
       }
+
     }
     return conflictList;
   }
