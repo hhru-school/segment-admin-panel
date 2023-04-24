@@ -34,7 +34,11 @@ public class SegmentConfig {
   }
 
   @Bean
-  public SegmentService getSegmentService(SegmentDao segmentDao, LayerDao layerDao){return new SegmentService(segmentDao, layerDao);}
+  public SegmentService getSegmentService(SegmentDao segmentDao,
+                                          LayerDao layerDao,
+                                          QuestionActivatorLinkDao questionActivatorLinkDao){
+    return new SegmentService(segmentDao, layerDao, questionActivatorLinkDao);
+  }
 
   @Bean
   public SegmentDao getSegmentDao() {

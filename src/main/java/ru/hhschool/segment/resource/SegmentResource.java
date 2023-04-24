@@ -1,5 +1,6 @@
 package ru.hhschool.segment.resource;
 
+import ru.hhschool.segment.model.dto.viewsegments.SegmentSelectedDto;
 import ru.hhschool.segment.model.dto.viewsegments.SegmentViewDto;
 import ru.hhschool.segment.service.SegmentService;
 
@@ -11,6 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.Optional;
 
 @Path("/segments")
 public class SegmentResource {
@@ -33,9 +35,13 @@ public class SegmentResource {
   }
 
   @GET
-  @Path("/segment/{segmentId}")
+  @Path("/{layerId}/{segmentId}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getSegmentViewDtoListForViewSegmentPage(@PathParam("segmentId") Long id){
-    return Response.ok(id).build();
+  public Response getSegmentViewDtoListForViewSegmentPage(@PathParam("layerId") Long layerId, @PathParam("segmentId") Long segmentId){
+    Optional<SegmentSelectedDto> segmentSelectedDto = segmentService.getSegmentSelectedDto(layerId, segmentId);
+    if (segmentSelectedDto.isPresent()){
+      return Response.ok(segmentSelectedDto).build();
+    }
+    return Response.status(Response.Status.NO_CONTENT).build();
   }
 }
