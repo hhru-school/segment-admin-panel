@@ -11,7 +11,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
-import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.change.LayerChangeDto;
 import ru.hhschool.segment.service.LayerService;
 import ru.hhschool.segment.service.SegmentService;
@@ -31,11 +30,7 @@ public class LayerResource {
   @Path(value = "/")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getLayerDtoListForMainPage() {
-    List<LayerDto> layerDtos = layerService.getLayerDtoListForMainPage();
-    if (layerDtos.isEmpty()) {
-      return Response.status(Response.Status.NO_CONTENT).build();
-    }
-    return Response.ok(layerDtos).build();
+    return Response.ok(layerService.getLayerDtoListForMainPage()).build();
   }
 
   @GET
