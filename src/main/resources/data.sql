@@ -169,7 +169,9 @@ VALUES (5, 7, 12, 1, TRUE, 'SHOW'),
        (5, 8, 14, 1, TRUE, 'SHOW'),
        (5, 8, 1, 2, TRUE, 'SHOW'),
        (5, 8, 2, 2, TRUE, 'SHOW'),
-       (5, 8, 14, 2, TRUE, 'SHOW');
+       (5, 8, 14, 2, TRUE, 'SHOW'),
+       (5, 5, 9, 1, FALSE, 'HIDE'),
+       (5, 5, 9, 2, FALSE, 'HIDE');
 
 INSERT INTO history (user_id, name_db, time, type, description)
 VALUES (5, 'segment-db', '2023-04-16 02:02:00', 'CREATE', 'Новая сессия');
@@ -217,7 +219,8 @@ VALUES (7, 'Возможен ли прием онлайн', 'SINGLE_CHOICE', 'П
        (7, 'Доводилось ли работать в международных компаниях', 'SINGLE_CHOICE', 'Доводилось ли работать в международных компаниях', '{36, 37}', TRUE,
         'HIDE'),                                                                                                                        --22
        (7, 'Уровень английского', 'SINGLE_CHOICE', 'Уровень английского', '{38, 39, 40}', TRUE, 'HIDE'),                                --23
-       (7, 'Владение другими иностранными языками', 'SINGLE_CHOICE', 'Владение другими иностранными языками', '{9, 10}', TRUE, 'HIDE'); --24
+       (7, 'Владение другими иностранными языками', 'SINGLE_CHOICE', 'Владение другими иностранными языками', '{9, 10}', TRUE, 'HIDE'), --24
+       (7, 'Технологический стэк', 'MULTI_SELECT', 'Перечень технологий, которыми умеет пользоваться кандидат', '{19, 20, 21, 22, 41, 42, 43}', TRUE, 'SHOW'); --25
 
 INSERT INTO answers (layer_id, open_questions, title, POSITIVE_title, answer_type, is_default_answer, skip_at_result)
 VALUES (7, '{19, 20, 22}', 'Да, работал CTO', 'Да, работал CTO', 'POSITIVE', FALSE, FALSE),                                    --27
@@ -233,7 +236,10 @@ VALUES (7, '{19, 20, 22}', 'Да, работал CTO', 'Да, работал CTO
        (7, '{23, 24}', 'Не работал в международной компании', 'Не работал в международной компании', 'NEUTRAL', FALSE, FALSE), --37
        (7, NULL, 'Низкий', 'Низкий', 'NEUTRAL', FALSE, FALSE),                                                                 --38
        (7, NULL, 'Средний', 'Средний', 'NEUTRAL', FALSE, FALSE),                                                               --39
-       (7, NULL, 'Высокий', 'Высокий', 'NEUTRAL', FALSE, FALSE); --40
+       (7, NULL, 'Высокий', 'Высокий', 'NEUTRAL', FALSE, FALSE), --40
+       (7, NULL, 'Java Core', 'Java Core', 'NEUTRAL', FALSE, FALSE), --41
+       (7, NULL, 'PostgreSQL', 'PostgreSQL', 'NEUTRAL', FALSE, FALSE), --42
+       (7, NULL, 'Kafka', 'Kafka', 'NEUTRAL', FALSE, FALSE); --43
 
 INSERT INTO question_activate_links (layer_id, segment_id, question_id, entrypoint_id, question_required, question_visibility)
 VALUES (7, 10, 1, 1, TRUE, 'SHOW'),
@@ -259,7 +265,9 @@ VALUES (7, 10, 1, 1, TRUE, 'SHOW'),
        (7, 11, 21, 2, FALSE, 'HIDE'),
        (7, 11, 22, 2, FALSE, 'HIDE'),
        (7, 11, 23, 2, FALSE, 'HIDE'),
-       (7, 11, 24, 2, FALSE, 'HIDE');
+       (7, 11, 24, 2, FALSE, 'HIDE'),
+       (7, 5, 25, 1, FALSE, 'SHOW'),
+       (7, 5, 25, 2, FALSE, 'SHOW');
 
 INSERT INTO history (user_id, name_db, time, type, description)
 VALUES (7, 'segment-db', '2023-04-18 02:02:00', 'CREATE', 'Новая сессия');
