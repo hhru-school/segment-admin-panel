@@ -1,6 +1,6 @@
 package ru.hhschool.segment.model.dto.change;
 
-public class EntrypointChangeDto implements GetterElemet {
+public class EntrypointChangeDto {
   private Long id;
   private String title;
   private String description;
@@ -23,7 +23,6 @@ public class EntrypointChangeDto implements GetterElemet {
     this.id = id;
   }
 
-  @Override
   public String getTitle() {
     return title;
   }

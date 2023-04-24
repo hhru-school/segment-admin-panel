@@ -2,7 +2,7 @@ package ru.hhschool.segment.model.dto.change;
 
 import java.util.List;
 
-public class QuestionChangeDto implements GetterElemet {
+public class QuestionChangeDto {
   private Long id;
   private String title;
   private String description;
@@ -27,7 +27,6 @@ public class QuestionChangeDto implements GetterElemet {
     this.id = id;
   }
 
-  @Override
   public String getTitle() {
     return title;
   }

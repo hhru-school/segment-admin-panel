@@ -4,7 +4,7 @@ import java.util.List;
 import ru.hhschool.segment.model.dto.change.EntrypointChangeDto;
 import ru.hhschool.segment.model.entity.Entrypoint;
 
-public class MapperEntrypointChange {
+public class EntrypointChangeMapper {
   public static EntrypointChangeDto entrypointChangeToDto(Entrypoint entrypoint) {
     EntrypointChangeDto entrypointChangeDto = new EntrypointChangeDto(
         entrypoint.getId(),
@@ -21,7 +21,7 @@ public class MapperEntrypointChange {
     }
     return entrypointList
         .stream()
-        .map(MapperEntrypointChange::entrypointChangeToDto)
+        .map(EntrypointChangeMapper::entrypointChangeToDto)
         .toList();
   }
 }

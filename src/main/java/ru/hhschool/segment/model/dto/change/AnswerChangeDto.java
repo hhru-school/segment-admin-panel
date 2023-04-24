@@ -3,7 +3,7 @@ package ru.hhschool.segment.model.dto.change;
 import java.util.List;
 import ru.hhschool.segment.model.enums.AnswerType;
 
-public class AnswerChangeDto implements GetterElemet {
+public class AnswerChangeDto {
   private Long id;
   private String title;
   private AnswerType answerType;
@@ -28,7 +28,6 @@ public class AnswerChangeDto implements GetterElemet {
     this.id = id;
   }
 
-  @Override
   public String getTitle() {
     return title;
   }

@@ -9,7 +9,7 @@ import org.hibernate.NonUniqueResultException;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.mapper.LayerMapper;
 import ru.hhschool.segment.mapper.basicInfo.LayerBasicInfoMapper;
-import ru.hhschool.segment.mapper.change.MapperLayerChange;
+import ru.hhschool.segment.mapper.change.LayerChangeMapper;
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.basicInfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.change.LayerChangeDto;
@@ -36,7 +36,7 @@ public class LayerService {
       return Optional.empty();
     }
 
-    return Optional.of(MapperLayerChange.layerChangeToDto(layer.get(), ConflictStatus.NONE));
+    return Optional.of(LayerChangeMapper.layerChangeToDto(layer.get(), ConflictStatus.NONE));
   }
 
   @Transactional
@@ -98,7 +98,7 @@ public class LayerService {
     } while (layerChangeDto.isPresent());
 
     // TODO Save Stable + переписывает родителя на layerStableChild.id
-    return Optional.of(MapperLayerChange.layerChangeToDto(layerStableChild, ConflictStatus.NONE));
+    return Optional.of(LayerChangeMapper.layerChangeToDto(layerStableChild, ConflictStatus.NONE));
   }
 
 }

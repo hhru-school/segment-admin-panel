@@ -4,7 +4,7 @@ import java.util.List;
 import ru.hhschool.segment.model.dto.change.SegmentChangeDto;
 import ru.hhschool.segment.model.entity.Segment;
 
-public class MapperSegmentChange {
+public class SegmentChangeMapper {
   public static SegmentChangeDto segmentChangeToDto(Segment segment) {
     SegmentChangeDto segmentChangeDto = new SegmentChangeDto(
         segment.getId(),
@@ -23,7 +23,7 @@ public class MapperSegmentChange {
     }
     return segmentList
         .stream()
-        .map(MapperSegmentChange::segmentChangeToDto)
+        .map(SegmentChangeMapper::segmentChangeToDto)
         .toList();
   }
 }

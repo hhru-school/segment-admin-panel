@@ -1,6 +1,8 @@
 package ru.hhschool.segment.model.dto.change;
 
-public class SegmentChangeDto implements GetterElemet {
+import java.util.Objects;
+
+public class SegmentChangeDto {
   private Long id;
   private Long parentId;
   private String title;
@@ -65,5 +67,29 @@ public class SegmentChangeDto implements GetterElemet {
 
   public void setParentId(Long parentId) {
     this.parentId = parentId;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    SegmentChangeDto that = (SegmentChangeDto) o;
+
+    if (!Objects.equals(parentId, that.parentId)) {
+      return false;
+    }
+    return title.equals(that.title);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = parentId != null ? parentId.hashCode() : 0;
+    result = 31 * result + title.hashCode();
+    return result;
   }
 }

@@ -4,7 +4,7 @@ import java.util.List;
 import ru.hhschool.segment.model.dto.change.QuestionActivatorLinkChangeDto;
 import ru.hhschool.segment.model.entity.QuestionActivatorLink;
 
-public class MapperQuestionActivatorLinkChange {
+public class QuestionActivatorLinkChangeMapper {
   public static QuestionActivatorLinkChangeDto questionActivatorLinkToDto(QuestionActivatorLink questionActivatorLink) {
     QuestionActivatorLinkChangeDto questionActivatorLinkChangeDto = new QuestionActivatorLinkChangeDto(
         questionActivatorLink.getId(),
@@ -23,7 +23,7 @@ public class MapperQuestionActivatorLinkChange {
     }
     return questionActivatorLinkList
         .stream()
-        .map(MapperQuestionActivatorLinkChange::questionActivatorLinkToDto)
+        .map(QuestionActivatorLinkChangeMapper::questionActivatorLinkToDto)
         .toList();
   }
 }
