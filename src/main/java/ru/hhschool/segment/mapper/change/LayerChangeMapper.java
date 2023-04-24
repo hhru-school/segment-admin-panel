@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.hibernate.Hibernate;
 import ru.hhschool.segment.model.dto.change.AnswerChangeDto;
@@ -39,6 +40,7 @@ public class LayerChangeMapper {
     setSegmentChange(layer, layerChangeDto);
     setQuestionAndAnswerChange(layer, layerChangeDto);
     setQuestionActivatorLinkChange(layer, layerChangeDto);
+    setUsedEntrypointTitleMap(layer, layerChangeDto);
 
     return layerChangeDto;
   }
@@ -54,6 +56,18 @@ public class LayerChangeMapper {
           );
 
       layerChangeDto.setQuestionActivatorLinkMap(segmentGroupMap);
+    }
+  }
+
+  private static void setUsedEntrypointTitleMap(Layer layer, LayerChangeDto layerChangeDto) {
+    List<QuestionActivatorLink> activatorLinkList = layer.getQuestionActivatorLinksList();
+    if (activatorLinkList != null && activatorLinkList.size() > 0) {
+      Set<String> usedEntrypointTitle = activatorLinkList
+          .stream()
+          .map(e -> e.getEntrypoint().getTitle())
+          .collect(Collectors.toSet());
+
+      layerChangeDto.setUsedEntrypointTitleList(usedEntrypointTitle);
     }
   }
 

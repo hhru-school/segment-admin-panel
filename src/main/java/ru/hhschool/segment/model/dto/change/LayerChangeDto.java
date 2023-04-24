@@ -2,6 +2,7 @@ package ru.hhschool.segment.model.dto.change;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class LayerChangeDto {
   private Long id;
@@ -13,6 +14,7 @@ public class LayerChangeDto {
   private Map<String, List<QuestionChangeDto>> questionMap;
   private Map<String, List<AnswerChangeDto>> answerMap;
   private Map<String, List<QuestionActivatorLinkChangeDto>> questionActivatorLinkMap;
+  private Set<String> usedEntrypointTitleList;
 
   public LayerChangeDto() {
   }
@@ -27,6 +29,7 @@ public class LayerChangeDto {
     questionMap = Map.of();
     answerMap = Map.of();
     questionActivatorLinkMap = Map.of();
+    usedEntrypointTitleList = Set.of();
   }
 
   public Long getId() {
@@ -85,6 +88,14 @@ public class LayerChangeDto {
     this.questionActivatorLinkMap = questionActivatorLinkMap;
   }
 
+  public Set<String> getUsedEntrypointTitleList() {
+    return usedEntrypointTitleList;
+  }
+
+  public void setUsedEntrypointTitleList(Set<String> usedEntrypointTitleList) {
+    this.usedEntrypointTitleList = usedEntrypointTitleList;
+  }
+
   public boolean isConflict() {
     return conflict;
   }
@@ -92,4 +103,5 @@ public class LayerChangeDto {
   public void setConflict(boolean conflict) {
     this.conflict = conflict;
   }
+
 }
