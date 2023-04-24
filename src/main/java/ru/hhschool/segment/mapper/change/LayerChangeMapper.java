@@ -34,7 +34,11 @@ public class LayerChangeMapper {
 
   public static LayerChangeDto layerChangeToDto(Layer layer, ConflictStatus conflict) {
     Long parentId = layer.getParent() == null ? null : layer.getParent().getId();
-    LayerChangeDto layerChangeDto = new LayerChangeDto(layer.getId(), parentId, conflict.isConflict());
+    LayerChangeDto layerChangeDto = new LayerChangeDto(
+        layer.getId(),
+        parentId,
+        conflict.isConflict()
+    );
 
     setEntrypointChange(layer, layerChangeDto);
     setSegmentChange(layer, layerChangeDto);

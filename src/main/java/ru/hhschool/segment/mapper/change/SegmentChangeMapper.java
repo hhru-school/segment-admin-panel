@@ -6,9 +6,11 @@ import ru.hhschool.segment.model.entity.Segment;
 
 public class SegmentChangeMapper {
   public static SegmentChangeDto segmentChangeToDto(Segment segment) {
+    Long parentId = segment.getParent() == null ? null : segment.getParent().getId();
+
     SegmentChangeDto segmentChangeDto = new SegmentChangeDto(
         segment.getId(),
-        segment.getParent().getId(),
+        parentId,
         segment.getTitle(),
         segment.getDescription(),
         segment.isArchived()

@@ -50,7 +50,7 @@ public class LayerService {
   }
 
   @Transactional
-  public Optional<LayerChangeDto> joinLayer(Long layerId) throws NotFoundException, IllegalStateException {
+  public Optional<LayerChangeDto> mergeLayerWithParent(Long layerId) throws NotFoundException, IllegalStateException {
     Optional<Layer> layerOptional = layerDao.findById(layerId);
     if (layerOptional.isEmpty()) {
       throw new NotFoundException("Not found.");
@@ -69,6 +69,7 @@ public class LayerService {
     Layer layerStableChild = layer;
     Optional<LayerChangeDto> layerChangeDto = Optional.empty();
     do {
+      // TODO нет рекусии крутимся на одном и томже ребенке!
       if (layerId.equals(layer.getParent().getId())) {
         throw new IllegalStateException("LayerId equals ParentId ошибка в данных");
       }

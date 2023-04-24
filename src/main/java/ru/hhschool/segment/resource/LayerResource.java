@@ -63,7 +63,7 @@ public class LayerResource {
   @Produces(MediaType.APPLICATION_JSON)
   public Response joinLayer(@PathParam(value = "layerId") Long layerId) {
     try {
-      Optional<LayerChangeDto> layerChanges = layerService.joinLayer(layerId);
+      Optional<LayerChangeDto> layerChanges = layerService.mergeLayerWithParent(layerId);
 
       if (layerChanges.isPresent() && layerChanges.get().isConflict()) {
         return Response

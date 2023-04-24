@@ -31,6 +31,8 @@ public class LayerConflictChecker {
     if (entrypointConflictList.size() != 0) {
       conflict = ConflictStatus.CONFLICT.isConflict();
       layerChangeDto.setEntrypointMap(Map.of(EntityStatus.CONFLICT.name(), entrypointConflictList));
+    } else {
+      layerChangeDto.setEntrypointMap(Map.of());
     }
 
     List<QuestionChangeDto> questionConflictList
@@ -41,6 +43,8 @@ public class LayerConflictChecker {
     if (questionConflictList.size() != 0) {
       conflict = ConflictStatus.CONFLICT.isConflict();
       layerChangeDto.setQuestionMap(Map.of(EntityStatus.CONFLICT.name(), questionConflictList));
+    } else {
+      layerChangeDto.setQuestionMap(Map.of());
     }
 
     List<SegmentChangeDto> segmentChangeList
@@ -51,6 +55,8 @@ public class LayerConflictChecker {
     if (segmentChangeList.size() != 0) {
       conflict = ConflictStatus.CONFLICT.isConflict();
       layerChangeDto.setSegmentMap(Map.of(EntityStatus.CONFLICT.name(), segmentChangeList));
+    } else {
+      layerChangeDto.setSegmentMap(Map.of());
     }
 
     List<QuestionActivatorLinkChangeDto> linksChangeList
@@ -61,6 +67,8 @@ public class LayerConflictChecker {
     if (linksChangeList.size() != 0) {
       conflict = ConflictStatus.CONFLICT.isConflict();
       layerChangeDto.setQuestionActivatorLinkMap(Map.of(EntityStatus.CONFLICT.name(), linksChangeList));
+    } else {
+      layerChangeDto.setQuestionActivatorLinkMap(Map.of());
     }
 
     layerChangeDto.setConflict(conflict);
