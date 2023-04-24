@@ -24,9 +24,9 @@ public class QuestionResource {
   @GET
   @Path(value = "/")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getQuestionDtoListWithAnswers(@QueryParam("layerId") Long id,
+  public Response getQuestionDtoListWithAnswers(@QueryParam("layerId") Long layerId,
                                                 @QueryParam("searchString") @DefaultValue("") String searchString) {
-    return Response.ok(questionService.getSetQuestionDtoOfLayerAndParentsWithAnswers(id, searchString)).build();
+    return Response.ok(questionService.getSetQuestionDtoOfLayerAndParentsWithAnswers(layerId, searchString)).build();
   }
 
   @GET

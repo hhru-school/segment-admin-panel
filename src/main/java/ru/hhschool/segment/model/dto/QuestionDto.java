@@ -105,16 +105,4 @@ public class QuestionDto {
     this.resumeField = resumeField;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    QuestionDto that = (QuestionDto) o;
-    return required == that.required && resumeField == that.resumeField && id.equals(that.id) && Objects.equals(title, that.title) && Objects.equals(description, that.description) && type == that.type && questionVisibilityType == that.questionVisibilityType && Objects.equals(answerDtoList, that.answerDtoList) && Objects.equals(layerId, that.layerId);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, title, description, type, required, questionVisibilityType, answerDtoList, layerId, resumeField);
-  }
 }

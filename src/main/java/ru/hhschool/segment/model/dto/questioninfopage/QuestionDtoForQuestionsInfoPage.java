@@ -65,7 +65,7 @@ public class QuestionDtoForQuestionsInfoPage {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     QuestionDtoForQuestionsInfoPage that = (QuestionDtoForQuestionsInfoPage) o;
-    return id.equals(that.id);
+    return searchedObject == that.searchedObject && Objects.equals(title, that.title) && Objects.equals(description, that.description) && Objects.equals(answerDtoList, that.answerDtoList);
   }
 
   @Override

@@ -1,9 +1,11 @@
 package ru.hhschool.segment.model.entity;
 
 import io.hypersistence.utils.hibernate.type.array.ListArrayType;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Objects;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import ru.hhschool.segment.model.enums.QuestionType;
+import ru.hhschool.segment.model.enums.QuestionVisibilityType;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,10 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import ru.hhschool.segment.model.enums.QuestionType;
-import ru.hhschool.segment.model.enums.QuestionVisibilityType;
+import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @TypeDef(name = "list-array", typeClass = ListArrayType.class)
@@ -138,18 +138,6 @@ public class Question implements Serializable {
     this.layerId = layerId;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    Question question = (Question) o;
-    return id.equals(question.id);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id);
-  }
   public boolean isResumeField() {
     return resumeField;
   }
