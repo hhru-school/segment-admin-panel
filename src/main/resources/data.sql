@@ -169,7 +169,9 @@ VALUES (5, 7, 12, 1, TRUE, 'SHOW'),
        (5, 8, 14, 1, TRUE, 'SHOW'),
        (5, 8, 1, 2, TRUE, 'SHOW'),
        (5, 8, 2, 2, TRUE, 'SHOW'),
-       (5, 8, 14, 2, TRUE, 'SHOW');
+       (5, 8, 14, 2, TRUE, 'SHOW'),
+       (5, 5, 9, 1, FALSE, 'HIDE'),
+       (5, 5, 9, 2, FALSE, 'HIDE');
 
 INSERT INTO history (user_id, name_db, time, type, description)
 VALUES (5, 'segment-db', '2023-04-16 02:02:00', 'CREATE', 'Новая сессия');
