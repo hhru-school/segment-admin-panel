@@ -31,32 +31,44 @@ public class SegmentService {
 
   @Transactional
   public List<SegmentViewDto> getSegmentViewDtoListForAllSegmentsPage(Long layerId) {
+    return SegmentViewMapper.toDtoListForAllSegmentsPage(getSegmentsForSpace(layerId));
+  }
+
+  public List<Segment> getSegmentsForSpace(Long layerId) {
     Optional<Layer> layer = layerDao.findById(layerId);
     if (layer.isPresent()){
       List<Layer> layersInSpace = layerDao.getAllParents(layerId);
       layersInSpace.add(layer.get());
       List<Segment> segmentList = segmentDao.findSegmentsInSpace(layersInSpace);
-      return SegmentViewMapper.toDtoListForAllSegmentsPage(segmentList);
+      return segmentList;
     }
     return Collections.EMPTY_LIST;
   }
 
   @Transactional
   public Optional<SegmentSelectedDto> getSegmentSelectedDto(Long layerId, Long segmentId) {
-    Optional<Layer> layer = layerDao.findById(layerId);
     Optional<Segment> segment = segmentDao.findById(segmentId);
-    if (layer.isPresent() && segment.isPresent()){
-      List<Layer> layersInSpace = layerDao.getAllParents(layerId);
-      Collections.reverse(layersInSpace);
-      layersInSpace.add(layer.get());
+    if (segment.isPresent() && getSegmentsForSpace(layerId).contains(segment.get())){
+      List<Layer> layersInSpace = getLayersInSpace(layerId);
       List<QuestionActivatorLink> questionActivatorLinksInSpace = questionActivatorLinkDao.findQALInSpace(layersInSpace, segmentId);
       Map<String, QuestionActivatorLink> latestQuestionActivatorLinkMap = getLatestQALInSpace(questionActivatorLinksInSpace, layersInSpace);
       List<Question> questions = getUniqueQuestionsInSpace(latestQuestionActivatorLinkMap);
-      List<SegmentViewQuestionDto> segmentViewQuestionDtoList = getSegmentViewQuestionDtoList(questions, latestQuestionActivatorLinkMap, layer.get());
+      List<SegmentViewQuestionDto> segmentViewQuestionDtoList = getSegmentViewQuestionDtoList(questions, latestQuestionActivatorLinkMap);
       SegmentSelectedDto segmentSelectedDto = SegmentSelectedMapper.toDtoForSelectedSegmentViewPage(segment.get(), segmentViewQuestionDtoList);
       return Optional.of(segmentSelectedDto);
     }
     return Optional.empty();
+  }
+
+  private List<Layer> getLayersInSpace(Long layerId){
+    Optional<Layer> layer = layerDao.findById(layerId);
+    if (layer.isPresent()) {
+      List<Layer> layersInSpace = layerDao.getAllParents(layerId);
+      Collections.reverse(layersInSpace);
+      layersInSpace.add(layer.get());
+      return layersInSpace;
+    }
+    return Collections.EMPTY_LIST;
   }
 
   /**
@@ -69,7 +81,7 @@ public class SegmentService {
     Map<String, QuestionActivatorLink> questionActivatorLinkMap = new HashMap<>();
     for(QuestionActivatorLink link : links){
       String key = link.getQuestion().getTitle() + link.getEntrypoint().getTitle();
-      if (questionActivatorLinkMap.containsKey(key)){
+      if (questionActivatorLinkMap.get(key) != null){
         questionActivatorLinkMap.replace(key, link);
       }
       questionActivatorLinkMap.put(key, link);
@@ -93,49 +105,60 @@ public class SegmentService {
    * при этом мобираем точки входа для каждог вопроса
    */
   private List<SegmentViewQuestionDto> getSegmentViewQuestionDtoList(Collection<Question> questions,
-                                                                     Map<String, QuestionActivatorLink> questionActivatorLinkMap,
-                                                                     Layer layer) {
+                                                                     Map<String, QuestionActivatorLink> questionActivatorLinkMap) {
     List<SegmentViewQuestionDto> segmentViewQuestionDtoList = new ArrayList<>();
     for (Question question : questions){
       List<SegmentViewEntryPointDto> segmentViewEntryPointDtoList = new ArrayList<>();
-      //Boolean requiredChanged = false;
       for (QuestionActivatorLink link : questionActivatorLinkMap.values()){
         if (link.getQuestion().equals(question)){
-          Boolean visibilityChanged = hasVisibilityChanged(link, layer);
-          //requiredChanged = hasRequiredChanged(link, layer);
-          segmentViewEntryPointDtoList.add(SegmentViewEntryPointMapper.toDtoForSelectedSegmentViewPage(link, visibilityChanged));
+          segmentViewEntryPointDtoList.add(SegmentViewEntryPointMapper.toDtoForSelectedSegmentViewPage(link, hasVisibilityChanged(link)));
         }
       }
-      SegmentViewQuestionDto segmentViewQuestionDto = SegmentViewQuestionMapper.toDtoForSelectedSegmentViewPage(question, segmentViewEntryPointDtoList);
+      Optional<String> key = questionActivatorLinkMap.keySet().stream().filter(k -> k.contains(question.getTitle())).findFirst();
+      QuestionActivatorLink someLinkForQuestion = questionActivatorLinkMap.get(key.get());
+      SegmentViewQuestionDto segmentViewQuestionDto = SegmentViewQuestionMapper.toDtoForSelectedSegmentViewPage(question,
+          someLinkForQuestion.isQuestionRequired(),
+          hasRequiredChanged(someLinkForQuestion),
+          hasQuestionChanged(someLinkForQuestion),
+          segmentViewEntryPointDtoList);
       segmentViewQuestionDtoList.add(segmentViewQuestionDto);
     }
     return segmentViewQuestionDtoList;
   }
 
-  private Boolean hasVisibilityChanged(QuestionActivatorLink currentLink, Layer layer){
-    Layer parentLayer = layer.getParent();
-    if (parentLayer == null){
-      return false;
-    }
-    Optional<QuestionActivatorLink> parentLink = questionActivatorLinkDao.findExactly(parentLayer.getId(),
-        currentLink.getSegment().getId(),
-        currentLink.getQuestion().getId(),
-        currentLink.getEntrypoint().getId());
+  private Boolean hasVisibilityChanged(QuestionActivatorLink currentLink){
+    Optional<QuestionActivatorLink> parentLink = getParentLink(currentLink);
     if (parentLink.isEmpty()){
       return false;
     }
     return !currentLink.getQuestionVisibility().equals(parentLink.get().getQuestionVisibility());
   }
 
-//  private Boolean hasRequiredChanged(QuestionActivatorLink currentLink, Layer layer){
-//    Layer parentLayer = layer.getParent();
-//    if (parentLayer == null){
-//      return false;
-//    }
-//    QuestionActivatorLink parentLink = questionActivatorLinkDao.findExactly(parentLayer.getId(),
-//        currentLink.getSegment().getId(),
-//        currentLink.getQuestion().getId(),
-//        currentLink.getEntrypoint().getId());
-//    return !currentLink.isQuestionRequired() == parentLink.isQuestionRequired();
-//  }
+  private Boolean hasRequiredChanged(QuestionActivatorLink currentLink){
+    Optional<QuestionActivatorLink> parentLink = getParentLink(currentLink);
+    if (parentLink.isEmpty()){
+      return false;
+    }
+    return !currentLink.isQuestionRequired() == parentLink.get().isQuestionRequired();
+  }
+
+  private Boolean hasQuestionChanged(QuestionActivatorLink currentLink){
+    Optional<QuestionActivatorLink> parentLink = getParentLink(currentLink);
+    if (parentLink.isEmpty()){
+      return false;
+    }
+    return !currentLink.getQuestion().equals(parentLink.get().getQuestion());
+  }
+
+  private Optional<QuestionActivatorLink> getParentLink(QuestionActivatorLink currentLink){
+    Optional<Layer> layer = layerDao.findById(currentLink.getLayerId());
+    Layer parentLayer = layer.get().getParent();
+    if (parentLayer == null){
+      return Optional.empty();
+    }
+    return questionActivatorLinkDao.findExactly(parentLayer.getId(),
+        currentLink.getSegment().getId(),
+        currentLink.getQuestion().getTitle(),
+        currentLink.getEntrypoint().getId());
+  }
 }
