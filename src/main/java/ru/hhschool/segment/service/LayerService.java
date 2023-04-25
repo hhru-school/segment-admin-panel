@@ -117,8 +117,14 @@ public class LayerService {
        */
     } while (layerStableChildList.size() > 0 && layerChangeDto.isPresent());
 
-    // TODO Save Stable + переписывает родителя на layerParent.id
-    return Optional.of(LayerChangeMapper.layerChangeToDto(layerParent, ConflictStatus.NONE));
+    /**
+     * Были проходы по stable наследникам
+     */
+    if (layerChangeDto.isPresent()) {
+      // TODO Save Stable + переписывает родителя на layerParent.id
+      layer.setParent(layerParent);
+    }
+    return Optional.of(LayerChangeMapper.layerChangeToDto(layer, ConflictStatus.NONE));
   }
 
 }
