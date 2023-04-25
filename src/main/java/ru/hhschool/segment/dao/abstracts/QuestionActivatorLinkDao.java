@@ -11,5 +11,5 @@ public interface QuestionActivatorLinkDao extends ReadWriteDao<QuestionActivator
   List<QuestionActivatorLink> findAll(Long layerId, Long entrypointId, ResumeField resumeField);
 
   List<QuestionActivatorLink> findQALInSpace(List<Layer> layerSpace, Long segmentId);
-  Optional<QuestionActivatorLink> findExactly(Long layerId, Long segmentId, Long questionId, Long entryPointId);
+  Optional<QuestionActivatorLink> findExactly(Long layerId, Long segmentId, String questionTitle, Long entryPointId);
 }

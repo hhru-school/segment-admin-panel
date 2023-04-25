@@ -7,10 +7,12 @@ import ru.hhschool.segment.model.entity.Question;
 import java.util.List;
 
 public class SegmentViewQuestionMapper {
-  public static SegmentViewQuestionDto toDtoForSelectedSegmentViewPage(Question question, List<SegmentViewEntryPointDto> entryPoints){
+  public static SegmentViewQuestionDto toDtoForSelectedSegmentViewPage(Question question, Boolean required, Boolean requiredChanged, Boolean questionChanged, List<SegmentViewEntryPointDto> entryPoints){
     SegmentViewQuestionDto segmentViewQuestionDto = new SegmentViewQuestionDto(
         question.getId(),
-        question.isRequired(),
+        required,
+        requiredChanged,
+        questionChanged,
         question.getTitle(),
         entryPoints
     );

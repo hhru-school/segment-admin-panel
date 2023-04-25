@@ -44,16 +44,16 @@ public class QuestionActivatorLinkDaoImpl extends ReadWriteDaoImpl<QuestionActiv
   }
 
   @Override
-  public Optional<QuestionActivatorLink> findExactly(Long layerId, Long segmentId, Long questionId, Long entryPointId) {
+  public Optional<QuestionActivatorLink> findExactly(Long layerId, Long segmentId, String questionTitle, Long entryPointId) {
     try {
       return Optional.of(em.createQuery("SELECT e FROM QuestionActivatorLink e WHERE " +
               "e.layerId = :layerId " +
               "AND e.segment.id = :segmentId " +
-              "AND e.question.id = :questionId " +
+              "AND e.question.title = :questionTitle " +
               "AND e.entrypoint.id = :entrypointId", QuestionActivatorLink.class)
           .setParameter("layerId", layerId)
           .setParameter("segmentId", segmentId)
-          .setParameter("questionId", questionId)
+          .setParameter("questionTitle", questionTitle)
           .setParameter("entrypointId", entryPointId)
           .getSingleResult());
     } catch (NoResultException nre){
