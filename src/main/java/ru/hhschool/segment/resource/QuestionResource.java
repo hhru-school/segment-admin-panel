@@ -3,6 +3,7 @@ package ru.hhschool.segment.resource;
 import ru.hhschool.segment.service.QuestionService;
 
 import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -23,7 +24,7 @@ public class QuestionResource {
   @GET
   @Path(value = "/")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getQuestionDtoListWithAnswers(@QueryParam("layerId") Long layerId,
+  public Response getQuestionDtoListWithAnswers(@NotNull @QueryParam("layerId") Long layerId,
                                                 @QueryParam("searchString") @DefaultValue("") String searchString) {
     return Response.ok(questionService.getAllQuestionDtoListForQuestionsInfo(layerId, searchString)).build();
   }
@@ -31,8 +32,8 @@ public class QuestionResource {
   @GET
   @Path(value = "/detail")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getQuestionDtoInfoWithAnswers(@QueryParam("layerId") Long layerId,
-                                                @QueryParam("questionId") Long questionId) {
+  public Response getQuestionDtoInfoWithAnswers(@NotNull @QueryParam("layerId") Long layerId,
+                                                @NotNull @QueryParam("questionId") Long questionId) {
     return Response.ok(questionService.getQuestionDtoForQuestionInfo(layerId, questionId)).build();
   }
 }

@@ -24,14 +24,16 @@ public class QuestionActivatorLinkDaoImpl extends ReadWriteDaoImpl<QuestionActiv
     return entrypointList;
   }
 
-  public List<QuestionActivatorLink> findAllQuestionActivatorLinkByLayerId(Long layerId) {
+  public List<QuestionActivatorLink> findAllQuestionActivatorLinkByLayerId(Long layerId,ResumeField resumeField) {
 
     return em.createQuery(
             """
                 SELECT e FROM QuestionActivatorLink e 
                 WHERE e.layerId = :layerId
+                 AND e.question.resumeField = :resumeField
                 """, QuestionActivatorLink.class)
         .setParameter("layerId", layerId)
+        .setParameter("resumeField", resumeField.isResumeField())
         .getResultList();
   }
 }

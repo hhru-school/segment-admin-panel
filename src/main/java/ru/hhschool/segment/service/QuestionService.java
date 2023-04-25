@@ -9,6 +9,7 @@ import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInf
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.Question;
 import ru.hhschool.segment.model.entity.QuestionActivatorLink;
+import ru.hhschool.segment.model.enums.ResumeField;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -49,7 +50,7 @@ public class QuestionService {
     selectedLayerWithParents.addAll(layerDao.getAllParents(layerId));
 
     return selectedLayerWithParents.stream()
-        .map(layer -> questionActivatorLinkDao.findAllQuestionActivatorLinkByLayerId(layer.getId()))
+        .map(layer -> questionActivatorLinkDao.findAllQuestionActivatorLinkByLayerId(layer.getId(), ResumeField.QUESTION))
         .flatMap(Collection::stream)
         .toList();
   }
