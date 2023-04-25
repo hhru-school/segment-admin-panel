@@ -6,7 +6,6 @@ import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -26,7 +25,7 @@ public class QuestionResource {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getQuestionDtoListWithAnswers(@QueryParam("layerId") Long layerId,
                                                 @QueryParam("searchString") @DefaultValue("") String searchString) {
-    return Response.ok(questionService.getSetQuestionDtoOfLayerAndParentsWithAnswers(layerId, searchString)).build();
+    return Response.ok(questionService.getAllQuestionDtoListForQuestionsInfo(layerId, searchString)).build();
   }
 
   @GET
@@ -34,6 +33,6 @@ public class QuestionResource {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getQuestionDtoInfoWithAnswers(@QueryParam("layerId") Long layerId,
                                                 @QueryParam("questionId") Long questionId) {
-    return Response.ok(questionService.сreateQuestionDtoWithAnswersAndStatus(layerId, questionId)).build();
+    return Response.ok(questionService.getQuestionDtoForQuestionInfo(layerId, questionId)).build();
   }
 }

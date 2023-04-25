@@ -1,22 +1,26 @@
 package ru.hhschool.segment.model.dto.questioninfopage;
 
-import java.util.List;
-import java.util.Objects;
+import ru.hhschool.segment.model.enums.QuestionType;
 
-public class QuestionDtoForQuestionsInfoPage {
+import java.util.List;
+
+public class QuestionDtoForQuestionsInfo {
   private Long id;
   private String title;
   private String description;
-  private List<AnswerDtoForQuestionsInfoPage> answerDtoList;
+  private QuestionType type;
   private boolean searchedObject;
+  private List<AnswerDtoForQuestionsInfo> answerDtoList;
 
-  public QuestionDtoForQuestionsInfoPage() {
+  public QuestionDtoForQuestionsInfo() {
   }
 
-  public QuestionDtoForQuestionsInfoPage(Long id, String title, String description, List<AnswerDtoForQuestionsInfoPage> answerDtoList) {
+  public QuestionDtoForQuestionsInfo(Long id, String title, String description, QuestionType type, boolean searchedObject, List<AnswerDtoForQuestionsInfo> answerDtoList) {
     this.id = id;
     this.title = title;
     this.description = description;
+    this.type = type;
+    this.searchedObject = searchedObject;
     this.answerDtoList = answerDtoList;
   }
 
@@ -44,11 +48,11 @@ public class QuestionDtoForQuestionsInfoPage {
     this.description = description;
   }
 
-  public List<AnswerDtoForQuestionsInfoPage> getAnswerDtoList() {
+  public List<AnswerDtoForQuestionsInfo> getAnswerDtoList() {
     return answerDtoList;
   }
 
-  public void setAnswerDtoList(List<AnswerDtoForQuestionsInfoPage> answerDtoList) {
+  public void setAnswerDtoList(List<AnswerDtoForQuestionsInfo> answerDtoList) {
     this.answerDtoList = answerDtoList;
   }
 
@@ -60,16 +64,11 @@ public class QuestionDtoForQuestionsInfoPage {
     this.searchedObject = searchedObject;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    QuestionDtoForQuestionsInfoPage that = (QuestionDtoForQuestionsInfoPage) o;
-    return searchedObject == that.searchedObject && Objects.equals(title, that.title) && Objects.equals(description, that.description) && Objects.equals(answerDtoList, that.answerDtoList);
+  public QuestionType getType() {
+    return type;
   }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(id);
+  public void setType(QuestionType type) {
+    this.type = type;
   }
 }

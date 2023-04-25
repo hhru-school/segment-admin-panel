@@ -9,6 +9,4 @@ public interface QuestionActivatorLinkDao extends ReadWriteDao<QuestionActivator
   List<QuestionActivatorLink> findAll(Long layerId, Long entrypointId, ResumeField resumeField);
 
   List<QuestionActivatorLink> findAllQuestionActivatorLinkByLayerId(Long layerId);
-
-  QuestionActivatorLink findQuestionActivatorLinkByLayerIdAndQuestionId(Long layerId, Long questionId);
 }

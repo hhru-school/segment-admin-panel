@@ -1,26 +1,27 @@
-package ru.hhschool.segment.model.dto.questiondetailinfo;
+package ru.hhschool.segment.model.dto.questioninfopage;
 
-import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfoPage;
 import ru.hhschool.segment.model.enums.AnswerType;
 
 import java.util.List;
 
-public class AnswerDtoForQuestionDetailInfo {
+public class AnswerDtoForQuestionsInfo {
   private Long id;
   private String title;
-  private List<QuestionDtoForQuestionDetailInfo> openQuestonDtoList;
   private String positiveTitle;
   private AnswerType answerType;
   private boolean isDefault;
   private boolean skipAtResult;
+  private boolean searchedObject;
+  private List<QuestionDtoForQuestionsInfo> openQuestonDtoList;
 
-  public AnswerDtoForQuestionDetailInfo() {
+  public AnswerDtoForQuestionsInfo() {
   }
 
-  public AnswerDtoForQuestionDetailInfo(Long id, String title, List<QuestionDtoForQuestionDetailInfo> openQuestonDtoList, String positiveTitle, AnswerType answerType, boolean isDefault, boolean skipAtResult) {
+  public AnswerDtoForQuestionsInfo(Long id, String title, List<QuestionDtoForQuestionsInfo> openQuestonDtoList, boolean searchedObject, String positiveTitle, AnswerType answerType, boolean isDefault, boolean skipAtResult) {
     this.id = id;
     this.title = title;
     this.openQuestonDtoList = openQuestonDtoList;
+    this.searchedObject = searchedObject;
     this.positiveTitle = positiveTitle;
     this.answerType = answerType;
     this.isDefault = isDefault;
@@ -43,12 +44,20 @@ public class AnswerDtoForQuestionDetailInfo {
     this.title = title;
   }
 
-  public List<QuestionDtoForQuestionDetailInfo> getOpenQuestonDtoList() {
+  public List<QuestionDtoForQuestionsInfo> getOpenQuestonDtoList() {
     return openQuestonDtoList;
   }
 
-  public void setOpenQuestonDtoList(List<QuestionDtoForQuestionDetailInfo> openQuestonDtoList) {
+  public void setOpenQuestonDtoList(List<QuestionDtoForQuestionsInfo> openQuestonDtoList) {
     this.openQuestonDtoList = openQuestonDtoList;
+  }
+
+  public boolean isSearchedObject() {
+    return searchedObject;
+  }
+
+  public void setSearchedObject(boolean searchedObject) {
+    this.searchedObject = searchedObject;
   }
 
   public String getPositiveTitle() {

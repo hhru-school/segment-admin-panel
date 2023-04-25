@@ -4,10 +4,8 @@ import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.dao.abstracts.QuestionActivatorLinkDao;
 import ru.hhschool.segment.dao.abstracts.QuestionDao;
 import ru.hhschool.segment.mapper.QuestionMapper;
-import ru.hhschool.segment.model.dto.AnswerDto;
-import ru.hhschool.segment.model.dto.QuestionDto;
-import ru.hhschool.segment.model.dto.questiondetailinfo.QuestionDtoForQuestionDetailInfo;
-import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfoPage;
+import ru.hhschool.segment.model.dto.questioninfopage.AnswerDtoForQuestionsInfo;
+import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfo;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.Question;
 import ru.hhschool.segment.model.entity.QuestionActivatorLink;
@@ -17,9 +15,12 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class QuestionService {
@@ -39,37 +40,54 @@ public class QuestionService {
   }
 
   @Transactional
-  public Set<QuestionDtoForQuestionsInfoPage> getSetQuestionDtoOfLayerAndParentsWithAnswers(Long layerId, String searchString) {
+  public List<QuestionActivatorLink> createActivatorLinkListOfLayerWithParents(Long layerId) {
     Optional<Layer> optionalSelectedLayer = layerDao.findById(layerId);
     if (optionalSelectedLayer.isEmpty()) {
-      return Collections.emptySet();
+      return Collections.emptyList();
     }
     List<Layer> selectedLayerWithParents = new ArrayList<>(List.of(optionalSelectedLayer.get()));
     selectedLayerWithParents.addAll(layerDao.getAllParents(layerId));
-    Set<QuestionDtoForQuestionsInfoPage> questionDtoForQuestionsInfoPageSet = selectedLayerWithParents
-        .stream()
+
+    return selectedLayerWithParents.stream()
         .map(layer -> questionActivatorLinkDao.findAllQuestionActivatorLinkByLayerId(layer.getId()))
         .flatMap(Collection::stream)
-        .map(this::createQuestionDtoWithAnswers)
-        .map(QuestionMapper::toDtoForQuestionsInfo)
-        .collect(Collectors.toSet());
-    if (searchString == null || searchString.equals("")) {
-      return questionDtoForQuestionsInfoPageSet;
-    }
-
-    return filterService.filterQuestionDtoSetByString(searchString,questionDtoForQuestionsInfoPageSet);
+        .toList();
   }
 
-  public QuestionDto createQuestionDtoWithAnswers(QuestionActivatorLink questionActivatorLink) {
-    Question question = questionActivatorLink.getQuestion();
-    List<AnswerDto> answerDtoList = answerService.getAllAnswerDtoListByListId(question.getPossibleAnswerIdList());
-    return QuestionMapper.toDto(questionActivatorLink.getQuestion(), answerDtoList);
+
+  @Transactional
+  public List<Question> createListOfQuestionByLayerId(Long layerId) {
+    Map<String, Question> questionMap = createActivatorLinkListOfLayerWithParents(layerId).stream()
+        .map(QuestionActivatorLink::getQuestion)
+        .collect(Collectors.toMap(Question::getTitle, Function.identity(), (existingValue, newValue) -> existingValue));
+    List<Question> questionList = new ArrayList<>(questionMap.values());
+    questionList.sort(Comparator.comparingLong(Question::getId));
+    return questionList;
   }
 
   @Transactional
-  public QuestionDtoForQuestionDetailInfo сreateQuestionDtoWithAnswersAndStatus(Long layerId, Long questionId) {
-    QuestionActivatorLink questionActivatorLink = questionActivatorLinkDao.findQuestionActivatorLinkByLayerIdAndQuestionId(layerId, questionId);
-    QuestionDto questionDto = createQuestionDtoWithAnswers(questionActivatorLink);
-    return QuestionMapper.toDtoForQuestionDetailInfo(questionDto);
+  public List<QuestionDtoForQuestionsInfo> getAllQuestionDtoListForQuestionsInfo(Long layerId, String searchString) {
+    List<QuestionDtoForQuestionsInfo> questionDtoForQuestionsInfoList = new ArrayList<>();
+    List<Question> questionList = createListOfQuestionByLayerId(layerId);
+    questionList.forEach(question -> {
+      List<AnswerDtoForQuestionsInfo> answerDtoList = answerService.getAllAnswerDtoListByListId(question.getPossibleAnswerIdList(), questionList);
+      QuestionDtoForQuestionsInfo questionDto = QuestionMapper.toDtoForQuestionsInfo(question, answerDtoList);
+      questionDtoForQuestionsInfoList.add(questionDto);
+    });
+    if (searchString == null || searchString.equals("")) {
+      return questionDtoForQuestionsInfoList;
+    }
+    return filterService.filterQuestionDtoListByString(searchString, questionDtoForQuestionsInfoList);
+  }
+
+  @Transactional
+  public QuestionDtoForQuestionsInfo getQuestionDtoForQuestionInfo(Long layerId, Long questionId) {
+    List<Question> questionList = createListOfQuestionByLayerId(layerId);
+    Question question = questionList.stream()
+        .filter(question1 -> Objects.equals(question1.getId(), questionId))
+        .findFirst()
+        .orElseGet(null);
+    List<AnswerDtoForQuestionsInfo> answerDtoList = answerService.getAllAnswerDtoListByListId(question.getPossibleAnswerIdList(), questionList);
+    return QuestionMapper.toDtoForQuestionsInfo(question, answerDtoList);
   }
 }

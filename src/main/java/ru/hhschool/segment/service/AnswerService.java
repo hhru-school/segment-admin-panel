@@ -4,12 +4,11 @@ import ru.hhschool.segment.dao.abstracts.AnswerDao;
 import ru.hhschool.segment.dao.abstracts.QuestionDao;
 import ru.hhschool.segment.mapper.AnswerMapper;
 import ru.hhschool.segment.mapper.QuestionMapper;
-import ru.hhschool.segment.model.dto.AnswerDto;
-import ru.hhschool.segment.model.dto.QuestionDto;
+import ru.hhschool.segment.model.dto.questioninfopage.AnswerDtoForQuestionsInfo;
+import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfo;
 import ru.hhschool.segment.model.entity.Question;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +24,7 @@ public class AnswerService {
     this.questionDao = questionDao;
   }
 
-  public List<AnswerDto> getAllAnswerDtoListByListId(List<Long> answersIdList) {
+  public List<AnswerDtoForQuestionsInfo> getAllAnswerDtoListByListId(List<Long> answersIdList, List<Question> questionList) {
     if (answersIdList == null) {
       return Collections.emptyList();
     }
@@ -33,20 +32,17 @@ public class AnswerService {
         .map(answerDao::findById)
         .filter(Optional::isPresent)
         .map(Optional::get)
-        .map(answer -> AnswerMapper.toDto(answer, getAllOpenQuestionForAnswer(answer.getOpenQuestionList())))
+        .map(answer -> AnswerMapper.toDtoForQuestionsInfo(answer, getAllOpenQuestionForAnswer(answer.getOpenQuestionList(), questionList)))
         .collect(Collectors.toList());
   }
 
-
-  public List<QuestionDto> getAllOpenQuestionForAnswer(List<Long> openQuestionIdList) {
+  public List<QuestionDtoForQuestionsInfo> getAllOpenQuestionForAnswer(List<Long> openQuestionIdList, List<Question> questionList) {
     if (openQuestionIdList == null) {
       return Collections.emptyList();
     }
-    return openQuestionIdList.stream()
-        .map(questionDao::findById)
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .map(question -> QuestionMapper.toDto(question, getAllAnswerDtoListByListId(question.getPossibleAnswerIdList())))
-        .collect(Collectors.toList());
+    return questionList.stream()
+        .filter(question -> openQuestionIdList.contains(question.getId()))
+        .map(question -> QuestionMapper.toDtoForQuestionsInfo(question, getAllAnswerDtoListByListId(question.getPossibleAnswerIdList(), questionList)))
+        .toList();
   }
 }

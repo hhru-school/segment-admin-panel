@@ -34,18 +34,4 @@ public class QuestionActivatorLinkDaoImpl extends ReadWriteDaoImpl<QuestionActiv
         .setParameter("layerId", layerId)
         .getResultList();
   }
-
-  @Override
-  public QuestionActivatorLink findQuestionActivatorLinkByLayerIdAndQuestionId(Long layerId, Long questionId) {
-    return em.createQuery(
-            """
-                   SELECT e FROM QuestionActivatorLink e 
-                   WHERE e.layerId = :layerId
-                   AND e.question.id =:questionId
-                """, QuestionActivatorLink.class)
-        .setParameter("layerId", layerId)
-        .setParameter("questionId", questionId)
-        .setMaxResults(1)
-        .getSingleResult();
-  }
 }
