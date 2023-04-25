@@ -5,7 +5,6 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.NotFoundException;
-import org.hibernate.NonUniqueResultException;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.mapper.LayerMapper;
 import ru.hhschool.segment.mapper.basicInfo.LayerBasicInfoMapper;
@@ -77,50 +76,46 @@ public class LayerService {
     }
 
     Optional<LayerChangeDto> layerChangeDto = Optional.empty();
-    Optional<Layer> layerStableChildOptional = Optional.empty();
+    List<Layer> layerStableChildList = List.of();
 
     do {
-      try {
-        layerStableChildOptional = layerDao.findStableChildById(layerParent.getId());
+      layerStableChildList = layerDao.findStableChildById(layerParent.getId());
+      /**
+       * Детей в состоянии stable не обнаружено, сохраняем.
+       */
+      if (layerStableChildList.size() == 0) {
         /**
-         * Детей в состоянии stable не обнаружено, сохраняем.
+         * Если это прямой родитель сохраняем, иначе.
+         * Это не прямой родитель, а ребенок, относительно него ищем конфликты.
          */
-        if (layerStableChildOptional.isEmpty()) {
-          /**
-           * Если это прямой родитель сохраняем, иначе.
-           * Это не прямой родитель, а ребенок, относительно него ищем конфликты.
-           */
-          if (layer.getParent().getId().equals(layerParent.getId())) {
-            //TODO сразу делаем Save Stable
-            return Optional.of(LayerChangeMapper.layerChangeToDto(layer, ConflictStatus.NONE));
-          }
+        if (layer.getParent().getId().equals(layerParent.getId())) {
+          //TODO сразу делаем Save Stable
+          return Optional.of(LayerChangeMapper.layerChangeToDto(layer, ConflictStatus.NONE));
         }
-      } catch (NonUniqueResultException e) {
+      }
+      if (layerStableChildList.size() > 1) {
         throw new IllegalStateException("Error. More that one Stable child.");
       }
 
       /**
        * у наследника нашлись еще stable наследники.
        */
-      if (layerStableChildOptional.isPresent()) {
-        layerParent = layerStableChildOptional.get();
-      }
-      /**
-      * Сравниваем с каждым наследником. Независимо есть stable наследники у него или нет.
-      */
-      layerChangeDto = LayerConflictChecker.getConflict(layer, layerParent);
+      if (layerStableChildList.size() > 0) {
+        layerParent = layerStableChildList.get(0);
 
-      /**
-       * Найден конфликт вываливаемся.
-       */
-      if (layerChangeDto.isPresent() && layerChangeDto.get().isConflict()) {
-        return layerChangeDto;
+        /**
+         * Сравниваем с каждым наследником. Независимо есть stable наследники у него или нет.
+         */
+        layerChangeDto = LayerConflictChecker.getConflict(layer, layerParent);
+        if (layerChangeDto.isPresent() && layerChangeDto.get().isConflict()) {
+          return layerChangeDto;
+        }
       }
       /**
        * Если у нас еще найдены stable наследники.
        * И при этом не обнаружено конфликтов с прошлым наследником.
        */
-    } while (layerStableChildOptional.isPresent() && layerChangeDto.isPresent());
+    } while (layerStableChildList.size() > 0 && layerChangeDto.isPresent());
 
     // TODO Save Stable + переписывает родителя на layerParent.id
     return Optional.of(LayerChangeMapper.layerChangeToDto(layerParent, ConflictStatus.NONE));
