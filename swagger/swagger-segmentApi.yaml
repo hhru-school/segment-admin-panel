@@ -5,7 +5,7 @@ info:
     This is admin panel of Segment.
   contact:
     email: baddan@mail.ru
-  version: 0.03
+  version: 1.0.1
 servers:
   - url: http://localhost
 paths:
@@ -51,7 +51,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/LayerBasicInfoDto'
 
-  /layers/changes/{layerId}:
+  /layers/{layerId}/changes:
     get:
       tags:
         - layers
@@ -67,6 +67,33 @@ paths:
       responses:
         '404':
           description: Not found
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LayerCgangeDto'
+
+  /layers/{layerId}/merge:
+    get:
+      tags:
+        - layers
+      summary: Сделать слой стабильным, объединить с родительским
+      description:
+      operationId: joinLayer
+      parameters: 
+        - name: LayerId
+          in: path
+          required: true
+          schema: 
+            type: number
+      responses:
+        '404':
+          description: Not found (Такой слой не найден)
+        '405':
+          description: Not allowed (уже стабильный/ возможна бесконечная рекусия/ Parent not found/ More that one Stable child.)
         '200':
           description: successful operation
           content:
@@ -101,7 +128,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/EntrypointDto'
 
-  /entrypoints//{entrypointId}/layer/{layerId}:
+  /entrypoints/{entrypointId}/layer/{layerId}:
     get:
       tags:
         - entrypoints
@@ -188,6 +215,7 @@ components:
           examples: 
             - ACTIVE
             - FINISHED
+            
 # Layers Information
     LayerBasicInfoDto:
       type: object
@@ -259,6 +287,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/QuestionChangeDto'
+        conflict:
+          type: boolean
     
     QuestionChangeDto:
       type: object
@@ -277,11 +307,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AnswerChangeDto'
+        conflict:
+          type: boolean
              
     SegmentChangeDto:
       type: object
       properties:
         id:
+          type: integer
+          format: int64
+          example: 10
+        parentId:
           type: integer
           format: int64
           example: 10
@@ -291,6 +327,10 @@ components:
         description:
           type: string
           example: грузоперевозки
+        archived:
+          type: boolean
+        conflict:
+          type: boolean
 
     EntrypointChangeDto:
       type: object
@@ -307,6 +347,8 @@ components:
           example: Описание Onboard ABC
         archived:
           type: boolean
+        conflict:
+          type: boolean
 
     LayerCgangeDto:
       type: object
@@ -319,24 +361,12 @@ components:
           type: integer
           format: int64
           example: 2
-        title:
-          type: string
-          example: title #7
-        description:
-          type: string
-          example: тест А добавлен сегмент АБС
-        stable:
+        lastCompareLayerId:
+          type: integer
+          format: int64
+          example: 5
+        conflict:
           type: boolean
-          example: true
-        archive:
-          type: boolean
-          example: true
-        deleted:
-          type: boolean
-          example: true
-        creationTime:
-          type: string
-          example: 2023-03-01T18:16:15.12312
         entrypointMap:
           type: object
           properties:
@@ -354,7 +384,8 @@ components:
               type: string
               examples:
                 - CREATED
-                - ARCHIVED 
+                - ARCHIVED
+                - CONFLICT
             segmentChangeDtoList:
               type: array
               items: 
@@ -389,7 +420,14 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/QuestionActivatorLinkChangeDto'
-
+        usedEntrypointTitleList:
+          type: array
+          items: 
+            type: string
+            examples: 
+              - Onboard
+              - Резюме
+            
 #enums
     QuestionVisibilityType:
       type: string
@@ -397,6 +435,12 @@ components:
         - SHOW
         - HIDE
         - HIDE_PREFILLED
-       
-        
-      
+    
+    EntityStatus:
+      type: string
+      examples: 
+        - CREATED
+        - ARCHIVED
+        - NOT_LINKED
+        - CONFLICT
+    
