@@ -64,7 +64,9 @@ public class LayerService {
      * если parent == null это базовый слой, записываем его сразу.
      */
     if (layer.getParent() == null) {
-      //TODO тут делаем Save Stable
+      layer.setStable(true);
+      layerDao.update(layer);
+
       return Optional.of(LayerChangeMapper.layerChangeToDto(layer, ConflictStatus.NONE));
     }
 
@@ -89,14 +91,12 @@ public class LayerService {
          * Это не прямой родитель, а ребенок, относительно него ищем конфликты.
          */
         if (layer.getParent().getId().equals(layerParent.getId())) {
-          //TODO сразу делаем Save Stable
-          return Optional.of(LayerChangeMapper.layerChangeToDto(layer, ConflictStatus.NONE));
+          break;
         }
       }
       if (layerStableChildList.size() > 1) {
         throw new IllegalStateException("Error. More that one Stable child.");
       }
-
       /**
        * у наследника нашлись еще stable наследники.
        */
@@ -119,11 +119,13 @@ public class LayerService {
 
     /**
      * Были проходы по stable наследникам
+     * переписывает родителя на layerParent.id
      */
     if (layerChangeDto.isPresent()) {
-      // TODO Save Stable + переписывает родителя на layerParent.id
       layer.setParent(layerParent);
     }
+    layer.setStable(true);
+    layerDao.update(layer);
     return Optional.of(LayerChangeMapper.layerChangeToDto(layer, ConflictStatus.NONE));
   }
 
