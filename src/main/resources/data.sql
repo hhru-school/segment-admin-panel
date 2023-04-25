@@ -1,6 +1,6 @@
 --Первый слой
 INSERT INTO layers (parent_layer_id, title, description, layer_stable, layer_archive, layer_deleted, create_time)
-VALUES (NULL, 'Первый слой', 'Базовый слой', TRUE, FALSE, FALSE, '2023-04-12 02:02:00');
+VALUES (NULL, 'Первый слой', 'Базовый слой', TRUE, FALSE, FALSE, '2023-04-12 02:02:00'); -- 1
 
 INSERT INTO entrypoints (layer_id, title, description)
 VALUES (1, 'Onboarding', 'Размещение вакансии работодателем'),
@@ -36,7 +36,7 @@ VALUES (1, 'segment-db', '2023-04-12 02:02:00', 'CREATE', 'Новая сесси
 
 --Второй слой
 INSERT INTO layers (parent_layer_id, title, description, layer_stable, layer_archive, layer_deleted, create_time)
-VALUES (1, 'Второй слой', 'Слой, унаследованный от базового слоя', TRUE, FALSE, FALSE, '2023-04-13 02:02:00');
+VALUES (1, 'Второй слой', 'Слой, унаследованный от базового слоя', TRUE, FALSE, FALSE, '2023-04-13 02:02:00'); -- 2
 
 INSERT INTO segments (layer_id, parent_segment_id, title, description, role, tag)
 VALUES (2, NULL, 'Переводчик', 'Переводчик', '{93}', '{"Translator", "ForeignLanguages"}'); --2
@@ -59,7 +59,7 @@ VALUES (2, 'segment-db', '2023-04-13 02:02:00', 'CREATE', 'Новая сесси
 
 --Третий слой
 INSERT INTO layers (parent_layer_id, title, description, layer_stable, layer_archive, layer_deleted, create_time)
-VALUES (2, 'Третий слой', 'Слой, унаследованный от второго слоя', TRUE, FALSE, FALSE, '2023-04-13 02:02:00');
+VALUES (2, 'Третий слой', 'Слой, унаследованный от второго слоя', TRUE, FALSE, FALSE, '2023-04-13 02:02:00'); -- 3
 
 INSERT INTO segments (layer_id, parent_segment_id, title, description, role, tag)
 VALUES (3, 2, 'Переводчик с китайского', 'Переводчик, владеющмя китайским языком, унаследован от переводчика', '{93}',
@@ -114,7 +114,7 @@ VALUES (3, 'segment-db', '2023-04-14 02:02:00', 'CREATE', 'Новая сесси
 
 --Четвертый слой, архивный
 INSERT INTO layers (parent_layer_id, title, description, layer_stable, layer_archive, layer_deleted, create_time)
-VALUES (3, 'Четвертый слой', 'Слой, унаследованный от третьего слоя, архивный', FALSE, TRUE, FALSE, '2023-04-15 02:02:00');
+VALUES (3, 'Четвертый слой', 'Слой, унаследованный от третьего слоя, архивный', FALSE, TRUE, FALSE, '2023-04-15 02:02:00'); -- 4
 
 INSERT INTO segments (layer_id, parent_segment_id, title, description, role, tag)
 VALUES (4, 4, 'Телохранитель', 'Телохранитель, унаследован от охранника', '{90}', '{"Bodyguard", "Security", "PrivateProtection"}'); --6
@@ -138,7 +138,7 @@ VALUES (4, 'segment-db', '2023-04-15 02:02:00', 'UPDATE', 'Новая сесси
 
 --Пятый слой
 INSERT INTO layers (parent_layer_id, title, description, layer_stable, layer_archive, layer_deleted, create_time)
-VALUES (3, 'Пятый слой', 'Слой, унаследованный от третьего слоя', TRUE, FALSE, FALSE, '2023-04-16 02:02:00');
+VALUES (3, 'Пятый слой', 'Слой, унаследованный от третьего слоя', TRUE, FALSE, FALSE, '2023-04-16 02:02:00'); -- 5
 
 INSERT INTO entrypoints (layer_id, title, description)
 VALUES (5, 'Редактирование резюме', 'Размещение резюме соискателем');
@@ -178,7 +178,7 @@ VALUES (5, 'segment-db', '2023-04-16 02:02:00', 'CREATE', 'Новая сесси
 
 --Шестой слой, удаленный
 INSERT INTO layers (parent_layer_id, title, description, layer_stable, layer_archive, layer_deleted, create_time)
-VALUES (5, 'Шестой слой', 'Слой, унаследованный от пятого слоя, удаленный', FALSE, FALSE, TRUE, '2023-04-17 02:02:00');
+VALUES (5, 'Шестой слой', 'Слой, унаследованный от пятого слоя, удаленный', FALSE, FALSE, TRUE, '2023-04-17 02:02:00'); -- 6
 
 INSERT INTO segments (layer_id, parent_segment_id, title, description, role, tag)
 VALUES (6, NULL, 'Механик', 'Специалист по сборке или ремонту различной техники', '{173}', '{"Repair", "Mechanic", "Assembly"}'); --9
@@ -196,7 +196,7 @@ VALUES (6, 'segment-db', '2023-04-17 02:02:00', 'DELETE', 'Новая сесси
 
 --Седьмой слой, экспериментальный
 INSERT INTO layers (parent_layer_id, title, description, layer_stable, layer_archive, layer_deleted, create_time)
-VALUES (5, 'Седьмой слой', 'Слой, унаследованный от пятого слоя, экспериментальный', FALSE, FALSE, FALSE, '2023-04-18 02:02:00');
+VALUES (5, 'Седьмой слой', 'Слой, унаследованный от пятого слоя, экспериментальный', FALSE, FALSE, FALSE, '2023-04-18 02:02:00'); -- 7
 
 INSERT INTO segments (layer_id, parent_segment_id, title, description, role, tag)
 VALUES (7, NULL, 'Психолог', 'Психолог', '{101}', '{"Psychologist", "Life", "Thoughts", "Help"}'), --10

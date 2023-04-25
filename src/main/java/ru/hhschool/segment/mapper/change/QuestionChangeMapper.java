@@ -5,7 +5,7 @@ import java.util.List;
 import ru.hhschool.segment.model.dto.change.QuestionChangeDto;
 import ru.hhschool.segment.model.entity.Question;
 
-public class MapperQuestionChange {
+public class QuestionChangeMapper {
   public static QuestionChangeDto questionChangeToDto(Question question) {
     QuestionChangeDto questionChangeDto = new QuestionChangeDto(
         question.getId(),
@@ -18,9 +18,12 @@ public class MapperQuestionChange {
   }
 
   public static List<QuestionChangeDto> questionChangeListToDtoList(List<Question> questionList) {
+    if (questionList == null) {
+      return List.of();
+    }
     return questionList
         .stream()
-        .map(MapperQuestionChange::questionChangeToDto)
+        .map(QuestionChangeMapper::questionChangeToDto)
         .toList();
   }
 }
