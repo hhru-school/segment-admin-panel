@@ -51,11 +51,10 @@ public class LayerService {
   @Transactional
   public Optional<LayerChangeDto> mergeLayerWithParent(Long layerId) throws NotFoundException, IllegalStateException {
     Optional<Layer> layerOptional = layerDao.findById(layerId);
-    if (layerOptional.isEmpty()) {
-      throw new NotFoundException("Not found.");
-    }
 
-    Layer layer = layerOptional.get();
+    Layer layer = layerOptional
+        .orElseThrow(() -> new NotFoundException("Not found."));
+
     if (layer.isStable()) {
       throw new IllegalStateException("Already stable.");
     }
