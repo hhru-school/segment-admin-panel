@@ -61,45 +61,69 @@ public class LayerService {
       throw new IllegalStateException("Already stable.");
     }
 
+    /**
+     * если parent == null это базовый слой, записываем его сразу.
+     */
     if (layer.getParent() == null) {
-      //TODO сразу делаем Save Stable
-      return Optional.empty();
+      //TODO тут делаем Save Stable
+      return Optional.of(LayerChangeMapper.layerChangeToDto(layer, ConflictStatus.NONE));
     }
 
-    Layer layerStableChild = layer;
-    Optional<LayerChangeDto> layerChangeDto = Optional.empty();
-    do {
-      // TODO нет рекусии крутимся на одном и томже ребенке!
-      if (layerId.equals(layer.getParent().getId())) {
-        throw new IllegalStateException("LayerId equals ParentId ошибка в данных");
-      }
-      Optional<Layer> layerStableChildOptional;
-      try {
-        layerStableChildOptional = layerDao.findStableChildById(layer.getParent().getId());
-      } catch (NonUniqueResultException e) {
-        throw new IllegalStateException("More that one Stable child.");
-      }
-      //TODO перепроверить логику, выборки парентов, гдето ошибка, сохранение без поиска конфликтов..
-      if (layerStableChildOptional.isEmpty()) {
-        //TODO сразу делаем Save Stable
-        return Optional.empty();
-      }
-      layerStableChild = layerStableChildOptional.get();
+    Layer layerParent = layerDao.findById(layer.getParent().getId())
+        .orElseThrow(() -> new IllegalStateException("Error. Parent not found."));
 
-      layerChangeDto = LayerConflictChecker.getConflict(layer, layerStableChild);
+    if (layerId.equals(layerParent.getId())) {
+      throw new IllegalStateException("Error recursion. LayerId equals ParentId.");
+    }
+
+    Optional<LayerChangeDto> layerChangeDto = Optional.empty();
+    Optional<Layer> layerStableChildOptional = Optional.empty();
+
+    do {
+      try {
+        layerStableChildOptional = layerDao.findStableChildById(layerParent.getId());
+        /**
+         * Детей в состоянии stable не обнаружено, сохраняем.
+         */
+        if (layerStableChildOptional.isEmpty()) {
+          /**
+           * Если это прямой родитель сохраняем, иначе.
+           * Это не прямой родитель, а ребенок, относительно него ищем конфликты.
+           */
+          if (layer.getParent().getId().equals(layerParent.getId())) {
+            //TODO сразу делаем Save Stable
+            return Optional.of(LayerChangeMapper.layerChangeToDto(layer, ConflictStatus.NONE));
+          }
+        }
+      } catch (NonUniqueResultException e) {
+        throw new IllegalStateException("Error. More that one Stable child.");
+      }
+
+      /**
+       * у наследника нашлись еще stable наследники.
+       */
+      if (layerStableChildOptional.isPresent()) {
+        layerParent = layerStableChildOptional.get();
+      }
+      /**
+      * Сравниваем с каждым наследником. Независимо есть stable наследники у него или нет.
+      */
+      layerChangeDto = LayerConflictChecker.getConflict(layer, layerParent);
+
+      /**
+       * Найден конфликт вываливаемся.
+       */
       if (layerChangeDto.isPresent() && layerChangeDto.get().isConflict()) {
         return layerChangeDto;
       }
+      /**
+       * Если у нас еще найдены stable наследники.
+       * И при этом не обнаружено конфликтов с прошлым наследником.
+       */
+    } while (layerStableChildOptional.isPresent() && layerChangeDto.isPresent());
 
-      if (layerChangeDto.isPresent()) {
-        //TODO recursion joinNext()
-        // while ^^
-      }
-      // TODO надо запомнить parentId и проверить нет ли над ним еще одного наследника!
-    } while (layerChangeDto.isPresent());
-
-    // TODO Save Stable + переписывает родителя на layerStableChild.id
-    return Optional.of(LayerChangeMapper.layerChangeToDto(layerStableChild, ConflictStatus.NONE));
+    // TODO Save Stable + переписывает родителя на layerParent.id
+    return Optional.of(LayerChangeMapper.layerChangeToDto(layerParent, ConflictStatus.NONE));
   }
 
 }

@@ -18,51 +18,28 @@ import ru.hhschool.segment.model.enums.ConflictStatus;
 import ru.hhschool.segment.model.enums.EntityStatus;
 
 public class LayerConflictChecker {
-  public static Optional<LayerChangeDto> getConflict(Layer layer, Layer layerStableChild) {
+  public static Optional<LayerChangeDto> getConflict(Layer layer, Layer layerForCompare) {
     LayerChangeDto layerChangeDto = LayerChangeMapper.layerChangeToDto(layer, ConflictStatus.NONE);
+
+    layerChangeDto.setLastCompareLayerId(layerForCompare.getId());
 
     boolean conflict = ConflictStatus.NONE.isConflict();
 
-    List<EntrypointChangeDto> entrypointConflictList
-        = new EntityConflictChecker<EntrypointChangeDto>().getConflictList(
-        EntrypointChangeMapper.entrypointChangeListToDtoList(layer.getEntrypointList()),
-        EntrypointChangeMapper.entrypointChangeListToDtoList(layerStableChild.getEntrypointList())
-    );
-    if (entrypointConflictList.size() != 0) {
-      conflict = ConflictStatus.CONFLICT.isConflict();
-      layerChangeDto.setEntrypointMap(Map.of(EntityStatus.CONFLICT.name(), entrypointConflictList));
-    } else {
-      layerChangeDto.setEntrypointMap(Map.of());
-    }
+    conflict |= checkEntrypointConflict(layer, layerForCompare, layerChangeDto);
+    conflict |= checkQuestionConflict(layer, layerForCompare, layerChangeDto);
+    conflict |= checkSegmentConflict(layer, layerForCompare, layerChangeDto);
+    conflict |= checkQuestionActivatorLinkConflict(layer, layerForCompare, layerChangeDto);
 
-    List<QuestionChangeDto> questionConflictList
-        = new EntityConflictChecker<QuestionChangeDto>().getConflictList(
-        QuestionChangeMapper.questionChangeListToDtoList(layer.getQuestionList()),
-        QuestionChangeMapper.questionChangeListToDtoList(layerStableChild.getQuestionList())
-    );
-    if (questionConflictList.size() != 0) {
-      conflict = ConflictStatus.CONFLICT.isConflict();
-      layerChangeDto.setQuestionMap(Map.of(EntityStatus.CONFLICT.name(), questionConflictList));
-    } else {
-      layerChangeDto.setQuestionMap(Map.of());
-    }
+    layerChangeDto.setConflict(conflict);
+    return Optional.of(layerChangeDto);
+  }
 
-    List<SegmentChangeDto> segmentChangeList
-        = new EntityConflictChecker<SegmentChangeDto>().getConflictList(
-        SegmentChangeMapper.segmentChangeListToDtoList(layer.getSegmentList()),
-        SegmentChangeMapper.segmentChangeListToDtoList(layerStableChild.getSegmentList())
-    );
-    if (segmentChangeList.size() != 0) {
-      conflict = ConflictStatus.CONFLICT.isConflict();
-      layerChangeDto.setSegmentMap(Map.of(EntityStatus.CONFLICT.name(), segmentChangeList));
-    } else {
-      layerChangeDto.setSegmentMap(Map.of());
-    }
-
+  private static boolean checkQuestionActivatorLinkConflict(Layer layer, Layer layerForCompare, LayerChangeDto layerChangeDto) {
+    boolean conflict = ConflictStatus.NONE.isConflict();
     List<QuestionActivatorLinkChangeDto> linksChangeList
         = new EntityConflictChecker<QuestionActivatorLinkChangeDto>().getConflictList(
         QuestionActivatorLinkChangeMapper.questionActivatorLinkChangeListToDtoList(layer.getQuestionActivatorLinksList()),
-        QuestionActivatorLinkChangeMapper.questionActivatorLinkChangeListToDtoList(layerStableChild.getQuestionActivatorLinksList())
+        QuestionActivatorLinkChangeMapper.questionActivatorLinkChangeListToDtoList(layerForCompare.getQuestionActivatorLinksList())
     );
     if (linksChangeList.size() != 0) {
       conflict = ConflictStatus.CONFLICT.isConflict();
@@ -70,9 +47,55 @@ public class LayerConflictChecker {
     } else {
       layerChangeDto.setQuestionActivatorLinkMap(Map.of());
     }
+    return conflict;
+  }
 
-    layerChangeDto.setConflict(conflict);
-    return Optional.of(layerChangeDto);
+  private static boolean checkSegmentConflict(Layer layer, Layer layerForCompare, LayerChangeDto layerChangeDto) {
+    boolean conflict = ConflictStatus.NONE.isConflict();
+    List<SegmentChangeDto> segmentChangeList
+        = new EntityConflictChecker<SegmentChangeDto>().getConflictList(
+        SegmentChangeMapper.segmentChangeListToDtoList(layer.getSegmentList()),
+        SegmentChangeMapper.segmentChangeListToDtoList(layerForCompare.getSegmentList())
+    );
+    if (segmentChangeList.size() != 0) {
+      conflict = ConflictStatus.CONFLICT.isConflict();
+      layerChangeDto.setSegmentMap(Map.of(EntityStatus.CONFLICT.name(), segmentChangeList));
+    } else {
+      layerChangeDto.setSegmentMap(Map.of());
+    }
+    return conflict;
+  }
+
+  private static boolean checkQuestionConflict(Layer layer, Layer layerForCompare, LayerChangeDto layerChangeDto) {
+    boolean conflict = ConflictStatus.NONE.isConflict();
+    List<QuestionChangeDto> questionConflictList
+        = new EntityConflictChecker<QuestionChangeDto>().getConflictList(
+        QuestionChangeMapper.questionChangeListToDtoList(layer.getQuestionList()),
+        QuestionChangeMapper.questionChangeListToDtoList(layerForCompare.getQuestionList())
+    );
+    if (questionConflictList.size() != 0) {
+      conflict = ConflictStatus.CONFLICT.isConflict();
+      layerChangeDto.setQuestionMap(Map.of(EntityStatus.CONFLICT.name(), questionConflictList));
+    } else {
+      layerChangeDto.setQuestionMap(Map.of());
+    }
+    return conflict;
+  }
+
+  private static boolean checkEntrypointConflict(Layer layer, Layer layerForCompare, LayerChangeDto layerChangeDto) {
+    boolean conflict = ConflictStatus.NONE.isConflict();
+    List<EntrypointChangeDto> entrypointConflictList
+        = new EntityConflictChecker<EntrypointChangeDto>().getConflictList(
+        EntrypointChangeMapper.entrypointChangeListToDtoList(layer.getEntrypointList()),
+        EntrypointChangeMapper.entrypointChangeListToDtoList(layerForCompare.getEntrypointList())
+    );
+    if (entrypointConflictList.size() != 0) {
+      conflict = ConflictStatus.CONFLICT.isConflict();
+      layerChangeDto.setEntrypointMap(Map.of(EntityStatus.CONFLICT.name(), entrypointConflictList));
+    } else {
+      layerChangeDto.setEntrypointMap(Map.of());
+    }
+    return conflict;
   }
 
 

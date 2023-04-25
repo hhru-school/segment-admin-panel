@@ -7,6 +7,7 @@ import java.util.Set;
 public class LayerChangeDto {
   private Long id;
   private Long parentLayerId;
+  private Long lastCompareLayerId;
   private boolean conflict;
 
   private Map<String, List<EntrypointChangeDto>> entrypointMap;
@@ -104,4 +105,11 @@ public class LayerChangeDto {
     this.conflict = conflict;
   }
 
+  public Long getLastCompareLayerId() {
+    return lastCompareLayerId;
+  }
+
+  public void setLastCompareLayerId(Long lastCompareLayerId) {
+    this.lastCompareLayerId = lastCompareLayerId;
+  }
 }
