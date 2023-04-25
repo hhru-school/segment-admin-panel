@@ -47,7 +47,7 @@ public class LayerResource {
   }
 
   @GET
-  @Path(value = "/changes/{layerId}")
+  @Path(value = "/{layerId}/changes")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getLayerChanges(@PathParam(value = "layerId") Long layerId) {
     Optional<LayerChangeDto> layerChanges = layerService.getLayerChanges(layerId);
@@ -59,7 +59,7 @@ public class LayerResource {
   }
 
   @GET
-  @Path(value = "/merge/{layerId}")
+  @Path(value = "/{layerId}/merge")
   @Produces(MediaType.APPLICATION_JSON)
   public Response joinLayer(@PathParam(value = "layerId") Long layerId) {
     try {
