@@ -1,5 +1,6 @@
 package ru.hhschool.segment.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
@@ -44,4 +45,14 @@ public class LayerService {
     LayerBasicInfoDto layerBasicInfoDto = LayerBasicInfoMapper.toDtoForBasicInfoPage(layer.get(), layerDao.getAllParents(id));
     return Optional.of(layerBasicInfoDto);
   }
+
+//  private List<Layer> getAllParents(Layer layer) {
+//    List<Layer> layerList = new ArrayList<>();
+//    while (layer.getParent() != null) {
+//      Layer parentLayer = layer.getParent();
+//      layerList.add(parentLayer);
+//      layer = parentLayer;
+//    }
+//    return layerList;
+//  }
 }

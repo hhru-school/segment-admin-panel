@@ -39,10 +39,17 @@ public class SegmentService {
     if (layer.isPresent()){
       List<Layer> layersInSpace = layerDao.getAllParents(layerId);
       layersInSpace.add(layer.get());
-      List<Segment> segmentList = segmentDao.findSegmentsInSpace(layersInSpace);
-      return segmentList;
+      return findSegmentsInSpace(layersInSpace);
     }
     return Collections.EMPTY_LIST;
+  }
+
+  private List<Segment> findSegmentsInSpace(Collection<Layer> space) {
+    List<Segment> segmentList = new ArrayList<>();
+    for (Layer layer : space) {
+      segmentList.addAll(segmentDao.findAll(layer.getId()));
+    }
+    return segmentList;
   }
 
   @Transactional
@@ -50,7 +57,7 @@ public class SegmentService {
     Optional<Segment> segment = segmentDao.findById(segmentId);
     if (segment.isPresent() && getSegmentsForSpace(layerId).contains(segment.get())){
       List<Layer> layersInSpace = getLayersInSpace(layerId);
-      List<QuestionActivatorLink> questionActivatorLinksInSpace = questionActivatorLinkDao.findQALInSpace(layersInSpace, segmentId);
+      List<QuestionActivatorLink> questionActivatorLinksInSpace = findQALInSpace(layersInSpace, segmentId);
       Map<String, QuestionActivatorLink> latestQuestionActivatorLinkMap = getLatestQALInSpace(questionActivatorLinksInSpace, layersInSpace);
       List<Question> questions = getUniqueQuestionsInSpace(latestQuestionActivatorLinkMap);
       List<SegmentViewQuestionDto> segmentViewQuestionDtoList = getSegmentViewQuestionDtoList(questions, latestQuestionActivatorLinkMap);
@@ -59,7 +66,13 @@ public class SegmentService {
     }
     return Optional.empty();
   }
-
+  private List<QuestionActivatorLink> findQALInSpace(List<Layer> layerSpace, Long segmentId) {
+    List<QuestionActivatorLink> questionActivatorLinkList = new ArrayList<>();
+    for(Layer layer : layerSpace){
+      questionActivatorLinkList.addAll(questionActivatorLinkDao.findAll(layer.getId(), segmentId));
+    }
+    return questionActivatorLinkList;
+  }
   private List<Layer> getLayersInSpace(Long layerId){
     Optional<Layer> layer = layerDao.findById(layerId);
     if (layer.isPresent()) {
@@ -76,8 +89,6 @@ public class SegmentService {
    * Важно, чтобы линки были отсортированы по порядку слоев в пространстве
    */
   private Map<String, QuestionActivatorLink> getLatestQALInSpace(List<QuestionActivatorLink> links, List<Layer> layersInSpace) {
-    Collections.sort(links,
-        Comparator.comparing(link -> layersInSpace.indexOf(link.getLayerId())));
     Map<String, QuestionActivatorLink> questionActivatorLinkMap = new HashMap<>();
     for(QuestionActivatorLink link : links){
       String key = link.getQuestion().getTitle() + link.getEntrypoint().getTitle();
@@ -139,7 +150,7 @@ public class SegmentService {
     if (parentLink.isEmpty()){
       return false;
     }
-    return !currentLink.isQuestionRequired() == parentLink.get().isQuestionRequired();
+    return currentLink.isQuestionRequired() != parentLink.get().isQuestionRequired();
   }
 
   private Boolean hasQuestionChanged(QuestionActivatorLink currentLink){
