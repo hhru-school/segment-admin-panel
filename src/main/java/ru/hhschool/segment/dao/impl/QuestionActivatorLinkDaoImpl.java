@@ -28,19 +28,13 @@ public class QuestionActivatorLinkDaoImpl extends ReadWriteDaoImpl<QuestionActiv
   }
 
   @Override
-  public List<QuestionActivatorLink> findQALInSpace(List<Layer> layerSpace, Long segmentId) {
-    List<QuestionActivatorLink> questionActivatorLinkList = new ArrayList<>();
-    for(Layer layer : layerSpace){
-      questionActivatorLinkList.addAll(
-          em.createQuery("SELECT e FROM QuestionActivatorLink e " +
-                  "WHERE e.layerId = :layerId " +
-                  "AND e.segment.id = :segmentId")
-              .setParameter("layerId", layer.getId())
-              .setParameter("segmentId", segmentId)
-              .getResultList()
-      );
-    }
-    return questionActivatorLinkList;
+  public List<QuestionActivatorLink> findAll(Long layerId, Long segmentId) {
+    return em.createQuery("SELECT e FROM QuestionActivatorLink e " +
+            "WHERE e.layerId = :layerId " +
+            "AND e.segment.id = :segmentId")
+        .setParameter("layerId", layerId)
+        .setParameter("segmentId", segmentId)
+        .getResultList();
   }
 
   @Override

@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface SegmentDao extends ReadWriteDao<Segment, Long>{
 
-  List<Segment> findSegmentsInSpace(Collection<Layer> space);
+  List<Segment> findAll(Long layerId);
 }

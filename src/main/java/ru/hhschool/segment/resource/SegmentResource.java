@@ -5,10 +5,7 @@ import ru.hhschool.segment.model.dto.viewsegments.SegmentViewDto;
 import ru.hhschool.segment.service.SegmentService;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -24,9 +21,9 @@ public class SegmentResource {
   }
 
   @GET
-  @Path("/{layerId}")
+  @Path("/")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getSegmentViewDtoListForAllSegmentsPage(@PathParam("layerId") Long layerId){
+  public Response getSegmentViewDtoListForAllSegmentsPage(@QueryParam("layerId") Long layerId){
     List<SegmentViewDto> segmentViewDtoList = segmentService.getSegmentViewDtoListForAllSegmentsPage(layerId);
     if (!segmentViewDtoList.isEmpty()){
       return Response.ok(segmentViewDtoList).build();
@@ -35,9 +32,9 @@ public class SegmentResource {
   }
 
   @GET
-  @Path("/{layerId}/{segmentId}")
+  @Path("/details")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getSegmentViewDtoListForViewSegmentPage(@PathParam("layerId") Long layerId, @PathParam("segmentId") Long segmentId){
+  public Response getSegmentViewDtoListForViewSegmentPage(@QueryParam("layerId") Long layerId, @QueryParam("segmentId") Long segmentId){
     Optional<SegmentSelectedDto> segmentSelectedDto = segmentService.getSegmentSelectedDto(layerId, segmentId);
     if (segmentSelectedDto.isPresent()){
       return Response.ok(segmentSelectedDto).build();
