@@ -46,7 +46,8 @@ public class QuestionService {
     if (optionalSelectedLayer.isEmpty()) {
       return Collections.emptyList();
     }
-    List<Layer> selectedLayerWithParents = new ArrayList<>(List.of(optionalSelectedLayer.get()));
+    List<Layer> selectedLayerWithParents = new ArrayList<>();
+    selectedLayerWithParents.add(optionalSelectedLayer.get());
     selectedLayerWithParents.addAll(layerDao.getAllParents(layerId));
 
     return selectedLayerWithParents.stream()
