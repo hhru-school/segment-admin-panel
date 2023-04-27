@@ -1,16 +1,17 @@
 package ru.hhschool.segment.model.dto.change;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Objects;
 import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 
 public class QuestionActivatorLinkChangeDto implements ConflictSetter {
   private Long id;
+  private boolean changeRequired;
   private boolean questionRequired;
+  private QuestionVisibilityType oldVisibility;
   private QuestionVisibilityType questionVisibility;
   private String entrypointTitle;
   private String segmentTitle;
-  @JsonIgnore
+  private String segmentParentTitle;
   private Long segmentParentId;
   private String questionTitle;
   private boolean conflict;
@@ -20,17 +21,20 @@ public class QuestionActivatorLinkChangeDto implements ConflictSetter {
 
   public QuestionActivatorLinkChangeDto(
       Long id,
-      boolean questionRequired,
-      QuestionVisibilityType questionVisibility,
+      boolean changeRequired, boolean questionRequired,
+      QuestionVisibilityType oldVisibility, QuestionVisibilityType questionVisibility,
       String entrypointTitle,
       String segmentTitle,
-      Long segmentParentId, String questionTitle
+      String segmentParentTitle, Long segmentParentId, String questionTitle
   ) {
     this.id = id;
+    this.changeRequired = changeRequired;
     this.questionRequired = questionRequired;
+    this.oldVisibility = oldVisibility;
     this.questionVisibility = questionVisibility;
     this.entrypointTitle = entrypointTitle;
     this.segmentTitle = segmentTitle;
+    this.segmentParentTitle = segmentParentTitle;
     this.segmentParentId = segmentParentId;
     this.questionTitle = questionTitle;
   }
@@ -90,6 +94,38 @@ public class QuestionActivatorLinkChangeDto implements ConflictSetter {
   @Override
   public void setConflict(boolean conflict) {
     this.conflict = conflict;
+  }
+
+  public boolean isChangeRequired() {
+    return changeRequired;
+  }
+
+  public void setChangeRequired(boolean changeRequired) {
+    this.changeRequired = changeRequired;
+  }
+
+  public QuestionVisibilityType getOldVisibility() {
+    return oldVisibility;
+  }
+
+  public void setOldVisibility(QuestionVisibilityType oldVisibility) {
+    this.oldVisibility = oldVisibility;
+  }
+
+  public Long getSegmentParentId() {
+    return segmentParentId;
+  }
+
+  public void setSegmentParentId(Long segmentParentId) {
+    this.segmentParentId = segmentParentId;
+  }
+
+  public String getSegmentParentTitle() {
+    return segmentParentTitle;
+  }
+
+  public void setSegmentParentTitle(String segmentParentTitle) {
+    this.segmentParentTitle = segmentParentTitle;
   }
 
   @Override

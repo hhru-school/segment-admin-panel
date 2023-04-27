@@ -3,6 +3,7 @@ package ru.hhschool.segment.mapper.change;
 import java.util.List;
 import ru.hhschool.segment.model.dto.change.QuestionActivatorLinkChangeDto;
 import ru.hhschool.segment.model.entity.QuestionActivatorLink;
+import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 
 public class QuestionActivatorLinkChangeMapper {
   public static QuestionActivatorLinkChangeDto questionActivatorLinkToDto(QuestionActivatorLink questionActivatorLink) {
@@ -11,16 +12,21 @@ public class QuestionActivatorLinkChangeMapper {
     String questionTitle = questionActivatorLink.getQuestion() == null ? null : questionActivatorLink.getQuestion().getTitle();
 
     Long segmentParentId = null;
+    String segmentParentTitle = null;
     if (questionActivatorLink.getSegment() != null && questionActivatorLink.getSegment().getParent() != null) {
       segmentParentId = questionActivatorLink.getSegment().getParent().getId();
+      segmentParentTitle = questionActivatorLink.getSegment().getParent().getTitle();
     }
 
     QuestionActivatorLinkChangeDto questionActivatorLinkChangeDto = new QuestionActivatorLinkChangeDto(
         questionActivatorLink.getId(),
+        false,
         questionActivatorLink.isQuestionRequired(),
+        QuestionVisibilityType.HIDE_PREFILLED,
         questionActivatorLink.getQuestionVisibility(),
         entrypointTitle,
         segmentTitle,
+        segmentParentTitle,
         segmentParentId,
         questionTitle
     );
