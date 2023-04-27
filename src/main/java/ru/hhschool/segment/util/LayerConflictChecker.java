@@ -1,14 +1,17 @@
 package ru.hhschool.segment.util;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import ru.hhschool.segment.mapper.change.EntrypointChangeMapper;
 import ru.hhschool.segment.mapper.change.LayerChangeMapper;
 import ru.hhschool.segment.mapper.change.QuestionActivatorLinkChangeMapper;
 import ru.hhschool.segment.mapper.change.QuestionChangeMapper;
 import ru.hhschool.segment.mapper.change.SegmentChangeMapper;
 import ru.hhschool.segment.model.dto.change.EntrypointChangeDto;
+import ru.hhschool.segment.model.dto.change.EntrypointGroupByQuestionDto;
 import ru.hhschool.segment.model.dto.change.LayerChangeDto;
 import ru.hhschool.segment.model.dto.change.QuestionActivatorLinkChangeDto;
 import ru.hhschool.segment.model.dto.change.QuestionChangeDto;
@@ -43,7 +46,19 @@ public class LayerConflictChecker {
     );
     if (linksChangeList.size() != 0) {
       conflict = ConflictStatus.CONFLICT.isConflict();
-      layerChangeDto.setQuestionActivatorLinkMap(Map.of(EntityStatus.CONFLICT.name(), linksChangeList));
+
+      Map<String, List<QuestionActivatorLinkChangeDto>> questionGroupMap = linksChangeList
+          .stream()
+          .collect(Collectors.groupingBy(QuestionActivatorLinkChangeDto::getQuestionTitle));
+
+      List<EntrypointGroupByQuestionDto> entrypointGroupByQuestionDtoList = new ArrayList<>();
+      for (Map.Entry<String, List<QuestionActivatorLinkChangeDto>> question : questionGroupMap.entrySet()) {
+        EntrypointGroupByQuestionDto entrypointGroupByQuestionDto =
+            new EntrypointGroupByQuestionDto(question.getKey(), question.getValue());
+        entrypointGroupByQuestionDtoList.add(entrypointGroupByQuestionDto);
+      }
+
+      layerChangeDto.setQuestionActivatorLinkMap(Map.of(EntityStatus.CONFLICT.name(), entrypointGroupByQuestionDtoList));
     } else {
       layerChangeDto.setQuestionActivatorLinkMap(Map.of());
     }

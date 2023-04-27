@@ -14,7 +14,7 @@ public class LayerChangeDto {
   private Map<String, List<SegmentChangeDto>> segmentMap;
   private Map<String, List<QuestionChangeDto>> questionMap;
   private Map<String, List<AnswerChangeDto>> answerMap;
-  private Map<String, List<QuestionActivatorLinkChangeDto>> questionActivatorLinkMap;
+  private Map<String, List<EntrypointGroupByQuestionDto>> questionActivatorLinkMap;
   private Set<String> usedEntrypointTitleList;
 
   public LayerChangeDto() {
@@ -81,11 +81,11 @@ public class LayerChangeDto {
     this.answerMap = answerMap;
   }
 
-  public Map<String, List<QuestionActivatorLinkChangeDto>> getQuestionActivatorLinkMap() {
+  public Map<String, List<EntrypointGroupByQuestionDto>> getQuestionActivatorLinkMap() {
     return questionActivatorLinkMap;
   }
 
-  public void setQuestionActivatorLinkMap(Map<String, List<QuestionActivatorLinkChangeDto>> questionActivatorLinkMap) {
+  public void setQuestionActivatorLinkMap(Map<String, List<EntrypointGroupByQuestionDto>> questionActivatorLinkMap) {
     this.questionActivatorLinkMap = questionActivatorLinkMap;
   }
 

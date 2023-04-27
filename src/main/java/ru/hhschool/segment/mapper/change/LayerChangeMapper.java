@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.hibernate.Hibernate;
 import ru.hhschool.segment.model.dto.change.AnswerChangeDto;
 import ru.hhschool.segment.model.dto.change.EntrypointChangeDto;
+import ru.hhschool.segment.model.dto.change.EntrypointGroupByQuestionDto;
 import ru.hhschool.segment.model.dto.change.LayerChangeDto;
 import ru.hhschool.segment.model.dto.change.QuestionActivatorLinkChangeDto;
 import ru.hhschool.segment.model.dto.change.QuestionChangeDto;
@@ -59,7 +60,24 @@ public class LayerChangeMapper {
               Collectors.groupingBy(QuestionActivatorLinkChangeDto::getSegmentTitle)
           );
 
-      layerChangeDto.setQuestionActivatorLinkMap(segmentGroupMap);
+      Map<String, List<EntrypointGroupByQuestionDto>> questionActivatorLinkMap = new HashMap<>();
+
+      for (Map.Entry<String, List<QuestionActivatorLinkChangeDto>> entry : segmentGroupMap.entrySet()) {
+        Map<String, List<QuestionActivatorLinkChangeDto>> questionGroupMap = entry.getValue()
+            .stream()
+            .collect(Collectors.groupingBy(QuestionActivatorLinkChangeDto::getQuestionTitle));
+
+        List<EntrypointGroupByQuestionDto> entrypointGroupByQuestionDtoList = new ArrayList<>();
+        for (Map.Entry<String, List<QuestionActivatorLinkChangeDto>> question : questionGroupMap.entrySet()) {
+          EntrypointGroupByQuestionDto entrypointGroupByQuestionDto =
+              new EntrypointGroupByQuestionDto(question.getKey(), question.getValue());
+          entrypointGroupByQuestionDtoList.add(entrypointGroupByQuestionDto);
+        }
+
+        questionActivatorLinkMap.put(entry.getKey(), entrypointGroupByQuestionDtoList);
+      }
+
+      layerChangeDto.setQuestionActivatorLinkMap(questionActivatorLinkMap);
     }
   }
 
