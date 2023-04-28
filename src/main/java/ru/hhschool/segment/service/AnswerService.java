@@ -24,7 +24,7 @@ public class AnswerService {
     this.questionDao = questionDao;
   }
 
-  public List<AnswerDtoForQuestionsInfo> getAllAnswerDtoListByListId(List<Long> answersIdList, List<Question> questionList) {
+  public List<AnswerDtoForQuestionsInfo> getAllAnswerDtoListByListId(List<Long> answersIdList, List<Question> questionList, int depth) {
     if (answersIdList == null) {
       return Collections.emptyList();
     }
@@ -32,17 +32,17 @@ public class AnswerService {
         .map(answerDao::findById)
         .filter(Optional::isPresent)
         .map(Optional::get)
-        .map(answer -> AnswerMapper.toDtoForQuestionsInfo(answer, getAllOpenQuestionForAnswer(answer.getOpenQuestionList(), questionList)))
+        .map(answer -> AnswerMapper.toDtoForQuestionsInfo(answer, getAllOpenQuestionForAnswer(answer.getOpenQuestionList(), questionList, depth)))
         .collect(Collectors.toList());
   }
 
-  public List<QuestionDtoForQuestionsInfo> getAllOpenQuestionForAnswer(List<Long> openQuestionIdList, List<Question> questionList) {
-    if (openQuestionIdList == null) {
+  public List<QuestionDtoForQuestionsInfo> getAllOpenQuestionForAnswer(List<Long> openQuestionIdList, List<Question> questionList,int depth) {
+    if (openQuestionIdList == null|| depth <= 0) {
       return Collections.emptyList();
     }
     return questionList.stream()
         .filter(question -> openQuestionIdList.contains(question.getId()))
-        .map(question -> QuestionMapper.toDtoForQuestionsInfo(question, getAllAnswerDtoListByListId(question.getPossibleAnswerIdList(), questionList)))
+        .map(question -> QuestionMapper.toDtoForQuestionsInfo(question, getAllAnswerDtoListByListId(question.getPossibleAnswerIdList(), questionList, depth-1)))
         .toList();
   }
 }

@@ -9,7 +9,7 @@ public class AnswerDto {
   private String title;
   private String positiveTitle;
   private AnswerType answerType;
-  private boolean isDefault;
+  private boolean defaultAnswer;
   private boolean skipAtResult;
   private List<QuestionDto> openQuestonDtoList;
   private Long layerId;
@@ -17,12 +17,12 @@ public class AnswerDto {
   public AnswerDto() {
   }
 
-  public AnswerDto(Long id, String title, String positiveTitle, AnswerType answerType, boolean isDefault, boolean skipAtResult, List<QuestionDto> openQuestonDtoList, Long layerId) {
+  public AnswerDto(Long id, String title, String positiveTitle, AnswerType answerType, boolean defaultAnswer, boolean skipAtResult, List<QuestionDto> openQuestonDtoList, Long layerId) {
     this.id = id;
     this.title = title;
     this.positiveTitle = positiveTitle;
     this.answerType = answerType;
-    this.isDefault = isDefault;
+    this.defaultAnswer = defaultAnswer;
     this.skipAtResult = skipAtResult;
     this.openQuestonDtoList = openQuestonDtoList;
     this.layerId = layerId;
@@ -60,12 +60,12 @@ public class AnswerDto {
     this.answerType = answerType;
   }
 
-  public boolean isDefault() {
-    return isDefault;
+  public boolean isDefaultAnswer() {
+    return defaultAnswer;
   }
 
-  public void setDefault(boolean aDefault) {
-    isDefault = aDefault;
+  public void setDefaultAnswer(boolean defaultAnswer) {
+    this.defaultAnswer = defaultAnswer;
   }
 
   public boolean isSkipAtResult() {

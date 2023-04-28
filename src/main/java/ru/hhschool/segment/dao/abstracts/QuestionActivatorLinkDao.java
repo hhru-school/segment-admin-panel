@@ -8,5 +8,5 @@ import java.util.List;
 public interface QuestionActivatorLinkDao extends ReadWriteDao<QuestionActivatorLink, Long> {
   List<QuestionActivatorLink> findAll(Long layerId, Long entrypointId, ResumeField resumeField);
 
-  List<QuestionActivatorLink> findAllQuestionActivatorLinkByLayerId(Long layerId,ResumeField resumeField);
+  List<QuestionActivatorLink> findAllByLayerId(Long layerId,ResumeField resumeField);
 }

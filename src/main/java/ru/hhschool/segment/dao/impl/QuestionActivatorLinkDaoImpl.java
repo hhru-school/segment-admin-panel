@@ -24,7 +24,7 @@ public class QuestionActivatorLinkDaoImpl extends ReadWriteDaoImpl<QuestionActiv
     return entrypointList;
   }
 
-  public List<QuestionActivatorLink> findAllQuestionActivatorLinkByLayerId(Long layerId,ResumeField resumeField) {
+  public List<QuestionActivatorLink> findAllByLayerId(Long layerId,ResumeField resumeField) {
 
     return em.createQuery(
             """
