@@ -9,9 +9,9 @@ import ru.hhschool.segment.model.enums.ResumeField;
 
 public interface QuestionActivatorLinkDao extends ReadWriteDao<QuestionActivatorLink, Long> {
   List<QuestionActivatorLink> findAll(Long layerId, Long entrypointId, ResumeField resumeField);
+  List<QuestionActivatorLink> findAll(Long layerId, Long segmentId);
 
-  List<QuestionActivatorLink> findQALInSpace(List<Layer> layerSpace, Long segmentId);
-  Optional<QuestionActivatorLink> findExactly(Long layerId, Long segmentId, Long questionId, Long entryPointId);
+  Optional<QuestionActivatorLink> findExactly(Long layerId, Long segmentId, String questionTitle, Long entryPointId);
 
   List<QuestionActivatorLink> findAllByLayerId(Long layerId,ResumeField resumeField);
 }

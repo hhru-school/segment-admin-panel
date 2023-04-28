@@ -8,7 +8,7 @@ import javax.ws.rs.NotFoundException;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.mapper.LayerMapper;
 import ru.hhschool.segment.mapper.basicinfo.LayerBasicInfoMapper;
-import ru.hhschool.segment.mapper.change.MapperLayerChange;
+import ru.hhschool.segment.mapper.change.LayerChangeMapper;
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.change.LayerChangeDto;
