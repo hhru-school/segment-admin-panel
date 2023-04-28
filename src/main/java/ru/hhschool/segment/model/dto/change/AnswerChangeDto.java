@@ -1,7 +1,8 @@
 package ru.hhschool.segment.model.dto.change;
 
-import java.util.List;
 import ru.hhschool.segment.model.enums.AnswerType;
+
+import java.util.List;
 
 public class AnswerChangeDto {
   private Long id;

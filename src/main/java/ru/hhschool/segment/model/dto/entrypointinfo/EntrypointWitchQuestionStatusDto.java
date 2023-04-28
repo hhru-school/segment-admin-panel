@@ -1,7 +1,8 @@
 package ru.hhschool.segment.model.dto.entrypointinfo;
 
-import java.util.Set;
 import ru.hhschool.segment.model.dto.EntrypointDto;
+
+import java.util.Set;
 
 public class EntrypointWitchQuestionStatusDto {
   EntrypointDto entrypointDto;

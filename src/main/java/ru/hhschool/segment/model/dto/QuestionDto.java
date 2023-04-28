@@ -1,77 +1,36 @@
-package ru.hhschool.segment.model.entity;
+package ru.hhschool.segment.model.dto;
 
-import io.hypersistence.utils.hibernate.type.array.ListArrayType;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 import ru.hhschool.segment.model.enums.QuestionType;
 import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
-@Entity
-@TypeDef(name = "list-array", typeClass = ListArrayType.class)
-@Table(name = "questions")
-public class Question implements Serializable {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "question_id", nullable = false, unique = true)
+public class QuestionDto {
   private Long id;
-  @Column(name = "question_title", nullable = false)
   private String title;
-  @Column(name = "description")
   private String description;
-  @Enumerated(EnumType.STRING)
-  @Column(name = "question_type", nullable = false)
   private QuestionType type;
-  @Column(name = "question_required")
   private boolean required;
-  @Enumerated(EnumType.STRING)
-  @Column(name = "question_visibility")
   private QuestionVisibilityType questionVisibilityType;
-  @Type(type = "list-array")
-  @Column(
-      name = "possible_answers",
-      columnDefinition = "bigint[]"
-  )
-  private List<Long> possibleAnswerIdList;
-  @Column(name = "layer_id")
+  private List<AnswerDto> answerDtoList;
   private Long layerId;
-
-  @Column(name = "resume_field")
   private boolean resumeField;
 
-  public Question(
-      Long id,
-      String title,
-      String description,
-      QuestionType type,
-      boolean required,
-      QuestionVisibilityType questionVisibilityType,
-      List<Long> possibleAnswerIdList,
-      Long layerId,
-      boolean resumeField
-  ) {
+
+  public QuestionDto() {
+  }
+
+  public QuestionDto(Long id, String title, String description, QuestionType type, boolean required, QuestionVisibilityType questionVisibilityType, List<AnswerDto> answerDtoList, Long layerId, boolean resumeField) {
     this.id = id;
     this.title = title;
     this.description = description;
     this.type = type;
     this.required = required;
     this.questionVisibilityType = questionVisibilityType;
-    this.possibleAnswerIdList = possibleAnswerIdList;
+    this.answerDtoList = answerDtoList;
     this.layerId = layerId;
     this.resumeField = resumeField;
-  }
-
-  public Question() {
   }
 
   public Long getId() {
@@ -122,12 +81,12 @@ public class Question implements Serializable {
     this.questionVisibilityType = questionVisibilityType;
   }
 
-  public List<Long> getPossibleAnswerIdList() {
-    return possibleAnswerIdList;
+  public List<AnswerDto> getAnswerDtoList() {
+    return answerDtoList;
   }
 
-  public void setPossibleAnswerIdList(List<Long> possibleAnswerIdList) {
-    this.possibleAnswerIdList = possibleAnswerIdList;
+  public void setAnswerDtoList(List<AnswerDto> answerDtoList) {
+    this.answerDtoList = answerDtoList;
   }
 
   public Long getLayerId() {
@@ -145,4 +104,5 @@ public class Question implements Serializable {
   public void setResumeField(boolean resumeField) {
     this.resumeField = resumeField;
   }
+
 }
