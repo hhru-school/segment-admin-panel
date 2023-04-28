@@ -10,36 +10,36 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.LayerDto;
-import ru.hhschool.segment.model.dto.basicInfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.change.LayerChangeDto;
 import ru.hhschool.segment.service.LayerService;
+import ru.hhschool.segment.service.SegmentService;
 
 @Path("/layers")
 public class LayerResource {
   private final LayerService layerService;
+  private final SegmentService segmentService;
 
   @Inject
-  public LayerResource(LayerService layerService) {
+  public LayerResource(LayerService layerService, SegmentService segmentService) {
     this.layerService = layerService;
+    this.segmentService = segmentService;
   }
 
   @GET
   @Path(value = "/")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getLayerDtoListForMainPage() {
-    List<LayerDto> layerDtos = layerService.getLayerDtoListForMainPage();
-    if (layerDtos.isEmpty()) {
-      return Response.status(Response.Status.NO_CONTENT).build();
-    }
-    return Response.ok(layerDtos).build();
+    return Response.ok(layerService.getLayerDtoListForMainPage()).build();
   }
 
   @GET
   @Path(value = "/{layerId}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getLayerDtoListForBasicInfoPage(@PathParam("layerId") Long id) {
-    Optional<LayerBasicInfoDto> layerBasicInfoDto = layerService.getLayerDtoForBasicInfoPage(id);
+  public Response getLayerDtoListForBasicInfoPage(@PathParam("layerId") Long layerId) {
+    Optional<LayerBasicInfoDto> layerBasicInfoDto = layerService.getLayerDtoForBasicInfoPage(layerId);
     if (layerBasicInfoDto.isPresent()) {
       return Response.ok(layerBasicInfoDto).build();
     }
