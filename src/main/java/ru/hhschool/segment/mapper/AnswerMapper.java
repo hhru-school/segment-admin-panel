@@ -12,7 +12,7 @@ public class AnswerMapper {
     answerDtoForQuestionsInfoPage.setId(entity.getId());
     answerDtoForQuestionsInfoPage.setTitle(entity.getTitle());
     answerDtoForQuestionsInfoPage.setOpenQuestonDtoList(openQuestionDtoList);
-    answerDtoForQuestionsInfoPage.setDefault(entity.isDefault());
+    answerDtoForQuestionsInfoPage.setAnswerDefault(entity.isDefault());
     answerDtoForQuestionsInfoPage.setAnswerType(entity.getAnswerType());
     answerDtoForQuestionsInfoPage.setPositiveTitle(entity.getPositiveTitle());
     answerDtoForQuestionsInfoPage.setSkipAtResult(entity.isSkipAtResult());
