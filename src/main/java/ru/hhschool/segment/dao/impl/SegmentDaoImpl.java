@@ -1,12 +1,8 @@
 package ru.hhschool.segment.dao.impl;
 
-import ru.hhschool.segment.dao.abstracts.SegmentDao;
-import ru.hhschool.segment.model.entity.Layer;
-import ru.hhschool.segment.model.entity.Segment;
-
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import ru.hhschool.segment.dao.abstracts.SegmentDao;
+import ru.hhschool.segment.model.entity.Segment;
 
 public class SegmentDaoImpl extends ReadWriteDaoImpl<Segment, Long> implements SegmentDao {
   @Override

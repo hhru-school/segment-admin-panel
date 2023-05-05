@@ -1,8 +1,7 @@
 package ru.hhschool.segment.model.dto;
 
-import ru.hhschool.segment.model.enums.AnswerType;
-
 import java.util.List;
+import ru.hhschool.segment.model.enums.AnswerType;
 
 public class AnswerDto {
   private Long id;
@@ -17,7 +16,16 @@ public class AnswerDto {
   public AnswerDto() {
   }
 
-  public AnswerDto(Long id, String title, String positiveTitle, AnswerType answerType, boolean defaultAnswer, boolean skipAtResult, List<QuestionDto> openQuestonDtoList, Long layerId) {
+  public AnswerDto(
+      Long id,
+      String title,
+      String positiveTitle,
+      AnswerType answerType,
+      boolean defaultAnswer,
+      boolean skipAtResult,
+      List<QuestionDto> openQuestonDtoList,
+      Long layerId
+  ) {
     this.id = id;
     this.title = title;
     this.positiveTitle = positiveTitle;

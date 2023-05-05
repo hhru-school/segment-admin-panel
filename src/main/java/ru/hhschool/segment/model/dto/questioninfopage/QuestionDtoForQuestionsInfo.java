@@ -1,8 +1,7 @@
 package ru.hhschool.segment.model.dto.questioninfopage;
 
-import ru.hhschool.segment.model.enums.QuestionType;
-
 import java.util.List;
+import ru.hhschool.segment.model.enums.QuestionType;
 
 public class QuestionDtoForQuestionsInfo {
   private Long id;
@@ -15,7 +14,14 @@ public class QuestionDtoForQuestionsInfo {
   public QuestionDtoForQuestionsInfo() {
   }
 
-  public QuestionDtoForQuestionsInfo(Long id, String title, String description, QuestionType type, boolean searchedObject, List<AnswerDtoForQuestionsInfo> answerDtoList) {
+  public QuestionDtoForQuestionsInfo(
+      Long id,
+      String title,
+      String description,
+      QuestionType type,
+      boolean searchedObject,
+      List<AnswerDtoForQuestionsInfo> answerDtoList
+  ) {
     this.id = id;
     this.title = title;
     this.description = description;

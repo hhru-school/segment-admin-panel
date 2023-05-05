@@ -1,8 +1,7 @@
 package ru.hhschool.segment.model.dto.questioninfopage;
 
-import ru.hhschool.segment.model.enums.AnswerType;
-
 import java.util.List;
+import ru.hhschool.segment.model.enums.AnswerType;
 
 public class AnswerDtoForQuestionsInfo {
   private Long id;
@@ -17,7 +16,16 @@ public class AnswerDtoForQuestionsInfo {
   public AnswerDtoForQuestionsInfo() {
   }
 
-  public AnswerDtoForQuestionsInfo(Long id, String title, String positiveTitle, AnswerType answerType, boolean answerDefault, boolean skipAtResult, boolean searchedObject, List<QuestionDtoForQuestionsInfo> openQuestonDtoList) {
+  public AnswerDtoForQuestionsInfo(
+      Long id,
+      String title,
+      String positiveTitle,
+      AnswerType answerType,
+      boolean answerDefault,
+      boolean skipAtResult,
+      boolean searchedObject,
+      List<QuestionDtoForQuestionsInfo> openQuestonDtoList
+  ) {
     this.id = id;
     this.title = title;
     this.positiveTitle = positiveTitle;

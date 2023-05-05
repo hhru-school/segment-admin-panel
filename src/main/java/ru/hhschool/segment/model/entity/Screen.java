@@ -1,6 +1,5 @@
 package ru.hhschool.segment.model.entity;
 
-import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,15 +8,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "entrypoints")
-public class Entrypoint implements Serializable {
+@Table(name = "screens")
+public class Screen {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "entrypoint_id", nullable = false, unique = true)
+  @Column(name = "screen_id", nullable = false, unique = true)
   private Long id;
   @Column(name = "title", nullable = false)
   private String title;
-  @Column(name = "description")
-  private String description;
-
 }

@@ -1,13 +1,11 @@
 package ru.hhschool.segment.dao.impl;
 
-import java.util.*;
-
+import java.util.List;
+import java.util.Optional;
+import javax.persistence.NoResultException;
 import ru.hhschool.segment.dao.abstracts.QuestionActivatorLinkDao;
-import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.QuestionActivatorLink;
 import ru.hhschool.segment.model.enums.ResumeField;
-
-import javax.persistence.NoResultException;
 
 public class QuestionActivatorLinkDaoImpl extends ReadWriteDaoImpl<QuestionActivatorLink, Long> implements QuestionActivatorLinkDao {
 
@@ -50,12 +48,12 @@ public class QuestionActivatorLinkDaoImpl extends ReadWriteDaoImpl<QuestionActiv
           .setParameter("questionTitle", questionTitle)
           .setParameter("entrypointId", entryPointId)
           .getSingleResult());
-    } catch (NoResultException nre){
+    } catch (NoResultException nre) {
       return Optional.empty();
     }
   }
 
-  public List<QuestionActivatorLink> findAllByLayerId(Long layerId,ResumeField resumeField) {
+  public List<QuestionActivatorLink> findAllByLayerId(Long layerId, ResumeField resumeField) {
 
     return em.createQuery(
             """

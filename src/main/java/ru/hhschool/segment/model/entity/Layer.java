@@ -39,48 +39,8 @@ public class Layer implements Serializable {
   @JoinColumn(name = "layer_id")
   private List<QuestionActivatorLink> questionActivatorLinkList;
   @OneToMany(fetch = FetchType.LAZY)
-  @JoinColumn(name = "layer_id")
-  private List<Answer> answerList;
-  @OneToMany(fetch = FetchType.LAZY)
-  @JoinColumn(name = "question_id")
-  private List<Question> questionList;
-  @OneToMany(fetch = FetchType.LAZY)
-  @JoinColumn(name = "entrypoint_id")
-  private List<Entrypoint> entrypointList;
-  @OneToMany(fetch = FetchType.LAZY)
   @JoinColumn(name = "segment_id")
   private List<Segment> segmentList;
-
-  public Layer() {
-  }
-
-  public Layer(
-      String title,
-      String description,
-      boolean stable,
-      boolean archive,
-      boolean deleted,
-      LocalDateTime createTime,
-      Layer parent,
-      List<QuestionActivatorLink> questionActivatorLinkList,
-      List<Answer> answerList,
-      List<Question> questionList,
-      List<Entrypoint> entrypointList,
-      List<Segment> segmentList
-  ) {
-    this.title = title;
-    this.description = description;
-    this.stable = stable;
-    this.archive = archive;
-    this.deleted = deleted;
-    this.createTime = createTime;
-    this.parent = parent;
-    this.questionActivatorLinkList = questionActivatorLinkList;
-    this.answerList = answerList;
-    this.questionList = questionList;
-    this.entrypointList = entrypointList;
-    this.segmentList = segmentList;
-  }
 
   public Long getId() {
     return id;
@@ -88,30 +48,6 @@ public class Layer implements Serializable {
 
   public void setId(Long id) {
     this.id = id;
-  }
-
-  public List<Question> getQuestionList() {
-    return questionList;
-  }
-
-  public void setQuestionList(List<Question> questionList) {
-    this.questionList = questionList;
-  }
-
-  public List<Entrypoint> getEntrypointList() {
-    return entrypointList;
-  }
-
-  public void setEntrypointList(List<Entrypoint> entrypointList) {
-    this.entrypointList = entrypointList;
-  }
-
-  public List<Segment> getSegmentList() {
-    return segmentList;
-  }
-
-  public void setSegmentList(List<Segment> segmentList) {
-    this.segmentList = segmentList;
   }
 
   public String getTitle() {
@@ -170,19 +106,20 @@ public class Layer implements Serializable {
     this.parent = parent;
   }
 
-  public List<QuestionActivatorLink> getQuestionActivatorLinksList() {
+  public List<QuestionActivatorLink> getQuestionActivatorLinkList() {
     return questionActivatorLinkList;
   }
 
-  public void setQuestionActivatorLinksList(List<QuestionActivatorLink> questionActivatorLinkList) {
+  public void setQuestionActivatorLinkList(List<QuestionActivatorLink> questionActivatorLinkList) {
     this.questionActivatorLinkList = questionActivatorLinkList;
   }
 
-  public List<Answer> getAnswerList() {
-    return answerList;
+
+  public List<Segment> getSegmentList() {
+    return segmentList;
   }
 
-  public void setAnswerList(List<Answer> answerList) {
-    this.answerList = answerList;
+  public void setSegmentList(List<Segment> segmentList) {
+    this.segmentList = segmentList;
   }
 }

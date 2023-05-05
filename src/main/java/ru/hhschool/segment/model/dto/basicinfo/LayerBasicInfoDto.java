@@ -1,10 +1,9 @@
 package ru.hhschool.segment.model.dto.basicinfo;
 
-import ru.hhschool.segment.model.dto.LayerDto;
-import ru.hhschool.segment.model.enums.LayerStatus;
-
 import java.time.LocalDateTime;
 import java.util.List;
+import ru.hhschool.segment.model.dto.LayerDto;
+import ru.hhschool.segment.model.enums.LayerStatus;
 
 public class LayerBasicInfoDto {
   private Long id;

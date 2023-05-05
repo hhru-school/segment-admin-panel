@@ -7,9 +7,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -40,91 +43,6 @@ public class Answer implements Serializable {
       columnDefinition = "bigint[]"
   )
   private List<Long> openQuestionList;
-  @Column(name = "layer_id")
-  private Long layerId;
-
-  public Answer() {
-  }
-
-  public Answer(
-      String title,
-      String positiveTitle,
-      AnswerType answerType,
-      boolean isDefault,
-      boolean skipAtResult,
-      List<Long> openQuestionList,
-      Long layerId
-  ) {
-    this.title = title;
-    this.positiveTitle = positiveTitle;
-    this.answerType = answerType;
-    this.isDefault = isDefault;
-    this.skipAtResult = skipAtResult;
-    this.openQuestionList = openQuestionList;
-    this.layerId = layerId;
-  }
-
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
-  public String getPositiveTitle() {
-    return positiveTitle;
-  }
-
-  public void setPositiveTitle(String positiveTitle) {
-    this.positiveTitle = positiveTitle;
-  }
-
-  public AnswerType getAnswerType() {
-    return answerType;
-  }
-
-  public void setAnswerType(AnswerType answerType) {
-    this.answerType = answerType;
-  }
-
-  public boolean isDefault() {
-    return isDefault;
-  }
-
-  public void setDefault(boolean aDefault) {
-    isDefault = aDefault;
-  }
-
-  public boolean isSkipAtResult() {
-    return skipAtResult;
-  }
-
-  public void setSkipAtResult(boolean skipAtResult) {
-    this.skipAtResult = skipAtResult;
-  }
-
-  public List<Long> getOpenQuestionList() {
-    return openQuestionList;
-  }
-
-  public void setOpenQuestionList(List<Long> openQuestionList) {
-    this.openQuestionList = openQuestionList;
-  }
-
-  public Long getLayerId() {
-    return layerId;
-  }
-
-  public void setLayerId(Long layerId) {
-    this.layerId = layerId;
-  }
+  @ManyToOne(fetch = FetchType.LAZY)
+  private Question question;
 }
