@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS platforms
 (
     platform_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     platform    VARCHAR(255),
-    version     VARCHAR(255) NOT NULL
+    application_version     VARCHAR(255) NOT NULL
 );
 COMMENT ON COLUMN platforms.platform IS 'enum (ANDROID, IOS, WEB)';
 
