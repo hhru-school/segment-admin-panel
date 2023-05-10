@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS applications
     application_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     title          VARCHAR(255) NOT NULL,
     description    VARCHAR(255) NOT NULL,
-    versions       BIGINT[],
+    platforms      BIGINT[],
     state          VARCHAR(255)
 );
 COMMENT ON COLUMN applications.state IS 'enum (ARCHIVE, ACTIVE)';
@@ -108,6 +108,21 @@ CREATE TABLE IF NOT EXISTS segment_application_screen_links
     screen_position INT
 );
 
+CREATE TABLE IF NOT EXISTS screen_question_links
+(
+    id                  BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    layer_id            BIGINT REFERENCES layers (layer_id),
+    old_id              BIGINT REFERENCES screen_question_links (id),
+    segment_id          BIGINT REFERENCES segments (segment_id),
+    entrypoint_id   BIGINT REFERENCES entrypoints (entrypoint_id),
+    application_id      BIGINT REFERENCES applications (application_id),
+    screen_id           BIGINT REFERENCES screens (screen_id),
+    question_id         BIGINT REFERENCES questions (question_id),
+    question_position   INT,
+    question_visibility VARCHAR(255)
+);
+COMMENT ON COLUMN screen_question_links.question_visibility IS 'enum (SHOW,  HIDE,  HIDE_PREFILLED)';
+
 CREATE TABLE IF NOT EXISTS question_required_links
 (
     id                BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -119,20 +134,6 @@ CREATE TABLE IF NOT EXISTS question_required_links
     question_required BOOLEAN
 );
 
-CREATE TABLE IF NOT EXISTS screen_question_links
-(
-    id                  BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    layer_id            BIGINT REFERENCES layers (layer_id),
-    old_id              BIGINT REFERENCES screen_question_links (id),
-    segment_id          BIGINT REFERENCES segments (segment_id),
-    application_id      BIGINT REFERENCES applications (application_id),
-    screen_id           BIGINT REFERENCES screens (screen_id),
-    question_id         BIGINT REFERENCES questions (question_id),
-    question_position   INT,
-    question_visibility VARCHAR(255)
-);
-COMMENT ON COLUMN screen_question_links.question_visibility IS 'enum (SHOW,  HIDE,  HIDE_PREFILLED)';
-
 CREATE TABLE IF NOT EXISTS screen_applications
 (
     id             BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -140,13 +141,13 @@ CREATE TABLE IF NOT EXISTS screen_applications
     application_id BIGINT REFERENCES applications (application_id)
 );
 
--- CREATE TABLE IF NOT EXISTS history
--- (
---     history_id  BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
---     user_id     BIGINT,
---     name_db     VARCHAR(255),
---     time        TIMESTAMP WITH TIME ZONE NOT NULL,
---     type        VARCHAR(255),
---     description TEXT
--- );
--- COMMENT ON COLUMN history.type IS 'enum (CREATE, UPDATE, DELETE)';
+CREATE TABLE IF NOT EXISTS history
+(
+    history_id  BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id     BIGINT,
+    name_db     VARCHAR(255),
+    time        TIMESTAMP WITH TIME ZONE NOT NULL,
+    type        VARCHAR(255),
+    description TEXT
+);
+COMMENT ON COLUMN history.type IS 'enum (CREATE, UPDATE, DELETE)';
