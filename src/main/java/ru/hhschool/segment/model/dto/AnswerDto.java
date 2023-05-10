@@ -11,7 +11,7 @@ public class AnswerDto {
   private AnswerType answerType;
   private boolean defaultAnswer;
   private boolean skipAtResult;
-  private List<QuestionDto> openQuestonDtoList;
+  private List<QuestionDto> openQuestionDtoList;
   private Long layerId;
 
   public AnswerDto() {
@@ -24,7 +24,7 @@ public class AnswerDto {
     this.answerType = answerType;
     this.defaultAnswer = defaultAnswer;
     this.skipAtResult = skipAtResult;
-    this.openQuestonDtoList = openQuestonDtoList;
+    this.openQuestionDtoList = openQuestonDtoList;
     this.layerId = layerId;
   }
 
@@ -76,12 +76,12 @@ public class AnswerDto {
     this.skipAtResult = skipAtResult;
   }
 
-  public List<QuestionDto> getOpenQuestonDtoList() {
-    return openQuestonDtoList;
+  public List<QuestionDto> getOpenQuestionDtoList() {
+    return openQuestionDtoList;
   }
 
-  public void setOpenQuestonDtoList(List<QuestionDto> openQuestonDtoList) {
-    this.openQuestonDtoList = openQuestonDtoList;
+  public void setOpenQuestionDtoList(List<QuestionDto> openQuestionDtoList) {
+    this.openQuestionDtoList = openQuestionDtoList;
   }
 
   public Long getLayerId() {
