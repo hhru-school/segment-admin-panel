@@ -3,7 +3,7 @@ package ru.hhschool.segment.model.entity;
 import io.hypersistence.utils.hibernate.type.array.ListArrayType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import ru.hhschool.segment.model.enums.QuestionType;
+import ru.hhschool.segment.model.enums.AnswersNumberType;
 import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 
 import javax.persistence.Column;
@@ -31,7 +31,7 @@ public class Question implements Serializable {
   private String description;
   @Enumerated(EnumType.STRING)
   @Column(name = "question_type", nullable = false)
-  private QuestionType type;
+  private AnswersNumberType type;
   @Column(name = "question_required")
   private boolean required;
   @Enumerated(EnumType.STRING)
@@ -53,7 +53,7 @@ public class Question implements Serializable {
       Long id,
       String title,
       String description,
-      QuestionType type,
+      AnswersNumberType type,
       boolean required,
       QuestionVisibilityType questionVisibilityType,
       List<Long> possibleAnswerIdList,
@@ -98,11 +98,11 @@ public class Question implements Serializable {
     this.description = description;
   }
 
-  public QuestionType getType() {
+  public AnswersNumberType getType() {
     return type;
   }
 
-  public void setType(QuestionType type) {
+  public void setType(AnswersNumberType type) {
     this.type = type;
   }
 
