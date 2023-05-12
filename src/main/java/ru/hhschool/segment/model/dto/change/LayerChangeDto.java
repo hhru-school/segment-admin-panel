@@ -1,52 +1,36 @@
 package ru.hhschool.segment.model.dto.change;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class LayerChangeDto {
   private Long id;
   private Long parentLayerId;
-  private String title;
-  private String description;
-  private boolean stable;
-  private boolean archive;
-  private boolean deleted;
-  private LocalDateTime createTime;
+  private Long lastCompareLayerId;
+  private boolean conflict;
 
   private Map<String, List<EntrypointChangeDto>> entrypointMap;
   private Map<String, List<SegmentChangeDto>> segmentMap;
   private Map<String, List<QuestionChangeDto>> questionMap;
   private Map<String, List<AnswerChangeDto>> answerMap;
   private Map<String, List<QuestionActivatorLinkChangeDto>> questionActivatorLinkMap;
+  private Set<String> usedEntrypointTitleList;
 
   public LayerChangeDto() {
   }
 
-  public LayerChangeDto(
-      Long id,
-      Long parentLayerId,
-      String title,
-      String description,
-      boolean stable,
-      boolean archive,
-      boolean deleted,
-      LocalDateTime createTime
-  ) {
+  public LayerChangeDto(Long id, Long parentLayerId, boolean conflict) {
     this.id = id;
     this.parentLayerId = parentLayerId;
-    this.title = title;
-    this.description = description;
-    this.stable = stable;
-    this.archive = archive;
-    this.deleted = deleted;
-    this.createTime = createTime;
+    this.conflict = conflict;
 
     entrypointMap = Map.of();
     segmentMap = Map.of();
     questionMap = Map.of();
     answerMap = Map.of();
     questionActivatorLinkMap = Map.of();
+    usedEntrypointTitleList = Set.of();
   }
 
   public Long getId() {
@@ -63,54 +47,6 @@ public class LayerChangeDto {
 
   public void setParentLayerId(Long parentLayerId) {
     this.parentLayerId = parentLayerId;
-  }
-
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
-  public boolean isStable() {
-    return stable;
-  }
-
-  public void setStable(boolean stable) {
-    this.stable = stable;
-  }
-
-  public boolean isArchive() {
-    return archive;
-  }
-
-  public void setArchive(boolean archive) {
-    this.archive = archive;
-  }
-
-  public boolean isDeleted() {
-    return deleted;
-  }
-
-  public void setDeleted(boolean deleted) {
-    this.deleted = deleted;
-  }
-
-  public LocalDateTime getCreateTime() {
-    return createTime;
-  }
-
-  public void setCreateTime(LocalDateTime createTime) {
-    this.createTime = createTime;
   }
 
   public Map<String, List<EntrypointChangeDto>> getEntrypointMap() {
@@ -151,5 +87,29 @@ public class LayerChangeDto {
 
   public void setQuestionActivatorLinkMap(Map<String, List<QuestionActivatorLinkChangeDto>> questionActivatorLinkMap) {
     this.questionActivatorLinkMap = questionActivatorLinkMap;
+  }
+
+  public Set<String> getUsedEntrypointTitleList() {
+    return usedEntrypointTitleList;
+  }
+
+  public void setUsedEntrypointTitleList(Set<String> usedEntrypointTitleList) {
+    this.usedEntrypointTitleList = usedEntrypointTitleList;
+  }
+
+  public boolean isConflict() {
+    return conflict;
+  }
+
+  public void setConflict(boolean conflict) {
+    this.conflict = conflict;
+  }
+
+  public Long getLastCompareLayerId() {
+    return lastCompareLayerId;
+  }
+
+  public void setLastCompareLayerId(Long lastCompareLayerId) {
+    this.lastCompareLayerId = lastCompareLayerId;
   }
 }

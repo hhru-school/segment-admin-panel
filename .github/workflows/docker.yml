@@ -1,0 +1,52 @@
+name: Deploy docker image
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  build_docker_image:
+    name: Build docker and push
+    runs-on: ubuntu-latest
+    steps:
+      #Build JAR:
+      - uses: actions/checkout@v3
+      - name: set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'oracle'
+          java-version: 17
+      - name: Maven Package
+        run: mvn -B clean compile package -DskipTests
+
+      #Build Docker image:
+      - name: Build and tag image
+        run: docker compose build
+
+      - name: Docker login
+        run: docker login segmentadminka.ru -u ${{ secrets.DOCKER_LOGIN }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+      #Publish image:
+      - name: Publish image
+        run: docker compose push
+  build:
+    name: docker compose up
+    needs: build_docker_image
+    runs-on: ubuntu-latest
+    steps:
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd segment
+            docker compose stop
+            docker compose pull && docker compose up -d
+            yes|docker system prune -a
+      - name: Wait Java app start
+        run: sleep 30s
+        shell: bash
+

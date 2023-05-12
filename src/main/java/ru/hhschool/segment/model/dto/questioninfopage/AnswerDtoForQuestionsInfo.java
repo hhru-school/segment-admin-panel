@@ -9,7 +9,7 @@ public class AnswerDtoForQuestionsInfo {
   private String title;
   private String positiveTitle;
   private AnswerType answerType;
-  private boolean isDefault;
+  private boolean answerDefault;
   private boolean skipAtResult;
   private boolean searchedObject;
   private List<QuestionDtoForQuestionsInfo> openQuestonDtoList;
@@ -17,15 +17,15 @@ public class AnswerDtoForQuestionsInfo {
   public AnswerDtoForQuestionsInfo() {
   }
 
-  public AnswerDtoForQuestionsInfo(Long id, String title, List<QuestionDtoForQuestionsInfo> openQuestonDtoList, boolean searchedObject, String positiveTitle, AnswerType answerType, boolean isDefault, boolean skipAtResult) {
+  public AnswerDtoForQuestionsInfo(Long id, String title, String positiveTitle, AnswerType answerType, boolean answerDefault, boolean skipAtResult, boolean searchedObject, List<QuestionDtoForQuestionsInfo> openQuestonDtoList) {
     this.id = id;
     this.title = title;
-    this.openQuestonDtoList = openQuestonDtoList;
-    this.searchedObject = searchedObject;
     this.positiveTitle = positiveTitle;
     this.answerType = answerType;
-    this.isDefault = isDefault;
+    this.answerDefault = answerDefault;
     this.skipAtResult = skipAtResult;
+    this.searchedObject = searchedObject;
+    this.openQuestonDtoList = openQuestonDtoList;
   }
 
   public Long getId() {
@@ -76,12 +76,12 @@ public class AnswerDtoForQuestionsInfo {
     this.answerType = answerType;
   }
 
-  public boolean isDefault() {
-    return isDefault;
+  public boolean isAnswerDefault() {
+    return answerDefault;
   }
 
-  public void setDefault(boolean aDefault) {
-    isDefault = aDefault;
+  public void setAnswerDefault(boolean answerDefault) {
+    this.answerDefault = answerDefault;
   }
 
   public boolean isSkipAtResult() {

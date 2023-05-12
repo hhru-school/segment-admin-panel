@@ -1,10 +1,13 @@
 package ru.hhschool.segment.dao.impl;
 
+import java.util.*;
+
 import ru.hhschool.segment.dao.abstracts.QuestionActivatorLinkDao;
+import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.QuestionActivatorLink;
 import ru.hhschool.segment.model.enums.ResumeField;
 
-import java.util.List;
+import javax.persistence.NoResultException;
 
 public class QuestionActivatorLinkDaoImpl extends ReadWriteDaoImpl<QuestionActivatorLink, Long> implements QuestionActivatorLinkDao {
 
@@ -24,7 +27,35 @@ public class QuestionActivatorLinkDaoImpl extends ReadWriteDaoImpl<QuestionActiv
     return entrypointList;
   }
 
-  public List<QuestionActivatorLink> findAllQuestionActivatorLinkByLayerId(Long layerId,ResumeField resumeField) {
+  @Override
+  public List<QuestionActivatorLink> findAll(Long layerId, Long segmentId) {
+    return em.createQuery("SELECT e FROM QuestionActivatorLink e " +
+            "WHERE e.layerId = :layerId " +
+            "AND e.segment.id = :segmentId")
+        .setParameter("layerId", layerId)
+        .setParameter("segmentId", segmentId)
+        .getResultList();
+  }
+
+  @Override
+  public Optional<QuestionActivatorLink> findExactly(Long layerId, Long segmentId, String questionTitle, Long entryPointId) {
+    try {
+      return Optional.of(em.createQuery("SELECT e FROM QuestionActivatorLink e WHERE " +
+              "e.layerId = :layerId " +
+              "AND e.segment.id = :segmentId " +
+              "AND e.question.title = :questionTitle " +
+              "AND e.entrypoint.id = :entrypointId", QuestionActivatorLink.class)
+          .setParameter("layerId", layerId)
+          .setParameter("segmentId", segmentId)
+          .setParameter("questionTitle", questionTitle)
+          .setParameter("entrypointId", entryPointId)
+          .getSingleResult());
+    } catch (NoResultException nre){
+      return Optional.empty();
+    }
+  }
+
+  public List<QuestionActivatorLink> findAllByLayerId(Long layerId,ResumeField resumeField) {
 
     return em.createQuery(
             """

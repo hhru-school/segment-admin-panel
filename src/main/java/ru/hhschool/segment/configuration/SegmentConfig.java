@@ -5,17 +5,20 @@ import org.springframework.context.annotation.Configuration;
 import ru.hhschool.segment.dao.abstracts.AnswerDao;
 import ru.hhschool.segment.dao.abstracts.EntrypointDao;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
+import ru.hhschool.segment.dao.abstracts.SegmentDao;
 import ru.hhschool.segment.dao.abstracts.QuestionActivatorLinkDao;
 import ru.hhschool.segment.dao.abstracts.QuestionDao;
 import ru.hhschool.segment.dao.impl.AnswerDaoImpl;
 import ru.hhschool.segment.dao.impl.EntrypointDaoImpl;
 import ru.hhschool.segment.dao.impl.LayerDaoImpl;
+import ru.hhschool.segment.dao.impl.SegmentDaoImpl;
 import ru.hhschool.segment.dao.impl.QuestionActivatorLinkDaoImpl;
 import ru.hhschool.segment.dao.impl.QuestionDaoImpl;
 import ru.hhschool.segment.service.AnswerService;
 import ru.hhschool.segment.service.EntrypointService;
 import ru.hhschool.segment.service.FilterService;
 import ru.hhschool.segment.service.LayerService;
+import ru.hhschool.segment.service.SegmentService;
 import ru.hhschool.segment.service.QuestionService;
 
 @Configuration
@@ -28,6 +31,18 @@ public class SegmentConfig {
   @Bean
   public LayerDao getLayerDao() {
     return new LayerDaoImpl();
+  }
+
+  @Bean
+  public SegmentService getSegmentService(SegmentDao segmentDao,
+                                          LayerDao layerDao,
+                                          QuestionActivatorLinkDao questionActivatorLinkDao){
+    return new SegmentService(segmentDao, layerDao, questionActivatorLinkDao);
+  }
+
+  @Bean
+  public SegmentDao getSegmentDao() {
+    return new SegmentDaoImpl();
   }
 
   @Bean

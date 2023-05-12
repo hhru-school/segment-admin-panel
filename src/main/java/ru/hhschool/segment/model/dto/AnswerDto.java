@@ -9,22 +9,22 @@ public class AnswerDto {
   private String title;
   private String positiveTitle;
   private AnswerType answerType;
-  private boolean isDefault;
+  private boolean defaultAnswer;
   private boolean skipAtResult;
-  private List<QuestionDto> openQuestonDtoList;
+  private List<QuestionDto> openQuestionDtoList;
   private Long layerId;
 
   public AnswerDto() {
   }
 
-  public AnswerDto(Long id, String title, String positiveTitle, AnswerType answerType, boolean isDefault, boolean skipAtResult, List<QuestionDto> openQuestonDtoList, Long layerId) {
+  public AnswerDto(Long id, String title, String positiveTitle, AnswerType answerType, boolean defaultAnswer, boolean skipAtResult, List<QuestionDto> openQuestonDtoList, Long layerId) {
     this.id = id;
     this.title = title;
     this.positiveTitle = positiveTitle;
     this.answerType = answerType;
-    this.isDefault = isDefault;
+    this.defaultAnswer = defaultAnswer;
     this.skipAtResult = skipAtResult;
-    this.openQuestonDtoList = openQuestonDtoList;
+    this.openQuestionDtoList = openQuestonDtoList;
     this.layerId = layerId;
   }
 
@@ -60,12 +60,12 @@ public class AnswerDto {
     this.answerType = answerType;
   }
 
-  public boolean isDefault() {
-    return isDefault;
+  public boolean isDefaultAnswer() {
+    return defaultAnswer;
   }
 
-  public void setDefault(boolean aDefault) {
-    isDefault = aDefault;
+  public void setDefaultAnswer(boolean defaultAnswer) {
+    this.defaultAnswer = defaultAnswer;
   }
 
   public boolean isSkipAtResult() {
@@ -76,12 +76,12 @@ public class AnswerDto {
     this.skipAtResult = skipAtResult;
   }
 
-  public List<QuestionDto> getOpenQuestonDtoList() {
-    return openQuestonDtoList;
+  public List<QuestionDto> getOpenQuestionDtoList() {
+    return openQuestionDtoList;
   }
 
-  public void setOpenQuestonDtoList(List<QuestionDto> openQuestonDtoList) {
-    this.openQuestonDtoList = openQuestonDtoList;
+  public void setOpenQuestionDtoList(List<QuestionDto> openQuestionDtoList) {
+    this.openQuestionDtoList = openQuestionDtoList;
   }
 
   public Long getLayerId() {

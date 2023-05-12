@@ -2,11 +2,12 @@ package ru.hhschool.segment.model.dto.change;
 
 import java.util.List;
 
-public class QuestionChangeDto {
+public class QuestionChangeDto implements ConflictSetter {
   private Long id;
   private String title;
   private String description;
   private List<AnswerChangeDto> answerList;
+  private boolean conflict;
 
   public QuestionChangeDto() {
   }
@@ -48,5 +49,33 @@ public class QuestionChangeDto {
 
   public void setAnswerList(List<AnswerChangeDto> answerList) {
     this.answerList = answerList;
+  }
+
+  public boolean isConflict() {
+    return conflict;
+  }
+
+  @Override
+  public void setConflict(boolean conflict) {
+    this.conflict = conflict;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    QuestionChangeDto that = (QuestionChangeDto) o;
+
+    return title.equals(that.title);
+  }
+
+  @Override
+  public int hashCode() {
+    return title.hashCode();
   }
 }

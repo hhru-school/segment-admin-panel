@@ -46,11 +46,12 @@ public class QuestionService {
     if (optionalSelectedLayer.isEmpty()) {
       return Collections.emptyList();
     }
-    List<Layer> selectedLayerWithParents = new ArrayList<>(List.of(optionalSelectedLayer.get()));
+    List<Layer> selectedLayerWithParents = new ArrayList<>();
+    selectedLayerWithParents.add(optionalSelectedLayer.get());
     selectedLayerWithParents.addAll(layerDao.getAllParents(layerId));
 
     return selectedLayerWithParents.stream()
-        .map(layer -> questionActivatorLinkDao.findAllQuestionActivatorLinkByLayerId(layer.getId(), ResumeField.QUESTION))
+        .map(layer -> questionActivatorLinkDao.findAllByLayerId(layer.getId(), ResumeField.QUESTION))
         .flatMap(Collection::stream)
         .toList();
   }
@@ -71,7 +72,7 @@ public class QuestionService {
     List<QuestionDtoForQuestionsInfo> questionDtoForQuestionsInfoList = new ArrayList<>();
     List<Question> questionList = createListOfQuestionByLayerId(layerId);
     questionList.forEach(question -> {
-      List<AnswerDtoForQuestionsInfo> answerDtoList = answerService.getAllAnswerDtoListByListId(question.getPossibleAnswerIdList(), questionList);
+      List<AnswerDtoForQuestionsInfo> answerDtoList = answerService.getAllAnswerDtoListByListId(question.getPossibleAnswerIdList(), questionList, 3);
       QuestionDtoForQuestionsInfo questionDto = QuestionMapper.toDtoForQuestionsInfo(question, answerDtoList);
       questionDtoForQuestionsInfoList.add(questionDto);
     });
@@ -88,7 +89,7 @@ public class QuestionService {
         .filter(question1 -> Objects.equals(question1.getId(), questionId))
         .findFirst()
         .orElseGet(null);
-    List<AnswerDtoForQuestionsInfo> answerDtoList = answerService.getAllAnswerDtoListByListId(question.getPossibleAnswerIdList(), questionList);
+    List<AnswerDtoForQuestionsInfo> answerDtoList = answerService.getAllAnswerDtoListByListId(question.getPossibleAnswerIdList(), questionList, 3);
     return QuestionMapper.toDtoForQuestionsInfo(question, answerDtoList);
   }
 }
