@@ -1,19 +1,13 @@
 package ru.hhschool.segment.model.entity;
 
 import io.hypersistence.utils.hibernate.type.array.ListArrayType;
-import java.io.Serializable;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import ru.hhschool.segment.model.enums.AnswerType;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @TypeDef(name = "list-array", typeClass = ListArrayType.class)
@@ -28,9 +22,9 @@ public class Answer implements Serializable {
   @Column(name = "positive_title")
   private String positiveTitle;
   @Enumerated(EnumType.STRING)
-  @Column(name = "answer_type")
-  private AnswerType answerType;
-  @Column(name = "is_default_answer", nullable = false)
+  @Column(name = "type")
+  private AnswerType type;
+  @Column(name = "default_answer", nullable = false)
   private boolean isDefault;
   @Column(name = "skip_at_result")
   private boolean skipAtResult;
@@ -40,8 +34,6 @@ public class Answer implements Serializable {
       columnDefinition = "bigint[]"
   )
   private List<Long> openQuestionList;
-  @Column(name = "layer_id")
-  private Long layerId;
 
   public Answer() {
   }
@@ -57,11 +49,10 @@ public class Answer implements Serializable {
   ) {
     this.title = title;
     this.positiveTitle = positiveTitle;
-    this.answerType = answerType;
+    this.type = answerType;
     this.isDefault = isDefault;
     this.skipAtResult = skipAtResult;
     this.openQuestionList = openQuestionList;
-    this.layerId = layerId;
   }
 
   public Long getId() {
@@ -89,11 +80,11 @@ public class Answer implements Serializable {
   }
 
   public AnswerType getAnswerType() {
-    return answerType;
+    return type;
   }
 
-  public void setAnswerType(AnswerType answerType) {
-    this.answerType = answerType;
+  public void setAnswerType(AnswerType type) {
+    this.type = type;
   }
 
   public boolean isDefault() {
@@ -118,13 +109,5 @@ public class Answer implements Serializable {
 
   public void setOpenQuestionList(List<Long> openQuestionList) {
     this.openQuestionList = openQuestionList;
-  }
-
-  public Long getLayerId() {
-    return layerId;
-  }
-
-  public void setLayerId(Long layerId) {
-    this.layerId = layerId;
   }
 }

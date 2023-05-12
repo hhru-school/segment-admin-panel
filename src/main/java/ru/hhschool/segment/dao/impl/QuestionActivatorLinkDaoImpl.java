@@ -14,7 +14,7 @@ public class QuestionActivatorLinkDaoImpl extends ReadWriteDaoImpl<QuestionActiv
   public List<QuestionActivatorLink> findAll(Long layerId, Long entrypointId, ResumeField resumeField) {
     List<QuestionActivatorLink> entrypointList = em.createQuery(
             """
-                SELECT e FROM QuestionActivatorLink e 
+                SELECT e FROM QuestionRequiredLink e
                 WHERE e.layerId = :layerId
                  AND e.entrypoint.id = :entrypointId
                  AND e.question.resumeField = :resumeField
@@ -29,7 +29,7 @@ public class QuestionActivatorLinkDaoImpl extends ReadWriteDaoImpl<QuestionActiv
 
   @Override
   public List<QuestionActivatorLink> findAll(Long layerId, Long segmentId) {
-    return em.createQuery("SELECT e FROM QuestionActivatorLink e " +
+    return em.createQuery("SELECT e FROM QuestionRequiredLink e " +
             "WHERE e.layerId = :layerId " +
             "AND e.segment.id = :segmentId")
         .setParameter("layerId", layerId)
@@ -40,7 +40,7 @@ public class QuestionActivatorLinkDaoImpl extends ReadWriteDaoImpl<QuestionActiv
   @Override
   public Optional<QuestionActivatorLink> findExactly(Long layerId, Long segmentId, String questionTitle, Long entryPointId) {
     try {
-      return Optional.of(em.createQuery("SELECT e FROM QuestionActivatorLink e WHERE " +
+      return Optional.of(em.createQuery("SELECT e FROM QuestionRequiredLink e WHERE " +
               "e.layerId = :layerId " +
               "AND e.segment.id = :segmentId " +
               "AND e.question.title = :questionTitle " +
@@ -59,7 +59,7 @@ public class QuestionActivatorLinkDaoImpl extends ReadWriteDaoImpl<QuestionActiv
 
     return em.createQuery(
             """
-                SELECT e FROM QuestionActivatorLink e 
+                SELECT e FROM QuestionRequiredLink e
                 WHERE e.layerId = :layerId
                  AND e.question.resumeField = :resumeField
                 """, QuestionActivatorLink.class)
