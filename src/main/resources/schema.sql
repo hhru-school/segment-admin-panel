@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS platforms
 );
 COMMENT ON COLUMN platforms.platform IS 'enum (ANDROID, IOS, WEB)';
 
+
 CREATE TABLE IF NOT EXISTS applications
 (
     application_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -29,6 +30,7 @@ CREATE TABLE IF NOT EXISTS applications
     state          VARCHAR(255)
 );
 COMMENT ON COLUMN applications.state IS 'enum (ARCHIVE, ACTIVE)';
+
 
 CREATE TABLE IF NOT EXISTS layers
 (
@@ -41,12 +43,14 @@ CREATE TABLE IF NOT EXISTS layers
 );
 COMMENT ON COLUMN layers.state IS 'enum (STABLE, ARCHIVE, TEST)';
 
+
 CREATE TABLE IF NOT EXISTS entrypoints
 (
     entrypoint_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     title         VARCHAR(255) NOT NULL,
     description   VARCHAR(255)
 );
+
 
 CREATE TABLE IF NOT EXISTS segments
 (
@@ -62,6 +66,7 @@ CREATE TABLE IF NOT EXISTS segments
 );
 COMMENT ON COLUMN segments.state IS 'enum (ARCHIVE, ACTIVE)';
 
+
 CREATE TABLE IF NOT EXISTS questions
 (
     question_id      BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -74,6 +79,7 @@ CREATE TABLE IF NOT EXISTS questions
 COMMENT ON COLUMN questions.type IS 'enum (RESUME_FIELD, QUESTION)';
 COMMENT ON COLUMN questions.answer_type IS 'enum (SINGLE_CHOICE, MULTI_SELECT,  NONE)';
 
+
 CREATE TABLE IF NOT EXISTS answers
 (
     answer_id      BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -84,6 +90,8 @@ CREATE TABLE IF NOT EXISTS answers
     default_answer BOOLEAN NOT NULL,
     skip_at_result BOOLEAN
 );
+COMMENT ON COLUMN answers.type IS 'enum (POSITIVE,  NEGATIVE,  NEUTRAL)';
+
 
 CREATE TABLE IF NOT EXISTS screens
 (
@@ -95,6 +103,7 @@ CREATE TABLE IF NOT EXISTS screens
 );
 COMMENT ON COLUMN screens.type IS 'enum (STATIC, DYNAMIC)';
 COMMENT ON COLUMN screens.state IS 'enum (ACTIVE, ARCHIVE)';
+
 
 CREATE TABLE IF NOT EXISTS segment_application_screen_links
 (
@@ -108,13 +117,14 @@ CREATE TABLE IF NOT EXISTS segment_application_screen_links
     screen_position INT
 );
 
+
 CREATE TABLE IF NOT EXISTS screen_question_links
 (
     id                  BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     layer_id            BIGINT REFERENCES layers (layer_id),
     old_id              BIGINT REFERENCES screen_question_links (id),
     segment_id          BIGINT REFERENCES segments (segment_id),
-    entrypoint_id   BIGINT REFERENCES entrypoints (entrypoint_id),
+    entrypoint_id       BIGINT REFERENCES entrypoints (entrypoint_id),
     application_id      BIGINT REFERENCES applications (application_id),
     screen_id           BIGINT REFERENCES screens (screen_id),
     question_id         BIGINT REFERENCES questions (question_id),
@@ -122,6 +132,7 @@ CREATE TABLE IF NOT EXISTS screen_question_links
     question_visibility VARCHAR(255)
 );
 COMMENT ON COLUMN screen_question_links.question_visibility IS 'enum (SHOW,  HIDE,  HIDE_PREFILLED)';
+
 
 CREATE TABLE IF NOT EXISTS question_required_links
 (
@@ -134,12 +145,14 @@ CREATE TABLE IF NOT EXISTS question_required_links
     question_required BOOLEAN
 );
 
+
 CREATE TABLE IF NOT EXISTS screen_applications
 (
-    id             BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     screen_id      BIGINT REFERENCES screens (screen_id),
-    application_id BIGINT REFERENCES applications (application_id)
+    application_id BIGINT REFERENCES applications (application_id),
+    PRIMARY KEY (screen_id, application_id)
 );
+
 
 CREATE TABLE IF NOT EXISTS history
 (
