@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import ru.hhschool.segment.dao.abstracts.EntrypointDao;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
-import ru.hhschool.segment.dao.abstracts.QuestionActivatorLinkDao;
 import ru.hhschool.segment.mapper.EntrypointMapper;
 import ru.hhschool.segment.mapper.entrypointinfo.EntrypointWitchQuestionStatusMapper;
 import ru.hhschool.segment.mapper.entrypointinfo.QuestionStatusMapper;
@@ -21,20 +20,17 @@ import ru.hhschool.segment.model.dto.entrypointinfo.QuestionStatusDto;
 import ru.hhschool.segment.model.entity.Entrypoint;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.Question;
-import ru.hhschool.segment.model.entity.QuestionActivatorLink;
 import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 import ru.hhschool.segment.model.enums.ResumeField;
 
 public class EntrypointService {
   private final EntrypointDao entrypointDao;
   private final LayerDao layerDao;
-  private final QuestionActivatorLinkDao questionActivatorLinkDao;
 
   @Inject
-  public EntrypointService(EntrypointDao entrypointDao, LayerDao layerDao, QuestionActivatorLinkDao questionActivatorLinkDao) {
+  public EntrypointService(EntrypointDao entrypointDao, LayerDao layerDao) {
     this.entrypointDao = entrypointDao;
     this.layerDao = layerDao;
-    this.questionActivatorLinkDao = questionActivatorLinkDao;
   }
 
   public List<EntrypointDto> getAllEntrypoint() {
@@ -88,36 +84,12 @@ public class EntrypointService {
    * собирая статусы из каждого слоя.
    */
   private void saveEntrypointQuestionStatusFromLayerToSet(Map<String, QuestionStatusDto> questionStatusDtoMap, Long layerId, Long entrypointId) {
-    List<QuestionActivatorLink> questionActivatorLinksList
-        = questionActivatorLinkDao.findAll(layerId, entrypointId, ResumeField.RESUME_FIELD);
-
-    for (QuestionActivatorLink questionActivatorLink : questionActivatorLinksList) {
-      Question question = questionActivatorLink.getQuestion();
-      if (question != null) {
-        QuestionStatusDto questionStatusDto = QuestionStatusMapper.questionToQuestionStatusDto(question);
-
-        Set<QuestionVisibilityType> questionStatus = questionStatusDto.getQuestionStatus();
-        String questionTitle = questionStatusDto.getTitle();
-
-        questionStatus.add(questionActivatorLink.getQuestionVisibility());
-        if (questionStatusDtoMap.containsKey(questionTitle)) {
-          questionStatus.addAll(questionStatusDtoMap.get(questionTitle).getQuestionStatus());
-        }
-        questionStatusDtoMap.put(questionTitle, questionStatusDto);
-      }
-    }
   }
 
   /**
    * Собираем элементы по слоям. Каждый слой layerId накладывается на другой, затирая старое значение или создавая новое.
    */
   private void saveEntrypointFromLayerToMap(Map<String, EntrypointDto> entrypointDtoMap, Long layerId) {
-    List<Entrypoint> entrypointList = entrypointDao.findAll(layerId);
-    List<EntrypointDto> entrypointDtoList = EntrypointMapper.entrypointListToDtoList(entrypointList);
-
-    for (EntrypointDto entrypointDto : entrypointDtoList) {
-      entrypointDtoMap.put(entrypointDto.getTitle(), entrypointDto);
-    }
   }
 
 }

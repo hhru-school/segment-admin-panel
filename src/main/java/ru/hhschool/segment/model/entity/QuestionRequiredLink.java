@@ -14,10 +14,9 @@ public class QuestionRequiredLink implements Serializable {
   private boolean questionRequired;
 
   @OneToOne(fetch = FetchType.LAZY)
-  @Column(name = "old_id")
   private QuestionRequiredLink oldQuestionRequiredLink;
   @ManyToOne(fetch = FetchType.LAZY)
-  @Column(name = "layer_id")
+  @JoinColumn(name = "layer_id")
   private Layer layer;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "segment_id")
@@ -28,6 +27,8 @@ public class QuestionRequiredLink implements Serializable {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "question_id")
   private Question question;
+
+  public QuestionRequiredLink() {}
 
   public QuestionRequiredLink(Long id, boolean questionRequired, QuestionRequiredLink oldQuestionRequiredLink, Layer layer, Segment segment, Application application, Question question) {
     this.id = id;

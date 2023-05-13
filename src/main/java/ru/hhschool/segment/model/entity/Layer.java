@@ -20,6 +20,7 @@ public class Layer implements Serializable {
   private String title;
   @Column(name = "description")
   private String description;
+  @Enumerated(EnumType.STRING)
   @Column(name = "state")
   private LayerStateType state;
   @Column(name = "create_time", nullable = false)
@@ -28,6 +29,8 @@ public class Layer implements Serializable {
   @OneToMany(fetch = FetchType.LAZY)
   @JoinColumn(name = "segment_id")
   private List<Segment> segmentList;
+
+  public Layer() {}
 
   public Layer(Long id, Layer parent, String title, String description, LayerStateType state, LocalDateTime createTime, List<Segment> segmentList) {
     this.id = id;

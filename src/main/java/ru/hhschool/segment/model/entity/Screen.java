@@ -5,6 +5,8 @@ import ru.hhschool.segment.model.enums.StateType;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "screens")
@@ -23,13 +25,16 @@ public class Screen implements Serializable {
   @Enumerated(EnumType.STRING)
   @Column(name = "state", nullable = false)
   private StateType state;
+  @ManyToMany(mappedBy = "screens")
+  Set<Application> applications;
 
-  public Screen(Long id, String title, String description, ScreenType type, StateType state) {
+  public Screen(Long id, String title, String description, ScreenType type, StateType state, Set<Application> applications) {
     this.id = id;
     this.title = title;
     this.description = description;
     this.type = type;
     this.state = state;
+    this.applications = applications;
   }
 
   public Long getId() {
@@ -70,5 +75,13 @@ public class Screen implements Serializable {
 
   public void setState(StateType state) {
     this.state = state;
+  }
+
+  public Set<Application> getApplications() {
+    return applications;
+  }
+
+  public void setApplications(Set<Application> applications) {
+    this.applications = applications;
   }
 }

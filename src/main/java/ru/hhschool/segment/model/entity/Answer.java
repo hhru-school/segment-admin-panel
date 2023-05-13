@@ -35,8 +35,7 @@ public class Answer implements Serializable {
   )
   private List<Long> openQuestionList;
 
-  public Answer() {
-  }
+  public Answer() {}
 
   public Answer(
       String title,

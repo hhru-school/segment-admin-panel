@@ -5,11 +5,6 @@ import ru.hhschool.segment.model.entity.Question;
 
 public class QuestionStatusMapper {
   public static QuestionStatusDto questionToQuestionStatusDto(Question question) {
-    QuestionStatusDto questionChangeDto = new QuestionStatusDto();
-
-    questionChangeDto.setTitle(question.getTitle());
-    questionChangeDto.setResumeField(question.isResumeField());
-
-    return questionChangeDto;
+    return null;
   }
 }

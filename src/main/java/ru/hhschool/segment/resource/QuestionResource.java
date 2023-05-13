@@ -26,7 +26,8 @@ public class QuestionResource {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getQuestionDtoListWithAnswers(@NotNull @QueryParam("layerId") Long layerId,
                                                 @QueryParam("searchString") @DefaultValue("") String searchString) {
-    return Response.ok(questionService.getAllQuestionDtoListForQuestionsInfo(layerId, searchString)).build();
+//    return Response.ok(questionService.getAllQuestionDtoListForQuestionsInfo(layerId, searchString)).build();
+    return Response.ok("TEST").build();
   }
 
   @GET
@@ -34,6 +35,7 @@ public class QuestionResource {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getQuestionDtoInfoWithAnswers(@NotNull @QueryParam("layerId") Long layerId,
                                                 @NotNull @QueryParam("questionId") Long questionId) {
-    return Response.ok(questionService.getQuestionDtoForQuestionInfo(layerId, questionId)).build();
+//    return Response.ok(questionService.getQuestionDtoForQuestionInfo(layerId, questionId)).build();
+    return Response.ok("TEST").build();
   }
 }

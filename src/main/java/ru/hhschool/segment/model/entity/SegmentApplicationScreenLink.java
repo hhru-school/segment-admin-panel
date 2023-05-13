@@ -14,10 +14,9 @@ public class SegmentApplicationScreenLink implements Serializable {
   private Integer screenPosition;
 
   @OneToOne(fetch = FetchType.LAZY)
-  @Column(name = "old_id")
   private SegmentApplicationScreenLink oldQuestionRequiredLink;
   @ManyToOne(fetch = FetchType.LAZY)
-  @Column(name = "layer_id")
+  @JoinColumn(name = "layer_id")
   private Layer layer;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "segment_id")
@@ -31,6 +30,8 @@ public class SegmentApplicationScreenLink implements Serializable {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "screen_id")
   private Screen screen;
+
+  public SegmentApplicationScreenLink() {}
 
   public SegmentApplicationScreenLink(Long id, Integer screenPosition, SegmentApplicationScreenLink oldQuestionRequiredLink, Layer layer, Segment segment, Entrypoint entrypoint, Application application, Screen screen) {
     this.id = id;

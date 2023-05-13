@@ -6,6 +6,7 @@ import ru.hhschool.segment.model.enums.LayerStatus;
 public class LayerDto {
   private Long id;
   private String title;
+
   private LocalDateTime createTime;
   private LayerStatus layerStatus;
 

@@ -15,6 +15,8 @@ public class Platform implements Serializable {
   @Column(name = "application_version", nullable = false)
   private String applicationVersion;
 
+  public Platform() {}
+
   public Platform(Long id, String platform, String applicationVersion) {
     this.id = id;
     this.platform = platform;

@@ -18,10 +18,9 @@ public class ScreenQuestionLink implements Serializable {
   private QuestionVisibilityType questionVisibility;
 
   @OneToOne(fetch = FetchType.LAZY)
-  @Column(name = "old_id")
   private ScreenQuestionLink oldQuestionRequiredLink;
   @ManyToOne(fetch = FetchType.LAZY)
-  @Column(name = "layer_id")
+  @JoinColumn(name = "layer_id")
   private Layer layer;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "segment_id")
@@ -38,6 +37,8 @@ public class ScreenQuestionLink implements Serializable {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "question_id")
   private Question question;
+
+  public ScreenQuestionLink() {}
 
   public ScreenQuestionLink(Long id,
                             Integer questionPosition,

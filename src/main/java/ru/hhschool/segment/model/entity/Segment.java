@@ -20,9 +20,9 @@ public class Segment implements Serializable {
   @Column(name = "layer_id")
   private Long layerId;
   @ManyToOne(fetch = FetchType.LAZY)
-  private Segment parentSegmentId;
+  private Segment parentSegment;
   @OneToOne(fetch = FetchType.LAZY)
-  private Segment oldSegmentId;
+  private Segment oldSegment;
   @Column(name = "title", nullable = false)
   private String title;
   @Column(name = "description")
@@ -43,11 +43,13 @@ public class Segment implements Serializable {
   @Column(name = "state")
   private StateType state;
 
+  public Segment() {}
+
   public Segment(Long id, Long layerId, Segment parentSegmentId, Segment oldSegmentId, String title, String description, List<Long> roleList, List<String> tagList, StateType state) {
     this.id = id;
     this.layerId = layerId;
-    this.parentSegmentId = parentSegmentId;
-    this.oldSegmentId = oldSegmentId;
+    this.parentSegment = parentSegmentId;
+    this.oldSegment = oldSegmentId;
     this.title = title;
     this.description = description;
     this.roleList = roleList;
@@ -72,19 +74,19 @@ public class Segment implements Serializable {
   }
 
   public Segment getParentSegmentId() {
-    return parentSegmentId;
+    return parentSegment;
   }
 
-  public void setParentSegmentId(Segment parentSegmentId) {
-    this.parentSegmentId = parentSegmentId;
+  public void setParentSegmentId(Segment parentSegment) {
+    this.parentSegment = parentSegment;
   }
 
   public Segment getOldSegmentId() {
-    return oldSegmentId;
+    return oldSegment;
   }
 
-  public void setOldSegmentId(Segment oldSegmentId) {
-    this.oldSegmentId = oldSegmentId;
+  public void setOldSegmentId(Segment oldSegment) {
+    this.oldSegment = oldSegment;
   }
 
   public String getTitle() {

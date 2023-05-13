@@ -35,6 +35,8 @@ public class Question implements Serializable {
   )
   private List<Long> possibleAnswerIdList;
 
+  public Question() {}
+
   public Question(Long id, String title, String description, ResumeField type, AnswersNumberType answerType, List<Long> possibleAnswerIdList) {
     this.id = id;
     this.title = title;

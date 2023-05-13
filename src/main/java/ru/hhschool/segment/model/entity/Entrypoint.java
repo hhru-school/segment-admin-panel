@@ -20,8 +20,7 @@ public class Entrypoint implements Serializable {
     this.description = description;
   }
 
-  public Entrypoint() {
-  }
+  public Entrypoint() {}
 
   public Long getId() {
     return id;

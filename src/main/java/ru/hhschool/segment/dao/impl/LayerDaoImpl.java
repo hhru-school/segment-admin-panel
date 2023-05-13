@@ -24,16 +24,7 @@ public class LayerDaoImpl extends ReadWriteDaoImpl<Layer, Long> implements Layer
 
   @Override
   public List<Layer> findStableChildById(Long layerId) {
-    List<Layer> layerStableChildList = em.createQuery("""
-              SELECT l
-              FROM Layer l
-               WHERE l.parent.id = :layerId
-                AND l.stable = TRUE
-            """, Layer.class)
-        .setParameter("layerId", layerId)
-        .getResultList();
-
-    return layerStableChildList;
+    return null;
   }
 
 }

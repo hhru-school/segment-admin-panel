@@ -32,8 +32,7 @@ public class History {
     this.description = description;
   }
 
-  public History() {
-  }
+  public History() {}
 
   public Long getId() {
     return id;
