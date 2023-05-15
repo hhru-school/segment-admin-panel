@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @TypeDef(name = "list-array", typeClass = ListArrayType.class)
 @Table(name = "segments")
-public class Segment implements Serializable {
+public class Segment {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "segment_id", nullable = false, unique = true)

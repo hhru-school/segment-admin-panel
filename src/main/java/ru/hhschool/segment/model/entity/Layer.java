@@ -9,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "layers")
-public class Layer implements Serializable {
+public class Layer {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "layer_id", nullable = false, unique = true)

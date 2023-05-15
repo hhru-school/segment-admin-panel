@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "question_required_links")
-public class QuestionRequiredLink implements Serializable {
+public class QuestionRequiredLink {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false, unique = true)

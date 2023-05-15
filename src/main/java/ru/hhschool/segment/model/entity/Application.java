@@ -14,7 +14,7 @@ import java.util.Set;
 @Entity
 @TypeDef(name = "list-array", typeClass = ListArrayType.class)
 @Table(name = "applications")
-public class Application implements Serializable {
+public class Application {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "application_id", nullable = false, unique = true)
@@ -32,15 +32,15 @@ public class Application implements Serializable {
   @Enumerated(EnumType.STRING)
   @Column(name = "state", nullable = false)
   private StateType state;
-  @ManyToMany(cascade = {CascadeType.ALL})
+  @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
           name = "screen_applications",
           joinColumns = { @JoinColumn(name = "screen_id") },
           inverseJoinColumns = { @JoinColumn(name = "application_id") }
   )
-  Set<Screen> screens;
+  List<Screen> screens;
 
-  public Application(Long id, String title, String description, List<Long> platformsList, StateType state, Set<Screen> screens) {
+  public Application(Long id, String title, String description, List<Long> platformsList, StateType state, List<Screen> screens) {
     this.id = id;
     this.title = title;
     this.description = description;
@@ -89,11 +89,11 @@ public class Application implements Serializable {
     this.state = state;
   }
 
-  public Set<Screen> getScreens() {
+  public List<Screen> getScreens() {
     return screens;
   }
 
-  public void setScreens(Set<Screen> screens) {
+  public void setScreens(List<Screen> screens) {
     this.screens = screens;
   }
 }

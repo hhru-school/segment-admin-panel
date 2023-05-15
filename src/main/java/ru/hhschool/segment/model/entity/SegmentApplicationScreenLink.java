@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "question_required_links")
-public class SegmentApplicationScreenLink implements Serializable {
+public class SegmentApplicationScreenLink {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false, unique = true)

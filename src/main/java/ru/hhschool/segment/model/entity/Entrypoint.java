@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "entrypoints")
-public class Entrypoint implements Serializable {
+public class Entrypoint {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "entrypoint_id", nullable = false, unique = true)

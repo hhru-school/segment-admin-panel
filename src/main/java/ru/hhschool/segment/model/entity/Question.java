@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @TypeDef(name = "list-array", typeClass = ListArrayType.class)
 @Table(name = "questions")
-public class Question implements Serializable {
+public class Question {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "question_id", nullable = false, unique = true)

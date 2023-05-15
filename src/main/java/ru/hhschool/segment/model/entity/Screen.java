@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "screens")
-public class Screen implements Serializable {
+public class Screen {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "screen_id", nullable = false, unique = true)
