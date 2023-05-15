@@ -13,15 +13,11 @@ import ru.hhschool.segment.dao.abstracts.EntrypointDao;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.mapper.EntrypointMapper;
 import ru.hhschool.segment.mapper.entrypointinfo.EntrypointWitchQuestionStatusMapper;
-import ru.hhschool.segment.mapper.entrypointinfo.QuestionStatusMapper;
 import ru.hhschool.segment.model.dto.EntrypointDto;
 import ru.hhschool.segment.model.dto.entrypointinfo.EntrypointWitchQuestionStatusDto;
 import ru.hhschool.segment.model.dto.entrypointinfo.QuestionStatusDto;
 import ru.hhschool.segment.model.entity.Entrypoint;
 import ru.hhschool.segment.model.entity.Layer;
-import ru.hhschool.segment.model.entity.Question;
-import ru.hhschool.segment.model.enums.QuestionVisibilityType;
-import ru.hhschool.segment.model.enums.ResumeField;
 
 public class EntrypointService {
   private final EntrypointDao entrypointDao;

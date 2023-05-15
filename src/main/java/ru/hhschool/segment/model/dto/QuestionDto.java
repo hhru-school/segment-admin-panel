@@ -4,7 +4,6 @@ import ru.hhschool.segment.model.enums.AnswersNumberType;
 import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 
 import java.util.List;
-import java.util.Objects;
 
 public class QuestionDto {
   private Long id;

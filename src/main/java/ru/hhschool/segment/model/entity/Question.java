@@ -6,8 +6,15 @@ import org.hibernate.annotations.TypeDef;
 import ru.hhschool.segment.model.enums.AnswersNumberType;
 import ru.hhschool.segment.model.enums.ResumeField;
 
-import javax.persistence.*;
-import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.GenerationType;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
+
 import java.util.List;
 
 @Entity

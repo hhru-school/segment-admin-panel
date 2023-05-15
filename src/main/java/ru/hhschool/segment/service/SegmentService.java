@@ -5,7 +5,8 @@ import ru.hhschool.segment.dao.abstracts.SegmentDao;
 import ru.hhschool.segment.mapper.viewsegments.SegmentViewMapper;
 import ru.hhschool.segment.model.dto.viewsegments.SegmentSelectedDto;
 import ru.hhschool.segment.model.dto.viewsegments.SegmentViewDto;
-import ru.hhschool.segment.model.entity.*;
+import ru.hhschool.segment.model.entity.Segment;
+import ru.hhschool.segment.model.entity.Layer;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;

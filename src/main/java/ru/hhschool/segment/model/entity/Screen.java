@@ -3,9 +3,16 @@ package ru.hhschool.segment.model.entity;
 import ru.hhschool.segment.model.enums.ScreenType;
 import ru.hhschool.segment.model.enums.StateType;
 
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.HashSet;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.GenerationType;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
+import javax.persistence.ManyToMany;
+
 import java.util.Set;
 
 @Entity

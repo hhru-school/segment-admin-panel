@@ -2,7 +2,15 @@ package ru.hhschool.segment.model.entity;
 
 import ru.hhschool.segment.model.enums.HistoryType;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.GenerationType;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
+
 import java.time.LocalDateTime;
 
 @Entity

@@ -14,7 +14,6 @@ import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.change.LayerChangeDto;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.enums.ConflictStatus;
-import ru.hhschool.segment.util.LayerConflictChecker;
 
 public class LayerService {
   private final LayerDao layerDao;

@@ -11,7 +11,6 @@ import javax.ws.rs.core.Response;
 
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
 import ru.hhschool.segment.service.LayerService;
-import ru.hhschool.segment.service.SegmentService;
 
 @Path("/layers")
 public class LayerResource {

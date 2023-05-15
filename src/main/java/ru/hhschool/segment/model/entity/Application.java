@@ -5,11 +5,20 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import ru.hhschool.segment.model.enums.StateType;
 
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.HashSet;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.GenerationType;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
+import javax.persistence.ManyToMany;
+import javax.persistence.JoinTable;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @TypeDef(name = "list-array", typeClass = ListArrayType.class)
