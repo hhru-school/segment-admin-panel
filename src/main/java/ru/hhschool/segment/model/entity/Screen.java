@@ -13,6 +13,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.EnumType;
 import javax.persistence.ManyToMany;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -33,9 +34,11 @@ public class Screen {
   @Column(name = "state", nullable = false)
   private StateType state;
   @ManyToMany(mappedBy = "screens")
-  Set<Application> applications;
+  List<Application> applications;
 
-  public Screen(Long id, String title, String description, ScreenType type, StateType state, Set<Application> applications) {
+  public Screen() {}
+
+  public Screen(Long id, String title, String description, ScreenType type, StateType state, List<Application> applications) {
     this.id = id;
     this.title = title;
     this.description = description;
@@ -84,11 +87,11 @@ public class Screen {
     this.state = state;
   }
 
-  public Set<Application> getApplications() {
+  public List<Application> getApplications() {
     return applications;
   }
 
-  public void setApplications(Set<Application> applications) {
+  public void setApplications(List<Application> applications) {
     this.applications = applications;
   }
 }

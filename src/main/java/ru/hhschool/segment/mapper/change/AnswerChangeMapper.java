@@ -10,7 +10,7 @@ public class AnswerChangeMapper {
     AnswerChangeDto answerChangeDto = new AnswerChangeDto(
         answer.getId(),
         answer.getTitle(),
-        answer.getAnswerType(),
+        answer.getType(),
         new ArrayList<>()
     );
 

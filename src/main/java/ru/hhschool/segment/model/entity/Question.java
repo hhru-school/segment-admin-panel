@@ -40,17 +40,17 @@ public class Question {
       name = "possible_answers",
       columnDefinition = "bigint[]"
   )
-  private List<Long> possibleAnswerIdList;
+  private List<Long> possibleAnswerList;
 
   public Question() {}
 
-  public Question(Long id, String title, String description, ResumeField type, AnswersNumberType answerType, List<Long> possibleAnswerIdList) {
+  public Question(Long id, String title, String description, ResumeField type, AnswersNumberType answerType, List<Long> possibleAnswerList) {
     this.id = id;
     this.title = title;
     this.description = description;
     this.type = type;
     this.answerType = answerType;
-    this.possibleAnswerIdList = possibleAnswerIdList;
+    this.possibleAnswerList = possibleAnswerList;
   }
 
   public Long getId() {
@@ -93,11 +93,11 @@ public class Question {
     this.answerType = answerType;
   }
 
-  public List<Long> getPossibleAnswerIdList() {
-    return possibleAnswerIdList;
+  public List<Long> getPossibleAnswerList() {
+    return possibleAnswerList;
   }
 
-  public void setPossibleAnswerIdList(List<Long> possibleAnswerIdList) {
-    this.possibleAnswerIdList = possibleAnswerIdList;
+  public void setPossibleAnswerIdList(List<Long> possibleAnswerList) {
+    this.possibleAnswerList = possibleAnswerList;
   }
 }

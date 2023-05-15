@@ -38,7 +38,7 @@ public class QuestionService {
     List<QuestionDtoForQuestionsInfo> questionDtoForQuestionsInfoList = new ArrayList<>();
     List<Question> questionList = createListOfQuestionByLayerId(layerId);
     questionList.forEach(question -> {
-      List<AnswerDtoForQuestionsInfo> answerDtoList = answerService.getAllAnswerDtoListByListId(question.getPossibleAnswerIdList(), questionList, 3);
+      List<AnswerDtoForQuestionsInfo> answerDtoList = answerService.getAllAnswerDtoListByListId(question.getPossibleAnswerList(), questionList, 3);
       QuestionDtoForQuestionsInfo questionDto = QuestionMapper.toDtoForQuestionsInfo(question, answerDtoList);
       questionDtoForQuestionsInfoList.add(questionDto);
     });
@@ -55,7 +55,7 @@ public class QuestionService {
         .filter(question1 -> Objects.equals(question1.getId(), questionId))
         .findFirst()
         .orElseGet(null);
-    List<AnswerDtoForQuestionsInfo> answerDtoList = answerService.getAllAnswerDtoListByListId(question.getPossibleAnswerIdList(), questionList, 3);
+    List<AnswerDtoForQuestionsInfo> answerDtoList = answerService.getAllAnswerDtoListByListId(question.getPossibleAnswerList(), questionList, 3);
     return QuestionMapper.toDtoForQuestionsInfo(question, answerDtoList);
   }
 }

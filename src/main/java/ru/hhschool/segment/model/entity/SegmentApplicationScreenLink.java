@@ -18,14 +18,11 @@ public class SegmentApplicationScreenLink {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false, unique = true)
   private Long id;
-  @Column(name = "screen_position", nullable = false)
-  private Integer screenPosition;
-
-  @OneToOne(fetch = FetchType.LAZY)
-  private SegmentApplicationScreenLink oldQuestionRequiredLink;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "layer_id")
   private Layer layer;
+  @OneToOne(fetch = FetchType.LAZY)
+  private SegmentApplicationScreenLink oldQuestionRequiredLink;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "segment_id")
   private Segment segment;
@@ -38,18 +35,20 @@ public class SegmentApplicationScreenLink {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "screen_id")
   private Screen screen;
+  @Column(name = "screen_position", nullable = false)
+  private Integer screenPosition;
 
   public SegmentApplicationScreenLink() {}
 
-  public SegmentApplicationScreenLink(Long id, Integer screenPosition, SegmentApplicationScreenLink oldQuestionRequiredLink, Layer layer, Segment segment, Entrypoint entrypoint, Application application, Screen screen) {
+  public SegmentApplicationScreenLink(Long id, Layer layer, SegmentApplicationScreenLink oldQuestionRequiredLink, Segment segment, Entrypoint entrypoint, Application application, Screen screen, Integer screenPosition) {
     this.id = id;
-    this.screenPosition = screenPosition;
-    this.oldQuestionRequiredLink = oldQuestionRequiredLink;
     this.layer = layer;
+    this.oldQuestionRequiredLink = oldQuestionRequiredLink;
     this.segment = segment;
     this.entrypoint = entrypoint;
     this.application = application;
     this.screen = screen;
+    this.screenPosition = screenPosition;
   }
 
   public Long getId() {
@@ -60,12 +59,12 @@ public class SegmentApplicationScreenLink {
     this.id = id;
   }
 
-  public Integer getScreenPosition() {
-    return screenPosition;
+  public Layer getLayer() {
+    return layer;
   }
 
-  public void setScreenPosition(Integer screenPosition) {
-    this.screenPosition = screenPosition;
+  public void setLayer(Layer layer) {
+    this.layer = layer;
   }
 
   public SegmentApplicationScreenLink getOldQuestionRequiredLink() {
@@ -74,14 +73,6 @@ public class SegmentApplicationScreenLink {
 
   public void setOldQuestionRequiredLink(SegmentApplicationScreenLink oldQuestionRequiredLink) {
     this.oldQuestionRequiredLink = oldQuestionRequiredLink;
-  }
-
-  public Layer getLayer() {
-    return layer;
-  }
-
-  public void setLayer(Layer layer) {
-    this.layer = layer;
   }
 
   public Segment getSegment() {
@@ -114,5 +105,13 @@ public class SegmentApplicationScreenLink {
 
   public void setScreen(Screen screen) {
     this.screen = screen;
+  }
+
+  public Integer getScreenPosition() {
+    return screenPosition;
+  }
+
+  public void setScreenPosition(Integer screenPosition) {
+    this.screenPosition = screenPosition;
   }
 }

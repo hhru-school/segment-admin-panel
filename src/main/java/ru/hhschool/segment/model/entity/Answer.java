@@ -23,6 +23,12 @@ public class Answer {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "answer_id", nullable = false, unique = true)
   private Long id;
+  @Type(type = "list-array")
+  @Column(
+      name = "open_questions",
+      columnDefinition = "bigint[]"
+  )
+  private List<Long> openQuestionList;
   @Column(name = "title")
   private String title;
   @Column(name = "positive_title")
@@ -31,33 +37,20 @@ public class Answer {
   @Column(name = "type")
   private AnswerType type;
   @Column(name = "default_answer", nullable = false)
-  private boolean isDefault;
+  private boolean defaultAnswer;
   @Column(name = "skip_at_result")
   private boolean skipAtResult;
-  @Type(type = "list-array")
-  @Column(
-      name = "open_questions",
-      columnDefinition = "bigint[]"
-  )
-  private List<Long> openQuestionList;
 
   public Answer() {}
 
-  public Answer(
-      String title,
-      String positiveTitle,
-      AnswerType answerType,
-      boolean isDefault,
-      boolean skipAtResult,
-      List<Long> openQuestionList,
-      Long layerId
-  ) {
+  public Answer(Long id, List<Long> openQuestionList, String title, String positiveTitle, AnswerType type, boolean defaultAnswer, boolean skipAtResult) {
+    this.id = id;
+    this.openQuestionList = openQuestionList;
     this.title = title;
     this.positiveTitle = positiveTitle;
-    this.type = answerType;
-    this.isDefault = isDefault;
+    this.type = type;
+    this.defaultAnswer = defaultAnswer;
     this.skipAtResult = skipAtResult;
-    this.openQuestionList = openQuestionList;
   }
 
   public Long getId() {
@@ -66,6 +59,14 @@ public class Answer {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public List<Long> getOpenQuestionList() {
+    return openQuestionList;
+  }
+
+  public void setOpenQuestionList(List<Long> openQuestionList) {
+    this.openQuestionList = openQuestionList;
   }
 
   public String getTitle() {
@@ -84,20 +85,20 @@ public class Answer {
     this.positiveTitle = positiveTitle;
   }
 
-  public AnswerType getAnswerType() {
+  public AnswerType getType() {
     return type;
   }
 
-  public void setAnswerType(AnswerType type) {
+  public void setType(AnswerType type) {
     this.type = type;
   }
 
-  public boolean isDefault() {
-    return isDefault;
+  public boolean isDefaultAnswer() {
+    return defaultAnswer;
   }
 
-  public void setDefault(boolean aDefault) {
-    isDefault = aDefault;
+  public void setDefaultAnswer(boolean defaultAnswer) {
+    this.defaultAnswer = defaultAnswer;
   }
 
   public boolean isSkipAtResult() {
@@ -106,13 +107,5 @@ public class Answer {
 
   public void setSkipAtResult(boolean skipAtResult) {
     this.skipAtResult = skipAtResult;
-  }
-
-  public List<Long> getOpenQuestionList() {
-    return openQuestionList;
-  }
-
-  public void setOpenQuestionList(List<Long> openQuestionList) {
-    this.openQuestionList = openQuestionList;
   }
 }

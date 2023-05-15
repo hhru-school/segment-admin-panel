@@ -20,16 +20,11 @@ public class ScreenQuestionLink {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false, unique = true)
   private Long id;
-  @Column(name = "question_position", nullable = false)
-  private Integer questionPosition;
-  @Column(name = "question_visibility", nullable = false)
-  private QuestionVisibilityType questionVisibility;
-
-  @OneToOne(fetch = FetchType.LAZY)
-  private ScreenQuestionLink oldQuestionRequiredLink;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "layer_id")
   private Layer layer;
+  @OneToOne(fetch = FetchType.LAZY)
+  private ScreenQuestionLink oldQuestionRequiredLink;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "segment_id")
   private Segment segment;
@@ -45,29 +40,33 @@ public class ScreenQuestionLink {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "question_id")
   private Question question;
+  @Column(name = "question_position", nullable = false)
+  private Integer questionPosition;
+  @Column(name = "question_visibility", nullable = false)
+  private QuestionVisibilityType questionVisibility;
 
   public ScreenQuestionLink() {}
 
   public ScreenQuestionLink(Long id,
-                            Integer questionPosition,
-                            QuestionVisibilityType questionVisibility,
-                            ScreenQuestionLink oldQuestionRequiredLink,
                             Layer layer,
+                            ScreenQuestionLink oldQuestionRequiredLink,
                             Segment segment,
                             Entrypoint entrypoint,
                             Application application,
                             Screen screen,
-                            Question question) {
+                            Question question,
+                            Integer questionPosition,
+                            QuestionVisibilityType questionVisibility) {
     this.id = id;
-    this.questionPosition = questionPosition;
-    this.questionVisibility = questionVisibility;
-    this.oldQuestionRequiredLink = oldQuestionRequiredLink;
     this.layer = layer;
+    this.oldQuestionRequiredLink = oldQuestionRequiredLink;
     this.segment = segment;
     this.entrypoint = entrypoint;
     this.application = application;
     this.screen = screen;
     this.question = question;
+    this.questionPosition = questionPosition;
+    this.questionVisibility = questionVisibility;
   }
 
   public Long getId() {
@@ -78,20 +77,12 @@ public class ScreenQuestionLink {
     this.id = id;
   }
 
-  public Integer getQuestionPosition() {
-    return questionPosition;
+  public Layer getLayer() {
+    return layer;
   }
 
-  public void setQuestionPosition(Integer questionPosition) {
-    this.questionPosition = questionPosition;
-  }
-
-  public QuestionVisibilityType getQuestionVisibility() {
-    return questionVisibility;
-  }
-
-  public void setQuestionVisibility(QuestionVisibilityType questionVisibility) {
-    this.questionVisibility = questionVisibility;
+  public void setLayer(Layer layer) {
+    this.layer = layer;
   }
 
   public ScreenQuestionLink getOldQuestionRequiredLink() {
@@ -100,14 +91,6 @@ public class ScreenQuestionLink {
 
   public void setOldQuestionRequiredLink(ScreenQuestionLink oldQuestionRequiredLink) {
     this.oldQuestionRequiredLink = oldQuestionRequiredLink;
-  }
-
-  public Layer getLayer() {
-    return layer;
-  }
-
-  public void setLayer(Layer layer) {
-    this.layer = layer;
   }
 
   public Segment getSegment() {
@@ -148,5 +131,21 @@ public class ScreenQuestionLink {
 
   public void setQuestion(Question question) {
     this.question = question;
+  }
+
+  public Integer getQuestionPosition() {
+    return questionPosition;
+  }
+
+  public void setQuestionPosition(Integer questionPosition) {
+    this.questionPosition = questionPosition;
+  }
+
+  public QuestionVisibilityType getQuestionVisibility() {
+    return questionVisibility;
+  }
+
+  public void setQuestionVisibility(QuestionVisibilityType questionVisibility) {
+    this.questionVisibility = questionVisibility;
   }
 }

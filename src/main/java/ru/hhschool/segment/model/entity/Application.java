@@ -37,7 +37,7 @@ public class Application {
           name = "platforms",
           columnDefinition = "bigint[]"
   )
-  private List<Long> platformsList;
+  private List<Long> platformList;
   @Enumerated(EnumType.STRING)
   @Column(name = "state", nullable = false)
   private StateType state;
@@ -49,11 +49,13 @@ public class Application {
   )
   List<Screen> screens;
 
-  public Application(Long id, String title, String description, List<Long> platformsList, StateType state, List<Screen> screens) {
+  public Application() {}
+
+  public Application(Long id, String title, String description, List<Long> platformList, StateType state, List<Screen> screens) {
     this.id = id;
     this.title = title;
     this.description = description;
-    this.platformsList = platformsList;
+    this.platformList = platformList;
     this.state = state;
     this.screens = screens;
   }
@@ -82,12 +84,12 @@ public class Application {
     this.description = description;
   }
 
-  public List<Long> getPlatformsList() {
-    return platformsList;
+  public List<Long> getPlatformList() {
+    return platformList;
   }
 
-  public void setPlatformsList(List<Long> platformsList) {
-    this.platformsList = platformsList;
+  public void setPlatformList(List<Long> platformList) {
+    this.platformList = platformList;
   }
 
   public StateType getState() {
