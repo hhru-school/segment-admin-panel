@@ -14,9 +14,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Enumerated;
 import javax.persistence.EnumType;
 import javax.persistence.ManyToMany;
-import javax.persistence.JoinTable;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 
 import java.util.List;
 
@@ -41,12 +38,7 @@ public class Application {
   @Enumerated(EnumType.STRING)
   @Column(name = "state", nullable = false)
   private StateType state;
-  @ManyToMany(fetch = FetchType.LAZY)
-  @JoinTable(
-          name = "screen_applications",
-          joinColumns = { @JoinColumn(name = "screen_id") },
-          inverseJoinColumns = { @JoinColumn(name = "application_id") }
-  )
+  @ManyToMany(mappedBy = "applications")
   List<Screen> screens;
 
   public Application() {}

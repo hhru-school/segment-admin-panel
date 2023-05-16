@@ -4,17 +4,19 @@ import ru.hhschool.segment.model.enums.ScreenType;
 import ru.hhschool.segment.model.enums.StateType;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.Column;
 import javax.persistence.Enumerated;
 import javax.persistence.EnumType;
 import javax.persistence.ManyToMany;
+import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
 
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "screens")
@@ -33,7 +35,12 @@ public class Screen {
   @Enumerated(EnumType.STRING)
   @Column(name = "state", nullable = false)
   private StateType state;
-  @ManyToMany(mappedBy = "screens")
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(
+      name = "screen_applications",
+      joinColumns = { @JoinColumn(name = "application_id") },
+      inverseJoinColumns = { @JoinColumn(name = "screen_id") }
+  )
   List<Application> applications;
 
   public Screen() {}
