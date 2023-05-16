@@ -42,7 +42,7 @@ public class AnswerService {
     }
     return questionList.stream()
         .filter(question -> openQuestionIdList.contains(question.getId()))
-        .map(question -> QuestionMapper.toDtoForQuestionsInfo(question, getAllAnswerDtoListByListId(question.getPossibleAnswerIdList(), questionList, depth-1)))
+        .map(question -> QuestionMapper.toDtoForQuestionsInfo(question, getAllAnswerDtoListByListId(question.getPossibleAnswerList(), questionList, depth-1)))
         .toList();
   }
 }

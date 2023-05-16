@@ -1,6 +1,6 @@
 package ru.hhschool.segment.model.dto.questioninfopage;
 
-import ru.hhschool.segment.model.enums.QuestionType;
+import ru.hhschool.segment.model.enums.AnswersNumberType;
 
 import java.util.List;
 
@@ -8,14 +8,14 @@ public class QuestionDtoForQuestionsInfo {
   private Long id;
   private String title;
   private String description;
-  private QuestionType type;
+  private AnswersNumberType type;
   private boolean searchedObject;
   private List<AnswerDtoForQuestionsInfo> answerDtoList;
 
   public QuestionDtoForQuestionsInfo() {
   }
 
-  public QuestionDtoForQuestionsInfo(Long id, String title, String description, QuestionType type, boolean searchedObject, List<AnswerDtoForQuestionsInfo> answerDtoList) {
+  public QuestionDtoForQuestionsInfo(Long id, String title, String description, AnswersNumberType type, boolean searchedObject, List<AnswerDtoForQuestionsInfo> answerDtoList) {
     this.id = id;
     this.title = title;
     this.description = description;
@@ -64,11 +64,11 @@ public class QuestionDtoForQuestionsInfo {
     this.searchedObject = searchedObject;
   }
 
-  public QuestionType getType() {
+  public AnswersNumberType getType() {
     return type;
   }
 
-  public void setType(QuestionType type) {
+  public void setType(AnswersNumberType type) {
     this.type = type;
   }
 }

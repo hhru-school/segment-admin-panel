@@ -2,6 +2,7 @@ package ru.hhschool.segment.mapper;
 
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.entity.Layer;
+import ru.hhschool.segment.model.enums.LayerStateType;
 import ru.hhschool.segment.model.enums.LayerStatus;
 
 import java.util.Collection;
@@ -14,9 +15,9 @@ public class LayerMapper {
     layerDto.setId(entity.getId());
     layerDto.setTitle(entity.getTitle());
     layerDto.setCreateTime(entity.getCreateTime());
-    if (entity.isStable()) {
+    if (entity.getState().equals(LayerStateType.STABLE)) {
       layerDto.setLayerStatus(LayerStatus.STABLE);
-    } else if (entity.isArchive()) {
+    } else if (entity.getState().equals(LayerStateType.ARCHIVE)) {
       layerDto.setLayerStatus(LayerStatus.ARCHIVED);
     } else {
       layerDto.setLayerStatus(LayerStatus.EXPERIMENTAL);
@@ -30,15 +31,6 @@ public class LayerMapper {
         .stream()
         .map(LayerMapper::toDtoForMainPage)
         .sorted(Comparator.comparing(LayerDto::getGroupOfLayerStatus).thenComparing(LayerDto::getId, Comparator.reverseOrder()))
-        .toList();
-  }
-
-  public static List<LayerDto> toDtoListForBasicPage(Collection<Layer> entityCollection) {
-
-    return entityCollection
-        .stream()
-        .map(LayerMapper::toDtoForMainPage)
-        .sorted(Comparator.comparing(LayerDto::getId, Comparator.reverseOrder()))
         .toList();
   }
 }

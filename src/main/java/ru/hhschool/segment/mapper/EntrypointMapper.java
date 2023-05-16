@@ -6,14 +6,7 @@ import ru.hhschool.segment.model.entity.Entrypoint;
 
 public class EntrypointMapper {
   public static EntrypointDto entrypointToDto(Entrypoint entrypoint) {
-    EntrypointDto entrypointDto = new EntrypointDto(
-        entrypoint.getId(),
-        entrypoint.getTitle(),
-        entrypoint.getDescription(),
-        entrypoint.getLayerId()
-    );
-
-    return entrypointDto;
+    return null;
   }
 
   public static List<EntrypointDto> entrypointListToDtoList(List<Entrypoint> entrypointList) {

@@ -1,6 +1,5 @@
 package ru.hhschool.segment.service;
 
-import com.sun.jdi.Value;
 import ru.hhschool.segment.model.dto.questioninfopage.AnswerDtoForQuestionsInfo;
 import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfo;
 

@@ -1,6 +1,5 @@
 package ru.hhschool.segment.dao.abstracts;
 
-import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.Segment;
 
 import java.util.Collection;
