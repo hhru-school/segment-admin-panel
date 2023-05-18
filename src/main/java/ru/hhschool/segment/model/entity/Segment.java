@@ -1,23 +1,21 @@
 package ru.hhschool.segment.model.entity;
 
 import io.hypersistence.utils.hibernate.type.array.ListArrayType;
+import java.time.LocalDateTime;
+import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import ru.hhschool.segment.model.enums.StateType;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.GenerationType;
-import javax.persistence.Enumerated;
-import javax.persistence.EnumType;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.FetchType;
-
-import java.util.List;
 
 @Entity
 @TypeDef(name = "list-array", typeClass = ListArrayType.class)
@@ -27,12 +25,10 @@ public class Segment {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "segment_id", nullable = false, unique = true)
   private Long id;
-  @Column(name = "layer_id")
-  private Long layerId;
   @ManyToOne(fetch = FetchType.LAZY)
   private Segment parentSegment;
-  @OneToOne(fetch = FetchType.LAZY)
-  private Segment oldSegment;
+  @Column(name = "create_time", nullable = false)
+  private LocalDateTime createTime;
   @Column(name = "title", nullable = false)
   private String title;
   @Column(name = "description")
@@ -53,13 +49,22 @@ public class Segment {
   @Column(name = "state")
   private StateType state;
 
-  public Segment() {}
+  public Segment() {
+  }
 
-  public Segment(Long id, Long layerId, Segment parentSegmentId, Segment oldSegmentId, String title, String description, List<Long> roleList, List<String> tagList, StateType state) {
+  public Segment(
+      Long id,
+      Segment parentSegment,
+      LocalDateTime createTime,
+      String title,
+      String description,
+      List<Long> roleList,
+      List<String> tagList,
+      StateType state
+  ) {
     this.id = id;
-    this.layerId = layerId;
-    this.parentSegment = parentSegmentId;
-    this.oldSegment = oldSegmentId;
+    this.parentSegment = parentSegment;
+    this.createTime = createTime;
     this.title = title;
     this.description = description;
     this.roleList = roleList;
@@ -75,28 +80,20 @@ public class Segment {
     this.id = id;
   }
 
-  public Long getLayerId() {
-    return layerId;
-  }
-
-  public void setLayerId(Long layerId) {
-    this.layerId = layerId;
-  }
-
-  public Segment getParentSegmentId() {
+  public Segment getParentSegment() {
     return parentSegment;
   }
 
-  public void setParentSegmentId(Segment parentSegment) {
+  public void setParentSegment(Segment parentSegment) {
     this.parentSegment = parentSegment;
   }
 
-  public Segment getOldSegmentId() {
-    return oldSegment;
+  public LocalDateTime getCreateTime() {
+    return createTime;
   }
 
-  public void setOldSegmentId(Segment oldSegment) {
-    this.oldSegment = oldSegment;
+  public void setCreateTime(LocalDateTime createTime) {
+    this.createTime = createTime;
   }
 
   public String getTitle() {

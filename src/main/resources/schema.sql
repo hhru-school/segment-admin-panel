@@ -55,10 +55,9 @@ CREATE TABLE IF NOT EXISTS entrypoints
 CREATE TABLE IF NOT EXISTS segments
 (
     segment_id        BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    layer_id          BIGINT REFERENCES layers (layer_id),
     parent_segment_id BIGINT REFERENCES segments (segment_id),
-    old_segment_id    BIGINT REFERENCES segments (segment_id),
-    title             VARCHAR(255) NOT NULL,
+    create_time       TIMESTAMP WITH TIME ZONE NOT NULL,
+    title             VARCHAR(255)             NOT NULL,
     description       VARCHAR(255),
     role              BIGINT[],
     tag               VARCHAR(255)[],
