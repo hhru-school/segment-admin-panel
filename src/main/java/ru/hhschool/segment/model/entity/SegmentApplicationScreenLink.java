@@ -1,18 +1,18 @@
 package ru.hhschool.segment.model.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import javax.persistence.Column;
-import javax.persistence.GenerationType;
-import javax.persistence.OneToOne;
-import javax.persistence.ManyToOne;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 @Entity
-@Table(name = "question_required_links")
+@Table(name = "segment_application_screen_links")
 public class SegmentApplicationScreenLink {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +22,7 @@ public class SegmentApplicationScreenLink {
   @JoinColumn(name = "layer_id")
   private Layer layer;
   @OneToOne(fetch = FetchType.LAZY)
-  private SegmentApplicationScreenLink oldQuestionRequiredLink;
+  private SegmentApplicationScreenLink oldSegmentApplicationScreenLink;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "segment_id")
   private Segment segment;
@@ -38,12 +38,22 @@ public class SegmentApplicationScreenLink {
   @Column(name = "screen_position", nullable = false)
   private Integer screenPosition;
 
-  public SegmentApplicationScreenLink() {}
+  public SegmentApplicationScreenLink() {
+  }
 
-  public SegmentApplicationScreenLink(Long id, Layer layer, SegmentApplicationScreenLink oldQuestionRequiredLink, Segment segment, Entrypoint entrypoint, Application application, Screen screen, Integer screenPosition) {
+  public SegmentApplicationScreenLink(
+      Long id,
+      Layer layer,
+      SegmentApplicationScreenLink oldSegmentApplicationScreenLink,
+      Segment segment,
+      Entrypoint entrypoint,
+      Application application,
+      Screen screen,
+      Integer screenPosition
+  ) {
     this.id = id;
     this.layer = layer;
-    this.oldQuestionRequiredLink = oldQuestionRequiredLink;
+    this.oldSegmentApplicationScreenLink = oldSegmentApplicationScreenLink;
     this.segment = segment;
     this.entrypoint = entrypoint;
     this.application = application;
@@ -67,12 +77,12 @@ public class SegmentApplicationScreenLink {
     this.layer = layer;
   }
 
-  public SegmentApplicationScreenLink getOldQuestionRequiredLink() {
-    return oldQuestionRequiredLink;
+  public SegmentApplicationScreenLink getOldSegmentApplicationScreenLink() {
+    return oldSegmentApplicationScreenLink;
   }
 
-  public void setOldQuestionRequiredLink(SegmentApplicationScreenLink oldQuestionRequiredLink) {
-    this.oldQuestionRequiredLink = oldQuestionRequiredLink;
+  public void setOldSegmentApplicationScreenLink(SegmentApplicationScreenLink oldSegmentApplicationScreenLink) {
+    this.oldSegmentApplicationScreenLink = oldSegmentApplicationScreenLink;
   }
 
   public Segment getSegment() {

@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,7 +13,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import ru.hhschool.segment.model.enums.StateType;
 
 @Entity
 @TypeDef(name = "list-array", typeClass = ListArrayType.class)
@@ -45,9 +42,6 @@ public class Segment {
       columnDefinition = "text[]"
   )
   private List<String> tagList;
-  @Enumerated(EnumType.STRING)
-  @Column(name = "state")
-  private StateType state;
 
   public Segment() {
   }
@@ -59,8 +53,7 @@ public class Segment {
       String title,
       String description,
       List<Long> roleList,
-      List<String> tagList,
-      StateType state
+      List<String> tagList
   ) {
     this.id = id;
     this.parentSegment = parentSegment;
@@ -69,7 +62,6 @@ public class Segment {
     this.description = description;
     this.roleList = roleList;
     this.tagList = tagList;
-    this.state = state;
   }
 
   public Long getId() {
@@ -126,13 +118,5 @@ public class Segment {
 
   public void setTagList(List<String> tagList) {
     this.tagList = tagList;
-  }
-
-  public StateType getState() {
-    return state;
-  }
-
-  public void setState(StateType state) {
-    this.state = state;
   }
 }

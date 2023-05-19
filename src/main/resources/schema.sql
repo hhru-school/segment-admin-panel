@@ -10,6 +10,8 @@ DROP TABLE IF EXISTS segment_application_screen_links CASCADE;
 DROP TABLE IF EXISTS question_required_links CASCADE;
 DROP TABLE IF EXISTS screen_question_links CASCADE;
 DROP TABLE IF EXISTS screen_applications CASCADE;
+DROP TABLE IF EXISTS segment_state_links CASCADE;
+DROP TABLE IF EXISTS professional_role CASCADE;
 DROP TABLE IF EXISTS history CASCADE;
 
 CREATE TABLE IF NOT EXISTS platforms
@@ -60,10 +62,8 @@ CREATE TABLE IF NOT EXISTS segments
     title             VARCHAR(255)             NOT NULL,
     description       VARCHAR(255),
     role              BIGINT[],
-    tag               VARCHAR(255)[],
-    state             VARCHAR(255)
+    tag               VARCHAR(255)[]
 );
-COMMENT ON COLUMN segments.state IS 'enum (ARCHIVE, ACTIVE)';
 
 
 CREATE TABLE IF NOT EXISTS questions
@@ -144,6 +144,16 @@ CREATE TABLE IF NOT EXISTS question_required_links
     question_required BOOLEAN
 );
 
+CREATE TABLE IF NOT EXISTS segment_state_links
+(
+    id         BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    layer_id   BIGINT REFERENCES layers (layer_id),
+    old_id     BIGINT REFERENCES question_required_links (id),
+    segment_id BIGINT REFERENCES segments (segment_id),
+    state      VARCHAR(255) NOT NULL
+);
+COMMENT ON COLUMN segment_state_links.state IS 'enum (ARCHIVE, ACTIVE)';
+
 
 CREATE TABLE IF NOT EXISTS screen_applications
 (
@@ -163,3 +173,10 @@ CREATE TABLE IF NOT EXISTS history
     description TEXT
 );
 COMMENT ON COLUMN history.type IS 'enum (CREATE, UPDATE, DELETE)';
+
+
+CREATE TABLE IF NOT EXISTS professional_role
+(
+    professional_role_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name                 VARCHAR(255) UNIQUE NOT NULL
+);

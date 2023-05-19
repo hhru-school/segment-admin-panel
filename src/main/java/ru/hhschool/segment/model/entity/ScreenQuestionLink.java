@@ -1,20 +1,19 @@
 package ru.hhschool.segment.model.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.GenerationType;
-import javax.persistence.OneToOne;
-import javax.persistence.ManyToOne;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-
 @Entity
-@Table(name = "question_required_links")
+@Table(name = "screen_question_links")
 public class ScreenQuestionLink {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +23,7 @@ public class ScreenQuestionLink {
   @JoinColumn(name = "layer_id")
   private Layer layer;
   @OneToOne(fetch = FetchType.LAZY)
-  private ScreenQuestionLink oldQuestionRequiredLink;
+  private ScreenQuestionLink oldScreenQuestionLink;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "segment_id")
   private Segment segment;
@@ -45,21 +44,24 @@ public class ScreenQuestionLink {
   @Column(name = "question_visibility", nullable = false)
   private QuestionVisibilityType questionVisibility;
 
-  public ScreenQuestionLink() {}
+  public ScreenQuestionLink() {
+  }
 
-  public ScreenQuestionLink(Long id,
-                            Layer layer,
-                            ScreenQuestionLink oldQuestionRequiredLink,
-                            Segment segment,
-                            Entrypoint entrypoint,
-                            Application application,
-                            Screen screen,
-                            Question question,
-                            Integer questionPosition,
-                            QuestionVisibilityType questionVisibility) {
+  public ScreenQuestionLink(
+      Long id,
+      Layer layer,
+      ScreenQuestionLink oldScreenQuestionLink,
+      Segment segment,
+      Entrypoint entrypoint,
+      Application application,
+      Screen screen,
+      Question question,
+      Integer questionPosition,
+      QuestionVisibilityType questionVisibility
+  ) {
     this.id = id;
     this.layer = layer;
-    this.oldQuestionRequiredLink = oldQuestionRequiredLink;
+    this.oldScreenQuestionLink = oldScreenQuestionLink;
     this.segment = segment;
     this.entrypoint = entrypoint;
     this.application = application;
@@ -85,12 +87,12 @@ public class ScreenQuestionLink {
     this.layer = layer;
   }
 
-  public ScreenQuestionLink getOldQuestionRequiredLink() {
-    return oldQuestionRequiredLink;
+  public ScreenQuestionLink getOldScreenQuestionLink() {
+    return oldScreenQuestionLink;
   }
 
-  public void setOldQuestionRequiredLink(ScreenQuestionLink oldQuestionRequiredLink) {
-    this.oldQuestionRequiredLink = oldQuestionRequiredLink;
+  public void setOldScreenQuestionLink(ScreenQuestionLink oldScreenQuestionLink) {
+    this.oldScreenQuestionLink = oldScreenQuestionLink;
   }
 
   public Segment getSegment() {
