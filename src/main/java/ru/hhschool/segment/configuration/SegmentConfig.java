@@ -3,7 +3,6 @@ package ru.hhschool.segment.configuration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.hhschool.segment.dao.abstracts.EntrypointDao;
-import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.dao.abstracts.RoleDao;
 import ru.hhschool.segment.dao.abstracts.SegmentDao;
 import ru.hhschool.segment.dao.impl.EntrypointDaoImpl;
@@ -19,8 +18,8 @@ public class SegmentConfig {
   }
 
   @Bean
-  public SegmentService getSegmentService(SegmentDao segmentDao, LayerDao layerDao, RoleDao roleDao) {
-    return new SegmentService(segmentDao, layerDao, roleDao);
+  public SegmentService getSegmentService(SegmentDao segmentDao, RoleDao roleDao) {
+    return new SegmentService(segmentDao, roleDao);
   }
 
   @Bean
