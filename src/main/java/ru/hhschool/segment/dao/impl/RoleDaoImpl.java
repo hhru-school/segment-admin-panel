@@ -10,4 +10,11 @@ public class RoleDaoImpl extends ReadWriteDaoImpl<Role, Long> implements RoleDao
     List<Role> roleList = em.createQuery("SELECT r FROM Role r ORDER BY r.name").getResultList();
     return roleList;
   }
+
+  public List<Role> findAll(List<Long> roleIdList) {
+    List<Role> roleList = em.createQuery("SELECT r FROM Role r WHERE r.id IN :roleIdList")
+        .setParameter("roleIdList", roleIdList)
+        .getResultList();
+    return roleList;
+  }
 }

@@ -180,3 +180,4 @@ CREATE TABLE IF NOT EXISTS professional_role
     professional_role_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name                 VARCHAR(255) UNIQUE NOT NULL
 );
+
