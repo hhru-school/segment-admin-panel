@@ -262,14 +262,14 @@ components:
     #enums
     QuestionVisibilityType:
       type: string
-      examples:
+      enum:
         - SHOW
         - HIDE
         - SHOW_PREFILLED
         - HIDE_PREFILLED
     EntityStatus:
       type: string
-      examples:
+      enum:
         - CREATED
         - ARCHIVED
         - NOT_LINKED
