@@ -32,7 +32,7 @@ public class RoleResource {
   @GET
   @Path("/{roleId}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getSegmentViewDtoListForViewSegmentPage(@PathParam(value = "roleId") Long roleId) {
+  public Response getRoleById(@PathParam(value = "roleId") Long roleId) {
     Optional<RoleDto> roleDto = roleService.getRoleById(roleId);
     if (roleDto.isPresent()) {
       return Response.ok(roleDto.get()).build();
