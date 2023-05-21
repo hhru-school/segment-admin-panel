@@ -2,10 +2,11 @@ package ru.hhschool.segment.model.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import ru.hhschool.segment.model.dto.viewsegments.SegmentViewDto;
 
 public class SegmentDto {
   private Long id;
-  private Long parentSegmentId;
+  private SegmentViewDto parentSegment;
   private LocalDateTime createTime;
   private String title;
   private String description;
@@ -17,7 +18,7 @@ public class SegmentDto {
 
   public SegmentDto(
       Long id,
-      Long parentSegmentId,
+      SegmentViewDto parentSegment,
       LocalDateTime createTime,
       String title,
       String description,
@@ -25,7 +26,7 @@ public class SegmentDto {
       List<String> tagList
   ) {
     this.id = id;
-    this.parentSegmentId = parentSegmentId;
+    this.parentSegment = parentSegment;
     this.createTime = createTime;
     this.title = title;
     this.description = description;
@@ -41,12 +42,12 @@ public class SegmentDto {
     this.id = id;
   }
 
-  public Long getParentSegmentId() {
-    return parentSegmentId;
+  public SegmentViewDto getParentSegment() {
+    return parentSegment;
   }
 
-  public void setParentSegmentId(Long parentSegmentId) {
-    this.parentSegmentId = parentSegmentId;
+  public void setParentSegment(SegmentViewDto parentSegment) {
+    this.parentSegment = parentSegment;
   }
 
   public LocalDateTime getCreateTime() {
