@@ -9,6 +9,71 @@ info:
 servers:
   - url: http://localhost
 paths:
+  #roles
+  /roles:
+    get:
+      tags:
+        - roles
+      summary: Получить весь спосок сегменов
+      description:
+      operationId: getAllRoles
+      parameters:
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoleDto'
+  /roles/{roleId}:
+    get:
+      tags:
+        - roles
+      summary: Получить весь спосок сегменов
+      description:
+      operationId: getRoleById
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 123
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleDto'
+  #segments
+  /segments:
+    get:
+      tags:
+        - segments
+      summary: Получить весь спосок сегменов
+      description:
+      operationId: getAllSegments
+      parameters:
+        - name: searchQuery
+          in: query
+          required: false
+          schema:
+            type: string
+          example: Программист
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SegmentDto'
+  ####### OLD
   /layers:
     get:
       tags:
@@ -37,7 +102,7 @@ paths:
         - name: LayerId
           in: path
           required: true
-          schema: 
+          schema:
             type: number
       responses:
         '404':
@@ -58,11 +123,11 @@ paths:
       summary: Получить изменения слоя
       description:
       operationId: getLayerChanges
-      parameters: 
+      parameters:
         - name: LayerId
           in: path
           required: true
-          schema: 
+          schema:
             type: number
       responses:
         '404':
@@ -83,11 +148,11 @@ paths:
       summary: Сделать слой стабильным, объединить с родительским
       description:
       operationId: joinLayer
-      parameters: 
+      parameters:
         - name: LayerId
           in: path
           required: true
-          schema: 
+          schema:
             type: number
       responses:
         '404':
@@ -102,7 +167,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/LayerCgangeDto'
-# Entrypoints
+  # Entrypoints
   /entrypoints/layer/{layerId}:
     get:
       tags:
@@ -110,11 +175,11 @@ paths:
       summary: Получить "Точки Входа" слоя
       description: возвращает имена "Точек входа" слоя включая наследуемые от слоёв родителей.
       operationId: getAllEntrypointByLayerId
-      parameters: 
+      parameters:
         - name: LayerId
           in: path
           required: true
-          schema: 
+          schema:
             type: number
       responses:
         '404':
@@ -135,11 +200,11 @@ paths:
       summary: Получить состояния вопросов/полей по "Точке Входа" слоя
       description: возвращает массив
       operationId: getEntrypointByIdWithQuestionStatus
-      parameters: 
+      parameters:
         - name: LayerId
           in: path
           required: true
-          schema: 
+          schema:
             type: number
       responses:
         '404':
@@ -150,10 +215,68 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EntrypointWitchQuestionStatusDto'
-                  
+
 components:
   schemas:
-#Entrypoints
+    #Segments
+    SegmentDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        parentSegmentId:
+          type: integer
+          format: int64
+          example: 10
+        createTime:
+          type: string
+          format: date-time
+          example: 2023-03-01T18:16:15.12312
+        title:
+          type: string
+          example: Программист
+        description:
+          type: string
+          example: IT специалист
+        roleList:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleDto'
+        tagList:
+          type: array
+          items:
+            type: string
+    #Role
+    RoleDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: Повар
+    #enums
+    QuestionVisibilityType:
+      type: string
+      examples:
+        - SHOW
+        - HIDE
+        - SHOW_PREFILLED
+        - HIDE_PREFILLED
+    EntityStatus:
+      type: string
+      examples:
+        - CREATED
+        - ARCHIVED
+        - NOT_LINKED
+        - CONFLICT
+
+    ### OLD
+    #Entrypoints
     EntrypointDto:
       type: object
       properties:
@@ -184,13 +307,13 @@ components:
 
     QuestionStatusDto:
       type: object
-      properties: 
+      properties:
         questionStatus:
           type: array
           items:
             $ref: '#/components/schemas/QuestionVisibilityType'
 
-# Layers
+    # Layers
     LayerDto:
       type: object
       properties:
@@ -203,20 +326,21 @@ components:
           example: title #7
         creationTime:
           type: string
+          format: date-time
           example: 2023-03-01T18:16:15.12312
         layerStatus:
           type: string
-          examples: 
+          examples:
             - EXPEREMENTAL
             - ARCHIVED
             - STABLE
         groupOfStatusLAyer:
           type: string
-          examples: 
+          examples:
             - ACTIVE
             - FINISHED
-            
-# Layers Information
+
+    # Layers Information
     LayerBasicInfoDto:
       type: object
       properties:
@@ -235,7 +359,7 @@ components:
           example: 2023-03-01T18:16:15.12312
         layerStatus:
           type: string
-          examples: 
+          examples:
             - EXPEREMENTAL
             - ARCHIVED
             - STABLE
@@ -244,7 +368,7 @@ components:
           items:
             $ref: '#/components/schemas/LayerDto'
 
-# Changes DTO
+    # Changes DTO
     QuestionActivatorLinkChangeDto:
       type: object
       properties:
@@ -256,7 +380,7 @@ components:
           type: boolean
           example: true
         questionVisibility:
-            $ref: '#/components/schemas/QuestionVisibilityType'
+          $ref: '#/components/schemas/QuestionVisibilityType'
         entrypointTitle:
           type: string
           example: Onboard
@@ -289,7 +413,7 @@ components:
             $ref: '#/components/schemas/QuestionChangeDto'
         conflict:
           type: boolean
-    
+
     QuestionChangeDto:
       type: object
       properties:
@@ -309,7 +433,7 @@ components:
             $ref: '#/components/schemas/AnswerChangeDto'
         conflict:
           type: boolean
-             
+
     SegmentChangeDto:
       type: object
       properties:
@@ -372,10 +496,10 @@ components:
           properties:
             status:
               type: string
-              example: CREATED 
+              example: CREATED
             entrypointChangeDtoList:
               type: array
-              items: 
+              items:
                 $ref: '#/components/schemas/EntrypointChangeDto'
         segmentMap:
           type: object
@@ -388,24 +512,24 @@ components:
                 - CONFLICT
             segmentChangeDtoList:
               type: array
-              items: 
+              items:
                 $ref: '#/components/schemas/SegmentChangeDto'
         questionMap:
           type: object
           properties:
             status:
               type: string
-              example: CREATED 
+              example: CREATED
             questionChangeDtoList:
               type: array
-              items: 
+              items:
                 $ref: '#/components/schemas/QuestionChangeDto'
         answerMap:
           type: object
           properties:
             status:
               type: string
-              example: NOT_LINKED 
+              example: NOT_LINKED
             answerChangeDtoList:
               type: array
               items:
@@ -415,32 +539,16 @@ components:
           properties:
             status:
               type: string
-              example: CREATED 
+              example: CREATED
             questionActivatorLinkChangeDtoList:
               type: array
               items:
                 $ref: '#/components/schemas/QuestionActivatorLinkChangeDto'
         usedEntrypointTitleList:
           type: array
-          items: 
+          items:
             type: string
-            examples: 
+            examples:
               - Onboard
               - Резюме
-            
-#enums
-    QuestionVisibilityType:
-      type: string
-      examples: 
-        - SHOW
-        - HIDE
-        - HIDE_PREFILLED
-    
-    EntityStatus:
-      type: string
-      examples: 
-        - CREATED
-        - ARCHIVED
-        - NOT_LINKED
-        - CONFLICT
-    
+
