@@ -61,8 +61,9 @@ CREATE TABLE IF NOT EXISTS segments
     create_time       TIMESTAMP WITH TIME ZONE NOT NULL,
     title             VARCHAR(255)             NOT NULL,
     description       VARCHAR(255),
-    role              BIGINT[],
-    tag               VARCHAR(255)[]
+    role              BIGINT[]                 NOT NULL,
+    tag               VARCHAR(255)[],
+    UNIQUE (title, description, role, tag)
 );
 
 

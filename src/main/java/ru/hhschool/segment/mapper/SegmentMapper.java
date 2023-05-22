@@ -25,18 +25,12 @@ public class SegmentMapper {
   }
 
   public static Segment dtoToSegment(SegmentCreateDto segmentCreateDto, Optional<Segment> parentSegment) {
-    List<Long> rolesIdList =
-        segmentCreateDto.getRoles()
-            .stream()
-            .map(RoleDto::getId)
-            .toList();
-
     return new Segment(
         parentSegment.orElse(null),
         LocalDateTime.now().withNano(0),
         segmentCreateDto.getTitle(),
         segmentCreateDto.getDescription(),
-        rolesIdList,
+        segmentCreateDto.getRolesId(),
         segmentCreateDto.getTags()
     );
   }

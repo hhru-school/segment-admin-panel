@@ -39,12 +39,12 @@ public class SegmentService {
 
   @Transactional
   public Optional<SegmentDto> add(SegmentCreateDto segmentCreateDto) {
-    if (segmentCreateDto.getRoles() == null || segmentCreateDto.getRoles().isEmpty()) {
+    if (segmentCreateDto.getRolesId() == null || segmentCreateDto.getRolesId().isEmpty()) {
       return Optional.empty();
     }
     Optional<Segment> parentSegment = Optional.empty();
-    if (segmentCreateDto.getParentSegment() != null && segmentCreateDto.getParentSegment().getId() != null) {
-      parentSegment = segmentDao.findById(segmentCreateDto.getParentSegment().getId());
+    if (segmentCreateDto.getParentSegmentId() != null) {
+      parentSegment = segmentDao.findById(segmentCreateDto.getParentSegmentId());
     }
 
     Segment segment = SegmentMapper.dtoToSegment(segmentCreateDto, parentSegment);

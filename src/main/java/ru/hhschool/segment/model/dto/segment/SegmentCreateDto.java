@@ -1,33 +1,31 @@
 package ru.hhschool.segment.model.dto.segment;
 
 import java.util.List;
-import ru.hhschool.segment.model.dto.RoleDto;
-import ru.hhschool.segment.model.dto.viewsegments.SegmentViewDto;
 
 public class SegmentCreateDto {
-  private SegmentViewDto parentSegment;
+  private Long parentSegmentId;
   private String title;
   private String description;
-  private List<RoleDto> roles;
+  private List<Long> rolesId;
   private List<String> tags;
 
   public SegmentCreateDto() {
   }
 
-  public SegmentCreateDto(SegmentViewDto parentSegment, String title, String description, List<RoleDto> roles, List<String> tags) {
-    this.parentSegment = parentSegment;
+  public SegmentCreateDto(Long parentSegmentId, String title, String description, List<Long> rolesId, List<String> tags) {
+    this.parentSegmentId = parentSegmentId;
     this.title = title;
     this.description = description;
-    this.roles = roles;
+    this.rolesId = rolesId;
     this.tags = tags;
   }
 
-  public SegmentViewDto getParentSegment() {
-    return parentSegment;
+  public Long getParentSegmentId() {
+    return parentSegmentId;
   }
 
-  public void setParentSegment(SegmentViewDto parentSegment) {
-    this.parentSegment = parentSegment;
+  public void setParentSegmentId(Long parentSegmentId) {
+    this.parentSegmentId = parentSegmentId;
   }
 
   public String getTitle() {
@@ -46,12 +44,12 @@ public class SegmentCreateDto {
     this.description = description;
   }
 
-  public List<RoleDto> getRoles() {
-    return roles;
+  public List<Long> getRolesId() {
+    return rolesId;
   }
 
-  public void setRoles(List<RoleDto> roles) {
-    this.roles = roles;
+  public void setRolesId(List<Long> rolesId) {
+    this.rolesId = rolesId;
   }
 
   public List<String> getTags() {
