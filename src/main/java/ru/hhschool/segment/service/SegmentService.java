@@ -2,6 +2,7 @@ package ru.hhschool.segment.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import ru.hhschool.segment.dao.abstracts.RoleDao;
@@ -9,7 +10,8 @@ import ru.hhschool.segment.dao.abstracts.SegmentDao;
 import ru.hhschool.segment.mapper.RoleMapper;
 import ru.hhschool.segment.mapper.SegmentMapper;
 import ru.hhschool.segment.model.dto.RoleDto;
-import ru.hhschool.segment.model.dto.SegmentDto;
+import ru.hhschool.segment.model.dto.segment.SegmentCreateDto;
+import ru.hhschool.segment.model.dto.segment.SegmentDto;
 import ru.hhschool.segment.model.entity.Segment;
 
 public class SegmentService {
@@ -22,9 +24,6 @@ public class SegmentService {
     this.roleDao = roleDao;
   }
 
-  /**
-   * Получить список всех Сегментов, с условием фильтра searchQuery.
-   */
   @Transactional
   public List<SegmentDto> getAll(String searchQuery) {
     List<Segment> segmentList = segmentDao.findAll(searchQuery);
@@ -36,5 +35,22 @@ public class SegmentService {
     }
 
     return segmentDtoList;
+  }
+
+  @Transactional
+  public Optional<SegmentDto> add(SegmentCreateDto segmentCreateDto) {
+    if (segmentCreateDto.getRoles() == null || segmentCreateDto.getRoles().isEmpty()) {
+      return Optional.empty();
+    }
+    Optional<Segment> parentSegment = Optional.empty();
+    if (segmentCreateDto.getParentSegment() != null && segmentCreateDto.getParentSegment().getId() != null) {
+      parentSegment = segmentDao.findById(segmentCreateDto.getParentSegment().getId());
+    }
+
+    Segment segment = SegmentMapper.dtoToSegment(segmentCreateDto, parentSegment);
+    segmentDao.persist(segment);
+    List<RoleDto> roleList = RoleMapper.roleListToDto(roleDao.findAll(segment.getRoleList()));
+
+    return Optional.of(SegmentMapper.segmentToDto(segment, roleList));
   }
 }

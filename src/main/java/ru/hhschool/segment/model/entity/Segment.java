@@ -49,7 +49,6 @@ public class Segment {
   }
 
   public Segment(
-      Long id,
       Segment parentSegment,
       LocalDateTime createTime,
       String title,
