@@ -53,4 +53,16 @@ public class SegmentService {
 
     return Optional.of(SegmentMapper.segmentToDto(segment, roleList));
   }
+
+
+  @Transactional
+  public Optional<SegmentDto> getById(Long segmentId) {
+    Optional<Segment> segment = segmentDao.findById(segmentId);
+    if (segment.isEmpty()) {
+      return Optional.empty();
+    }
+    List<RoleDto> roleList = RoleMapper.roleListToDto(roleDao.findAll(segment.get().getRoleList()));
+
+    return Optional.of(SegmentMapper.segmentToDto(segment.get(), roleList));
+  }
 }
