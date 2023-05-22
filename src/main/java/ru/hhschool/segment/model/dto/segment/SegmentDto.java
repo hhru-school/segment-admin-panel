@@ -1,7 +1,8 @@
-package ru.hhschool.segment.model.dto;
+package ru.hhschool.segment.model.dto.segment;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import ru.hhschool.segment.model.dto.RoleDto;
 import ru.hhschool.segment.model.dto.viewsegments.SegmentViewDto;
 
 public class SegmentDto {
@@ -10,8 +11,8 @@ public class SegmentDto {
   private LocalDateTime createTime;
   private String title;
   private String description;
-  private List<RoleDto> roleList;
-  private List<String> tagList;
+  private List<RoleDto> roles;
+  private List<String> tags;
 
   public SegmentDto() {
   }
@@ -22,16 +23,16 @@ public class SegmentDto {
       LocalDateTime createTime,
       String title,
       String description,
-      List<RoleDto> roleList,
-      List<String> tagList
+      List<RoleDto> roles,
+      List<String> tags
   ) {
     this.id = id;
     this.parentSegment = parentSegment;
     this.createTime = createTime;
     this.title = title;
     this.description = description;
-    this.roleList = roleList;
-    this.tagList = tagList;
+    this.roles = roles;
+    this.tags = tags;
   }
 
   public Long getId() {
@@ -74,19 +75,19 @@ public class SegmentDto {
     this.description = description;
   }
 
-  public List<RoleDto> getRoleList() {
-    return roleList;
+  public List<RoleDto> getRoles() {
+    return roles;
   }
 
-  public void setRoleList(List<RoleDto> roleList) {
-    this.roleList = roleList;
+  public void setRoles(List<RoleDto> roles) {
+    this.roles = roles;
   }
 
-  public List<String> getTagList() {
-    return tagList;
+  public List<String> getTags() {
+    return tags;
   }
 
-  public void setTagList(List<String> tagList) {
-    this.tagList = tagList;
+  public void setTags(List<String> tags) {
+    this.tags = tags;
   }
 }
