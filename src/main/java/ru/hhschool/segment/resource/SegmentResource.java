@@ -43,6 +43,9 @@ public class SegmentResource {
   @Path("/")
   @Produces(MediaType.APPLICATION_JSON)
   public Response addSegments(@RequestBody Optional<SegmentCreateDto> segmentCreateDtoOptional) {
+    if (segmentCreateDtoOptional == null) {
+      throw new HttpBadRequestException("Отсутствует необходимый параметр");
+    }
     SegmentCreateDto segmentCreateDto = segmentCreateDtoOptional.orElseThrow(
         () -> new HttpBadRequestException("Отсутствует необходимый параметр")
     );
