@@ -57,10 +57,10 @@ public class SegmentResource {
   @GET
   @Path("/{segmentId}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getSegmentById(@PathParam("segmentId") Optional<Long> segmentIdOptional) {
-    long segmentId = segmentIdOptional.orElseThrow(
-        () -> new HttpBadRequestException("Отсутствует необходимый параметр")
-    );
+  public Response getSegmentById(@PathParam("segmentId") Long segmentId) {
+    if (segmentId == null) {
+      throw new HttpBadRequestException("Отсутствует необходимый параметр");
+    }
 
     Optional<SegmentDto> segmentDto = segmentService.getById(segmentId);
     if (segmentDto.isPresent()) {

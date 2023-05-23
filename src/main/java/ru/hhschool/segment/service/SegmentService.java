@@ -27,7 +27,7 @@ public class SegmentService {
 
   @Transactional
   public List<SegmentDto> getAll(String searchQuery) {
-    List<Segment> segmentList = segmentDao.findAll(searchQuery);
+    List<Segment> segmentList = segmentDao.findAll(searchQuery.trim());
 
     List<SegmentDto> segmentDtoList = new ArrayList<>();
     for (Segment segment : segmentList) {
@@ -68,7 +68,6 @@ public class SegmentService {
 
     return Optional.of(SegmentMapper.segmentToDto(segment, roleList));
   }
-
 
   @Transactional
   public Optional<SegmentDto> getById(Long segmentId) {

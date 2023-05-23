@@ -33,10 +33,10 @@ public class RoleResource {
   @GET
   @Path("/{roleId}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getRoleById(@PathParam(value = "roleId") Optional<Long> roleIdOptional) {
-    long roleId = roleIdOptional.orElseThrow(
-        () -> new HttpBadRequestException("Отсутствует необходимый параметр")
-    );
+  public Response getRoleById(@PathParam(value = "roleId") Long roleId) {
+    if (roleId == null) {
+      throw new HttpBadRequestException("Отсутствует необходимый параметр");
+    }
 
     Optional<RoleDto> roleDto = roleService.getRoleById(roleId);
     if (roleDto.isPresent()) {
