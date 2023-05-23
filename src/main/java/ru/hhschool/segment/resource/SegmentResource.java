@@ -42,13 +42,10 @@ public class SegmentResource {
   @POST
   @Path("/")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response addSegments(@RequestBody Optional<SegmentCreateDto> segmentCreateDtoOptional) {
-    if (segmentCreateDtoOptional == null) {
+  public Response addSegments(@RequestBody SegmentCreateDto segmentCreateDto) {
+    if (segmentCreateDto == null) {
       throw new HttpBadRequestException("Отсутствует необходимый параметр");
     }
-    SegmentCreateDto segmentCreateDto = segmentCreateDtoOptional.orElseThrow(
-        () -> new HttpBadRequestException("Отсутствует необходимый параметр")
-    );
 
     Optional<SegmentDto> segmentDto = segmentService.add(segmentCreateDto);
     if (segmentDto.isPresent()) {
