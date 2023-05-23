@@ -41,7 +41,7 @@ public class SegmentService {
   @Transactional
   public Optional<SegmentDto> add(SegmentCreateDto segmentCreateDto) {
     if (segmentCreateDto.getTitle() == null || segmentCreateDto.getTitle().isBlank()) {
-      throw new HttpBadRequestException("Title неверно указанное значение или пустой.");
+      throw new HttpBadRequestException("Название(Title) неверно указанное значение или пустой.");
     }
     if (segmentCreateDto.getRolesId() == null || segmentCreateDto.getRolesId().isEmpty()) {
       throw new HttpBadRequestException("На заданы значения массива Roles");
@@ -49,6 +49,9 @@ public class SegmentService {
     Optional<Segment> parentSegment = Optional.empty();
     if (segmentCreateDto.getParentSegmentId() != null) {
       parentSegment = segmentDao.findById(segmentCreateDto.getParentSegmentId());
+      if(parentSegment.isEmpty()){
+        throw new HttpBadRequestException("Указанный ParentId не существует.");
+      }
     }
 
     Segment segment = SegmentMapper.dtoToSegment(segmentCreateDto, parentSegment);
