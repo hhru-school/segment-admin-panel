@@ -41,7 +41,7 @@ public class SegmentService {
   @Transactional
   public Optional<SegmentDto> add(SegmentCreateDto segmentCreateDto) {
     if (segmentCreateDto.getTitle() == null || segmentCreateDto.getTitle().isBlank()) {
-      throw new HttpBadRequestException("Title неверно указанное значение или пустое");
+      throw new HttpBadRequestException("Title неверно указанное значение или пустой.");
     }
     if (segmentCreateDto.getRolesId() == null || segmentCreateDto.getRolesId().isEmpty()) {
       throw new HttpBadRequestException("На заданы значения массива Roles");
