@@ -49,7 +49,7 @@ public class SegmentService {
     Optional<Segment> parentSegment = Optional.empty();
     if (segmentCreateDto.getParentSegmentId() != null) {
       parentSegment = segmentDao.findById(segmentCreateDto.getParentSegmentId());
-      if(parentSegment.isEmpty()){
+      if (parentSegment.isEmpty()) {
         throw new HttpBadRequestException("Указанный ParentId не существует.");
       }
     }
