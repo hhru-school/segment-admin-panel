@@ -9,6 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import ru.hhschool.segment.HttpBadRequestException;
 import ru.hhschool.segment.model.dto.RoleDto;
 import ru.hhschool.segment.service.RoleService;
 
@@ -32,11 +33,16 @@ public class RoleResource {
   @GET
   @Path("/{roleId}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getRoleById(@PathParam(value = "roleId") Long roleId) {
+  public Response getRoleById(@PathParam(value = "roleId") Optional<Long> roleIdOptional) {
+    long roleId = roleIdOptional.orElseThrow(
+        () -> new HttpBadRequestException("Отсутствует необходимый параметр")
+    );
+
     Optional<RoleDto> roleDto = roleService.getRoleById(roleId);
     if (roleDto.isPresent()) {
       return Response.ok(roleDto.get()).build();
     }
+
     return Response.status(Response.Status.NOT_FOUND).build();
   }
 }

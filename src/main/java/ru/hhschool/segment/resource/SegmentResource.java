@@ -12,7 +12,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
+import ru.hhschool.segment.HttpBadRequestException;
+import ru.hhschool.segment.model.dto.ErrorDto;
 import ru.hhschool.segment.model.dto.segment.SegmentCreateDto;
 import ru.hhschool.segment.model.dto.segment.SegmentDto;
 import ru.hhschool.segment.service.SegmentService;
@@ -40,29 +42,32 @@ public class SegmentResource {
   @POST
   @Path("/")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response addSegments(@RequestParam Optional<SegmentCreateDto> segmentCreateDto) {
-    if (segmentCreateDto.isPresent()) {
-      Optional<SegmentDto> segmentDto = segmentService.add(segmentCreateDto.get());
-      if (segmentDto.isPresent()) {
-        return Response.ok(segmentDto.get()).build();
-      }
+  public Response addSegments(@RequestBody Optional<SegmentCreateDto> segmentCreateDtoOptional) {
+    SegmentCreateDto segmentCreateDto = segmentCreateDtoOptional.orElseThrow(
+        () -> new HttpBadRequestException("Отсутствует необходимый параметр")
+    );
+
+    Optional<SegmentDto> segmentDto = segmentService.add(segmentCreateDto);
+    if (segmentDto.isPresent()) {
+      return Response.ok(segmentDto.get()).build();
     }
-    return Response.status(Response.Status.BAD_REQUEST).build();
+    return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorDto("Не удалось создать.")).build();
   }
 
   @GET
   @Path("/{segmentId}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getSegmentById(@PathParam("segmentId") Optional<Long> segmentId) {
-    if (segmentId.isPresent()) {
-      Optional<SegmentDto> segmentDto = segmentService.getById(segmentId.get());
-      if (segmentDto.isPresent()) {
-        return Response.ok(segmentDto.get()).build();
-      } else {
-        return Response.status(Response.Status.NOT_FOUND).build();
-      }
+  public Response getSegmentById(@PathParam("segmentId") Optional<Long> segmentIdOptional) {
+    long segmentId = segmentIdOptional.orElseThrow(
+        () -> new HttpBadRequestException("Отсутствует необходимый параметр")
+    );
+
+    Optional<SegmentDto> segmentDto = segmentService.getById(segmentId);
+    if (segmentDto.isPresent()) {
+      return Response.ok(segmentDto.get()).build();
     }
-    return Response.status(Response.Status.BAD_REQUEST).build();
+
+    return Response.status(Response.Status.NOT_FOUND).build();
   }
 
   @GET

@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS segments
     description       VARCHAR(255),
     role              BIGINT[]                 NOT NULL,
     tag               VARCHAR(255)[],
-    UNIQUE (title, description, role, tag)
+    UNIQUE (parent_segment_id, title, role, tag)
 );
 
 

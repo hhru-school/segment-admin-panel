@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import ru.hhschool.segment.HttpBadRequestException;
 import ru.hhschool.segment.dao.abstracts.RoleDao;
 import ru.hhschool.segment.dao.abstracts.SegmentDao;
 import ru.hhschool.segment.mapper.RoleMapper;
@@ -40,7 +41,7 @@ public class SegmentService {
   @Transactional
   public Optional<SegmentDto> add(SegmentCreateDto segmentCreateDto) {
     if (segmentCreateDto.getRolesId() == null || segmentCreateDto.getRolesId().isEmpty()) {
-      return Optional.empty();
+      throw new HttpBadRequestException("На заданы значения массива Roles");
     }
     Optional<Segment> parentSegment = Optional.empty();
     if (segmentCreateDto.getParentSegmentId() != null) {
@@ -48,7 +49,18 @@ public class SegmentService {
     }
 
     Segment segment = SegmentMapper.dtoToSegment(segmentCreateDto, parentSegment);
-    segmentDao.persist(segment);
+    try {
+      segmentDao.persist(segment);
+    } catch (Exception err) {
+      String lastMessage = err.getMessage();
+      Throwable cause = err.getCause();
+      while (cause != null) {
+        lastMessage = cause.getMessage();
+        cause = cause.getCause();
+      }
+      throw new HttpBadRequestException(lastMessage);
+    }
+
     List<RoleDto> roleList = RoleMapper.roleListToDto(roleDao.findAll(segment.getRoleList()));
 
     return Optional.of(SegmentMapper.segmentToDto(segment, roleList));
