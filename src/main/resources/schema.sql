@@ -61,8 +61,9 @@ CREATE TABLE IF NOT EXISTS segments
     create_time       TIMESTAMP WITH TIME ZONE NOT NULL,
     title             VARCHAR(255)             NOT NULL,
     description       VARCHAR(255),
-    role              BIGINT[],
-    tag               VARCHAR(255)[]
+    role              BIGINT[]                 NOT NULL,
+    tag               VARCHAR(255)[],
+    UNIQUE (parent_segment_id, title, role, tag)
 );
 
 
@@ -180,3 +181,4 @@ CREATE TABLE IF NOT EXISTS professional_role
     professional_role_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name                 VARCHAR(255) UNIQUE NOT NULL
 );
+
