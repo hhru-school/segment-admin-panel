@@ -1,22 +1,19 @@
 package ru.hhschool.segment.model.entity;
 
-import ru.hhschool.segment.model.enums.ScreenType;
-import ru.hhschool.segment.model.enums.StateType;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Id;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.Column;
-import javax.persistence.Enumerated;
-import javax.persistence.EnumType;
-import javax.persistence.ManyToMany;
-import javax.persistence.FetchType;
-import javax.persistence.JoinTable;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-
-import java.util.List;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import ru.hhschool.segment.model.enums.ScreenType;
+import ru.hhschool.segment.model.enums.StateType;
 
 @Entity
 @Table(name = "screens")
@@ -35,23 +32,24 @@ public class Screen {
   @Enumerated(EnumType.STRING)
   @Column(name = "state", nullable = false)
   private StateType state;
-  @ManyToMany(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinTable(
       name = "screen_applications",
-      joinColumns = { @JoinColumn(name = "application_id") },
-      inverseJoinColumns = { @JoinColumn(name = "screen_id") }
+      joinColumns = {@JoinColumn(name = "application_id")},
+      inverseJoinColumns = {@JoinColumn(name = "screen_id")}
   )
-  List<Application> applications;
+  private Application application;
 
-  public Screen() {}
+  public Screen() {
+  }
 
-  public Screen(Long id, String title, String description, ScreenType type, StateType state, List<Application> applications) {
+  public Screen(Long id, String title, String description, ScreenType type, StateType state, Application application) {
     this.id = id;
     this.title = title;
     this.description = description;
     this.type = type;
     this.state = state;
-    this.applications = applications;
+    this.application = application;
   }
 
   public Long getId() {
@@ -94,11 +92,11 @@ public class Screen {
     this.state = state;
   }
 
-  public List<Application> getApplications() {
-    return applications;
+  public Application getApplication() {
+    return application;
   }
 
-  public void setApplications(List<Application> applications) {
-    this.applications = applications;
+  public void setApplications(Application application) {
+    this.application = application;
   }
 }

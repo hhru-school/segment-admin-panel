@@ -1,21 +1,19 @@
 package ru.hhschool.segment.model.entity;
 
 import io.hypersistence.utils.hibernate.type.array.ListArrayType;
+import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import ru.hhschool.segment.model.enums.StateType;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.GenerationType;
-import javax.persistence.Enumerated;
-import javax.persistence.EnumType;
-import javax.persistence.ManyToMany;
-
-import java.util.List;
 
 @Entity
 @TypeDef(name = "list-array", typeClass = ListArrayType.class)
@@ -31,17 +29,18 @@ public class Application {
   private String description;
   @Type(type = "list-array")
   @Column(
-          name = "platforms",
-          columnDefinition = "bigint[]"
+      name = "platforms",
+      columnDefinition = "bigint[]"
   )
   private List<Long> platformList;
   @Enumerated(EnumType.STRING)
   @Column(name = "state", nullable = false)
   private StateType state;
-  @ManyToMany(mappedBy = "applications")
+  @OneToMany(mappedBy = "applications")
   List<Screen> screens;
 
-  public Application() {}
+  public Application() {
+  }
 
   public Application(Long id, String title, String description, List<Long> platformList, StateType state, List<Screen> screens) {
     this.id = id;
