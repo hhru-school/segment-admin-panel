@@ -1,25 +1,24 @@
 package ru.hhschool.segment.mapper.viewsegments;
 
 import ru.hhschool.segment.model.dto.viewsegments.SegmentViewDto;
+import ru.hhschool.segment.model.dto.viewsegments.enums.SegmentViewChangeState;
+import ru.hhschool.segment.model.entity.Role;
 import ru.hhschool.segment.model.entity.Segment;
+import ru.hhschool.segment.model.enums.StateType;
 
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 
 public class SegmentViewMapper {
 
-  private static SegmentViewDto toDtoForAllSegmentsPage(Segment segment){
-    SegmentViewDto segmentViewDto = new SegmentViewDto(
-        segment.getId(),
-        segment.getTitle()
-    );
+  public static SegmentViewDto toDtoForSegmentsInLayerPage(Segment segment, List<Role> roles, SegmentViewChangeState changeState, StateType activeState){
+    SegmentViewDto segmentViewDto = new SegmentViewDto();
+    segmentViewDto.setId(segment.getId());
+    segmentViewDto.setTitle(segment.getTitle());
+    segmentViewDto.setRoles(roles);
+    segmentViewDto.setTags(segment.getTagList());
+    segmentViewDto.setChangeState(changeState);
+    segmentViewDto.setActiveState(activeState);
     return segmentViewDto;
   }
-  public static List<SegmentViewDto> toDtoListForAllSegmentsPage(Collection<Segment> segments){
-    return segments.stream()
-        .map(SegmentViewMapper::toDtoForAllSegmentsPage)
-        .sorted(Comparator.comparing(SegmentViewDto::getTitle))
-        .toList();
-  }
+
 }

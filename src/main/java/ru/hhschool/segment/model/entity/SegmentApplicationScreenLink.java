@@ -22,6 +22,7 @@ public class SegmentApplicationScreenLink {
   @JoinColumn(name = "layer_id")
   private Layer layer;
   @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "old_id")
   private SegmentApplicationScreenLink oldSegmentApplicationScreenLink;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "segment_id")

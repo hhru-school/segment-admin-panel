@@ -25,6 +25,7 @@ public class SegmentStateLink {
   @JoinColumn(name = "layer_id")
   private Layer layer;
   @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "old_id")
   private SegmentStateLink oldSegmentStateLink;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "segment_id")

@@ -2,25 +2,28 @@ package ru.hhschool.segment.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.hhschool.segment.dao.abstracts.AnswerDao;
-import ru.hhschool.segment.dao.abstracts.EntrypointDao;
-import ru.hhschool.segment.dao.abstracts.LayerDao;
-import ru.hhschool.segment.dao.abstracts.SegmentDao;
-import ru.hhschool.segment.dao.abstracts.QuestionDao;
-import ru.hhschool.segment.dao.impl.AnswerDaoImpl;
-import ru.hhschool.segment.dao.impl.EntrypointDaoImpl;
-import ru.hhschool.segment.dao.impl.LayerDaoImpl;
-import ru.hhschool.segment.dao.impl.SegmentDaoImpl;
-import ru.hhschool.segment.dao.impl.QuestionDaoImpl;
+import ru.hhschool.segment.dao.abstracts.*;
+import ru.hhschool.segment.dao.impl.*;
 import ru.hhschool.segment.service.AnswerService;
 import ru.hhschool.segment.service.FilterService;
 import ru.hhschool.segment.service.LayerService;
+import ru.hhschool.segment.service.SegmentService;
 
 @Configuration
 public class SegmentConfig {
   @Bean
   public LayerService getLayerService(LayerDao layerDao) {
     return new LayerService(layerDao);
+  }
+
+  @Bean
+  public AnswerService getAnswerService(AnswerDao answerDao, QuestionDao questionDao) {
+    return new AnswerService(answerDao, questionDao);
+  }
+
+  @Bean
+  public FilterService getFilterService() {
+    return new FilterService();
   }
 
   @Bean
@@ -49,12 +52,32 @@ public class SegmentConfig {
   }
 
   @Bean
-  public AnswerService getAnswerService(AnswerDao answerDao, QuestionDao questionDao) {
-    return new AnswerService(answerDao, questionDao);
+  public QuestionRequiredLinkDao getQuestionRequiredLinkDao() {
+    return new QuestionRequiredLinkDaoImpl();
   }
 
   @Bean
-  public FilterService getFilterService() {
-    return new FilterService();
+  public ScreenQuestionLinkDao getScreenQuestionLinkDao() {
+    return new ScreenQuestionLinkDaoImpl();
+  }
+
+  @Bean
+  public SegmentApplicationScreenLinkDao getSegmentApplicationScreenLinkDao() {
+    return new SegmentApplicationScreenLinkDaoImpl();
+  }
+
+  @Bean
+  public SegmentStateLinkDao getSegmentStateLinkDao() {
+    return new SegmentStateLinkDaoImpl();
+  }
+
+  @Bean
+  public SegmentService getSegmentService(LayerDao layerDao,
+                                          SegmentStateLinkDao segmentStateLinkDao,
+                                          ScreenQuestionLinkDao screenQuestionLinkDao,
+                                          SegmentApplicationScreenLinkDao segmentApplicationScreenLinkDao,
+                                          QuestionRequiredLinkDao questionRequiredLinkDao,
+                                          RoleDao roleDao) {
+    return new SegmentService(layerDao, segmentStateLinkDao, screenQuestionLinkDao, segmentApplicationScreenLinkDao, questionRequiredLinkDao, roleDao);
   }
 }

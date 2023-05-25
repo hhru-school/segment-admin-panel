@@ -22,6 +22,7 @@ public class QuestionRequiredLink {
   @JoinColumn(name = "layer_id")
   private Layer layer;
   @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "old_id")
   private QuestionRequiredLink oldQuestionRequiredLink;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "segment_id")
