@@ -1,6 +1,5 @@
 package ru.hhschool.segment.model.dto.viewsegments;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.hhschool.segment.model.dto.viewsegments.enums.SegmentViewChangeState;
 import ru.hhschool.segment.model.entity.Role;
 import ru.hhschool.segment.model.enums.StateType;
@@ -10,9 +9,7 @@ import java.util.List;
 public class SegmentViewDto {
   private Long id;
   private String title;
-  @JsonProperty("roleList")
   private List<Role> roles;
-  @JsonProperty("tagList")
   private List<String> tags;
   private SegmentViewChangeState changeState;
   private StateType activeState;

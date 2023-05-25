@@ -1,27 +1,40 @@
 package ru.hhschool.segment.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import ru.hhschool.segment.dao.abstracts.RoleDao;
-import ru.hhschool.segment.dao.abstracts.SegmentDao;
-import ru.hhschool.segment.exception.HttpBadRequestException;
+import ru.hhschool.segment.dao.abstracts.*;
 import ru.hhschool.segment.mapper.RoleMapper;
 import ru.hhschool.segment.mapper.SegmentMapper;
+import ru.hhschool.segment.mapper.viewsegments.SegmentViewMapper;
 import ru.hhschool.segment.model.dto.RoleDto;
 import ru.hhschool.segment.model.dto.segment.SegmentCreateDto;
 import ru.hhschool.segment.model.dto.segment.SegmentDto;
-import ru.hhschool.segment.model.entity.Segment;
+import ru.hhschool.segment.model.dto.viewsegments.SegmentViewDto;
+import ru.hhschool.segment.model.dto.viewsegments.enums.SegmentViewChangeState;
+import ru.hhschool.segment.model.entity.*;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import java.util.*;
 
 public class SegmentService {
-  private final SegmentDao segmentDao;
+  private final LayerDao layerDao;
+  private final SegmentStateLinkDao segmentStateLinkDao;
+  private final ScreenQuestionLinkDao screenQuestionLinkDao;
+  private final SegmentApplicationScreenLinkDao segmentApplicationScreenLinkDao;
+  private final QuestionRequiredLinkDao questionRequiredLinkDao;
   private final RoleDao roleDao;
 
   @Inject
-  public SegmentService(SegmentDao segmentDao, RoleDao roleDao) {
-    this.segmentDao = segmentDao;
+  public SegmentService(LayerDao layerDao,
+                        SegmentStateLinkDao segmentStateLinkDao,
+                        ScreenQuestionLinkDao screenQuestionLinkDao,
+                        SegmentApplicationScreenLinkDao segmentApplicationScreenLinkDao,
+                        QuestionRequiredLinkDao questionRequiredLinkDao,
+                        RoleDao roleDao) {
+    this.layerDao = layerDao;
+    this.segmentStateLinkDao = segmentStateLinkDao;
+    this.screenQuestionLinkDao = screenQuestionLinkDao;
+    this.segmentApplicationScreenLinkDao = segmentApplicationScreenLinkDao;
+    this.questionRequiredLinkDao = questionRequiredLinkDao;
     this.roleDao = roleDao;
   }
 
@@ -81,5 +94,70 @@ public class SegmentService {
     List<RoleDto> roleList = RoleMapper.roleListToDto(roleDao.findAll(segment.get().getRoleList()));
 
     return Optional.of(SegmentMapper.segmentToDto(segment.get(), roleList));
+  }
+
+  @Transactional
+  public List<SegmentViewDto> getSegmentViewDtoListForSegmentsInLayerPage(Long layerId) {
+    List<Layer> space = getLayersInSpace(layerId);
+    List<SegmentStateLink> segmentStateLinks = getSSLInSpace(space);
+    Map<Long, SegmentStateLink> stateLinkMap = getLatestSSLInSpace(segmentStateLinks);
+    List<SegmentViewDto> segmentViewDtos = new ArrayList<>();
+    for (Long key : stateLinkMap.keySet()) {
+      SegmentStateLink link = stateLinkMap.get(key);
+      Segment segment = link.getSegment();
+      List<Role> roles = getRoles(segment);
+      SegmentViewChangeState changeState = getChangeSegmentState(layerId, segment.getId());
+      segmentViewDtos.add(SegmentViewMapper.toDtoForSegmentsInLayerPage(segment, roles, changeState, link.getState()));
+    }
+    segmentViewDtos.sort(Comparator.comparing(SegmentViewDto::getTitle));
+    return segmentViewDtos;
+  }
+  private List<Role> getRoles(Segment segment) {
+    return segment.getRoleList().stream()
+        .map(id -> roleDao.findById(id))
+        .filter(role -> role.isPresent())
+        .map(role -> role.get())
+        .toList();
+  }
+  private SegmentViewChangeState getChangeSegmentState(Long layerId, Long segmentId) {
+    Optional<SegmentStateLink> segmentStateLink = segmentStateLinkDao.findById(layerId, segmentId);
+    if (segmentStateLink.isPresent() && segmentStateLink.get().getOldSegmentStateLink() == null){
+      return SegmentViewChangeState.NEW;
+    }
+    List<ScreenQuestionLink> screenQuestionLinks = screenQuestionLinkDao.findAllByLayerIdSegmentId(layerId, segmentId);
+    List<SegmentApplicationScreenLink> segmentApplicationScreenLinks = segmentApplicationScreenLinkDao.findAllByLayerIdSegmentId(layerId, segmentId);
+    List<QuestionRequiredLink> questionRequiredLinks = questionRequiredLinkDao.findAllByLayerIdSegmentId(layerId, segmentId);
+    if (screenQuestionLinks.isEmpty() && segmentApplicationScreenLinks.isEmpty() && questionRequiredLinks.isEmpty()) {
+      return SegmentViewChangeState.NOT_CHANGED;
+    }
+    return SegmentViewChangeState.CHANGED;
+  }
+  private List<SegmentStateLink> getSSLInSpace(List<Layer> layerSpace) {
+    List<SegmentStateLink> questionActivatorLinkList = new ArrayList<>();
+    for(Layer layer : layerSpace){
+      questionActivatorLinkList.addAll(segmentStateLinkDao.findAllByLayerId(layer.getId()));
+    }
+    return questionActivatorLinkList;
+  }
+  private Map<Long, SegmentStateLink> getLatestSSLInSpace(List<SegmentStateLink> links) {
+    Map<Long, SegmentStateLink> segmentStateLinkMap = new HashMap<>();
+    for (SegmentStateLink link : links) {
+      Long key = link.getSegment().getId();
+      if (segmentStateLinkMap.get(key) != null){
+        segmentStateLinkMap.replace(key, link);
+      }
+      segmentStateLinkMap.put(key, link);
+    }
+    return segmentStateLinkMap;
+  }
+  private List<Layer> getLayersInSpace(Long layerId){
+    Optional<Layer> layer = layerDao.findById(layerId);
+    if (layer.isPresent()) {
+      List<Layer> layersInSpace = layerDao.getAllParents(layerId);
+      Collections.reverse(layersInSpace);
+      layersInSpace.add(layer.get());
+      return layersInSpace;
+    }
+    return Collections.EMPTY_LIST;
   }
 }

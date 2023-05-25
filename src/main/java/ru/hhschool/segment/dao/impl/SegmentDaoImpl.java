@@ -17,5 +17,10 @@ public class SegmentDaoImpl extends ReadWriteDaoImpl<Segment, Long> implements S
     }
     return segmentList;
   }
-
+  @Override
+  public List<Segment> findAll(Long layerId) {
+    return em.createQuery("SELECT DISTINCT e FROM Segment e WHERE e.layerId = :layerId")
+        .setParameter("layerId", layerId)
+        .getResultList();
+  }
 }
