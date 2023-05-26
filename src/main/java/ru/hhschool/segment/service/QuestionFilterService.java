@@ -1,14 +1,13 @@
 package ru.hhschool.segment.service;
 
-import ru.hhschool.segment.model.dto.questioninfopage.AnswerDtoForQuestionsInfo;
-import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfo;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import ru.hhschool.segment.model.dto.questioninfopage.AnswerDtoForQuestionsInfo;
+import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfo;
 
-public class FilterService {
+public class QuestionFilterService {
     Map<String, QuestionDtoForQuestionsInfo> filtredQuestionDtoMap = new HashMap<>();
 
     public List<QuestionDtoForQuestionsInfo> filterQuestionDtoListByString(String searchString, List<QuestionDtoForQuestionsInfo> questionDtoList) {

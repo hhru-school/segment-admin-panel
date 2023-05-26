@@ -44,7 +44,7 @@ public class SegmentService {
       throw new HttpBadRequestException("Название(Title) неверно указанное значение или пустой.");
     }
     if (segmentCreateDto.getRolesId() == null || segmentCreateDto.getRolesId().isEmpty()) {
-      throw new HttpBadRequestException("На заданы значения массива Roles");
+      throw new HttpBadRequestException("Не заданы значения массива Roles");
     }
     Optional<Segment> parentSegment = Optional.empty();
     if (segmentCreateDto.getParentSegmentId() != null) {
