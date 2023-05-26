@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import org.hibernate.annotations.Type;
@@ -23,6 +24,7 @@ public class Segment {
   @Column(name = "segment_id", nullable = false, unique = true)
   private Long id;
   @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "parent_segment_id")
   private Segment parentSegment;
   @Column(name = "create_time", nullable = false)
   private LocalDateTime createTime;
@@ -47,7 +49,6 @@ public class Segment {
   }
 
   public Segment(
-      Long id,
       Segment parentSegment,
       LocalDateTime createTime,
       String title,
