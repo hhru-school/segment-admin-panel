@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS question_required_links CASCADE;
 DROP TABLE IF EXISTS screen_question_links CASCADE;
 DROP TABLE IF EXISTS segment_state_links CASCADE;
 DROP TABLE IF EXISTS professional_role CASCADE;
+DROP TABLE IF EXISTS tags CASCADE;
 DROP TABLE IF EXISTS history CASCADE;
 
 CREATE TABLE IF NOT EXISTS platforms
@@ -28,8 +29,8 @@ CREATE TABLE IF NOT EXISTS layers
     parent_layer_id BIGINT REFERENCES layers (layer_id),
     description     VARCHAR(255),
     state           VARCHAR(255),
-    platforms       BIGINT[],
-    create_time     TIMESTAMP WITH TIME ZONE NOT NULL
+    create_time     TIMESTAMP WITH TIME ZONE NOT NULL,
+    platforms       BIGINT[]
 );
 COMMENT ON COLUMN layers.state IS 'enum (STABLE, ARCHIVE, TEST)';
 
@@ -86,8 +87,8 @@ CREATE TABLE IF NOT EXISTS screens
     title       VARCHAR(255),
     description VARCHAR(255),
     type        VARCHAR(255),
-    platforms   BIGINT[],
-    state       VARCHAR(255)
+    state       VARCHAR(255),
+    platforms   BIGINT[]
 );
 COMMENT ON COLUMN screens.type IS 'enum (STATIC, DYNAMIC)';
 COMMENT ON COLUMN screens.state IS 'enum (ACTIVE, ARCHIVE)';
@@ -99,8 +100,8 @@ CREATE TABLE IF NOT EXISTS segment_screen_entrypoint_links
     layer_id        BIGINT REFERENCES layers (layer_id),
     old_id          BIGINT REFERENCES segment_screen_entrypoint_links (id),
     segment_id      BIGINT REFERENCES segments (segment_id),
-    screen_id       BIGINT REFERENCES screens (screen_id),
     entrypoint_id   BIGINT REFERENCES entrypoints (entrypoint_id),
+    screen_id       BIGINT REFERENCES screens (screen_id),
     screen_position INT
 );
 

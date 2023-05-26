@@ -22,12 +22,12 @@ public class Segment {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "segment_id", nullable = false, unique = true)
   private Long id;
+  @Column(name = "title", nullable = false)
+  private String title;
   @ManyToOne(fetch = FetchType.LAZY)
   private Segment parentSegment;
   @Column(name = "create_time", nullable = false)
   private LocalDateTime createTime;
-  @Column(name = "title", nullable = false)
-  private String title;
   @Column(name = "description")
   private String description;
   @Type(type = "list-array")
@@ -38,27 +38,27 @@ public class Segment {
   private List<Long> roleList;
   @Type(type = "list-array")
   @Column(
-      name = "tag",
-      columnDefinition = "text[]"
+      name = "tags",
+      columnDefinition = "bigint[]"
   )
-  private List<String> tagList;
+  private List<Long> tagList;
 
   public Segment() {
   }
 
   public Segment(
       Long id,
+      String title,
       Segment parentSegment,
       LocalDateTime createTime,
-      String title,
       String description,
       List<Long> roleList,
-      List<String> tagList
+      List<Long> tagList
   ) {
     this.id = id;
+    this.title = title;
     this.parentSegment = parentSegment;
     this.createTime = createTime;
-    this.title = title;
     this.description = description;
     this.roleList = roleList;
     this.tagList = tagList;
@@ -70,6 +70,14 @@ public class Segment {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
   }
 
   public Segment getParentSegment() {
@@ -88,14 +96,6 @@ public class Segment {
     this.createTime = createTime;
   }
 
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
   public String getDescription() {
     return description;
   }
@@ -112,11 +112,11 @@ public class Segment {
     this.roleList = roleList;
   }
 
-  public List<String> getTagList() {
+  public List<Long> getTagList() {
     return tagList;
   }
 
-  public void setTagList(List<String> tagList) {
+  public void setTagList(List<Long> tagList) {
     this.tagList = tagList;
   }
 }

@@ -1,21 +1,19 @@
 package ru.hhschool.segment.model.entity;
 
 import io.hypersistence.utils.hibernate.type.array.ListArrayType;
+import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import ru.hhschool.segment.model.enums.AnswersNumberType;
 import ru.hhschool.segment.model.enums.ResumeField;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.GenerationType;
-import javax.persistence.Enumerated;
-import javax.persistence.EnumType;
-
-import java.util.List;
 
 @Entity
 @TypeDef(name = "list-array", typeClass = ListArrayType.class)
@@ -40,17 +38,18 @@ public class Question {
       name = "possible_answers",
       columnDefinition = "bigint[]"
   )
-  private List<Long> possibleAnswerList;
+  private List<Long> possibleAnswers;
 
-  public Question() {}
+  public Question() {
+  }
 
-  public Question(Long id, String title, String description, ResumeField type, AnswersNumberType answerType, List<Long> possibleAnswerList) {
+  public Question(Long id, String title, String description, ResumeField type, AnswersNumberType answerType, List<Long> possibleAnswers) {
     this.id = id;
     this.title = title;
     this.description = description;
     this.type = type;
     this.answerType = answerType;
-    this.possibleAnswerList = possibleAnswerList;
+    this.possibleAnswers = possibleAnswers;
   }
 
   public Long getId() {
@@ -93,11 +92,11 @@ public class Question {
     this.answerType = answerType;
   }
 
-  public List<Long> getPossibleAnswerList() {
-    return possibleAnswerList;
+  public List<Long> getPossibleAnswers() {
+    return possibleAnswers;
   }
 
-  public void setPossibleAnswerIdList(List<Long> possibleAnswerList) {
-    this.possibleAnswerList = possibleAnswerList;
+  public void setPossibleAnswers(List<Long> possibleAnswers) {
+    this.possibleAnswers = possibleAnswers;
   }
 }

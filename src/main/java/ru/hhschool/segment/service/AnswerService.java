@@ -1,5 +1,10 @@
 package ru.hhschool.segment.service;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.inject.Inject;
 import ru.hhschool.segment.dao.abstracts.AnswerDao;
 import ru.hhschool.segment.dao.abstracts.QuestionDao;
 import ru.hhschool.segment.mapper.AnswerMapper;
@@ -7,12 +12,6 @@ import ru.hhschool.segment.mapper.QuestionMapper;
 import ru.hhschool.segment.model.dto.questioninfopage.AnswerDtoForQuestionsInfo;
 import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfo;
 import ru.hhschool.segment.model.entity.Question;
-
-import javax.inject.Inject;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class AnswerService {
   private final AnswerDao answerDao;
@@ -32,7 +31,7 @@ public class AnswerService {
         .map(answerDao::findById)
         .filter(Optional::isPresent)
         .map(Optional::get)
-        .map(answer -> AnswerMapper.toDtoForQuestionsInfo(answer, getAllOpenQuestionForAnswer(answer.getOpenQuestionList(), questionList, depth)))
+        .map(answer -> AnswerMapper.toDtoForQuestionsInfo(answer, getAllOpenQuestionForAnswer(answer.getOpenQuestions(), questionList, depth)))
         .collect(Collectors.toList());
   }
 
@@ -42,7 +41,7 @@ public class AnswerService {
     }
     return questionList.stream()
         .filter(question -> openQuestionIdList.contains(question.getId()))
-        .map(question -> QuestionMapper.toDtoForQuestionsInfo(question, getAllAnswerDtoListByListId(question.getPossibleAnswerList(), questionList, depth-1)))
+        .map(question -> QuestionMapper.toDtoForQuestionsInfo(question, getAllAnswerDtoListByListId(question.getPossibleAnswers(), questionList, depth-1)))
         .toList();
   }
 }
