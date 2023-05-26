@@ -1,8 +1,14 @@
 package ru.hhschool.segment.model.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import ru.hhschool.segment.model.enums.PlatformType;
-
-import javax.persistence.*;
 
 @Entity
 @Table(name = "platforms")
@@ -17,10 +23,10 @@ public class Platform {
   @Column(name = "application_version", nullable = false)
   private String applicationVersion;
 
-  public Platform() {}
+  public Platform() {
+  }
 
-  public Platform(Long id, PlatformType platform, String applicationVersion) {
-    this.id = id;
+  public Platform(PlatformType platform, String applicationVersion) {
     this.platform = platform;
     this.applicationVersion = applicationVersion;
   }

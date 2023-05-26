@@ -43,8 +43,7 @@ public class Question {
   public Question() {
   }
 
-  public Question(Long id, String title, String description, ResumeField type, AnswersNumberType answerType, List<Long> possibleAnswers) {
-    this.id = id;
+  public Question(String title, String description, ResumeField type, AnswersNumberType answerType, List<Long> possibleAnswers) {
     this.title = title;
     this.description = description;
     this.type = type;

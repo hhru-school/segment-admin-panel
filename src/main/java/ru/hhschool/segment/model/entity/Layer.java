@@ -44,8 +44,7 @@ public class Layer {
   public Layer() {
   }
 
-  public Layer(Long id, String title, Layer parent, String description, LayerStateType state, LocalDateTime createTime, List<Long> platforms) {
-    this.id = id;
+  public Layer(String title, Layer parent, String description, LayerStateType state, LocalDateTime createTime, List<Long> platforms) {
     this.title = title;
     this.parent = parent;
     this.description = description;

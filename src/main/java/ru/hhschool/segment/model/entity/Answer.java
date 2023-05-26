@@ -43,8 +43,7 @@ public class Answer {
   public Answer() {
   }
 
-  public Answer(Long id, String title, String positiveTitle, AnswerType type, boolean defaultAnswer, boolean skipAtResult, List<Long> openQuestions) {
-    this.id = id;
+  public Answer(String title, String positiveTitle, AnswerType type, boolean defaultAnswer, boolean skipAtResult, List<Long> openQuestions) {
     this.title = title;
     this.positiveTitle = positiveTitle;
     this.type = type;

@@ -36,14 +36,12 @@ public class QuestionRequiredLink {
   }
 
   public QuestionRequiredLink(
-      Long id,
       QuestionRequiredLink oldQuestionRequiredLink,
       Segment segment,
       SegmentStateLink segmentStateLink,
       Question question,
       boolean questionRequired
   ) {
-    this.id = id;
     this.oldQuestionRequiredLink = oldQuestionRequiredLink;
     this.segment = segment;
     this.segmentStateLink = segmentStateLink;

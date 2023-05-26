@@ -39,7 +39,6 @@ public class SegmentScreenEntrypointScreenLink {
   }
 
   public SegmentScreenEntrypointScreenLink(
-      Long id,
       Layer layer,
       SegmentScreenEntrypointScreenLink oldSegmentScreenEntrypointScreenLink,
       Segment segment,
@@ -47,7 +46,6 @@ public class SegmentScreenEntrypointScreenLink {
       Screen screen,
       Integer screenPosition
   ) {
-    this.id = id;
     this.layer = layer;
     this.oldSegmentScreenEntrypointScreenLink = oldSegmentScreenEntrypointScreenLink;
     this.segment = segment;

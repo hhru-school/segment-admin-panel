@@ -40,8 +40,7 @@ public class Screen {
   public Screen() {
   }
 
-  public Screen(Long id, String title, String description, ScreenType type, StateType state, List<Long> platforms) {
-    this.id = id;
+  public Screen(String title, String description, ScreenType type, StateType state, List<Long> platforms) {
     this.title = title;
     this.description = description;
     this.type = type;

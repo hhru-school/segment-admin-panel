@@ -36,14 +36,12 @@ public class ScreenQuestionLink {
   }
 
   public ScreenQuestionLink(
-      Long id,
       ScreenQuestionLink oldScreenQuestionLink,
       SegmentScreenEntrypointScreenLink segmentScreenEntrypointScreenLink,
       Question question,
       Integer questionPosition,
       QuestionVisibilityType questionVisibility
   ) {
-    this.id = id;
     this.oldScreenQuestionLink = oldScreenQuestionLink;
     this.segmentScreenEntrypointScreenLink = segmentScreenEntrypointScreenLink;
     this.question = question;

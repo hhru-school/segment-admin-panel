@@ -22,8 +22,7 @@ public class Entrypoint {
   public Entrypoint() {
   }
 
-  public Entrypoint(Long id, String title, String description) {
-    this.id = id;
+  public Entrypoint(String title, String description) {
     this.title = title;
     this.description = description;
   }

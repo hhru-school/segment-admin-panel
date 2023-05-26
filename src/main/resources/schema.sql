@@ -10,7 +10,6 @@ DROP TABLE IF EXISTS question_required_links CASCADE;
 DROP TABLE IF EXISTS screen_question_links CASCADE;
 DROP TABLE IF EXISTS segment_state_links CASCADE;
 DROP TABLE IF EXISTS professional_role CASCADE;
-DROP TABLE IF EXISTS tags CASCADE;
 DROP TABLE IF EXISTS history CASCADE;
 
 CREATE TABLE IF NOT EXISTS platforms
@@ -51,7 +50,7 @@ CREATE TABLE IF NOT EXISTS segments
     create_time       TIMESTAMP WITH TIME ZONE NOT NULL,
     description       VARCHAR(255),
     roles             BIGINT[]                 NOT NULL,
-    tags              BIGINT[]                 NOT NULL,
+    tags              VARCHAR(255)[]           NOT NULL,
     UNIQUE (parent_segment_id, title, roles, tags)
 );
 
@@ -155,10 +154,4 @@ CREATE TABLE IF NOT EXISTS professional_role
 (
     professional_role_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name                 VARCHAR(255) UNIQUE NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS tags
-(
-    tag_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name   VARCHAR(255) UNIQUE NOT NULL
 );

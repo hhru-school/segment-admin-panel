@@ -36,8 +36,7 @@ public class SegmentStateLink {
   public SegmentStateLink() {
   }
 
-  public SegmentStateLink(Long id, Layer layer, SegmentStateLink oldSegmentStateLink, Segment segment, StateType state) {
-    this.id = id;
+  public SegmentStateLink(Layer layer, SegmentStateLink oldSegmentStateLink, Segment segment, StateType state) {
     this.layer = layer;
     this.oldSegmentStateLink = oldSegmentStateLink;
     this.segment = segment;

@@ -85,34 +85,6 @@ VALUES ('WEB', '1'),       --1
        ('IOS', '2.2'),     --4
        ('Android', '2.7'); --5
 
-INSERT INTO tags (tag_id, name) OVERRIDING SYSTEM VALUE
-VALUES (1, 'Programmer'),         --1
-       (2, 'Software'),           --2
-       (3, 'IT'),                 --3
-       (4, 'Translator'),         --4
-       (5, 'ForeignLanguages'),   --5
-       (6, 'Chinese'),            --6
-       (7, 'Security'),           --7
-       (8, 'Safety'),             --8
-       (9, 'Guard'),              --9
-       (10, 'Java'),              --10
-       (11, 'Backend'),           --11
-       (12, 'Bodyguard'),         --12
-       (13, 'PrivateProtection'), --13
-       (14, 'Driver'),            --14
-       (15, 'Car'),               --15
-       (16, 'Road'),              --16
-       (17, 'Finance'),           --17
-       (18, 'Accounting'),        --18
-       (19, 'Money'),             --19
-       (20, 'Calculations'),      --20
-       (21, 'Repair'),            --21
-       (22, 'Mechanic'),          --22
-       (23, 'Psychologist'),      --23
-       (24, 'Director'),          --24
-       (25, 'Management'); --25
-
-
 INSERT INTO segments (parent_segment_id, create_time, title, description, roles, tags)
 VALUES (NULL, '2023-02-12 02:02:00', 'Программист, разработчик', 'Разработчик программного обеспечения', '{96}',
         '{1, 2, 3}'),                                                                                        -- 1
