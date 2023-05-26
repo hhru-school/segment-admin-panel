@@ -6,7 +6,9 @@ import ru.hhschool.segment.dao.abstracts.ScreenQuestionLinkDao;
 import ru.hhschool.segment.dao.abstracts.SegmentApplicationScreenLinkDao;
 import ru.hhschool.segment.dao.abstracts.QuestionRequiredLinkDao;
 import ru.hhschool.segment.dao.abstracts.RoleDao;
+import ru.hhschool.segment.mapper.viewsegments.LayerSegmentsMapper;
 import ru.hhschool.segment.mapper.viewsegments.SegmentViewMapper;
+import ru.hhschool.segment.model.dto.viewsegments.LayerSegmentsDto;
 import ru.hhschool.segment.model.dto.viewsegments.SegmentViewDto;
 import ru.hhschool.segment.model.dto.viewsegments.enums.SegmentViewChangeState;
 import ru.hhschool.segment.model.entity.Layer;
@@ -51,8 +53,11 @@ public class SegmentService {
   }
 
   @Transactional
-  public List<SegmentViewDto> getSegmentViewDtoListForSegmentsInLayerPage(Long layerId) {
+  public Optional<LayerSegmentsDto> getSegmentViewDtoListForSegmentsInLayerPage(Long layerId) {
     List<Layer> space = getLayersInSpace(layerId);
+    if (space.isEmpty()){
+      return Optional.empty();
+    }
     Map<Long, SegmentStateLink> stateLinkMap = getLatestSSLInSpace(getSSLInSpace(space));
     List<SegmentViewDto> segmentViewDtos = new ArrayList<>();
     for (Long key : stateLinkMap.keySet()) {
@@ -63,7 +68,9 @@ public class SegmentService {
       segmentViewDtos.add(SegmentViewMapper.toDtoForSegmentsInLayerPage(segment, roles, changeState, link.getState()));
     }
     segmentViewDtos.sort(Comparator.comparing(SegmentViewDto::getTitle));
-    return segmentViewDtos;
+    Optional<Layer> layer = layerDao.findById(layerId);
+    LayerSegmentsDto layerSegmentsDto = LayerSegmentsMapper.toDtoForSegmentsInLayerPage(layer.get(), segmentViewDtos);
+    return Optional.of(layerSegmentsDto);
   }
   private List<Role> getRoles(Segment segment) {
     return segment.getRoleList().stream()
