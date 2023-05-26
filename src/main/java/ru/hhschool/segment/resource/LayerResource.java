@@ -3,7 +3,10 @@ package ru.hhschool.segment.resource;
 import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -42,9 +45,9 @@ public class LayerResource {
   }
 
   @GET
-  @Path("/segments")
+  @Path("/{layerId}/segments")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getSegmentViewDtoListForAllLayerSegmentsPage(@QueryParam("layerId") Long layerId){
+  public Response getSegmentViewDtoListForAllLayerSegmentsPage(@PathParam("layerId") Long layerId){
     List<SegmentViewDto> segmentViewDtoList = segmentService.getSegmentViewDtoListForSegmentsInLayerPage(layerId);
     if (!segmentViewDtoList.isEmpty()){
       return Response.ok(segmentViewDtoList).build();
