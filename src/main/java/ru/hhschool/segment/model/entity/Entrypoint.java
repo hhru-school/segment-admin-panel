@@ -1,11 +1,11 @@
 package ru.hhschool.segment.model.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.GenerationType;
 
 @Entity
 @Table(name = "entrypoints")
@@ -19,12 +19,13 @@ public class Entrypoint {
   @Column(name = "description")
   private String description;
 
-  public Entrypoint(String title, String description, Long layerId) {
+  public Entrypoint() {
+  }
+
+  public Entrypoint(String title, String description) {
     this.title = title;
     this.description = description;
   }
-
-  public Entrypoint() {}
 
   public Long getId() {
     return id;

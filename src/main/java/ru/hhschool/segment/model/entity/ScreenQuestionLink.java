@@ -19,23 +19,11 @@ public class ScreenQuestionLink {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false, unique = true)
   private Long id;
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "layer_id")
-  private Layer layer;
   @OneToOne(fetch = FetchType.LAZY)
   private ScreenQuestionLink oldScreenQuestionLink;
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "segment_id")
-  private Segment segment;
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "entrypoint_id")
-  private Entrypoint entrypoint;
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "application_id")
-  private Application application;
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "screen_id")
-  private Screen screen;
+  @JoinColumn(name = "segment_screen_entrypoint_id")
+  private SegmentScreenEntrypointScreenLink segmentScreenEntrypointScreenLink;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "question_id")
   private Question question;
@@ -48,24 +36,14 @@ public class ScreenQuestionLink {
   }
 
   public ScreenQuestionLink(
-      Long id,
-      Layer layer,
       ScreenQuestionLink oldScreenQuestionLink,
-      Segment segment,
-      Entrypoint entrypoint,
-      Application application,
-      Screen screen,
+      SegmentScreenEntrypointScreenLink segmentScreenEntrypointScreenLink,
       Question question,
       Integer questionPosition,
       QuestionVisibilityType questionVisibility
   ) {
-    this.id = id;
-    this.layer = layer;
     this.oldScreenQuestionLink = oldScreenQuestionLink;
-    this.segment = segment;
-    this.entrypoint = entrypoint;
-    this.application = application;
-    this.screen = screen;
+    this.segmentScreenEntrypointScreenLink = segmentScreenEntrypointScreenLink;
     this.question = question;
     this.questionPosition = questionPosition;
     this.questionVisibility = questionVisibility;
@@ -79,14 +57,6 @@ public class ScreenQuestionLink {
     this.id = id;
   }
 
-  public Layer getLayer() {
-    return layer;
-  }
-
-  public void setLayer(Layer layer) {
-    this.layer = layer;
-  }
-
   public ScreenQuestionLink getOldScreenQuestionLink() {
     return oldScreenQuestionLink;
   }
@@ -95,36 +65,12 @@ public class ScreenQuestionLink {
     this.oldScreenQuestionLink = oldScreenQuestionLink;
   }
 
-  public Segment getSegment() {
-    return segment;
+  public SegmentScreenEntrypointScreenLink getSegmentScreenEntrypointScreenLink() {
+    return segmentScreenEntrypointScreenLink;
   }
 
-  public void setSegment(Segment segment) {
-    this.segment = segment;
-  }
-
-  public Entrypoint getEntrypoint() {
-    return entrypoint;
-  }
-
-  public void setEntrypoint(Entrypoint entrypoint) {
-    this.entrypoint = entrypoint;
-  }
-
-  public Application getApplication() {
-    return application;
-  }
-
-  public void setApplication(Application application) {
-    this.application = application;
-  }
-
-  public Screen getScreen() {
-    return screen;
-  }
-
-  public void setScreen(Screen screen) {
-    this.screen = screen;
+  public void setSegmentScreenEntrypointScreenLink(SegmentScreenEntrypointScreenLink segmentScreenEntrypointScreenLink) {
+    this.segmentScreenEntrypointScreenLink = segmentScreenEntrypointScreenLink;
   }
 
   public Question getQuestion() {

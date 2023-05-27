@@ -1,6 +1,7 @@
 package ru.hhschool.segment.model.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import org.hibernate.annotations.Type;
 import ru.hhschool.segment.model.enums.LayerStateType;
 
 @Entity
@@ -20,10 +22,10 @@ public class Layer {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "layer_id", nullable = false, unique = true)
   private Long id;
-  @ManyToOne(fetch = FetchType.LAZY)
-  private Layer parent;
   @Column(name = "title", nullable = false)
   private String title;
+  @ManyToOne(fetch = FetchType.LAZY)
+  private Layer parent;
   @Column(name = "description")
   private String description;
   @Enumerated(EnumType.STRING)
@@ -31,17 +33,24 @@ public class Layer {
   private LayerStateType state;
   @Column(name = "create_time", nullable = false)
   private LocalDateTime createTime;
+  @Type(type = "list-array")
+  @Column(
+      name = "platforms",
+      columnDefinition = "bigint[]"
+  )
+  private List<Long> platforms;
+
 
   public Layer() {
   }
 
-  public Layer(Long id, Layer parent, String title, String description, LayerStateType state, LocalDateTime createTime) {
-    this.id = id;
-    this.parent = parent;
+  public Layer(String title, Layer parent, String description, LayerStateType state, LocalDateTime createTime, List<Long> platforms) {
     this.title = title;
+    this.parent = parent;
     this.description = description;
     this.state = state;
     this.createTime = createTime;
+    this.platforms = platforms;
   }
 
   public Long getId() {
@@ -52,20 +61,20 @@ public class Layer {
     this.id = id;
   }
 
-  public Layer getParent() {
-    return parent;
-  }
-
-  public void setParent(Layer parent) {
-    this.parent = parent;
-  }
-
   public String getTitle() {
     return title;
   }
 
   public void setTitle(String title) {
     this.title = title;
+  }
+
+  public Layer getParent() {
+    return parent;
+  }
+
+  public void setParent(Layer parent) {
+    this.parent = parent;
   }
 
   public String getDescription() {
@@ -90,5 +99,13 @@ public class Layer {
 
   public void setCreateTime(LocalDateTime createTime) {
     this.createTime = createTime;
+  }
+
+  public List<Long> getPlatforms() {
+    return platforms;
+  }
+
+  public void setPlatforms(List<Long> platforms) {
+    this.platforms = platforms;
   }
 }

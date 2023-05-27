@@ -12,8 +12,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "segment_application_screen_links")
-public class SegmentApplicationScreenLink {
+@Table(name = "segment_screen_entrypoint_links")
+public class SegmentScreenEntrypointScreenLink {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false, unique = true)
@@ -22,7 +22,7 @@ public class SegmentApplicationScreenLink {
   @JoinColumn(name = "layer_id")
   private Layer layer;
   @OneToOne(fetch = FetchType.LAZY)
-  private SegmentApplicationScreenLink oldSegmentApplicationScreenLink;
+  private SegmentScreenEntrypointScreenLink oldSegmentScreenEntrypointScreenLink;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "segment_id")
   private Segment segment;
@@ -30,33 +30,26 @@ public class SegmentApplicationScreenLink {
   @JoinColumn(name = "entrypoint_id")
   private Entrypoint entrypoint;
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "application_id")
-  private Application application;
-  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "screen_id")
   private Screen screen;
   @Column(name = "screen_position", nullable = false)
   private Integer screenPosition;
 
-  public SegmentApplicationScreenLink() {
+  public SegmentScreenEntrypointScreenLink() {
   }
 
-  public SegmentApplicationScreenLink(
-      Long id,
+  public SegmentScreenEntrypointScreenLink(
       Layer layer,
-      SegmentApplicationScreenLink oldSegmentApplicationScreenLink,
+      SegmentScreenEntrypointScreenLink oldSegmentScreenEntrypointScreenLink,
       Segment segment,
       Entrypoint entrypoint,
-      Application application,
       Screen screen,
       Integer screenPosition
   ) {
-    this.id = id;
     this.layer = layer;
-    this.oldSegmentApplicationScreenLink = oldSegmentApplicationScreenLink;
+    this.oldSegmentScreenEntrypointScreenLink = oldSegmentScreenEntrypointScreenLink;
     this.segment = segment;
     this.entrypoint = entrypoint;
-    this.application = application;
     this.screen = screen;
     this.screenPosition = screenPosition;
   }
@@ -77,12 +70,12 @@ public class SegmentApplicationScreenLink {
     this.layer = layer;
   }
 
-  public SegmentApplicationScreenLink getOldSegmentApplicationScreenLink() {
-    return oldSegmentApplicationScreenLink;
+  public SegmentScreenEntrypointScreenLink getOldSegmentScreenEntrypointScreenLink() {
+    return oldSegmentScreenEntrypointScreenLink;
   }
 
-  public void setOldSegmentApplicationScreenLink(SegmentApplicationScreenLink oldSegmentApplicationScreenLink) {
-    this.oldSegmentApplicationScreenLink = oldSegmentApplicationScreenLink;
+  public void setOldSegmentScreenEntrypointScreenLink(SegmentScreenEntrypointScreenLink oldSegmentScreenEntrypointScreenLink) {
+    this.oldSegmentScreenEntrypointScreenLink = oldSegmentScreenEntrypointScreenLink;
   }
 
   public Segment getSegment() {
@@ -99,14 +92,6 @@ public class SegmentApplicationScreenLink {
 
   public void setEntrypoint(Entrypoint entrypoint) {
     this.entrypoint = entrypoint;
-  }
-
-  public Application getApplication() {
-    return application;
-  }
-
-  public void setApplication(Application application) {
-    this.application = application;
   }
 
   public Screen getScreen() {

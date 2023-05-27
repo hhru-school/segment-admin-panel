@@ -1,15 +1,15 @@
 package ru.hhschool.segment.model.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import javax.persistence.Column;
-import javax.persistence.GenerationType;
-import javax.persistence.OneToOne;
-import javax.persistence.ManyToOne;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "question_required_links")
@@ -18,31 +18,28 @@ public class QuestionRequiredLink {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false, unique = true)
   private Long id;
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "layer_id")
-  private Layer layer;
   @OneToOne(fetch = FetchType.LAZY)
   private QuestionRequiredLink oldQuestionRequiredLink;
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "segment_id")
-  private Segment segment;
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "application_id")
-  private Application application;
+  @JoinColumn(name = "segment_state_id")
+  SegmentStateLink segmentStateLink;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "question_id")
   private Question question;
   @Column(name = "question_required", nullable = false)
   private boolean questionRequired;
 
-  public QuestionRequiredLink() {}
+  public QuestionRequiredLink() {
+  }
 
-  public QuestionRequiredLink(Long id, Layer layer, QuestionRequiredLink oldQuestionRequiredLink, Segment segment, Application application, Question question, boolean questionRequired) {
-    this.id = id;
-    this.layer = layer;
+  public QuestionRequiredLink(
+      QuestionRequiredLink oldQuestionRequiredLink,
+      SegmentStateLink segmentStateLink,
+      Question question,
+      boolean questionRequired
+  ) {
     this.oldQuestionRequiredLink = oldQuestionRequiredLink;
-    this.segment = segment;
-    this.application = application;
+    this.segmentStateLink = segmentStateLink;
     this.question = question;
     this.questionRequired = questionRequired;
   }
@@ -55,14 +52,6 @@ public class QuestionRequiredLink {
     this.id = id;
   }
 
-  public Layer getLayer() {
-    return layer;
-  }
-
-  public void setLayer(Layer layer) {
-    this.layer = layer;
-  }
-
   public QuestionRequiredLink getOldQuestionRequiredLink() {
     return oldQuestionRequiredLink;
   }
@@ -71,20 +60,12 @@ public class QuestionRequiredLink {
     this.oldQuestionRequiredLink = oldQuestionRequiredLink;
   }
 
-  public Segment getSegment() {
-    return segment;
+  public SegmentStateLink getSegmentStateLink() {
+    return segmentStateLink;
   }
 
-  public void setSegment(Segment segment) {
-    this.segment = segment;
-  }
-
-  public Application getApplication() {
-    return application;
-  }
-
-  public void setApplication(Application application) {
-    this.application = application;
+  public void setSegmentStateLink(SegmentStateLink segmentStateLink) {
+    this.segmentStateLink = segmentStateLink;
   }
 
   public Question getQuestion() {

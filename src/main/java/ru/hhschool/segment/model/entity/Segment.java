@@ -9,7 +9,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import org.hibernate.annotations.Type;
@@ -24,7 +23,6 @@ public class Segment {
   @Column(name = "segment_id", nullable = false, unique = true)
   private Long id;
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "parent_segment_id")
   private Segment parentSegment;
   @Column(name = "create_time", nullable = false)
   private LocalDateTime createTime;
@@ -43,7 +41,7 @@ public class Segment {
       name = "tag",
       columnDefinition = "text[]"
   )
-  private List<String> tagList;
+  private List<String> tags;
 
   public Segment() {
   }
@@ -54,15 +52,14 @@ public class Segment {
       String title,
       String description,
       List<Long> roleList,
-      List<String> tagList
+      List<String> tags
   ) {
-    this.id = id;
     this.parentSegment = parentSegment;
     this.createTime = createTime;
     this.title = title;
     this.description = description;
     this.roleList = roleList;
-    this.tagList = tagList;
+    this.tags = tags;
   }
 
   public Long getId() {
@@ -113,11 +110,11 @@ public class Segment {
     this.roleList = roleList;
   }
 
-  public List<String> getTagList() {
-    return tagList;
+  public List<String> getTags() {
+    return tags;
   }
 
-  public void setTagList(List<String> tagList) {
-    this.tagList = tagList;
+  public void setTags(List<String> tagList) {
+    this.tags = tagList;
   }
 }
