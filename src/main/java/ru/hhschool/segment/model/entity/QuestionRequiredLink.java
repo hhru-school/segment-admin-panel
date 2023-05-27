@@ -21,8 +21,11 @@ public class QuestionRequiredLink {
   @OneToOne(fetch = FetchType.LAZY)
   private QuestionRequiredLink oldQuestionRequiredLink;
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "segment_state_id")
-  SegmentStateLink segmentStateLink;
+  @JoinColumn(name = "layer_id")
+  private Layer layer;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "segment_id")
+  private Segment segment;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "question_id")
   private Question question;
@@ -34,12 +37,14 @@ public class QuestionRequiredLink {
 
   public QuestionRequiredLink(
       QuestionRequiredLink oldQuestionRequiredLink,
-      SegmentStateLink segmentStateLink,
+      Layer layer,
+      Segment segment,
       Question question,
       boolean questionRequired
   ) {
     this.oldQuestionRequiredLink = oldQuestionRequiredLink;
-    this.segmentStateLink = segmentStateLink;
+    this.layer = layer;
+    this.segment = segment;
     this.question = question;
     this.questionRequired = questionRequired;
   }
@@ -60,12 +65,20 @@ public class QuestionRequiredLink {
     this.oldQuestionRequiredLink = oldQuestionRequiredLink;
   }
 
-  public SegmentStateLink getSegmentStateLink() {
-    return segmentStateLink;
+  public Layer getLayer() {
+    return layer;
   }
 
-  public void setSegmentStateLink(SegmentStateLink segmentStateLink) {
-    this.segmentStateLink = segmentStateLink;
+  public void setLayer(Layer layer) {
+    this.layer = layer;
+  }
+
+  public Segment getSegment() {
+    return segment;
+  }
+
+  public void setSegment(Segment segment) {
+    this.segment = segment;
   }
 
   public Question getQuestion() {

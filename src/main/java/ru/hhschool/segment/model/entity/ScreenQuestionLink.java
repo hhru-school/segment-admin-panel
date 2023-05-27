@@ -22,8 +22,17 @@ public class ScreenQuestionLink {
   @OneToOne(fetch = FetchType.LAZY)
   private ScreenQuestionLink oldScreenQuestionLink;
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "segment_screen_entrypoint_id")
-  private SegmentScreenEntrypointScreenLink segmentScreenEntrypointScreenLink;
+  @JoinColumn(name = "layer_id")
+  private Layer layer;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "segment_id")
+  private Segment segment;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "entrypoint_id")
+  private Entrypoint entrypoint;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "screen_id")
+  private Screen screen;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "question_id")
   private Question question;
@@ -37,13 +46,19 @@ public class ScreenQuestionLink {
 
   public ScreenQuestionLink(
       ScreenQuestionLink oldScreenQuestionLink,
-      SegmentScreenEntrypointScreenLink segmentScreenEntrypointScreenLink,
+      Layer layer,
+      Segment segment,
+      Entrypoint entrypoint,
+      Screen screen,
       Question question,
       Integer questionPosition,
       QuestionVisibilityType questionVisibility
   ) {
     this.oldScreenQuestionLink = oldScreenQuestionLink;
-    this.segmentScreenEntrypointScreenLink = segmentScreenEntrypointScreenLink;
+    this.layer = layer;
+    this.segment = segment;
+    this.entrypoint = entrypoint;
+    this.screen = screen;
     this.question = question;
     this.questionPosition = questionPosition;
     this.questionVisibility = questionVisibility;
@@ -65,12 +80,36 @@ public class ScreenQuestionLink {
     this.oldScreenQuestionLink = oldScreenQuestionLink;
   }
 
-  public SegmentScreenEntrypointScreenLink getSegmentScreenEntrypointScreenLink() {
-    return segmentScreenEntrypointScreenLink;
+  public Layer getLayer() {
+    return layer;
   }
 
-  public void setSegmentScreenEntrypointScreenLink(SegmentScreenEntrypointScreenLink segmentScreenEntrypointScreenLink) {
-    this.segmentScreenEntrypointScreenLink = segmentScreenEntrypointScreenLink;
+  public void setLayer(Layer layer) {
+    this.layer = layer;
+  }
+
+  public Segment getSegment() {
+    return segment;
+  }
+
+  public void setSegment(Segment segment) {
+    this.segment = segment;
+  }
+
+  public Entrypoint getEntrypoint() {
+    return entrypoint;
+  }
+
+  public void setEntrypoint(Entrypoint entrypoint) {
+    this.entrypoint = entrypoint;
+  }
+
+  public Screen getScreen() {
+    return screen;
+  }
+
+  public void setScreen(Screen screen) {
+    this.screen = screen;
   }
 
   public Question getQuestion() {
