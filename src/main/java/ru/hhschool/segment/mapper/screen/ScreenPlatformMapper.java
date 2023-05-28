@@ -15,6 +15,9 @@ public class ScreenPlatformMapper {
   }
 
   public static List<ScreenPlatformDto> platformListToDtoList(List<Platform> platformList) {
+    if (platformList == null) {
+      return List.of();
+    }
     return platformList.stream()
         .map(ScreenPlatformMapper::platformToDto)
         .toList();

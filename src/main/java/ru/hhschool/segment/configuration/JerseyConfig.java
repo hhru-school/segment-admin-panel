@@ -6,6 +6,7 @@ import ru.hhschool.segment.resource.EntrypointResource;
 import ru.hhschool.segment.resource.LayerResource;
 import ru.hhschool.segment.resource.QuestionResource;
 import ru.hhschool.segment.resource.RoleResource;
+import ru.hhschool.segment.resource.ScreenResource;
 import ru.hhschool.segment.resource.SegmentResource;
 
 @Configuration
@@ -17,5 +18,6 @@ public class JerseyConfig extends ResourceConfig {
     register(SegmentResource.class);
     register(EntrypointResource.class);
     register(RoleResource.class);
+    register(ScreenResource.class);
   }
 }

@@ -1,7 +1,9 @@
 package ru.hhschool.segment.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javax.transaction.Transactional;
 import ru.hhschool.segment.dao.abstracts.PlatformDao;
 import ru.hhschool.segment.dao.abstracts.ScreenDao;
 import ru.hhschool.segment.mapper.screen.ScreenMapper;
@@ -19,10 +21,19 @@ public class ScreenService {
     this.platformDao = platformDao;
   }
 
+  @Transactional
   public List<ScreenDto> getAll() {
-    return ScreenMapper.screenListToDto(screenDao.findAll());
+    List<Screen> screens = screenDao.findAll();
+    List<ScreenDto> screenDtoList = new ArrayList<>();
+
+    for (Screen screen : screens) {
+      List<ScreenPlatformDto> platformVersions = ScreenPlatformMapper.platformListToDtoList(platformDao.findAll(screen.getPlatforms()));
+      screenDtoList.add(ScreenMapper.screenToDto(screen, platformVersions));
+    }
+    return screenDtoList;
   }
 
+  @Transactional
   public Optional<ScreenDto> getScreenById(long screenId) {
     Optional<Screen> screenOptional = screenDao.findById(screenId);
     if (screenOptional.isEmpty()) {
@@ -31,12 +42,9 @@ public class ScreenService {
 
     Screen screen = screenOptional.get();
 
-    List<>
+    List<ScreenPlatformDto> platformVersions = ScreenPlatformMapper.platformListToDtoList(platformDao.findAll(screen.getPlatforms()));
 
-    List<ScreenPlatformDto> platformVersions =
-        ScreenPlatformMapper.platformListToDtoList(platformDao.findAll(screen.getApplication().getPlatformList()));
-
-    return Optional.of(ScreenMapper.screenToDto(screen, , platformVersions));
+    return Optional.of(ScreenMapper.screenToDto(screen, platformVersions));
   }
 
 }
