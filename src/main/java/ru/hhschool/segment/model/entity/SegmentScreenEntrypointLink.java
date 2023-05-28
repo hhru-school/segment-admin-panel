@@ -13,16 +13,16 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "segment_screen_entrypoint_links")
-public class SegmentScreenEntrypointScreenLink {
+public class SegmentScreenEntrypointLink {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false, unique = true)
   private Long id;
+  @OneToOne(fetch = FetchType.LAZY)
+  private SegmentScreenEntrypointLink oldSegmentScreenEntrypointLink;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "layer_id")
   private Layer layer;
-  @OneToOne(fetch = FetchType.LAZY)
-  private SegmentScreenEntrypointScreenLink oldSegmentScreenEntrypointScreenLink;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "segment_id")
   private Segment segment;
@@ -35,19 +35,19 @@ public class SegmentScreenEntrypointScreenLink {
   @Column(name = "screen_position", nullable = false)
   private Integer screenPosition;
 
-  public SegmentScreenEntrypointScreenLink() {
+  public SegmentScreenEntrypointLink() {
   }
 
-  public SegmentScreenEntrypointScreenLink(
+  public SegmentScreenEntrypointLink(
+      SegmentScreenEntrypointLink oldSegmentScreenEntrypointLink,
       Layer layer,
-      SegmentScreenEntrypointScreenLink oldSegmentScreenEntrypointScreenLink,
       Segment segment,
       Entrypoint entrypoint,
       Screen screen,
       Integer screenPosition
   ) {
+    this.oldSegmentScreenEntrypointLink = oldSegmentScreenEntrypointLink;
     this.layer = layer;
-    this.oldSegmentScreenEntrypointScreenLink = oldSegmentScreenEntrypointScreenLink;
     this.segment = segment;
     this.entrypoint = entrypoint;
     this.screen = screen;
@@ -62,20 +62,20 @@ public class SegmentScreenEntrypointScreenLink {
     this.id = id;
   }
 
+  public SegmentScreenEntrypointLink getOldSegmentScreenEntrypointScreenLink() {
+    return oldSegmentScreenEntrypointLink;
+  }
+
+  public void setOldSegmentScreenEntrypointScreenLink(SegmentScreenEntrypointLink oldSegmentScreenEntrypointLink) {
+    this.oldSegmentScreenEntrypointLink = oldSegmentScreenEntrypointLink;
+  }
+
   public Layer getLayer() {
     return layer;
   }
 
   public void setLayer(Layer layer) {
     this.layer = layer;
-  }
-
-  public SegmentScreenEntrypointScreenLink getOldSegmentScreenEntrypointScreenLink() {
-    return oldSegmentScreenEntrypointScreenLink;
-  }
-
-  public void setOldSegmentScreenEntrypointScreenLink(SegmentScreenEntrypointScreenLink oldSegmentScreenEntrypointScreenLink) {
-    this.oldSegmentScreenEntrypointScreenLink = oldSegmentScreenEntrypointScreenLink;
   }
 
   public Segment getSegment() {

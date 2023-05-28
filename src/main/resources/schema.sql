@@ -96,8 +96,8 @@ COMMENT ON COLUMN screens.state IS 'enum (ACTIVE, ARCHIVE)';
 CREATE TABLE IF NOT EXISTS segment_screen_entrypoint_links
 (
     id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    layer_id        BIGINT REFERENCES layers (layer_id),
     old_id          BIGINT REFERENCES segment_screen_entrypoint_links (id),
+    layer_id        BIGINT REFERENCES layers (layer_id),
     segment_id      BIGINT REFERENCES segments (segment_id),
     entrypoint_id   BIGINT REFERENCES entrypoints (entrypoint_id),
     screen_id       BIGINT REFERENCES screens (screen_id),
@@ -107,12 +107,15 @@ CREATE TABLE IF NOT EXISTS segment_screen_entrypoint_links
 
 CREATE TABLE IF NOT EXISTS screen_question_links
 (
-    id                           BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    old_id                       BIGINT REFERENCES screen_question_links (id),
-    segment_screen_entrypoint_id BIGINT REFERENCES segment_screen_entrypoint_links (id),
-    question_id                  BIGINT REFERENCES questions (question_id),
-    question_position            INT,
-    question_visibility          VARCHAR(255)
+    id                  BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    old_id              BIGINT REFERENCES screen_question_links (id),
+    layer_id            BIGINT REFERENCES layers (layer_id),
+    segment_id          BIGINT REFERENCES segments (segment_id),
+    entrypoint_id       BIGINT REFERENCES entrypoints (entrypoint_id),
+    screen_id           BIGINT REFERENCES screens (screen_id),
+    question_id         BIGINT REFERENCES questions (question_id),
+    question_position   INT,
+    question_visibility VARCHAR(255)
 );
 COMMENT ON COLUMN screen_question_links.question_visibility IS 'enum (SHOW,  HIDE,  HIDE_PREFILLED)';
 
@@ -120,8 +123,8 @@ COMMENT ON COLUMN screen_question_links.question_visibility IS 'enum (SHOW,  HID
 CREATE TABLE IF NOT EXISTS segment_state_links
 (
     id         BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    layer_id   BIGINT REFERENCES layers (layer_id),
     old_id     BIGINT REFERENCES segment_state_links (id),
+    layer_id   BIGINT REFERENCES layers (layer_id),
     segment_id BIGINT REFERENCES segments (segment_id),
     state      VARCHAR(255) NOT NULL
 );
@@ -132,7 +135,8 @@ CREATE TABLE IF NOT EXISTS question_required_links
 (
     id                BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     old_id            BIGINT REFERENCES question_required_links (id),
-    segment_state_id  BIGINT REFERENCES segment_state_links (id),
+    layer_id          BIGINT REFERENCES layers (layer_id),
+    segment_id        BIGINT REFERENCES segments (segment_id),
     question_id       BIGINT REFERENCES questions (question_id),
     question_required BOOLEAN
 );
