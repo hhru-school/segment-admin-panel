@@ -21,11 +21,11 @@ public class SegmentStateLink {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false, unique = true)
   private Long id;
+  @OneToOne(fetch = FetchType.LAZY)
+  private SegmentStateLink oldSegmentStateLink;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "layer_id")
   private Layer layer;
-  @OneToOne(fetch = FetchType.LAZY)
-  private SegmentStateLink oldSegmentStateLink;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "segment_id")
   private Segment segment;
@@ -36,10 +36,9 @@ public class SegmentStateLink {
   public SegmentStateLink() {
   }
 
-  public SegmentStateLink(Long id, Layer layer, SegmentStateLink oldSegmentStateLink, Segment segment, StateType state) {
-    this.id = id;
-    this.layer = layer;
+  public SegmentStateLink(SegmentStateLink oldSegmentStateLink, Layer layer, Segment segment, StateType state) {
     this.oldSegmentStateLink = oldSegmentStateLink;
+    this.layer = layer;
     this.segment = segment;
     this.state = state;
   }

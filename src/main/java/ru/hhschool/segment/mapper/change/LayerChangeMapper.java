@@ -87,8 +87,8 @@ public class LayerChangeMapper {
     for (Question question : questionList) {
       Long questionId = question.getId();
       QuestionChangeDto questionChangeDto = questionMap.get(questionId);
-      if (question.getPossibleAnswerList() != null) {
-        for (Long answerId : question.getPossibleAnswerList()) {
+      if (question.getPossibleAnswers() != null) {
+        for (Long answerId : question.getPossibleAnswers()) {
           if (answerMap.containsKey(answerId)) {
             answerUsedId.add(answerId);
             questionChangeDto.getAnswerList().add(answerMap.get(answerId));
@@ -113,7 +113,7 @@ public class LayerChangeMapper {
       return;
     }
     for (Answer answer : answerList) {
-      List<Long> questionIdList = answer.getOpenQuestionList();
+      List<Long> questionIdList = answer.getOpenQuestions();
       Long answerId = answer.getId();
       AnswerChangeDto answerChangeDto = answerMap.get(answerId);
       if (questionIdList != null) {
