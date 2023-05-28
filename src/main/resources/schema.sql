@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS segments CASCADE;
 DROP TABLE IF EXISTS questions CASCADE;
 DROP TABLE IF EXISTS answers CASCADE;
 DROP TABLE IF EXISTS screens CASCADE;
+DROP TABLE IF EXISTS screen_questions CASCADE;
 DROP TABLE IF EXISTS segment_screen_entrypoint_links CASCADE;
 DROP TABLE IF EXISTS question_required_links CASCADE;
 DROP TABLE IF EXISTS screen_question_links CASCADE;
@@ -92,6 +93,12 @@ CREATE TABLE IF NOT EXISTS screens
 COMMENT ON COLUMN screens.type IS 'enum (STATIC, DYNAMIC)';
 COMMENT ON COLUMN screens.state IS 'enum (ACTIVE, ARCHIVE)';
 
+CREATE TABLE IF NOT EXISTS screen_questions
+(
+    screen_id   BIGINT REFERENCES screens (screen_id),
+    question_id BIGINT REFERENCES questions (question_id),
+    PRIMARY KEY (screen_id, question_id)
+);
 
 CREATE TABLE IF NOT EXISTS segment_screen_entrypoint_links
 (

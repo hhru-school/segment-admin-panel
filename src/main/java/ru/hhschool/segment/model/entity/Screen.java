@@ -5,9 +5,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 import ru.hhschool.segment.model.enums.ScreenType;
@@ -36,16 +40,24 @@ public class Screen {
       columnDefinition = "bigint[]"
   )
   private List<Long> platforms;
+  @OneToMany(fetch = FetchType.LAZY)
+  @JoinTable(
+      name = "screen_questions",
+      joinColumns = {@JoinColumn(name = "screen_id")},
+      inverseJoinColumns = {@JoinColumn(name = "question_id")}
+  )
+  private List<Question> questions;
 
   public Screen() {
   }
 
-  public Screen(String title, String description, ScreenType type, StateType state, List<Long> platforms) {
+  public Screen(String title, String description, ScreenType type, StateType state, List<Long> platforms, List<Question> questions) {
     this.title = title;
     this.description = description;
     this.type = type;
     this.state = state;
     this.platforms = platforms;
+    this.questions = questions;
   }
 
   public Long getId() {
@@ -94,5 +106,13 @@ public class Screen {
 
   public void setPlatforms(List<Long> platforms) {
     this.platforms = platforms;
+  }
+
+  public List<Question> getQuestions() {
+    return questions;
+  }
+
+  public void setQuestions(List<Question> questions) {
+    this.questions = questions;
   }
 }
