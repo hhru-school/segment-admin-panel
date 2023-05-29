@@ -4,21 +4,13 @@ import ru.hhschool.segment.HttpBadRequestException;
 import ru.hhschool.segment.dao.abstracts.*;
 import ru.hhschool.segment.mapper.RoleMapper;
 import ru.hhschool.segment.mapper.SegmentMapper;
-import ru.hhschool.segment.mapper.viewsegments.layerview.LayerSegmentsMapper;
-import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentLayerViewMapper;
+import ru.hhschool.segment.mapper.viewsegments.layerview.*;
 import ru.hhschool.segment.model.dto.RoleDto;
 import ru.hhschool.segment.model.dto.segment.SegmentCreateDto;
 import ru.hhschool.segment.model.dto.segment.SegmentDto;
 import ru.hhschool.segment.model.dto.viewsegments.enums.SegmentViewChangeState;
-import ru.hhschool.segment.model.dto.viewsegments.layerview.LayerSegmentsDto;
-import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentLayerViewDto;
-import ru.hhschool.segment.model.entity.Segment;
-import ru.hhschool.segment.model.entity.Layer;
-import ru.hhschool.segment.model.entity.SegmentStateLink;
-import ru.hhschool.segment.model.entity.Role;
-import ru.hhschool.segment.model.entity.ScreenQuestionLink;
-import ru.hhschool.segment.model.entity.SegmentScreenEntrypointLink;
-import ru.hhschool.segment.model.entity.QuestionRequiredLink;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.*;
+import ru.hhschool.segment.model.entity.*;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -33,26 +25,32 @@ import java.util.Collections;
 public class SegmentService {
   private final LayerDao layerDao;
   private final SegmentDao segmentDao;
+  private final EntrypointDao entrypointDao;
   private final SegmentStateLinkDao segmentStateLinkDao;
   private final ScreenQuestionLinkDao screenQuestionLinkDao;
   private final SegmentScreenEntrypointLinkDao segmentScreenEntrypointLinkDao;
   private final QuestionRequiredLinkDao questionRequiredLinkDao;
   private final RoleDao roleDao;
+  private final PlatfromDao platfromDao;
 
   @Inject
   public SegmentService(LayerDao layerDao,
-                        SegmentDao segmentDao, SegmentStateLinkDao segmentStateLinkDao,
+                        SegmentDao segmentDao,
+                        EntrypointDao entrypointDao,
+                        SegmentStateLinkDao segmentStateLinkDao,
                         ScreenQuestionLinkDao screenQuestionLinkDao,
                         SegmentScreenEntrypointLinkDao segmentScreenEntrypointLinkDao,
                         QuestionRequiredLinkDao questionRequiredLinkDao,
-                        RoleDao roleDao) {
+                        RoleDao roleDao, PlatfromDao platfromDao) {
     this.layerDao = layerDao;
     this.segmentDao = segmentDao;
+    this.entrypointDao = entrypointDao;
     this.segmentStateLinkDao = segmentStateLinkDao;
     this.screenQuestionLinkDao = screenQuestionLinkDao;
     this.segmentScreenEntrypointLinkDao = segmentScreenEntrypointLinkDao;
     this.questionRequiredLinkDao = questionRequiredLinkDao;
     this.roleDao = roleDao;
+    this.platfromDao = platfromDao;
   }
 
   @Transactional
@@ -184,5 +182,130 @@ public class SegmentService {
       return layersInSpace;
     }
     return Collections.EMPTY_LIST;
+  }
+
+  @Transactional
+  public Optional<SegmentSelectedDto> getSegmentSelectedDto(Long layerId, Long segmentId) {
+    Optional<SegmentStateLink> segmentStateLink = segmentStateLinkDao.findById(layerId, segmentId);
+    if (segmentStateLink.isPresent()){
+      Segment segment = segmentStateLink.get().getSegment();
+      List<Role> roles = getRoles(segment);
+      List<Layer> space = getLayersInSpace(layerId);
+      List<QuestionRequiredLink> questionRequiredLinks = getLatestQRLInSpace(getQRLInSpace(space, segmentId));
+      List<SegmentViewRequirementDto> segmentViewRequirementDtoList = getSegmentViewRequirementDtoList(questionRequiredLinks, layerId);
+      List<SegmentViewEntryPointDto> segmentViewEntryPointDtoList = getSegmentViewEntryPointDtos(layerId, segmentId);
+      return Optional.of(SegmentSelectedMapper.toDtoForSelectedSegmentViewPage(segment, segmentStateLink.get().getState(), roles, segmentViewRequirementDtoList, segmentViewEntryPointDtoList));
+    }
+    return Optional.empty();
+  }
+
+  private List<SegmentViewRequirementDto> getSegmentViewRequirementDtoList(List<QuestionRequiredLink> links, Long layerId) {
+    return links.stream()
+        .map(link -> SegmentViewRequirementMapper.toDtoForSelectedSegmentViewPage(link,
+            link.getLayer().getId().equals(layerId) && link.getOldQuestionRequiredLink() != null ? link.isQuestionRequired() != link.getOldQuestionRequiredLink().isQuestionRequired() : false,
+            link.getOldQuestionRequiredLink() == null ? true : false))
+        .sorted(Comparator.comparing(SegmentViewRequirementDto::getTitle))
+        .toList();
+  }
+  private List<ScreenQuestionLink> getSQLInSpace(List<Layer> space, Long segmentId) {
+    List<ScreenQuestionLink> screenQuestionLinks = new ArrayList<>();
+    for (Layer layer : space) {
+      screenQuestionLinks.addAll(screenQuestionLinkDao.findAllByLayerIdSegmentId(layer.getId(), segmentId));
+    }
+    return screenQuestionLinks;
+  }
+  private List<ScreenQuestionLink> getLatestSQLInSpace(List<ScreenQuestionLink> links){
+    Map<String, ScreenQuestionLink> questionRequiredLinkMap = new HashMap<>();
+    for (ScreenQuestionLink link : links) {
+      String key = link.getSegment().getTitle() + link.getQuestion().getTitle();
+      if (questionRequiredLinkMap.get(key) != null){
+        questionRequiredLinkMap.replace(key, link);
+      } else {
+        questionRequiredLinkMap.put(key, link);
+      }
+    }
+    return questionRequiredLinkMap.values().stream().toList();
+  }
+  private List<QuestionRequiredLink> getQRLInSpace(List<Layer> space, Long segmentId) {
+    List<QuestionRequiredLink> questionRequiredLinks = new ArrayList<>();
+    for (Layer layer : space) {
+      questionRequiredLinks.addAll(questionRequiredLinkDao.findAllByLayerIdSegmentId(layer.getId(), segmentId));
+    }
+    return questionRequiredLinks;
+  }
+  private List<QuestionRequiredLink> getLatestQRLInSpace(List<QuestionRequiredLink> links){
+    Map<String, QuestionRequiredLink> questionRequiredLinkMap = new HashMap<>();
+    for (QuestionRequiredLink link : links) {
+      String key = link.getSegment().getTitle() + link.getQuestion().getTitle();
+      if (questionRequiredLinkMap.get(key) != null){
+        questionRequiredLinkMap.replace(key, link);
+      } else {
+        questionRequiredLinkMap.put(key, link);
+      }
+    }
+    return questionRequiredLinkMap.values().stream().toList();
+  }
+  private List<SegmentViewEntryPointDto> getSegmentViewEntryPointDtos(Long layerId, Long segmentId){
+    List<Entrypoint> entrypoints = entrypointDao.findAll();
+    return entrypoints.stream()
+        .map(entrypoint -> SegmentViewEntryPointMapper.toDtoForSelectedSegmentViewPage(entrypoint, getSegmentViewScreenDtos(layerId, segmentId, entrypoint.getId())))
+        .toList();
+  }
+  private List<SegmentViewScreenDto> getSegmentViewScreenDtos(Long layerId, Long segmentId, Long entrypointId){
+    List<Layer> space = getLayersInSpace(layerId);
+    List<SegmentScreenEntrypointLink> segmentScreenEntrypointLinks = getLatestSSEInSpace(getSSEInSpace(space, segmentId, entrypointId));
+    return segmentScreenEntrypointLinks.stream()
+        .sorted(Comparator.comparing(SegmentScreenEntrypointLink::getScreenPosition))
+        .map(link -> SegmentViewScreenMapper.toDtoForSelectedSegmentViewPage(link,
+            link.getOldSegmentScreenEntrypointLink() == null ? true : false,
+            SegmentViewPlatformMapper.toDtoForSelectedSegmentViewPage(platfromDao.findAll(link.getScreen().getPlatforms())),
+            getSegmentViewQuestionDtos(link)))
+        .toList();
+  }
+  private List<SegmentScreenEntrypointLink> getSSEInSpace(List<Layer> space, Long segmentId, Long entrypointId) {
+    List<SegmentScreenEntrypointLink> segmentScreenEntrypointLinks = new ArrayList<>();
+    for (Layer layer : space) {
+      segmentScreenEntrypointLinks.addAll(segmentScreenEntrypointLinkDao.findAll(layer.getId(), segmentId, entrypointId));
+    }
+    return segmentScreenEntrypointLinks;
+  }
+  private List<SegmentScreenEntrypointLink> getLatestSSEInSpace(List<SegmentScreenEntrypointLink> links){
+    Map<String, SegmentScreenEntrypointLink> segmentScreenEntrypointLinkMap = new HashMap<>();
+    for (SegmentScreenEntrypointLink link : links) {
+      String key = link.getLayer().getTitle() + link.getSegment().getTitle() + link.getEntrypoint().getTitle() + link.getScreen().getTitle();
+      if (segmentScreenEntrypointLinkMap.get(key) != null){
+        segmentScreenEntrypointLinkMap.replace(key, link);
+      } else {
+        segmentScreenEntrypointLinkMap.put(key, link);
+      }
+    }
+    return segmentScreenEntrypointLinkMap.values().stream().toList();
+  }
+
+  private List<SegmentViewQuestionDto> getSegmentViewQuestionDtos(SegmentScreenEntrypointLink link){
+    List<ScreenQuestionLink> allScreenQuestionLinks = new ArrayList<>();
+    allScreenQuestionLinks.addAll(screenQuestionLinkDao.findAll(link.getLayer().getId(), link.getSegment().getId(), link.getEntrypoint().getId(), link.getScreen().getId()));
+    Map<String, ScreenQuestionLink> actualScreenQuestionLinkMap = new HashMap<>();
+    for (ScreenQuestionLink questionLink : allScreenQuestionLinks) {
+      String key = questionLink.getQuestion().getTitle();
+      if (actualScreenQuestionLinkMap.get(key) != null){
+        actualScreenQuestionLinkMap.replace(key, questionLink);
+      } else {
+        actualScreenQuestionLinkMap.put(key, questionLink);
+      }
+//      ScreenQuestionLink link1 = actualScreenQuestionLinkMap.get(key);
+//      SegmentViewQuestionDto segmentViewQuestionDto = SegmentViewQuestionMapper.toDtoForSelectedSegmentViewPage(link1.getQuestion(),
+//          SegmentViewState.NEW,
+//          link1,
+//          link1.getOldScreenQuestionLink());
+//      System.out.println();
+    }
+    return actualScreenQuestionLinkMap.values()
+        .stream()
+        .sorted(Comparator.comparing(ScreenQuestionLink::getQuestionPosition))
+        .map(questionLink -> SegmentViewQuestionMapper.toDtoForSelectedSegmentViewPage(questionLink.getQuestion(),
+            questionLink.getOldScreenQuestionLink() == null ? true : false,
+            questionLink))
+        .toList();
   }
 }

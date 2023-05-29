@@ -63,11 +63,11 @@ public class SegmentScreenEntrypointLink {
     this.id = id;
   }
 
-  public SegmentScreenEntrypointLink getOldSegmentScreenEntrypointScreenLink() {
+  public SegmentScreenEntrypointLink getOldSegmentScreenEntrypointLink() {
     return oldSegmentScreenEntrypointLink;
   }
 
-  public void setOldSegmentScreenEntrypointScreenLink(SegmentScreenEntrypointLink oldSegmentScreenEntrypointLink) {
+  public void setOldSegmentScreenEntrypointLink(SegmentScreenEntrypointLink oldSegmentScreenEntrypointLink) {
     this.oldSegmentScreenEntrypointLink = oldSegmentScreenEntrypointLink;
   }
 

@@ -81,9 +81,9 @@ VALUES (NULL, 'Менее года', 'Менее года', 'POSITIVE', FALSE, F
 INSERT INTO platforms (platform, application_version)
 VALUES ('WEB', '1'),       --1
        ('IOS', '1.3'),     --2
-       ('Android', '1.2'), --3
+       ('ANDROID', '1.2'), --3
        ('IOS', '2.2'),     --4
-       ('Android', '2.7'); --5
+       ('ANDROID', '2.7'); --5
 
 INSERT INTO segments (parent_segment_id, create_time, title, description, roles, tags)
 VALUES (NULL, '2023-02-12 02:02:00', 'Программист, разработчик', 'Разработчик программного обеспечения', '{96}',
