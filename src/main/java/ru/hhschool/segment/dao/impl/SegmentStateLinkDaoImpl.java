@@ -24,6 +24,18 @@ public class SegmentStateLinkDaoImpl extends ReadWriteDaoImpl<SegmentStateLink, 
   }
 
   @Override
+  public List<SegmentStateLink> findAllBySegmentId(Long segmentId) {
+    return em.createQuery("SELECT e FROM SegmentStateLink e WHERE e.segment.id = :segmentId")
+        .setParameter("segmentId", segmentId)
+        .getResultList();
+  }
+  @Override
+  public List<SegmentStateLink> findAllByLayerIdSegmentId(Long layerId, Long questionId) {
+    return em.createQuery("SELECT e FROM SegmentStateLink e WHERE e.layer.id = :layerId")
+        .setParameter("layerId", layerId)
+        .getResultList();
+  }
+  @Override
   public Optional<SegmentStateLink> findById(Long layerId, Long segmentId) {
     try {
       return Optional.of(em.createQuery(
@@ -34,6 +46,19 @@ public class SegmentStateLinkDaoImpl extends ReadWriteDaoImpl<SegmentStateLink, 
           .setParameter("segmentId", segmentId)
           .getSingleResult());
     } catch (NoResultException noResultException) {
+      return Optional.empty();
+    }
+  }
+
+  @Override
+  public Optional<SegmentStateLink> findInSpace(Long layerId, Long segmentId) {
+    try {
+      return Optional.of(em.createQuery("SELECT e FROM SegmentStateLink e WHERE e.layer.id <= :layerId AND e.segment.id = :segmentId " +
+              "ORDER BY e.id DESC LIMIT 1", SegmentStateLink.class)
+          .setParameter("layerId", layerId)
+          .setParameter("segmentId", segmentId)
+          .getSingleResult());
+    } catch (NoResultException noResultException){
       return Optional.empty();
     }
   }
