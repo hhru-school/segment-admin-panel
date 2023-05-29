@@ -10,9 +10,7 @@ import java.util.List;
 public class SegmentLayerViewDto {
   private Long id;
   private String title;
-  @JsonProperty("roleList")
   private List<Role> roles;
-  @JsonProperty("tagList")
   private List<String> tags;
   private SegmentViewChangeState changeState;
   private StateType activeState;
