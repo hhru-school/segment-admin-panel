@@ -1,4 +1,4 @@
-package ru.hhschool.segment.model.dto.viewsegments;
+package ru.hhschool.segment.model.dto.viewsegments.layerview;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -8,11 +8,11 @@ public class LayerSegmentsDto {
   private Long id;
   private String title;
   @JsonProperty("segmentList")
-  private List<SegmentViewDto> segments;
+  private List<SegmentLayerViewDto> segments;
 
   public LayerSegmentsDto() {}
 
-  public LayerSegmentsDto(Long id, String title, List<SegmentViewDto> segments) {
+  public LayerSegmentsDto(Long id, String title, List<SegmentLayerViewDto> segments) {
     this.id = id;
     this.title = title;
     this.segments = segments;
@@ -34,11 +34,11 @@ public class LayerSegmentsDto {
     this.title = title;
   }
 
-  public List<SegmentViewDto> getSegments() {
+  public List<SegmentLayerViewDto> getSegments() {
     return segments;
   }
 
-  public void setSegments(List<SegmentViewDto> segments) {
+  public void setSegments(List<SegmentLayerViewDto> segments) {
     this.segments = segments;
   }
 }

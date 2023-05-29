@@ -1,56 +1,56 @@
 package ru.hhschool.segment.service;
 
-import ru.hhschool.segment.dao.abstracts.LayerDao;
-import ru.hhschool.segment.dao.abstracts.SegmentStateLinkDao;
-import ru.hhschool.segment.dao.abstracts.ScreenQuestionLinkDao;
-import ru.hhschool.segment.dao.abstracts.SegmentApplicationScreenLinkDao;
-import ru.hhschool.segment.dao.abstracts.QuestionRequiredLinkDao;
-import ru.hhschool.segment.dao.abstracts.RoleDao;
-import ru.hhschool.segment.mapper.viewsegments.LayerSegmentsMapper;
-import ru.hhschool.segment.mapper.viewsegments.SegmentViewMapper;
-import ru.hhschool.segment.model.dto.viewsegments.LayerSegmentsDto;
+import ru.hhschool.segment.HttpBadRequestException;
+import ru.hhschool.segment.dao.abstracts.*;
+import ru.hhschool.segment.mapper.RoleMapper;
+import ru.hhschool.segment.mapper.SegmentMapper;
+import ru.hhschool.segment.mapper.viewsegments.layerview.LayerSegmentsMapper;
+import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentLayerViewMapper;
 import ru.hhschool.segment.model.dto.RoleDto;
 import ru.hhschool.segment.model.dto.segment.SegmentCreateDto;
 import ru.hhschool.segment.model.dto.segment.SegmentDto;
-import ru.hhschool.segment.model.dto.viewsegments.SegmentViewDto;
 import ru.hhschool.segment.model.dto.viewsegments.enums.SegmentViewChangeState;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.LayerSegmentsDto;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentLayerViewDto;
+import ru.hhschool.segment.model.entity.Segment;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.SegmentStateLink;
-import ru.hhschool.segment.model.entity.Segment;
 import ru.hhschool.segment.model.entity.Role;
 import ru.hhschool.segment.model.entity.ScreenQuestionLink;
-import ru.hhschool.segment.model.entity.SegmentApplicationScreenLink;
+import ru.hhschool.segment.model.entity.SegmentScreenEntrypointLink;
 import ru.hhschool.segment.model.entity.QuestionRequiredLink;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Map;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Optional;
+import java.util.Map;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Collections;
 
 public class SegmentService {
   private final LayerDao layerDao;
+  private final SegmentDao segmentDao;
   private final SegmentStateLinkDao segmentStateLinkDao;
   private final ScreenQuestionLinkDao screenQuestionLinkDao;
-  private final SegmentApplicationScreenLinkDao segmentApplicationScreenLinkDao;
+  private final SegmentScreenEntrypointLinkDao segmentScreenEntrypointLinkDao;
   private final QuestionRequiredLinkDao questionRequiredLinkDao;
   private final RoleDao roleDao;
 
   @Inject
   public SegmentService(LayerDao layerDao,
-                        SegmentStateLinkDao segmentStateLinkDao,
+                        SegmentDao segmentDao, SegmentStateLinkDao segmentStateLinkDao,
                         ScreenQuestionLinkDao screenQuestionLinkDao,
-                        SegmentApplicationScreenLinkDao segmentApplicationScreenLinkDao,
+                        SegmentScreenEntrypointLinkDao segmentScreenEntrypointLinkDao,
                         QuestionRequiredLinkDao questionRequiredLinkDao,
                         RoleDao roleDao) {
     this.layerDao = layerDao;
+    this.segmentDao = segmentDao;
     this.segmentStateLinkDao = segmentStateLinkDao;
     this.screenQuestionLinkDao = screenQuestionLinkDao;
-    this.segmentApplicationScreenLinkDao = segmentApplicationScreenLinkDao;
+    this.segmentScreenEntrypointLinkDao = segmentScreenEntrypointLinkDao;
     this.questionRequiredLinkDao = questionRequiredLinkDao;
     this.roleDao = roleDao;
   }
@@ -120,17 +120,17 @@ public class SegmentService {
       return Optional.empty();
     }
     Map<Long, SegmentStateLink> stateLinkMap = getLatestSSLInSpace(getSSLInSpace(space));
-    List<SegmentViewDto> segmentViewDtos = new ArrayList<>();
+    List<SegmentLayerViewDto> segmentLayerViewDtos = new ArrayList<>();
     for (Long key : stateLinkMap.keySet()) {
       SegmentStateLink link = stateLinkMap.get(key);
       Segment segment = link.getSegment();
       List<Role> roles = getRoles(segment);
       SegmentViewChangeState changeState = getChangeSegmentState(layerId, segment.getId());
-      segmentViewDtos.add(SegmentViewMapper.toDtoForSegmentsInLayerPage(segment, roles, changeState, link.getState()));
+      segmentLayerViewDtos.add(SegmentLayerViewMapper.toDtoForSegmentsInLayerPage(segment, roles, changeState, link.getState()));
     }
-    segmentViewDtos.sort(Comparator.comparing(SegmentViewDto::getTitle));
+    segmentLayerViewDtos.sort(Comparator.comparing(SegmentLayerViewDto::getTitle));
     Optional<Layer> layer = layerDao.findById(layerId);
-    LayerSegmentsDto layerSegmentsDto = LayerSegmentsMapper.toDtoForSegmentsInLayerPage(layer.get(), segmentViewDtos);
+    LayerSegmentsDto layerSegmentsDto = LayerSegmentsMapper.toDtoForSegmentsInLayerPage(layer.get(), segmentLayerViewDtos);
     return Optional.of(layerSegmentsDto);
   }
   private List<Role> getRoles(Segment segment) {
@@ -150,9 +150,9 @@ public class SegmentService {
       }
     }
     List<ScreenQuestionLink> screenQuestionLinks = screenQuestionLinkDao.findAllByLayerIdSegmentId(layerId, segmentId);
-    List<SegmentApplicationScreenLink> segmentApplicationScreenLinks = segmentApplicationScreenLinkDao.findAllByLayerIdSegmentId(layerId, segmentId);
+    List<SegmentScreenEntrypointLink> segmentScreenEntrypointLinks = segmentScreenEntrypointLinkDao.findAllByLayerIdSegmentId(layerId, segmentId);
     List<QuestionRequiredLink> questionRequiredLinks = questionRequiredLinkDao.findAllByLayerIdSegmentId(layerId, segmentId);
-    if (screenQuestionLinks.isEmpty() && segmentApplicationScreenLinks.isEmpty() && questionRequiredLinks.isEmpty()) {
+    if (screenQuestionLinks.isEmpty() && segmentScreenEntrypointLinks.isEmpty() && questionRequiredLinks.isEmpty()) {
       return SegmentViewChangeState.NOT_CHANGED;
     }
     return SegmentViewChangeState.CHANGED;

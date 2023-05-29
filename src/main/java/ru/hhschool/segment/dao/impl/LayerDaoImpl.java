@@ -1,10 +1,11 @@
 package ru.hhschool.segment.dao.impl;
 
+import ru.hhschool.segment.dao.abstracts.LayerDao;
+import ru.hhschool.segment.model.entity.Layer;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import ru.hhschool.segment.dao.abstracts.LayerDao;
-import ru.hhschool.segment.model.entity.Layer;
 
 public class LayerDaoImpl extends ReadWriteDaoImpl<Layer, Long> implements LayerDao {
   @Override
