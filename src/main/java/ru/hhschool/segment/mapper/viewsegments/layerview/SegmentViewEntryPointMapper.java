@@ -1,6 +1,6 @@
-package ru.hhschool.segment.mapper.viewsegments;
+package ru.hhschool.segment.mapper.viewsegments.layerview;
 
-import ru.hhschool.segment.model.dto.viewsegments.SegmentViewEntryPointDto;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewEntryPointDto;
 
 public class SegmentViewEntryPointMapper {
 

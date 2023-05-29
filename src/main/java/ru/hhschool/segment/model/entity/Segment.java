@@ -35,13 +35,13 @@ public class Segment {
   private String description;
   @Type(type = "list-array")
   @Column(
-      name = "role",
+      name = "roles",
       columnDefinition = "bigint[]"
   )
   private List<Long> roleList;
   @Type(type = "list-array")
   @Column(
-      name = "tag",
+      name = "tags",
       columnDefinition = "text[]"
   )
   private List<String> tags;

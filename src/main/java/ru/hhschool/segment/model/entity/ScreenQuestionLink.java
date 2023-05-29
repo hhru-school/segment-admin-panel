@@ -20,6 +20,7 @@ public class ScreenQuestionLink {
   @Column(name = "id", nullable = false, unique = true)
   private Long id;
   @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "old_id")
   private ScreenQuestionLink oldScreenQuestionLink;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "layer_id")
