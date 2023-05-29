@@ -47,4 +47,16 @@ public class ScreenService {
     return Optional.of(ScreenMapper.screenToDto(screen, platformVersions));
   }
 
+  public List<ScreenPlatformDto> getAllPlatforms() {
+    List<List<Long>> screenPlatformIdList = screenDao.findAllPlatform();
+
+    for (List<Long> platformId : screenPlatformIdList) {
+
+    }
+
+
+//    List<List<Long>> screenPlatformIdList = ScreenPlatformMapper.platformListToDtoList(screenDao.findAllPlatform());
+
+    return null;
+  }
 }
