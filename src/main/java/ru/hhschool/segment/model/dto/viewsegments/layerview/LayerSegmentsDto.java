@@ -7,7 +7,6 @@ import java.util.List;
 public class LayerSegmentsDto {
   private Long id;
   private String title;
-  @JsonProperty("segmentList")
   private List<SegmentLayerViewDto> segments;
 
   public LayerSegmentsDto() {}
