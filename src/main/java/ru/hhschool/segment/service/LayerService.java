@@ -8,12 +8,10 @@ import javax.ws.rs.NotFoundException;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.mapper.LayerMapper;
 import ru.hhschool.segment.mapper.basicinfo.LayerBasicInfoMapper;
-import ru.hhschool.segment.mapper.change.LayerChangeMapper;
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.change.LayerChangeDto;
 import ru.hhschool.segment.model.entity.Layer;
-import ru.hhschool.segment.model.enums.ConflictStatus;
 
 public class LayerService {
   private final LayerDao layerDao;
@@ -25,16 +23,6 @@ public class LayerService {
 
   public List<LayerDto> getLayerDtoListForMainPage() {
     return LayerMapper.toDtoListForMainPage(layerDao.findAll());
-  }
-
-  @Transactional
-  public Optional<LayerChangeDto> getLayerChanges(Long layerId) {
-    Optional<Layer> layer = layerDao.findById(layerId);
-    if (layer.isEmpty()) {
-      return Optional.empty();
-    }
-
-    return Optional.of(LayerChangeMapper.layerChangeToDto(layer.get(), ConflictStatus.NONE));
   }
 
   @Transactional

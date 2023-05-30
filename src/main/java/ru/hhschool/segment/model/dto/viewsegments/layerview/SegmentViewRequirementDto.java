@@ -1,7 +1,5 @@
 package ru.hhschool.segment.model.dto.viewsegments.layerview;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class SegmentViewRequirementDto {
   private Long id;
   private String title;

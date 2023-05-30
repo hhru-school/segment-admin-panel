@@ -6,9 +6,11 @@ import ru.hhschool.segment.model.enums.StateType;
 import java.util.List;
 
 public class SegmentSelectedDto {
-  private Long id;
+  private Long layerId;
+  private String layerTitle;
+  private Long segmentId;
   private StateType activeState;
-  private Long parentId;
+  private Long parentSegmentId;
   private String title;
   private String description;
   private List<Role> roles;
@@ -16,10 +18,12 @@ public class SegmentSelectedDto {
   private List<SegmentViewRequirementDto> requirements;
   private List<SegmentViewEntryPointDto> entryPoints;
 
-  public SegmentSelectedDto(Long id, StateType activeState, Long parentId, String title, String description, List<Role> roles, List<String> tags, List<SegmentViewRequirementDto> requirements, List<SegmentViewEntryPointDto> entryPoints) {
-    this.id = id;
+  public SegmentSelectedDto(Long layerId, String layerTitle, Long segmentId, StateType activeState, Long parentSegmentId, String title, String description, List<Role> roles, List<String> tags, List<SegmentViewRequirementDto> requirements, List<SegmentViewEntryPointDto> entryPoints) {
+    this.layerId = layerId;
+    this.layerTitle = layerTitle;
+    this.segmentId = segmentId;
     this.activeState = activeState;
-    this.parentId = parentId;
+    this.parentSegmentId = parentSegmentId;
     this.title = title;
     this.description = description;
     this.roles = roles;
@@ -32,12 +36,28 @@ public class SegmentSelectedDto {
 
   }
 
-  public Long getId() {
-    return id;
+  public Long getLayerId() {
+    return layerId;
   }
 
-  public void setId(Long id) {
-    this.id = id;
+  public void setLayerId(Long layerId) {
+    this.layerId = layerId;
+  }
+
+  public String getLayerTitle() {
+    return layerTitle;
+  }
+
+  public void setLayerTitle(String layerTitle) {
+    this.layerTitle = layerTitle;
+  }
+
+  public Long getSegmentId() {
+    return segmentId;
+  }
+
+  public void setSegmentId(Long segmentId) {
+    this.segmentId = segmentId;
   }
 
   public StateType getActiveState() {
@@ -48,12 +68,12 @@ public class SegmentSelectedDto {
     this.activeState = activeState;
   }
 
-  public Long getParentId() {
-    return parentId;
+  public Long getParentSegmentId() {
+    return parentSegmentId;
   }
 
-  public void setParentId(Long parentId) {
-    this.parentId = parentId;
+  public void setParentSegmentId(Long parentSegmentId) {
+    this.parentSegmentId = parentSegmentId;
   }
 
   public String getTitle() {
