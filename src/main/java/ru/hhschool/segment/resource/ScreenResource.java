@@ -11,7 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import ru.hhschool.segment.HttpBadRequestException;
 import ru.hhschool.segment.model.dto.screen.ScreenDto;
-import ru.hhschool.segment.model.dto.screen.ScreenPlatformDto;
+import ru.hhschool.segment.model.dto.screen.ScreenPlatformVersionDto;
 import ru.hhschool.segment.service.ScreenService;
 
 @Path("/screens")
@@ -53,7 +53,7 @@ public class ScreenResource {
   @Path("/platforms")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getAllPlatformOfScreens() {
-    List<ScreenPlatformDto> screenPlatformList = screenService.getAllPlatforms();
+    List<ScreenPlatformVersionDto> screenPlatformList = screenService.getAllPlatforms();
     if (!screenPlatformList.isEmpty()) {
       return Response.ok(screenPlatformList).build();
     }

@@ -1,8 +1,11 @@
 package ru.hhschool.segment.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import ru.hhschool.segment.dao.abstracts.PlatformDao;
 import ru.hhschool.segment.dao.abstracts.ScreenDao;
@@ -10,6 +13,7 @@ import ru.hhschool.segment.mapper.screen.ScreenMapper;
 import ru.hhschool.segment.mapper.screen.ScreenPlatformMapper;
 import ru.hhschool.segment.model.dto.screen.ScreenDto;
 import ru.hhschool.segment.model.dto.screen.ScreenPlatformDto;
+import ru.hhschool.segment.model.dto.screen.ScreenPlatformVersionDto;
 import ru.hhschool.segment.model.entity.Screen;
 
 public class ScreenService {
@@ -47,16 +51,21 @@ public class ScreenService {
     return Optional.of(ScreenMapper.screenToDto(screen, platformVersions));
   }
 
-  public List<ScreenPlatformDto> getAllPlatforms() {
-    List<List<Long>> screenPlatformIdList = screenDao.findAllPlatform();
+  public List<ScreenPlatformVersionDto> getAllPlatforms() {
+    List<ScreenPlatformDto> screenPlatformList = ScreenPlatformMapper.platformListToDtoList(screenDao.findAllPlatforms());
 
-    for (List<Long> platformId : screenPlatformIdList) {
+    Map<String, List<ScreenPlatformDto>> platformVersionMap = screenPlatformList
+        .stream()
+        .sorted(Comparator.comparing(ScreenPlatformDto::getVersion))
+        .collect(Collectors.groupingBy((p) -> p.getPlatform()));
 
-    }
+    List<ScreenPlatformVersionDto> platformVersionDtoList = platformVersionMap
+        .entrySet()
+        .stream()
+        .map(e -> new ScreenPlatformVersionDto(e.getKey(), e.getValue()))
+        .sorted(Comparator.comparing(ScreenPlatformVersionDto::getPlatform))
+        .toList();
 
-
-//    List<List<Long>> screenPlatformIdList = ScreenPlatformMapper.platformListToDtoList(screenDao.findAllPlatform());
-
-    return null;
+    return platformVersionDtoList;
   }
 }
