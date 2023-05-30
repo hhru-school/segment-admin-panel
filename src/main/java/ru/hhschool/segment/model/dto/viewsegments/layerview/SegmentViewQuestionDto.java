@@ -1,7 +1,5 @@
 package ru.hhschool.segment.model.dto.viewsegments.layerview;
 
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 
 public class SegmentViewQuestionDto {
@@ -45,7 +43,6 @@ public class SegmentViewQuestionDto {
   public void setTitle(String title) {
     this.title = title;
   }
-  @JsonProperty("isNew")
   public Boolean getNew() {
     return isNew;
   }
