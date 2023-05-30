@@ -1,6 +1,7 @@
 package ru.hhschool.segment.model.dto.questioninfopage;
 
 import ru.hhschool.segment.model.enums.AnswersNumberType;
+import ru.hhschool.segment.model.enums.ResumeField;
 
 import java.util.List;
 
@@ -8,18 +9,20 @@ public class QuestionDtoForQuestionsInfo {
   private Long id;
   private String title;
   private String description;
-  private AnswersNumberType type;
+  private ResumeField type;
+  private AnswersNumberType answersType;
   private boolean searchedObject;
   private List<AnswerDtoForQuestionsInfo> answerDtoList;
 
   public QuestionDtoForQuestionsInfo() {
   }
 
-  public QuestionDtoForQuestionsInfo(Long id, String title, String description, AnswersNumberType type, boolean searchedObject, List<AnswerDtoForQuestionsInfo> answerDtoList) {
+  public QuestionDtoForQuestionsInfo(Long id, String title, String description, ResumeField type, AnswersNumberType answersType, boolean searchedObject, List<AnswerDtoForQuestionsInfo> answerDtoList) {
     this.id = id;
     this.title = title;
     this.description = description;
     this.type = type;
+    this.answersType = answersType;
     this.searchedObject = searchedObject;
     this.answerDtoList = answerDtoList;
   }
@@ -64,11 +67,19 @@ public class QuestionDtoForQuestionsInfo {
     this.searchedObject = searchedObject;
   }
 
-  public AnswersNumberType getType() {
+  public ResumeField getType() {
     return type;
   }
 
-  public void setType(AnswersNumberType type) {
+  public void setType(ResumeField type) {
     this.type = type;
+  }
+
+  public AnswersNumberType getAnswersType() {
+    return answersType;
+  }
+
+  public void setAnswersType(AnswersNumberType answersType) {
+    this.answersType = answersType;
   }
 }

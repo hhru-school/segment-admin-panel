@@ -9,6 +9,13 @@ import java.util.List;
 public class QuestionMapper {
 
   public static QuestionDtoForQuestionsInfo toDtoForQuestionsInfo(Question question, List<AnswerDtoForQuestionsInfo> answerDtoList) {
-    return null;
+    QuestionDtoForQuestionsInfo questionDtoForQuestionsInfo = new QuestionDtoForQuestionsInfo();
+    questionDtoForQuestionsInfo.setId(question.getId());
+    questionDtoForQuestionsInfo.setTitle(question.getTitle());
+    questionDtoForQuestionsInfo.setDescription(question.getDescription());
+    questionDtoForQuestionsInfo.setType(question.getType());
+    questionDtoForQuestionsInfo.setAnswersType(question.getAnswerType());
+    questionDtoForQuestionsInfo.setAnswerDtoList(answerDtoList);
+    return questionDtoForQuestionsInfo;
   }
 }

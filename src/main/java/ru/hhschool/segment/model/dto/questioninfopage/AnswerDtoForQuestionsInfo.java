@@ -9,7 +9,7 @@ public class AnswerDtoForQuestionsInfo {
   private String title;
   private String positiveTitle;
   private AnswerType answerType;
-  private boolean answerDefault;
+  private boolean defaultAnswer;
   private boolean skipAtResult;
   private boolean searchedObject;
   private List<QuestionDtoForQuestionsInfo> openQuestonDtoList;
@@ -22,7 +22,7 @@ public class AnswerDtoForQuestionsInfo {
     this.title = title;
     this.positiveTitle = positiveTitle;
     this.answerType = answerType;
-    this.answerDefault = answerDefault;
+    this.defaultAnswer = answerDefault;
     this.skipAtResult = skipAtResult;
     this.searchedObject = searchedObject;
     this.openQuestonDtoList = openQuestonDtoList;
@@ -76,12 +76,12 @@ public class AnswerDtoForQuestionsInfo {
     this.answerType = answerType;
   }
 
-  public boolean isAnswerDefault() {
-    return answerDefault;
+  public boolean isDefaultAnswer() {
+    return defaultAnswer;
   }
 
-  public void setAnswerDefault(boolean answerDefault) {
-    this.answerDefault = answerDefault;
+  public void setDefaultAnswer(boolean defaultAnswer) {
+    this.defaultAnswer = defaultAnswer;
   }
 
   public boolean isSkipAtResult() {
