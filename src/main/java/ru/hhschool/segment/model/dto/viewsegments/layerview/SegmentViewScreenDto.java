@@ -1,10 +1,11 @@
 package ru.hhschool.segment.model.dto.viewsegments.layerview;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import ru.hhschool.segment.model.enums.ScreenType;
 
 import java.util.List;
 
+@JsonPropertyOrder({"id", "title", "description", "type", "new", "oldPosition", "platforms", "questions"})
 public class SegmentViewScreenDto {
   private Long id;
   private String title;

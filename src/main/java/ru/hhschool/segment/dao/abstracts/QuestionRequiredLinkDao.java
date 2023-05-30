@@ -3,6 +3,7 @@ package ru.hhschool.segment.dao.abstracts;
 import ru.hhschool.segment.model.entity.QuestionRequiredLink;
 
 public interface QuestionRequiredLinkDao extends ReadWriteDao<QuestionRequiredLink, Long> {
+  List<QuestionRequiredLink> findAll(Long layerId, Long segmentId);
   List<QuestionRequiredLink> findAllByLayerIdSegmentId(Long layerId, Long segmentId);
   List<QuestionRequiredLink> findAllByLayerIdQuestionId(Long layerId, Long questionId);
   List<QuestionRequiredLink> findAllByQuestionId(Long segmentId);
