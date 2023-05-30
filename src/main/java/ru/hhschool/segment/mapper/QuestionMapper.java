@@ -15,7 +15,7 @@ public class QuestionMapper {
     questionDtoForQuestionsInfo.setDescription(question.getDescription());
     questionDtoForQuestionsInfo.setType(question.getType());
     questionDtoForQuestionsInfo.setAnswersType(question.getAnswerType());
-    questionDtoForQuestionsInfo.setAnswerDtoList(answerDtoList);
+    questionDtoForQuestionsInfo.setPossibleAnswersList(answerDtoList);
     return questionDtoForQuestionsInfo;
   }
 }

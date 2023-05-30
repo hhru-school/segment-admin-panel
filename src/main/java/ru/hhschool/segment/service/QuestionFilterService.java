@@ -32,7 +32,7 @@ public class QuestionFilterService {
   }
 
   public void checkAnswer(QuestionDtoForQuestionsInfo questionDto, String searchStringLower) {
-    questionDto.getAnswerDtoList().forEach(answerDto -> {
+    questionDto.getPossibleAnswersList().forEach(answerDto -> {
       String titleLower = answerDto.getTitle().toLowerCase();
       if (titleLower.contains(searchStringLower)) {
         answerDto.setSearchedObject(true);
@@ -43,7 +43,7 @@ public class QuestionFilterService {
   }
 
   public void checkOpenQuestion(AnswerDtoForQuestionsInfo answerDto, QuestionDtoForQuestionsInfo mainQuestionDto, String searchStringLower) {
-    answerDto.getOpenQuestonDtoList().forEach(questionDto -> {
+    answerDto.getOpenQuestionList().forEach(questionDto -> {
       String titleLower = questionDto.getTitle().toLowerCase();
       String descriptionLower = questionDto.getDescription().toLowerCase();
       if (titleLower.contains(searchStringLower) || descriptionLower.contains(searchStringLower)) {

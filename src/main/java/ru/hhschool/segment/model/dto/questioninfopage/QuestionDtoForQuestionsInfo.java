@@ -12,7 +12,7 @@ public class QuestionDtoForQuestionsInfo {
   private ResumeField type;
   private AnswersNumberType answersType;
   private boolean searchedObject;
-  private List<AnswerDtoForQuestionsInfo> answerDtoList;
+  private List<AnswerDtoForQuestionsInfo> possibleAnswersList;
 
   public QuestionDtoForQuestionsInfo() {
   }
@@ -24,7 +24,7 @@ public class QuestionDtoForQuestionsInfo {
     this.type = type;
     this.answersType = answersType;
     this.searchedObject = searchedObject;
-    this.answerDtoList = answerDtoList;
+    this.possibleAnswersList = answerDtoList;
   }
 
   public Long getId() {
@@ -51,12 +51,12 @@ public class QuestionDtoForQuestionsInfo {
     this.description = description;
   }
 
-  public List<AnswerDtoForQuestionsInfo> getAnswerDtoList() {
-    return answerDtoList;
+  public List<AnswerDtoForQuestionsInfo> getPossibleAnswersList() {
+    return possibleAnswersList;
   }
 
-  public void setAnswerDtoList(List<AnswerDtoForQuestionsInfo> answerDtoList) {
-    this.answerDtoList = answerDtoList;
+  public void setPossibleAnswersList(List<AnswerDtoForQuestionsInfo> possibleAnswersList) {
+    this.possibleAnswersList = possibleAnswersList;
   }
 
   public boolean isSearchedObject() {

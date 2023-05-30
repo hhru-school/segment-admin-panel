@@ -12,7 +12,7 @@ public class AnswerDtoForQuestionsInfo {
   private boolean defaultAnswer;
   private boolean skipAtResult;
   private boolean searchedObject;
-  private List<QuestionDtoForQuestionsInfo> openQuestonDtoList;
+  private List<QuestionDtoForQuestionsInfo> openQuestionList;
 
   public AnswerDtoForQuestionsInfo() {
   }
@@ -25,7 +25,7 @@ public class AnswerDtoForQuestionsInfo {
     this.defaultAnswer = answerDefault;
     this.skipAtResult = skipAtResult;
     this.searchedObject = searchedObject;
-    this.openQuestonDtoList = openQuestonDtoList;
+    this.openQuestionList = openQuestonDtoList;
   }
 
   public Long getId() {
@@ -44,12 +44,12 @@ public class AnswerDtoForQuestionsInfo {
     this.title = title;
   }
 
-  public List<QuestionDtoForQuestionsInfo> getOpenQuestonDtoList() {
-    return openQuestonDtoList;
+  public List<QuestionDtoForQuestionsInfo> getOpenQuestionList() {
+    return openQuestionList;
   }
 
-  public void setOpenQuestonDtoList(List<QuestionDtoForQuestionsInfo> openQuestonDtoList) {
-    this.openQuestonDtoList = openQuestonDtoList;
+  public void setOpenQuestionList(List<QuestionDtoForQuestionsInfo> openQuestionList) {
+    this.openQuestionList = openQuestionList;
   }
 
   public boolean isSearchedObject() {
