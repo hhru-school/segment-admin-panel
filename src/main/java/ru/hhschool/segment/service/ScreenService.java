@@ -9,12 +9,15 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import ru.hhschool.segment.dao.abstracts.PlatformDao;
 import ru.hhschool.segment.dao.abstracts.ScreenDao;
+import ru.hhschool.segment.exception.HttpBadRequestException;
 import ru.hhschool.segment.mapper.screen.ScreenMapper;
 import ru.hhschool.segment.mapper.screen.ScreenPlatformMapper;
 import ru.hhschool.segment.model.dto.screen.ScreenDto;
 import ru.hhschool.segment.model.dto.screen.ScreenPlatformDto;
 import ru.hhschool.segment.model.dto.screen.ScreenPlatformVersionDto;
+import ru.hhschool.segment.model.entity.Platform;
 import ru.hhschool.segment.model.entity.Screen;
+import ru.hhschool.segment.model.enums.PlatformType;
 
 public class ScreenService {
   private final ScreenDao screenDao;
@@ -26,8 +29,11 @@ public class ScreenService {
   }
 
   @Transactional
-  public List<ScreenDto> getAll() {
-    List<Screen> screens = screenDao.findAll();
+  public List<ScreenDto> getAll(Long androidId, Long iosId, boolean webSelect) {
+    String androidVersion = getPlatformVersionFromId(androidId, PlatformType.ANDROID);
+    String iosVersion = getPlatformVersionFromId(iosId, PlatformType.IOS);
+
+    List<Screen> screens = screenDao.findAll(androidVersion, iosVersion, webSelect);
     List<ScreenDto> screenDtoList = new ArrayList<>();
 
     for (Screen screen : screens) {
@@ -68,4 +74,19 @@ public class ScreenService {
 
     return platformVersionDtoList;
   }
+
+
+  private String getPlatformVersionFromId(Long platformId, PlatformType platformType) {
+    String result = null;
+    if (platformId != null) {
+      Optional<Platform> platform = platformDao.findById(platformId);
+      if (platform.isEmpty()
+          || (platform.isPresent() && platform.get().getPlatform() != platformType)) {
+        throw new HttpBadRequestException("Error: bad " + platformType + " version.");
+      }
+      result = platform.get().getApplicationVersion();
+    }
+    return result;
+  }
+
 }
