@@ -33,12 +33,16 @@ public class ScreenDaoImpl extends ReadWriteDaoImpl<Screen, Long> implements Scr
 
     String androidSql = """
                       s.platforms && ARRAY(
-                        SELECT p1.platform_id FROM Platforms p1 WHERE p1.platform = 'ANDROID' AND p1.application_version <= :androidVersion
+                        SELECT p1.platform_id FROM Platforms p1 WHERE p1.platform = 'ANDROID'
+                         AND
+                          string_to_array(p1.application_version, '.')::::int[] <= string_to_array(:androidVersion, '.')::::int[]
                       ) 
         """;
     String iosSql = """
                       s.platforms && ARRAY(
-                        SELECT p1.platform_id FROM Platforms p1 WHERE p1.platform = 'IOS' AND p1.application_version <= :iosVersion
+                        SELECT p1.platform_id FROM Platforms p1 WHERE p1.platform = 'IOS'
+                         AND
+                          string_to_array(p1.application_version, '.')::::int[] <= string_to_array(:iosVersion, '.')::::int[]
                       ) 
         """;
     String webSql = " not s.platforms && ARRAY (SELECT p1.platform_id FROM Platforms p1 WHERE (p1.platform = 'WEB') ) ";
@@ -58,11 +62,11 @@ public class ScreenDaoImpl extends ReadWriteDaoImpl<Screen, Long> implements Scr
 
     StringBuilder sql = new StringBuilder();
 
-    sql.append("SELECT * FROM Screens s WHERE ")
+    sql.append("SELECT * FROM Screens s WHERE \n")
         .append(androidSql)
-        .append(" AND ")
+        .append("\n AND ")
         .append(iosSql)
-        .append(" AND ")
+        .append("\n AND ")
         .append(webSql);
 
     Query nativeQuery = em.createNativeQuery(sql.toString(), Screen.class);
