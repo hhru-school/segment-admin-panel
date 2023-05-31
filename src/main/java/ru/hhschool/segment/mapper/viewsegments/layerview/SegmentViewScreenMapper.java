@@ -1,6 +1,5 @@
 package ru.hhschool.segment.mapper.viewsegments.layerview;
 
-
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewPlatformDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewQuestionDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewScreenDto;
@@ -21,6 +20,7 @@ public class SegmentViewScreenMapper {
     segmentViewScreenDto.setTitle(screen.getTitle());
     segmentViewScreenDto.setDescription(screen.getDescription());
     segmentViewScreenDto.setType(screen.getType());
+    segmentViewScreenDto.setState(link.getScreenState());
     segmentViewScreenDto.setNew(isNew);
     if (link.getOldSegmentScreenEntrypointLink() != null){
       segmentViewScreenDto.setOldPosition(link.getOldSegmentScreenEntrypointLink().getScreenPosition());
