@@ -30,8 +30,8 @@ public class ScreenService {
 
   @Transactional
   public List<ScreenDto> getAll(Long androidId, Long iosId, boolean webSelect) {
-    String androidVersion = getPlatformVersionFromId(androidId, PlatformType.ANDROID);
-    String iosVersion = getPlatformVersionFromId(iosId, PlatformType.IOS);
+    Optional<String> androidVersion = getPlatformVersionFromId(androidId, PlatformType.ANDROID);
+    Optional<String> iosVersion = getPlatformVersionFromId(iosId, PlatformType.IOS);
 
     List<Screen> screens = screenDao.findAll(androidVersion, iosVersion, webSelect);
     List<ScreenDto> screenDtoList = new ArrayList<>();
@@ -76,15 +76,15 @@ public class ScreenService {
   }
 
 
-  private String getPlatformVersionFromId(Long platformId, PlatformType platformType) {
-    String result = null;
+  private Optional<String> getPlatformVersionFromId(Long platformId, PlatformType platformType) {
+    Optional<String> result = Optional.empty();
     if (platformId != null) {
       Optional<Platform> platform = platformDao.findById(platformId);
       if (platform.isEmpty()
           || (platform.isPresent() && platform.get().getPlatform() != platformType)) {
         throw new HttpBadRequestException("Error: bad " + platformType + " version.");
       }
-      result = platform.get().getApplicationVersion();
+      result = Optional.of(platform.get().getApplicationVersion());
     }
     return result;
   }

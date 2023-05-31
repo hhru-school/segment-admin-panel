@@ -1,6 +1,8 @@
 package ru.hhschool.segment.dao.impl;
 
 import java.util.List;
+import java.util.Optional;
+import javax.persistence.Query;
 import ru.hhschool.segment.dao.abstracts.ScreenDao;
 import ru.hhschool.segment.model.entity.Platform;
 import ru.hhschool.segment.model.entity.Screen;
@@ -24,71 +26,56 @@ public class ScreenDaoImpl extends ReadWriteDaoImpl<Screen, Long> implements Scr
   }
 
   @Override
-  public List<Screen> findAll(String androidVersion, String iosVersion, boolean webSelect) {
-    List<Screen> screenList = List.of();
-
-    if (androidVersion == null && iosVersion == null && !webSelect) {
-      screenList = findAll();
-    } else if (androidVersion != null && iosVersion != null && webSelect) {
-      screenList = em.createNativeQuery(
-              """
-                   SELECT * FROM Screens s
-                    WHERE s.platforms @> ARRAY (
-                     SELECT p1.platform_id FROM Platforms p1
-                       WHERE (p1.platform = 'ANDROID' AND (p1.application_version) <= :androidVersion)
-                             OR (p1.platform = 'IOS' AND (p1.application_version) <= :iosVersion)
-                             OR p1.platform = 'WEB'
-                   )
-                  """
-              , Screen.class)
-          .setParameter("androidVersion", androidVersion)
-          .setParameter("iosVersion", iosVersion)
-          .getResultList();
-    } else if (androidVersion != null && iosVersion != null && !webSelect) {
-      screenList = em.createNativeQuery(
-              """
-                   SELECT * FROM Screens s
-                    WHERE s.platforms <@ ARRAY (
-                     SELECT p1.platform_id FROM Platforms p1
-                       WHERE (p1.platform = 'ANDROID' AND (p1.application_version) <= :androidVersion)
-                             OR (p1.platform = 'IOS' AND (p1.application_version) <= :iosVersion)
-                   )
-                  """
-              , Screen.class)
-          .setParameter("androidVersion", androidVersion)
-          .setParameter("iosVersion", iosVersion)
-          .getResultList();
-    } else if (androidVersion != null && iosVersion == null) {
-      screenList = em.createNativeQuery(
-              """
-                    SELECT * FROM Screens s
-                     WHERE s.platforms <@ ARRAY (
-                      SELECT p1.platform_id FROM Platforms p1
-                        WHERE (p1.platform = 'ANDROID' AND (p1.application_version) <= :androidVersion)
-                              OR (:webSelect AND p1.platform = 'WEB')
-                    )
-                   """
-              , Screen.class)
-          .setParameter("androidVersion", androidVersion)
-          .setParameter("webSelect", webSelect)
-          .getResultList();
-    } else if (androidVersion == null && iosVersion != null) {
-      screenList = em.createNativeQuery(
-              """
-                   SELECT * FROM Screens s
-                    WHERE s.platforms <@ ARRAY (
-                     SELECT p1.platform_id FROM Platforms p1
-                       WHERE (p1.platform = 'IOS' AND (p1.application_version) <= :iosVersion)
-                         OR (:webSelect AND p1.platform = 'WEB')
-                   )
-                  """
-              , Screen.class)
-          .setParameter("iosVersion", iosVersion)
-          .setParameter("webSelect", webSelect)
-          .getResultList();
+  public List<Screen> findAll(Optional<String> androidVersion, Optional<String> iosVersion, boolean webSelect) {
+    if (androidVersion.isEmpty() && iosVersion.isEmpty() && !webSelect) {
+      return findAll();
     }
 
+    String androidSql = """
+                      s.platforms && ARRAY(
+                        SELECT p1.platform_id FROM Platforms p1 WHERE p1.platform = 'ANDROID' AND p1.application_version <= :androidVersion
+                      ) 
+        """;
+    String iosSql = """
+                      s.platforms && ARRAY(
+                        SELECT p1.platform_id FROM Platforms p1 WHERE p1.platform = 'IOS' AND p1.application_version <= :iosVersion
+                      ) 
+        """;
+    String webSql = " not s.platforms && ARRAY (SELECT p1.platform_id FROM Platforms p1 WHERE (p1.platform = 'WEB') ) ";
 
-     return screenList;
+
+    if (androidVersion.isEmpty()) {
+      androidSql = " not s.platforms && ARRAY (SELECT p1.platform_id FROM Platforms p1 WHERE p1.platform = 'ANDROID' ) ";
+    }
+
+    if (iosVersion.isEmpty()) {
+      iosSql = " not s.platforms && ARRAY (SELECT p1.platform_id FROM Platforms p1 WHERE p1.platform = 'IOS' ) ";
+    }
+
+    if (webSelect) {
+      webSql = " s.platforms && ARRAY (SELECT p1.platform_id FROM Platforms p1 WHERE p1.platform = 'WEB')";
+    }
+
+    StringBuilder sql = new StringBuilder();
+
+    sql.append("SELECT * FROM Screens s WHERE ")
+        .append(androidSql)
+        .append(" AND ")
+        .append(iosSql)
+        .append(" AND ")
+        .append(webSql);
+
+    Query nativeQuery = em.createNativeQuery(sql.toString(), Screen.class);
+
+    if (androidVersion.isPresent()) {
+      nativeQuery.setParameter("androidVersion", androidVersion.get());
+    }
+
+    if (iosVersion.isPresent()) {
+      nativeQuery.setParameter("iosVersion", iosVersion.get());
+    }
+
+    return nativeQuery.getResultList();
+
   }
 }
