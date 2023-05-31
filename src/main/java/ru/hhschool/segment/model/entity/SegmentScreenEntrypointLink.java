@@ -1,15 +1,8 @@
 package ru.hhschool.segment.model.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+
+import ru.hhschool.segment.model.enums.StateType;
 
 @Entity
 @Table(name = "segment_screen_entrypoint_links")
@@ -35,6 +28,9 @@ public class SegmentScreenEntrypointLink {
   private Screen screen;
   @Column(name = "screen_position", nullable = false)
   private Integer screenPosition;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "screen_state", nullable = false)
+  private StateType screenState;
 
   public SegmentScreenEntrypointLink() {
   }
@@ -45,7 +41,8 @@ public class SegmentScreenEntrypointLink {
       Segment segment,
       Entrypoint entrypoint,
       Screen screen,
-      Integer screenPosition
+      Integer screenPosition,
+      StateType screenState
   ) {
     this.oldSegmentScreenEntrypointLink = oldSegmentScreenEntrypointLink;
     this.layer = layer;
@@ -53,6 +50,7 @@ public class SegmentScreenEntrypointLink {
     this.entrypoint = entrypoint;
     this.screen = screen;
     this.screenPosition = screenPosition;
+    this.screenState = screenState;
   }
 
   public Long getId() {
@@ -109,5 +107,13 @@ public class SegmentScreenEntrypointLink {
 
   public void setScreenPosition(Integer screenPosition) {
     this.screenPosition = screenPosition;
+  }
+
+  public StateType getScreenState() {
+    return screenState;
+  }
+
+  public void setScreenState(StateType screenState) {
+    this.screenState = screenState;
   }
 }

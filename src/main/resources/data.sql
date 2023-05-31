@@ -30,7 +30,11 @@ VALUES ('Опыт работы, лет', 'Опыт работы на анало�
        ('Уровень английского', 'Уровень английского', 'QUESTION', 'SINGLE_CHOICE', '{38, 39, 40}'),                                              --23
        ('Владение другими иностранными языками', 'Владение другими иностранными языками', 'QUESTION', 'SINGLE_CHOICE', '{9, 10}'),               --24
        ('Технологический стэк', 'Перечень технологий, которыми умеет пользоваться кандидат', 'QUESTION', 'MULTI_SELECT',
-        '{19, 20, 21, 22, 41, 42, 43}'); --25
+        '{19, 20, 21, 22, 41, 42, 43}'),                                                                                                         --25
+       ('Имя', 'Имя', 'RESUME_FIELD', 'NONE', '{}'),                                                                                             --26
+       ('Фамилия', 'Фамилия', 'RESUME_FIELD', 'NONE', '{}'),                                                                                     --27
+       ('Отчество', 'Отчество', 'RESUME_FIELD', 'NONE', '{}'),                                                                                   --28
+       ('Дата рождения', 'Дата рождения', 'RESUME_FIELD', 'NONE', '{}'); --29
 
 
 INSERT INTO answers (open_questions, title, positive_title, type, default_answer, skip_at_result)
@@ -109,12 +113,39 @@ VALUES ('Onboarding', 'Размещение вакансии работодат�
        ('Резюме', 'Размещение резюме соискателем'); --2
 
 INSERT INTO screens (title, description, type, state, platforms)
-VALUES ('Основная информация', 'Заполнение основной информации', 'STATIC', 'ACTIVE', '{1, 2, 3}'),                     --1
-       ('Должность', 'Выбор должности для поиска', 'STATIC', 'ACTIVE', '{1, 3}'),                                      --2
-       ('Наличие опыта работы', 'Заполнение информации по опыту работы', 'DYNAMIC', 'ACTIVE', '{1, 4, 3}'),             --3
-       ('Узкоспециализированные вопросы', 'Заполнение ответов на специальные вопросы', 'DYNAMIC', 'ACTIVE', '{2, 5}'), --4
-       ('Наличие образования', 'Заполнение информации об образовании', 'STATIC', 'ARCHIVE', '{1, 4, 5}');
---5
+VALUES ('Разряд не ниже 4', 'Разряд не ниже 4', 'DYNAMIC', 'ACTIVE', '{1, 2, 3}'),                                     --1
+       ('Должность', 'Выбор должности для поиска', 'DYNAMIC', 'ACTIVE', '{1, 3}'),                                     --2
+       ('Наличие опыта работы', 'Заполнение инормации по опыту работы', 'DYNAMIC', 'ACTIVE', '{1, 4, 3}'),             --3
+       ('Узкоспециализированные вопросы', 'Заполнение ответов на спецаильные вопросы', 'DYNAMIC', 'ACTIVE', '{2, 5}'), --4
+       ('Наличие образования', 'Заполнение информации об образовании', 'STATIC', 'ACTIVE', '{1, 4, 5}'),               --5
+       ('Основная информация', 'Заполнение основной информации', 'STATIC', 'ACTIVE', '{1, 4, 5}'),                     --6
+       ('Неактивный экран', 'Просто Архивный', 'STATIC', 'DISABLE', '{4, 5}'),                                         --7
+       ('Только для Web', 'Только для Web', 'STATIC', 'ACTIVE', '{1}'); --8
+
+INSERT INTO screen_questions (screen_id, question_id, question_position)
+VALUES (1, 1, 1),
+       (1, 2, 2),
+       (1, 3, 3),
+       (1, 4, 4),
+
+       (2, 5, 1),
+       (2, 6, 2),
+
+       (3, 7, 1),
+       (3, 8, 2),
+       (3, 9, 3),
+
+       (4, 10, 1),
+
+       (5, 22, 1),
+       (5, 23, 2),
+       (5, 24, 3),
+       (5, 25, 4),
+
+       (6, 26, 1),
+       (6, 27, 2),
+       (6, 28, 3),
+       (6, 29, 4);
 
 
 --Первый слой
@@ -131,54 +162,53 @@ VALUES (NULL, 1, 1, 1, TRUE),  -- 1
 
        (NULL, 1, 1, 4, TRUE),  -- 4
        (NULL, 1, 1, 5, FALSE), -- 5
-       (NULL, 1, 1, 6, TRUE);  -- 6
+       (NULL, 1, 1, 6, TRUE); -- 6
 
-INSERT INTO segment_screen_entrypoint_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, screen_position)
-VALUES (NULL, 1, 1, 1, 1, 1), -- 1
-       (NULL, 1, 1, 1, 2, 2), -- 2
-       (NULL, 1, 1, 1, 3, 3), -- 3
-       (NULL, 1, 1, 1, 4, 4), -- 4
+INSERT INTO segment_screen_entrypoint_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, screen_position, screen_state)
+VALUES (NULL, 1, 1, 1, 6, 1, 'ACTIVE'), -- 1
+       (NULL, 1, 1, 1, 2, 2, 'ACTIVE'), -- 2
+       (NULL, 1, 1, 1, 3, 3, 'ACTIVE'), -- 3
+       (NULL, 1, 1, 1, 4, 4, 'ACTIVE'), -- 4
 
-       (NULL, 1, 1, 2, 1, 1), -- 5
-       (NULL, 1, 1, 2, 2, 2), -- 6
-       (NULL, 1, 1, 2, 3, 3), -- 7
-       (NULL, 1, 1, 2, 4, 4), -- 8
-       (NULL, 1, 1, 2, 5, 4); -- 9
+       (NULL, 1, 1, 2, 6, 1, 'ACTIVE'), -- 5
+       (NULL, 1, 1, 2, 2, 2, 'ACTIVE'), -- 6
+       (NULL, 1, 1, 2, 3, 3, 'ACTIVE'), -- 7
+       (NULL, 1, 1, 2, 4, 4, 'ACTIVE'), -- 8
+       (NULL, 1, 1, 2, 5, 5, 'ACTIVE'); -- 9
 
 INSERT INTO screen_question_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, question_id, question_position, question_visibility)
-VALUES (NULL, 1, 1, 1, 1, 1, 1, 'SHOW'),           -- 1
-       (NULL, 1, 1, 1, 1, 1, 1, 'HIDE'),           -- 2
-       (NULL, 1, 1, 1, 1, 1, 1, 'SHOW_PREFILLED'), -- 3
-       (NULL, 1, 1, 1, 1, 1, 1, 'HIDE_PREFILLED'), -- 4
+VALUES (NULL, 1, 1, 1, 6, 26, 1, 'SHOW'),           -- 1
+       (NULL, 1, 1, 1, 6, 27, 2, 'HIDE'),           -- 2
+       (NULL, 1, 1, 1, 6, 28, 3, 'SHOW_PREFILLED'), -- 3
+       (NULL, 1, 1, 1, 6, 29, 4, 'HIDE_PREFILLED'), -- 4
 
-       (NULL, 1, 1, 1, 2, 1, 1, 'SHOW'),           -- 5
-       (NULL, 1, 1, 1, 2, 1, 1, 'HIDE'),           -- 6
+       (NULL, 1, 1, 1, 2, 5, 1, 'SHOW'),            -- 5
+       (NULL, 1, 1, 1, 2, 6, 2, 'HIDE'),            -- 6
 
-       (NULL, 1, 1, 1, 3, 9, 1, 'SHOW'),           -- 7
-       (NULL, 1, 1, 1, 3, 9, 1, 'HIDE'),           -- 8
-       (NULL, 1, 1, 1, 3, 9, 1, 'SHOW'),           -- 9
+       (NULL, 1, 1, 1, 3, 7, 1, 'SHOW'),            -- 7
+       (NULL, 1, 1, 1, 3, 8, 2, 'HIDE'),            -- 8
+       (NULL, 1, 1, 1, 3, 9, 3, 'SHOW'),            -- 9
 
-       (NULL, 1, 1, 1, 4, 9, 1, 'HIDE'),           -- 10
+       (NULL, 1, 1, 1, 4, 10, 1, 'HIDE'),           -- 10
 
-       (NULL, 1, 1, 2, 1, 9, 1, 'SHOW'),           -- 11
-       (NULL, 1, 1, 2, 1, 1, 1, 'HIDE'),           -- 12
-       (NULL, 1, 1, 2, 1, 9, 1, 'SHOW'),           -- 13
-       (NULL, 1, 1, 2, 1, 9, 1, 'HIDE'),           -- 14
-       (NULL, 1, 1, 2, 1, 9, 1, 'SHOW'),           -- 15
+       (NULL, 1, 1, 2, 6, 26, 1, 'SHOW'),           -- 11
+       (NULL, 1, 1, 2, 6, 27, 2, 'HIDE'),           -- 12
+       (NULL, 1, 1, 2, 6, 28, 3, 'SHOW_PREFILLED'), -- 13
+       (NULL, 1, 1, 2, 6, 29, 4, 'HIDE_PREFILLED'), -- 14
 
-       (NULL, 1, 1, 2, 2, 9, 1, 'HIDE'),           -- 16
+       (NULL, 1, 1, 2, 2, 5, 1, 'SHOW'),            -- 15
+       (NULL, 1, 1, 2, 2, 6, 2, 'HIDE'),            -- 16
 
-       (NULL, 1, 1, 2, 3, 9, 1, 'SHOW'),           -- 17
-       (NULL, 1, 1, 2, 3, 1, 1, 'HIDE'),           -- 18
-       (NULL, 1, 1, 2, 3, 9, 1, 'SHOW'),           -- 19
+       (NULL, 1, 1, 2, 3, 7, 1, 'SHOW'),            -- 17
+       (NULL, 1, 1, 2, 3, 8, 2, 'HIDE'),            -- 18
+       (NULL, 1, 1, 2, 3, 9, 3, 'SHOW'),            -- 19
 
-       (NULL, 1, 1, 2, 4, 9, 1, 'HIDE'),           -- 20
-       (NULL, 1, 1, 2, 4, 9, 1, 'SHOW'),           -- 21
+       (NULL, 1, 1, 2, 4, 10, 1, 'HIDE'),           -- 20
 
-       (NULL, 1, 1, 2, 5, 9, 1, 'HIDE'),           -- 22
-       (NULL, 1, 1, 2, 5, 9, 1, 'SHOW'),           -- 23
-       (NULL, 1, 1, 2, 5, 1, 1, 'HIDE'),           -- 24
-       (NULL, 1, 1, 2, 5, 9, 1, 'SHOW');
+       (NULL, 1, 1, 2, 5, 11, 1, 'HIDE'),           -- 22
+       (NULL, 1, 1, 2, 5, 12, 2, 'SHOW'),           -- 23
+       (NULL, 1, 1, 2, 5, 13, 3, 'HIDE'),           -- 24
+       (NULL, 1, 1, 2, 5, 14, 4, 'SHOW');
 -- 25
 
 
@@ -189,7 +219,7 @@ VALUES (1, 'Второй слой', 'Слой, унаследованный от
 
 INSERT INTO segment_state_links (old_id, layer_id, segment_id, state)
 VALUES (NULL, 2, 2, 'ACTIVE'), -- 2
-       (1, 2, 1, 'ARCHIVE'); -- 3
+       (1, 2, 1, 'DISABLE'); -- 3
 
 INSERT INTO question_required_links (old_id, layer_id, segment_id, question_id, question_required)
 VALUES (NULL, 2, 2, 7, TRUE),   -- 7
@@ -200,54 +230,53 @@ VALUES (NULL, 2, 2, 7, TRUE),   -- 7
        (NULL, 2, 2, 11, FALSE), -- 11
        (NULL, 2, 2, 12, TRUE); -- 12
 
-INSERT INTO segment_screen_entrypoint_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, screen_position)
-VALUES (NULL, 2, 2, 1, 1, 1), -- 10
-       (NULL, 2, 2, 1, 2, 2), -- 11
-       (NULL, 2, 2, 1, 5, 3), -- 12
-       (NULL, 2, 2, 1, 3, 4), -- 13
-       (NULL, 2, 2, 1, 4, 5), -- 14
+INSERT INTO segment_screen_entrypoint_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, screen_position, screen_state)
+VALUES (NULL, 2, 2, 1, 1, 1, 'ACTIVE'), -- 10
+       (NULL, 2, 2, 1, 2, 2, 'ACTIVE'), -- 11
+       (NULL, 2, 2, 1, 5, 3, 'ACTIVE'), -- 12
+       (NULL, 2, 2, 1, 3, 4, 'ACTIVE'), -- 13
+       (NULL, 2, 2, 1, 4, 5, 'ACTIVE'), -- 14
 
-       (NULL, 2, 2, 2, 1, 1), -- 15
-       (NULL, 2, 2, 2, 2, 2), -- 16
-       (NULL, 2, 2, 2, 3, 3), -- 17
-       (NULL, 2, 2, 2, 4, 4), -- 18
-       (NULL, 2, 2, 2, 5, 4); -- 19
+       (NULL, 2, 2, 2, 1, 1, 'ACTIVE'), -- 15
+       (NULL, 2, 2, 2, 2, 2, 'ACTIVE'), -- 16
+       (NULL, 2, 2, 2, 3, 3, 'ACTIVE'), -- 17
+       (NULL, 2, 2, 2, 4, 4, 'ACTIVE'), -- 18
+       (NULL, 2, 2, 2, 5, 5, 'ACTIVE'); -- 19
 
 INSERT INTO screen_question_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, question_id, question_position, question_visibility)
 VALUES (NULL, 2, 2, 1, 1, 1, 1, 'SHOW'),           -- 26
-       (NULL, 2, 2, 1, 1, 1, 1, 'HIDE'),           -- 27
-       (NULL, 2, 2, 1, 1, 1, 1, 'SHOW_PREFILLED'), -- 28
-       (NULL, 2, 2, 1, 1, 1, 1, 'HIDE_PREFILLED'), -- 29
+       (NULL, 2, 2, 1, 1, 2, 2, 'HIDE'),           -- 27
+       (NULL, 2, 2, 1, 1, 3, 3, 'SHOW_PREFILLED'), -- 28
+       (NULL, 2, 2, 1, 1, 4, 4, 'HIDE_PREFILLED'), -- 29
 
-       (NULL, 2, 2, 1, 2, 1, 1, 'SHOW'),           -- 30
+       (NULL, 2, 2, 1, 2, 5, 1, 'SHOW'),           -- 30
+       (NULL, 2, 2, 1, 2, 6, 2, 'SHOW'),           -- 31
 
-       (NULL, 2, 2, 1, 5, 1, 1, 'HIDE'),           -- 31
+       (NULL, 2, 2, 1, 5, 22, 1, 'HIDE'),          -- 32
+       (NULL, 2, 2, 1, 5, 23, 2, 'HIDE'),          -- 33
+       (NULL, 2, 2, 1, 5, 24, 3, 'HIDE'),          -- 34
+       (NULL, 2, 2, 1, 5, 25, 4, 'HIDE'),          -- 35
 
-       (NULL, 2, 2, 1, 3, 9, 1, 'SHOW'),           -- 32
-       (NULL, 2, 2, 1, 3, 9, 1, 'HIDE'),           -- 33
-       (NULL, 2, 2, 1, 3, 9, 1, 'SHOW'),           -- 34
+       (NULL, 2, 2, 1, 3, 7, 1, 'SHOW'),           -- 36
+       (NULL, 2, 2, 1, 3, 8, 2, 'HIDE'),           -- 37
+       (NULL, 2, 2, 1, 3, 9, 3, 'SHOW'),           -- 38
 
-       (NULL, 2, 2, 1, 4, 9, 1, 'HIDE'),           -- 35
+       (NULL, 2, 2, 1, 4, 10, 1, 'HIDE'),          -- 39
 
-       (NULL, 2, 2, 2, 1, 9, 1, 'SHOW'),           -- 36
-       (NULL, 2, 2, 2, 1, 1, 1, 'HIDE'),           -- 37
-       (NULL, 2, 2, 2, 1, 9, 1, 'SHOW'),           -- 38
-       (NULL, 2, 2, 2, 1, 9, 1, 'HIDE'),           -- 39
-       (NULL, 2, 2, 2, 1, 9, 1, 'SHOW'),           -- 40
+       (NULL, 2, 2, 2, 1, 1, 1, 'SHOW'),           -- 40
+       (NULL, 2, 2, 2, 1, 2, 2, 'HIDE'),           -- 41
+       (NULL, 2, 2, 2, 1, 3, 3, 'SHOW'),           -- 42
+       (NULL, 2, 2, 2, 1, 4, 4, 'HIDE'),           -- 43
 
-       (NULL, 2, 2, 2, 2, 9, 1, 'HIDE'),           -- 41
+       (NULL, 2, 2, 2, 2, 5, 1, 'HIDE'),           -- 44
+       (NULL, 2, 2, 2, 2, 6, 2, 'HIDE'),           -- 45
 
-       (NULL, 2, 2, 2, 3, 9, 1, 'SHOW'),           -- 42
-       (NULL, 2, 2, 2, 3, 1, 1, 'HIDE'),           -- 43
-       (NULL, 2, 2, 2, 3, 9, 1, 'SHOW'),           -- 44
+       (NULL, 2, 2, 2, 4, 10, 1, 'HIDE'),          -- 46
 
-       (NULL, 2, 2, 2, 4, 9, 1, 'HIDE'),           -- 45
-       (NULL, 2, 2, 2, 4, 9, 1, 'SHOW'),           -- 46
-
-       (NULL, 2, 2, 2, 5, 9, 1, 'HIDE'),           -- 47
-       (NULL, 2, 2, 2, 5, 9, 1, 'SHOW'),           -- 48
-       (NULL, 2, 2, 2, 5, 1, 1, 'HIDE'),           -- 49
-       (NULL, 2, 2, 2, 5, 9, 1, 'SHOW');
+       (NULL, 2, 2, 2, 5, 22, 1, 'HIDE'),          -- 47
+       (NULL, 2, 2, 2, 5, 23, 2, 'SHOW'),          -- 48
+       (NULL, 2, 2, 2, 5, 24, 3, 'HIDE'),          -- 49
+       (NULL, 2, 2, 2, 5, 25, 4, 'SHOW');
 -- 50
 
 
@@ -259,39 +288,44 @@ VALUES (2, 'Третий слой', 'Слой, унаследованный от
 INSERT INTO segment_state_links (old_id, layer_id, segment_id, state)
 VALUES (NULL, 3, 3, 'ACTIVE'), -- 4
        (1, 3, 1, 'ACTIVE'),    -- 5
-       (2, 3, 2, 'ARCHIVE'); -- 6
+       (2, 3, 2, 'DISABLE'); -- 6
 
 INSERT INTO question_required_links (old_id, layer_id, segment_id, question_id, question_required)
-VALUES (NULL, 3, 3, 7, TRUE),   -- 13
-       (NULL, 3, 3, 8, FALSE),  -- 14
-       (3, 3, 1, 3, FALSE),     -- 15
+VALUES (NULL, 3, 3, 7, TRUE),  -- 13
+       (NULL, 3, 3, 8, FALSE), -- 14
+       (3, 3, 1, 3, FALSE),    -- 15
 
        (10, 3, 2, 10, FALSE),  -- 16
-       (11, 3, 2, 11, TRUE); -- 17
+       (11, 3, 2, 11, TRUE);
+-- 17
 -- (NULL, 5, 13, TRUE); -- 18  это из прошлого слоя должно прийти
 
-INSERT INTO segment_screen_entrypoint_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, screen_position)
+INSERT INTO segment_screen_entrypoint_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, screen_position, screen_state)
 VALUES -- (NULL, 3, 2, 1, 1, 1), -- 10 это из прошлого слоя должно прийти
        -- (NULL, 3, 2, 1, 2, 2), -- 11 это из прошлого слоя должно прийти
        -- (NULL, 3, 2, 1, 5, 3), -- 12 это из прошлого слоя должно прийти
-       (13, 3, 2, 1, 4, 5), -- 20
-       (14, 3, 2, 1, 3, 4), -- 21
+       (13, 3, 2, 1, 4, 5, 'ACTIVE'), -- 20
+       (14, 3, 2, 1, 3, 4, 'ACTIVE'), -- 21
 
-       (15, 3, 2, 2, 2, 2), -- 15
-       (16, 3, 2, 2, 1, 1); -- 16
+       (15, 3, 2, 2, 2, 2, 'ACTIVE'), -- 15
+       (16, 3, 2, 2, 1, 1, 'ACTIVE'),
+
+       (18, 2, 2, 2, 4, 4, 'DISABLE'),-- 18
+       (19, 2, 2, 2, 5, 4, 'ACTIVE');
+-- 19
 --        (NULL, 3, 2, 2, 3, 3), -- 17 это из прошлого слоя должно прийти
 --        (NULL, 3, 2, 2, 4, 4), -- 18 это из прошлого слоя должно прийти
 --        (NULL, 3, 2, 2, 5, 4); -- 19 это из прошлого слоя должно прийти
 
 INSERT INTO screen_question_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, question_id, question_position, question_visibility)
-VALUES (26, 3, 1, 1, 1, 1, 1, 'SHOW_PREFILLED'),           -- 26
-       (NULL, 3, 1, 1, 1, 3, 2, 'HIDE_PREFILLED'),           -- 27
+VALUES (26, 2, 2, 1, 1, 1, 1, 'SHOW_PREFILLED'), -- 26 изменены состояния визибилити
+       (27, 2, 2, 1, 1, 2, 2, 'HIDE_PREFILLED'), -- 27
 --        (NULL, 10, 1, 1, 'SHOW_PREFILLED'), -- 28 это из прошлого слоя должно прийти
 --        (NULL, 10, 1, 1, 'HIDE_PREFILLED'), -- 29 это из прошлого слоя должно прийти
 
-       (30, 3, 2, 1, 2, 1, 1, 'HIDE'),           -- 30
-
-       (31, 3, 2, 1, 5, 1, 1, 'SHOW');          -- 31
+       (30, 2, 2, 1, 2, 6, 2, 'SHOW'),           -- 30 поменяны позиции вопросов.
+       (31, 2, 2, 1, 5, 5, 1, 'SHOW');
+-- 31
 
 --        (NULL, 13, 9, 1, 'SHOW'),           -- 32 это из прошлого слоя должно прийти
 --        (NULL, 13, 9, 1, 'HIDE'),           -- 33 это из прошлого слоя должно прийти
