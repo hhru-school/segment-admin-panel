@@ -7,18 +7,18 @@ public class ScreenCreateDto {
   private String title;
   private String description;
   private ScreenType type;
-  private List<Long> appVersions;
-  private List<Long> questions;
+  private List<Long> platformsId;
+  private List<Long> questionsId;
 
   public ScreenCreateDto() {
   }
 
-  public ScreenCreateDto(String title, String description, ScreenType type, List<Long> appVersions, List<Long> questions) {
+  public ScreenCreateDto(String title, String description, ScreenType type, List<Long> platformsId, List<Long> questionsId) {
     this.title = title;
     this.description = description;
     this.type = type;
-    this.appVersions = appVersions;
-    this.questions = questions;
+    this.platformsId = platformsId;
+    this.questionsId = questionsId;
   }
 
   public String getTitle() {
@@ -45,19 +45,19 @@ public class ScreenCreateDto {
     this.type = type;
   }
 
-  public List<Long> getAppVersions() {
-    return appVersions;
+  public List<Long> getPlatformsId() {
+    return platformsId;
   }
 
-  public void setAppVersions(List<Long> appVersions) {
-    this.appVersions = appVersions;
+  public void setPlatformsId(List<Long> platformsId) {
+    this.platformsId = platformsId;
   }
 
-  public List<Long> getQuestions() {
-    return questions;
+  public List<Long> getQuestionsId() {
+    return questionsId;
   }
 
-  public void setQuestions(List<Long> questions) {
-    this.questions = questions;
+  public void setQuestionsId(List<Long> questionsId) {
+    this.questionsId = questionsId;
   }
 }

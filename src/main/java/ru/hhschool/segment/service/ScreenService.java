@@ -8,24 +8,29 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import ru.hhschool.segment.dao.abstracts.PlatformDao;
+import ru.hhschool.segment.dao.abstracts.QuestionDao;
 import ru.hhschool.segment.dao.abstracts.ScreenDao;
 import ru.hhschool.segment.exception.HttpBadRequestException;
 import ru.hhschool.segment.mapper.screen.ScreenMapper;
 import ru.hhschool.segment.mapper.screen.ScreenPlatformMapper;
+import ru.hhschool.segment.model.dto.screen.ScreenCreateDto;
 import ru.hhschool.segment.model.dto.screen.ScreenDto;
 import ru.hhschool.segment.model.dto.screen.ScreenPlatformDto;
 import ru.hhschool.segment.model.dto.screen.ScreenPlatformVersionDto;
 import ru.hhschool.segment.model.entity.Platform;
+import ru.hhschool.segment.model.entity.Question;
 import ru.hhschool.segment.model.entity.Screen;
 import ru.hhschool.segment.model.enums.PlatformType;
 
 public class ScreenService {
   private final ScreenDao screenDao;
   private final PlatformDao platformDao;
+  private final QuestionDao questionDao;
 
-  public ScreenService(ScreenDao screenDao, PlatformDao platformDao) {
+  public ScreenService(ScreenDao screenDao, PlatformDao platformDao, QuestionDao questionDao) {
     this.screenDao = screenDao;
     this.platformDao = platformDao;
+    this.questionDao = questionDao;
   }
 
   @Transactional
@@ -75,6 +80,33 @@ public class ScreenService {
     return platformVersionDtoList;
   }
 
+  public Optional<ScreenDto> add(ScreenCreateDto screenCreateDto) {
+    if (screenCreateDto.getTitle() == null || screenCreateDto.getTitle().isBlank()) {
+      throw new HttpBadRequestException("Название(Title) неверно указанное значение или пустой.");
+    }
+    if (screenCreateDto.getQuestionsId() == null || screenCreateDto.getPlatformsId().isEmpty()) {
+      throw new HttpBadRequestException("Не заданы значения массива Roles");
+    }
+
+    List<Question> questionList = questionDao.findAll(screenCreateDto.getQuestionsId());
+    Screen screen = ScreenMapper.dtoToScreen(screenCreateDto, questionList);
+
+    try {
+      screenDao.persist(screen);
+    } catch (Exception err) {
+      String lastMessage = err.getMessage();
+      Throwable cause = err.getCause();
+      while (cause != null) {
+        lastMessage = cause.getMessage();
+        cause = cause.getCause();
+      }
+      throw new HttpBadRequestException(lastMessage);
+    }
+
+    List<ScreenPlatformDto> platformVersions = ScreenPlatformMapper.platformListToDtoList(platformDao.findAll(screen.getPlatforms()));
+
+    return Optional.of(ScreenMapper.screenToDto(screen, platformVersions));
+  }
 
   private Optional<String> getPlatformVersionFromId(Long platformId, PlatformType platformType) {
     Optional<String> result = Optional.empty();

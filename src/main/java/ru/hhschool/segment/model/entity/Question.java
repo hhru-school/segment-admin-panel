@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import ru.hhschool.segment.model.enums.AnswersNumberType;
-import ru.hhschool.segment.model.enums.ResumeField;
+import ru.hhschool.segment.model.enums.QuestionType;
 
 @Entity
 @TypeDef(name = "list-array", typeClass = ListArrayType.class)
@@ -29,7 +29,7 @@ public class Question {
   private String description;
   @Enumerated(EnumType.STRING)
   @Column(name = "type", nullable = false)
-  private ResumeField type;
+  private QuestionType type;
   @Enumerated(EnumType.STRING)
   @Column(name = "answer_type", nullable = false)
   private AnswersNumberType answerType;
@@ -43,7 +43,7 @@ public class Question {
   public Question() {
   }
 
-  public Question(String title, String description, ResumeField type, AnswersNumberType answerType, List<Long> possibleAnswers) {
+  public Question(String title, String description, QuestionType type, AnswersNumberType answerType, List<Long> possibleAnswers) {
     this.title = title;
     this.description = description;
     this.type = type;
@@ -75,11 +75,11 @@ public class Question {
     this.description = description;
   }
 
-  public ResumeField getType() {
+  public QuestionType getType() {
     return type;
   }
 
-  public void setType(ResumeField type) {
+  public void setType(QuestionType type) {
     this.type = type;
   }
 
