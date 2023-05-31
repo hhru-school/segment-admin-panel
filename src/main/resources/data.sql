@@ -119,7 +119,7 @@ VALUES ('Разряд не ниже 4', 'Разряд не ниже 4', 'DYNAMIC
        ('Узкоспециализированные вопросы', 'Заполнение ответов на спецаильные вопросы', 'DYNAMIC', 'ACTIVE', '{2, 5}'), --4
        ('Наличие образования', 'Заполнение информации об образовании', 'STATIC', 'ACTIVE', '{1, 4, 5}'),               --5
        ('Основная информация', 'Заполнение основной информации', 'STATIC', 'ACTIVE', '{1, 4, 5}'),                     --6
-       ('Неактивный экран', 'Просто Архивный', 'STATIC', 'ARCHIVE', '{4, 5}'),                                         --7
+       ('Неактивный экран', 'Просто Архивный', 'STATIC', 'DISABLE', '{4, 5}'),                                         --7
        ('Только для Web', 'Только для Web', 'STATIC', 'ACTIVE', '{1}'); --8
 
 INSERT INTO screen_questions (screen_id, question_id, question_position)
@@ -164,17 +164,17 @@ VALUES (NULL, 1, 1, 1, TRUE),  -- 1
        (NULL, 1, 1, 5, FALSE), -- 5
        (NULL, 1, 1, 6, TRUE); -- 6
 
-INSERT INTO segment_screen_entrypoint_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, screen_position)
-VALUES (NULL, 1, 1, 1, 6, 1), -- 1
-       (NULL, 1, 1, 1, 2, 2), -- 2
-       (NULL, 1, 1, 1, 3, 3), -- 3
-       (NULL, 1, 1, 1, 4, 4), -- 4
+INSERT INTO segment_screen_entrypoint_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, screen_position, screen_state)
+VALUES (NULL, 1, 1, 1, 6, 1, 'ACTIVE'), -- 1
+       (NULL, 1, 1, 1, 2, 2, 'ACTIVE'), -- 2
+       (NULL, 1, 1, 1, 3, 3, 'ACTIVE'), -- 3
+       (NULL, 1, 1, 1, 4, 4, 'ACTIVE'), -- 4
 
-       (NULL, 1, 1, 2, 6, 1), -- 5
-       (NULL, 1, 1, 2, 2, 2), -- 6
-       (NULL, 1, 1, 2, 3, 3), -- 7
-       (NULL, 1, 1, 2, 4, 4), -- 8
-       (NULL, 1, 1, 2, 5, 5); -- 9
+       (NULL, 1, 1, 2, 6, 1, 'ACTIVE'), -- 5
+       (NULL, 1, 1, 2, 2, 2, 'ACTIVE'), -- 6
+       (NULL, 1, 1, 2, 3, 3, 'ACTIVE'), -- 7
+       (NULL, 1, 1, 2, 4, 4, 'ACTIVE'), -- 8
+       (NULL, 1, 1, 2, 5, 5, 'ACTIVE'); -- 9
 
 INSERT INTO screen_question_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, question_id, question_position, question_visibility)
 VALUES (NULL, 1, 1, 1, 6, 26, 1, 'SHOW'),           -- 1
@@ -219,7 +219,7 @@ VALUES (1, 'Второй слой', 'Слой, унаследованный от
 
 INSERT INTO segment_state_links (old_id, layer_id, segment_id, state)
 VALUES (NULL, 2, 2, 'ACTIVE'), -- 2
-       (1, 2, 1, 'ARCHIVE'); -- 3
+       (1, 2, 1, 'DISABLE'); -- 3
 
 INSERT INTO question_required_links (old_id, layer_id, segment_id, question_id, question_required)
 VALUES (NULL, 2, 2, 7, TRUE),   -- 7
@@ -230,18 +230,18 @@ VALUES (NULL, 2, 2, 7, TRUE),   -- 7
        (NULL, 2, 2, 11, FALSE), -- 11
        (NULL, 2, 2, 12, TRUE); -- 12
 
-INSERT INTO segment_screen_entrypoint_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, screen_position)
-VALUES (NULL, 2, 2, 1, 1, 1), -- 10
-       (NULL, 2, 2, 1, 2, 2), -- 11
-       (NULL, 2, 2, 1, 5, 3), -- 12
-       (NULL, 2, 2, 1, 3, 4), -- 13
-       (NULL, 2, 2, 1, 4, 5), -- 14
+INSERT INTO segment_screen_entrypoint_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, screen_position, screen_state)
+VALUES (NULL, 2, 2, 1, 1, 1, 'ACTIVE'), -- 10
+       (NULL, 2, 2, 1, 2, 2, 'ACTIVE'), -- 11
+       (NULL, 2, 2, 1, 5, 3, 'ACTIVE'), -- 12
+       (NULL, 2, 2, 1, 3, 4, 'ACTIVE'), -- 13
+       (NULL, 2, 2, 1, 4, 5, 'ACTIVE'), -- 14
 
-       (NULL, 2, 2, 2, 1, 1), -- 15
-       (NULL, 2, 2, 2, 2, 2), -- 16
-       (NULL, 2, 2, 2, 3, 3), -- 17
-       (NULL, 2, 2, 2, 4, 4), -- 18
-       (NULL, 2, 2, 2, 5, 4); -- 19
+       (NULL, 2, 2, 2, 1, 1, 'ACTIVE'), -- 15
+       (NULL, 2, 2, 2, 2, 2, 'ACTIVE'), -- 16
+       (NULL, 2, 2, 2, 3, 3, 'ACTIVE'), -- 17
+       (NULL, 2, 2, 2, 4, 4, 'ACTIVE'), -- 18
+       (NULL, 2, 2, 2, 5, 5, 'ACTIVE'); -- 19
 
 INSERT INTO screen_question_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, question_id, question_position, question_visibility)
 VALUES (NULL, 2, 2, 1, 1, 1, 1, 'SHOW'),           -- 26
@@ -288,7 +288,7 @@ VALUES (2, 'Третий слой', 'Слой, унаследованный от
 INSERT INTO segment_state_links (old_id, layer_id, segment_id, state)
 VALUES (NULL, 3, 3, 'ACTIVE'), -- 4
        (1, 3, 1, 'ACTIVE'),    -- 5
-       (2, 3, 2, 'ARCHIVE'); -- 6
+       (2, 3, 2, 'DISABLE'); -- 6
 
 INSERT INTO question_required_links (old_id, layer_id, segment_id, question_id, question_required)
 VALUES (NULL, 3, 3, 7, TRUE),  -- 13
@@ -300,17 +300,19 @@ VALUES (NULL, 3, 3, 7, TRUE),  -- 13
 -- 17
 -- (NULL, 5, 13, TRUE); -- 18  это из прошлого слоя должно прийти
 
-INSERT INTO segment_screen_entrypoint_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, screen_position)
+INSERT INTO segment_screen_entrypoint_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, screen_position, screen_state)
 VALUES -- (NULL, 3, 2, 1, 1, 1), -- 10 это из прошлого слоя должно прийти
        -- (NULL, 3, 2, 1, 2, 2), -- 11 это из прошлого слоя должно прийти
        -- (NULL, 3, 2, 1, 5, 3), -- 12 это из прошлого слоя должно прийти
-       (13, 3, 2, 1, 4, 5), -- 20
-       (14, 3, 2, 1, 3, 4), -- 21
+       (13, 3, 2, 1, 4, 5, 'ACTIVE'), -- 20
+       (14, 3, 2, 1, 3, 4, 'ACTIVE'), -- 21
 
-       (15, 3, 2, 2, 2, 2), -- 15
-       (16, 3, 2, 2, 1, 1);
--- 16
+       (15, 3, 2, 2, 2, 2, 'ACTIVE'), -- 15
+       (16, 3, 2, 2, 1, 1, 'ACTIVE'),
 
+       (18, 2, 2, 2, 4, 4, 'DISABLE'),-- 18
+       (19, 2, 2, 2, 5, 4, 'ACTIVE');
+-- 19
 --        (NULL, 3, 2, 2, 3, 3), -- 17 это из прошлого слоя должно прийти
 --        (NULL, 3, 2, 2, 4, 4), -- 18 это из прошлого слоя должно прийти
 --        (NULL, 3, 2, 2, 5, 4); -- 19 это из прошлого слоя должно прийти

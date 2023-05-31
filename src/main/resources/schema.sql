@@ -11,7 +11,6 @@ DROP TABLE IF EXISTS question_required_links CASCADE;
 DROP TABLE IF EXISTS screen_question_links CASCADE;
 DROP TABLE IF EXISTS segment_state_links CASCADE;
 DROP TABLE IF EXISTS professional_role CASCADE;
-DROP TABLE IF EXISTS screen_state_links CASCADE;
 DROP TABLE IF EXISTS history CASCADE;
 
 CREATE TABLE IF NOT EXISTS platforms
@@ -110,8 +109,10 @@ CREATE TABLE IF NOT EXISTS segment_screen_entrypoint_links
     segment_id      BIGINT REFERENCES segments (segment_id),
     entrypoint_id   BIGINT REFERENCES entrypoints (entrypoint_id),
     screen_id       BIGINT REFERENCES screens (screen_id),
-    screen_position INT
+    screen_position INT,
+    screen_state    VARCHAR(255) NOT NULL
 );
+COMMENT ON COLUMN segment_screen_entrypoint_links.screen_state IS 'enum (ACTIVE, DISABLE)';
 
 
 CREATE TABLE IF NOT EXISTS screen_question_links
@@ -161,17 +162,6 @@ CREATE TABLE IF NOT EXISTS history
     description TEXT
 );
 COMMENT ON COLUMN history.type IS 'enum (CREATE, UPDATE, DELETE)';
-
-CREATE TABLE IF NOT EXISTS screen_state_links
-(
-    id        BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    old_id    BIGINT REFERENCES screen_state_links (id),
-    layer_id  BIGINT REFERENCES layers (layer_id),
-    screen_id BIGINT REFERENCES screens (screen_id),
-    state     VARCHAR(255) NOT NULL
-);
-COMMENT ON COLUMN segment_state_links.state IS 'enum (ACTIVE, DEACTIVATE)';
-
 
 CREATE TABLE IF NOT EXISTS professional_role
 (
