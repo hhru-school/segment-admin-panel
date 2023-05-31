@@ -1,4 +1,4 @@
-package ru.hhschool.segment;
+package ru.hhschool.segment.exception;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;

@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS segments CASCADE;
 DROP TABLE IF EXISTS questions CASCADE;
 DROP TABLE IF EXISTS answers CASCADE;
 DROP TABLE IF EXISTS screens CASCADE;
+DROP TABLE IF EXISTS screen_questions CASCADE;
 DROP TABLE IF EXISTS segment_screen_entrypoint_links CASCADE;
 DROP TABLE IF EXISTS question_required_links CASCADE;
 DROP TABLE IF EXISTS screen_question_links CASCADE;
@@ -92,6 +93,13 @@ CREATE TABLE IF NOT EXISTS screens
 COMMENT ON COLUMN screens.type IS 'enum (STATIC, DYNAMIC)';
 COMMENT ON COLUMN screens.state IS 'enum (ACTIVE, ARCHIVE)';
 
+CREATE TABLE IF NOT EXISTS screen_questions
+(
+    screen_id         BIGINT REFERENCES screens (screen_id),
+    question_id       BIGINT REFERENCES questions (question_id),
+    question_position INT,
+    PRIMARY KEY (screen_id, question_id)
+);
 
 CREATE TABLE IF NOT EXISTS segment_screen_entrypoint_links
 (
@@ -101,8 +109,10 @@ CREATE TABLE IF NOT EXISTS segment_screen_entrypoint_links
     segment_id      BIGINT REFERENCES segments (segment_id),
     entrypoint_id   BIGINT REFERENCES entrypoints (entrypoint_id),
     screen_id       BIGINT REFERENCES screens (screen_id),
-    screen_position INT
+    screen_position INT,
+    screen_state    VARCHAR(255) NOT NULL
 );
+COMMENT ON COLUMN segment_screen_entrypoint_links.screen_state IS 'enum (ACTIVE, DISABLE)';
 
 
 CREATE TABLE IF NOT EXISTS screen_question_links
@@ -152,7 +162,6 @@ CREATE TABLE IF NOT EXISTS history
     description TEXT
 );
 COMMENT ON COLUMN history.type IS 'enum (CREATE, UPDATE, DELETE)';
-
 
 CREATE TABLE IF NOT EXISTS professional_role
 (
