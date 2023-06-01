@@ -17,7 +17,6 @@ import ru.hhschool.segment.exception.HttpBadRequestException;
 import ru.hhschool.segment.model.dto.ErrorDto;
 import ru.hhschool.segment.model.dto.screen.ScreenCreateDto;
 import ru.hhschool.segment.model.dto.screen.ScreenDto;
-import ru.hhschool.segment.model.dto.screen.ScreenPlatformVersionDto;
 import ru.hhschool.segment.service.ScreenService;
 
 @Path("/screens")
@@ -57,17 +56,6 @@ public class ScreenResource {
       return Response.ok(screenDto.get()).build();
     }
     return Response.status(Response.Status.NOT_FOUND).build();
-  }
-
-  @GET
-  @Path("/platforms")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response getAllPlatformOfScreens() {
-    List<ScreenPlatformVersionDto> screenPlatformList = screenService.getAllPlatforms();
-    if (!screenPlatformList.isEmpty()) {
-      return Response.ok(screenPlatformList).build();
-    }
-    return Response.status(Response.Status.NO_CONTENT).build();
   }
 
   @POST

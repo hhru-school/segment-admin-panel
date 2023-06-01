@@ -4,6 +4,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.context.annotation.Configuration;
 import ru.hhschool.segment.resource.EntrypointResource;
 import ru.hhschool.segment.resource.LayerResource;
+import ru.hhschool.segment.resource.PlatformResource;
 import ru.hhschool.segment.resource.QuestionResource;
 import ru.hhschool.segment.resource.RoleResource;
 import ru.hhschool.segment.resource.ScreenResource;
@@ -19,5 +20,6 @@ public class JerseyConfig extends ResourceConfig {
     register(EntrypointResource.class);
     register(RoleResource.class);
     register(ScreenResource.class);
+    register(PlatformResource.class);
   }
 }

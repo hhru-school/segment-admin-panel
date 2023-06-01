@@ -1,6 +1,7 @@
 package ru.hhschool.segment.model.dto.screen;
 
 import java.util.List;
+import ru.hhschool.segment.model.dto.platform.PlatformDto;
 import ru.hhschool.segment.model.enums.ScreenType;
 import ru.hhschool.segment.model.enums.StateType;
 
@@ -11,7 +12,7 @@ public class ScreenDto {
   private ScreenType type;
   private StateType state;
   private List<ScreenFieldDto> fields;
-  private List<ScreenPlatformDto> appVersions;
+  private List<PlatformDto> appVersions;
 
   public ScreenDto() {
   }
@@ -23,7 +24,7 @@ public class ScreenDto {
       ScreenType type,
       StateType state,
       List<ScreenFieldDto> fields,
-      List<ScreenPlatformDto> appVersions
+      List<PlatformDto> appVersions
   ) {
     this.id = id;
     this.title = title;
@@ -82,11 +83,11 @@ public class ScreenDto {
     this.fields = fields;
   }
 
-  public List<ScreenPlatformDto> getAppVersions() {
+  public List<PlatformDto> getAppVersions() {
     return appVersions;
   }
 
-  public void setAppVersions(List<ScreenPlatformDto> appVersions) {
+  public void setAppVersions(List<PlatformDto> appVersions) {
     this.appVersions = appVersions;
   }
 }

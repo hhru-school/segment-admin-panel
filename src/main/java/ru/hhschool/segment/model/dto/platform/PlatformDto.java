@@ -1,14 +1,14 @@
-package ru.hhschool.segment.model.dto.screen;
+package ru.hhschool.segment.model.dto.platform;
 
-public class ScreenPlatformDto {
+public class PlatformDto {
   private Long id;
   private String platform;
   private String version;
 
-  public ScreenPlatformDto() {
+  public PlatformDto() {
   }
 
-  public ScreenPlatformDto(Long id, String platform, String version) {
+  public PlatformDto(Long id, String platform, String version) {
     this.id = id;
     this.platform = platform;
     this.version = version;

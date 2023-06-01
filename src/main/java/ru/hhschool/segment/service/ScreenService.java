@@ -1,22 +1,18 @@
 package ru.hhschool.segment.service;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import ru.hhschool.segment.dao.abstracts.PlatformDao;
 import ru.hhschool.segment.dao.abstracts.QuestionDao;
 import ru.hhschool.segment.dao.abstracts.ScreenDao;
 import ru.hhschool.segment.exception.HttpBadRequestException;
+import ru.hhschool.segment.mapper.PlatformMapper;
 import ru.hhschool.segment.mapper.screen.ScreenMapper;
-import ru.hhschool.segment.mapper.screen.ScreenPlatformMapper;
+import ru.hhschool.segment.model.dto.platform.PlatformDto;
 import ru.hhschool.segment.model.dto.screen.ScreenCreateDto;
 import ru.hhschool.segment.model.dto.screen.ScreenDto;
-import ru.hhschool.segment.model.dto.screen.ScreenPlatformDto;
-import ru.hhschool.segment.model.dto.screen.ScreenPlatformVersionDto;
 import ru.hhschool.segment.model.entity.Platform;
 import ru.hhschool.segment.model.entity.Question;
 import ru.hhschool.segment.model.entity.Screen;
@@ -42,7 +38,7 @@ public class ScreenService {
     List<ScreenDto> screenDtoList = new ArrayList<>();
 
     for (Screen screen : screens) {
-      List<ScreenPlatformDto> platformVersions = ScreenPlatformMapper.platformListToDtoList(platformDao.findAll(screen.getPlatforms()));
+      List<PlatformDto> platformVersions = PlatformMapper.platformListToDtoList(platformDao.findAll(screen.getPlatforms()));
       screenDtoList.add(ScreenMapper.screenToDto(screen, platformVersions));
     }
     return screenDtoList;
@@ -57,27 +53,9 @@ public class ScreenService {
 
     Screen screen = screenOptional.get();
 
-    List<ScreenPlatformDto> platformVersions = ScreenPlatformMapper.platformListToDtoList(platformDao.findAll(screen.getPlatforms()));
+    List<PlatformDto> platformVersions = PlatformMapper.platformListToDtoList(platformDao.findAll(screen.getPlatforms()));
 
     return Optional.of(ScreenMapper.screenToDto(screen, platformVersions));
-  }
-
-  public List<ScreenPlatformVersionDto> getAllPlatforms() {
-    List<ScreenPlatformDto> screenPlatformList = ScreenPlatformMapper.platformListToDtoList(screenDao.findAllPlatforms());
-
-    Map<String, List<ScreenPlatformDto>> platformVersionMap = screenPlatformList
-        .stream()
-        .sorted(Comparator.comparing(ScreenPlatformDto::getVersion))
-        .collect(Collectors.groupingBy((p) -> p.getPlatform()));
-
-    List<ScreenPlatformVersionDto> platformVersionDtoList = platformVersionMap
-        .entrySet()
-        .stream()
-        .map(e -> new ScreenPlatformVersionDto(e.getKey(), e.getValue()))
-        .sorted(Comparator.comparing(ScreenPlatformVersionDto::getPlatform))
-        .toList();
-
-    return platformVersionDtoList;
   }
 
   public Optional<ScreenDto> add(ScreenCreateDto screenCreateDto) {
@@ -103,7 +81,7 @@ public class ScreenService {
       throw new HttpBadRequestException(lastMessage);
     }
 
-    List<ScreenPlatformDto> platformVersions = ScreenPlatformMapper.platformListToDtoList(platformDao.findAll(screen.getPlatforms()));
+    List<PlatformDto> platformVersions = PlatformMapper.platformListToDtoList(platformDao.findAll(screen.getPlatforms()));
 
     return Optional.of(ScreenMapper.screenToDto(screen, platformVersions));
   }
