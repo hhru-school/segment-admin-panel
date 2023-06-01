@@ -58,15 +58,22 @@ public class ScreenService {
     return Optional.of(ScreenMapper.screenToDto(screen, platformVersions));
   }
 
+  @Transactional
   public Optional<ScreenDto> add(ScreenCreateDto screenCreateDto) {
     if (screenCreateDto.getTitle() == null || screenCreateDto.getTitle().isBlank()) {
       throw new HttpBadRequestException("Название(Title) неверно указанное значение или пустой.");
     }
     if (screenCreateDto.getQuestionsId() == null || screenCreateDto.getPlatformsId().isEmpty()) {
-      throw new HttpBadRequestException("Не заданы значения массива Roles");
+      throw new HttpBadRequestException("Отсутствуют необходимые данные.");
     }
 
-    List<Question> questionList = questionDao.findAll(screenCreateDto.getQuestionsId());
+    List<Question> questionList = new ArrayList<>();
+    for (Long questionId : screenCreateDto.getQuestionsId()) {
+      questionList.add(questionDao.findById(questionId).orElseThrow(
+          () -> new HttpBadRequestException("Не обнаружен ID поля или вопроса.")
+      ));
+    }
+
     Screen screen = ScreenMapper.dtoToScreen(screenCreateDto, questionList);
 
     try {

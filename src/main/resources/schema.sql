@@ -84,11 +84,11 @@ COMMENT ON COLUMN answers.type IS 'enum (POSITIVE,  NEGATIVE,  NEUTRAL)';
 CREATE TABLE IF NOT EXISTS screens
 (
     screen_id   BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    title       VARCHAR(255),
+    title       VARCHAR(255) NOT NULL UNIQUE,
     description VARCHAR(255),
-    type        VARCHAR(255),
+    type        VARCHAR(255) NOT NULL,
     state       VARCHAR(255),
-    platforms   BIGINT[]
+    platforms   BIGINT[] NOT NULL
 );
 COMMENT ON COLUMN screens.type IS 'enum (STATIC, DYNAMIC)';
 COMMENT ON COLUMN screens.state IS 'enum (ACTIVE, ARCHIVE)';
