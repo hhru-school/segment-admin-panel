@@ -38,7 +38,7 @@ COMMENT ON COLUMN layers.state IS 'enum (STABLE, ARCHIVE, TEST)';
 CREATE TABLE IF NOT EXISTS entrypoints
 (
     entrypoint_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    title         VARCHAR(255) NOT NULL,
+    title         VARCHAR(255) NOT NULL UNIQUE,
     description   VARCHAR(255)
 );
 
