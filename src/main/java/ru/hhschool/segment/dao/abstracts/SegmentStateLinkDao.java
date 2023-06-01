@@ -6,6 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SegmentStateLinkDao extends ReadWriteDao<SegmentStateLink, Long> {
-  List<SegmentStateLink> findAllByLayerId(Long layerId);
+  List<SegmentStateLink> findAll(Long layerId, String searchQuery);
   Optional<SegmentStateLink> findById(Long layerId, Long segmentId);
 }

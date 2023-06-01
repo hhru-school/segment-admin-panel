@@ -1,7 +1,13 @@
 package ru.hhschool.segment.service;
 
-import ru.hhschool.segment.HttpBadRequestException;
-import ru.hhschool.segment.dao.abstracts.*;
+import ru.hhschool.segment.exception.HttpBadRequestException;
+import ru.hhschool.segment.dao.abstracts.LayerDao;
+import ru.hhschool.segment.dao.abstracts.SegmentDao;
+import ru.hhschool.segment.dao.abstracts.SegmentStateLinkDao;
+import ru.hhschool.segment.dao.abstracts.ScreenQuestionLinkDao;
+import ru.hhschool.segment.dao.abstracts.SegmentScreenEntrypointLinkDao;
+import ru.hhschool.segment.dao.abstracts.QuestionRequiredLinkDao;
+import ru.hhschool.segment.dao.abstracts.RoleDao;
 import ru.hhschool.segment.mapper.RoleMapper;
 import ru.hhschool.segment.mapper.SegmentMapper;
 import ru.hhschool.segment.mapper.viewsegments.layerview.LayerSegmentsMapper;
@@ -114,17 +120,17 @@ public class SegmentService {
   }
 
   @Transactional
-  public Optional<LayerSegmentsDto> getSegmentViewDtoListForSegmentsInLayerPage(Long layerId) {
+  public Optional<LayerSegmentsDto> getSegmentViewDtoListForSegmentsInLayerPage(Long layerId, String searchQuery) {
     List<Layer> space = getLayersInSpace(layerId);
     if (space.isEmpty()){
       return Optional.empty();
     }
-    Map<Long, SegmentStateLink> stateLinkMap = getLatestSSLInSpace(getSSLInSpace(space));
+    Map<Long, SegmentStateLink> stateLinkMap = getLatestSSLInSpace(getSSLInSpace(space, searchQuery));
     List<SegmentLayerViewDto> segmentLayerViewDtos = new ArrayList<>();
     for (Long key : stateLinkMap.keySet()) {
       SegmentStateLink link = stateLinkMap.get(key);
       Segment segment = link.getSegment();
-      List<Role> roles = getRoles(segment);
+      List<Role> roles = roleDao.findAll(segment.getRoleList());
       SegmentViewChangeState changeState = getChangeSegmentState(layerId, segment.getId());
       segmentLayerViewDtos.add(SegmentLayerViewMapper.toDtoForSegmentsInLayerPage(segment, roles, changeState, link.getState()));
     }
@@ -133,13 +139,7 @@ public class SegmentService {
     LayerSegmentsDto layerSegmentsDto = LayerSegmentsMapper.toDtoForSegmentsInLayerPage(layer.get(), segmentLayerViewDtos);
     return Optional.of(layerSegmentsDto);
   }
-  private List<Role> getRoles(Segment segment) {
-    return segment.getRoleList().stream()
-        .map(id -> roleDao.findById(id))
-        .filter(role -> role.isPresent())
-        .map(role -> role.get())
-        .toList();
-  }
+
   private SegmentViewChangeState getChangeSegmentState(Long layerId, Long segmentId) {
     Optional<SegmentStateLink> segmentStateLink = segmentStateLinkDao.findById(layerId, segmentId);
     if (segmentStateLink.isPresent()) {
@@ -157,13 +157,15 @@ public class SegmentService {
     }
     return SegmentViewChangeState.CHANGED;
   }
-  private List<SegmentStateLink> getSSLInSpace(List<Layer> layerSpace) {
+
+  private List<SegmentStateLink> getSSLInSpace(List<Layer> layerSpace, String searchQuery) {
     List<SegmentStateLink> questionActivatorLinkList = new ArrayList<>();
     for(Layer layer : layerSpace){
-      questionActivatorLinkList.addAll(segmentStateLinkDao.findAllByLayerId(layer.getId()));
+      questionActivatorLinkList.addAll(segmentStateLinkDao.findAll(layer.getId(), searchQuery));
     }
     return questionActivatorLinkList;
   }
+
   private Map<Long, SegmentStateLink> getLatestSSLInSpace(List<SegmentStateLink> links) {
     Map<Long, SegmentStateLink> segmentStateLinkMap = new HashMap<>();
     for (SegmentStateLink link : links) {
@@ -175,6 +177,7 @@ public class SegmentService {
     }
     return segmentStateLinkMap;
   }
+
   private List<Layer> getLayersInSpace(Long layerId){
     Optional<Layer> layer = layerDao.findById(layerId);
     if (layer.isPresent()) {

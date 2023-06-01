@@ -9,6 +9,4 @@ public interface SegmentDao extends ReadWriteDao<Segment, Long>{
   List<Segment> findAll(Long layerId);
 
   List<Segment> findAll(String searchQuery);
-
-  List<Segment> findAll(Long layerId);
 }

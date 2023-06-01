@@ -1,6 +1,7 @@
 package ru.hhschool.segment.dao.impl;
 
 import ru.hhschool.segment.dao.abstracts.SegmentStateLinkDao;
+import ru.hhschool.segment.model.entity.Segment;
 import ru.hhschool.segment.model.entity.SegmentStateLink;
 
 import javax.persistence.NoResultException;
@@ -10,11 +11,18 @@ import java.util.Optional;
 public class SegmentStateLinkDaoImpl extends ReadWriteDaoImpl<SegmentStateLink, Long> implements SegmentStateLinkDao {
 
   @Override
-  public List<SegmentStateLink> findAllByLayerId(Long layerId) {
-    return em.createQuery("SELECT e FROM SegmentStateLink e WHERE e.layer.id = :layerId")
-        .setParameter("layerId", layerId)
-        .getResultList();
+  public List<SegmentStateLink> findAll(Long layerId, String searchQuery) {
+    if (searchQuery.isBlank()) {
+      return findAll();
+    } else {
+      return em.createQuery("SELECT e FROM SegmentStateLink e WHERE e.layer.id = :layerId " +
+              "AND LOWER(e.segment.title) LIKE LOWER(:searchQuery)")
+          .setParameter("layerId", layerId)
+          .setParameter("searchQuery", "%" + searchQuery + "%")
+          .getResultList();
+    }
   }
+
   @Override
   public Optional<SegmentStateLink> findById(Long layerId, Long segmentId) {
     try {

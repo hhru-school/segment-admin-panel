@@ -6,10 +6,12 @@ import ru.hhschool.segment.service.LayerService;
 import ru.hhschool.segment.service.SegmentService;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Optional;
@@ -46,8 +48,8 @@ public class LayerResource {
   @GET
   @Path("/{layerId}/segments")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getSegmentViewDtoListForAllLayerSegmentsPage(@PathParam("layerId") Long layerId){
-    Optional<LayerSegmentsDto> layerSegmentsDto = segmentService.getSegmentViewDtoListForSegmentsInLayerPage(layerId);
+  public Response getSegmentViewDtoListForAllLayerSegmentsPage(@PathParam("layerId") Long layerId, @QueryParam("searchQuery") @DefaultValue("") String searchQuery){
+    Optional<LayerSegmentsDto> layerSegmentsDto = segmentService.getSegmentViewDtoListForSegmentsInLayerPage(layerId, searchQuery);
     if (layerSegmentsDto.isPresent()){
       return Response.ok(layerSegmentsDto.get()).build();
     }
