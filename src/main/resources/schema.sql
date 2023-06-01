@@ -97,7 +97,6 @@ CREATE TABLE IF NOT EXISTS screen_questions
 (
     screen_id         BIGINT REFERENCES screens (screen_id),
     question_id       BIGINT REFERENCES questions (question_id),
-    question_position INT,
     PRIMARY KEY (screen_id, question_id)
 );
 
