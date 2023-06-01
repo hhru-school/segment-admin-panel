@@ -22,7 +22,7 @@ public class PlatformService {
     Map<String, List<PlatformDto>> platformVersionMap = platformList
         .stream()
         .sorted(Comparator.comparing(PlatformDto::getVersion))
-        .collect(Collectors.groupingBy((p) -> p.getPlatform()));
+        .collect(Collectors.groupingBy(PlatformDto::getPlatform));
 
     List<PlatformVersionListDto> platformVersionListDtoList = platformVersionMap
         .entrySet()

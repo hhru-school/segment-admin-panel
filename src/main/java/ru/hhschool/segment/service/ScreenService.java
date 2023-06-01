@@ -90,8 +90,7 @@ public class ScreenService {
     Optional<String> result = Optional.empty();
     if (platformId != null) {
       Optional<Platform> platform = platformDao.findById(platformId);
-      if (platform.isEmpty()
-          || (platform.isPresent() && platform.get().getPlatform() != platformType)) {
+      if (platform.isEmpty() || platform.get().getPlatform() != platformType) {
         throw new HttpBadRequestException("Error: bad " + platformType + " version.");
       }
       result = Optional.of(platform.get().getApplicationVersion());
