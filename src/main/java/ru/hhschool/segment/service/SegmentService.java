@@ -22,9 +22,6 @@ import ru.hhschool.segment.model.entity.Segment;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.SegmentStateLink;
 import ru.hhschool.segment.model.entity.Role;
-import ru.hhschool.segment.model.entity.ScreenQuestionLink;
-import ru.hhschool.segment.model.entity.SegmentScreenEntrypointLink;
-import ru.hhschool.segment.model.entity.QuestionRequiredLink;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -121,10 +118,11 @@ public class SegmentService {
 
   @Transactional
   public Optional<LayerSegmentsDto> getSegmentViewDtoListForSegmentsInLayerPage(Long layerId, String searchQuery) {
-    List<Layer> space = getLayersInSpace(layerId);
-    if (space.isEmpty()){
+    Optional<Layer> layer = layerDao.findById(layerId);
+    if (layer.isEmpty()){
       return Optional.empty();
     }
+    List<Layer> space = getLayersInSpace(layerId);
     Map<Long, SegmentStateLink> stateLinkMap = getLatestSSLInSpace(getSSLInSpace(space, searchQuery));
     List<SegmentLayerViewDto> segmentLayerViewDtos = new ArrayList<>();
     for (Long key : stateLinkMap.keySet()) {
@@ -135,7 +133,6 @@ public class SegmentService {
       segmentLayerViewDtos.add(SegmentLayerViewMapper.toDtoForSegmentsInLayerPage(segment, roles, changeState, link.getState()));
     }
     segmentLayerViewDtos.sort(Comparator.comparing(SegmentLayerViewDto::getTitle));
-    Optional<Layer> layer = layerDao.findById(layerId);
     LayerSegmentsDto layerSegmentsDto = LayerSegmentsMapper.toDtoForSegmentsInLayerPage(layer.get(), segmentLayerViewDtos);
     return Optional.of(layerSegmentsDto);
   }
@@ -145,14 +142,14 @@ public class SegmentService {
     if (segmentStateLink.isPresent()) {
       if (segmentStateLink.get().getOldSegmentStateLink() == null){
         return SegmentViewChangeState.NEW;
-      } else if (segmentStateLink.get().getOldSegmentStateLink() != null) {
+      } else {
         return SegmentViewChangeState.CHANGED;
       }
     }
-    List<ScreenQuestionLink> screenQuestionLinks = screenQuestionLinkDao.findAllByLayerIdSegmentId(layerId, segmentId);
-    List<SegmentScreenEntrypointLink> segmentScreenEntrypointLinks = segmentScreenEntrypointLinkDao.findAllByLayerIdSegmentId(layerId, segmentId);
-    List<QuestionRequiredLink> questionRequiredLinks = questionRequiredLinkDao.findAllByLayerIdSegmentId(layerId, segmentId);
-    if (screenQuestionLinks.isEmpty() && segmentScreenEntrypointLinks.isEmpty() && questionRequiredLinks.isEmpty()) {
+    Long screenQuestionLinksCount = screenQuestionLinkDao.countById(layerId, segmentId);
+    Long segmentScreenEntrypointLinksCount = segmentScreenEntrypointLinkDao.countById(layerId, segmentId);
+    Long questionRequiredLinksCount = questionRequiredLinkDao.countById(layerId, segmentId);
+    if (screenQuestionLinksCount.equals(0) && segmentScreenEntrypointLinksCount.equals(0) && questionRequiredLinksCount.equals(0)) {
       return SegmentViewChangeState.NOT_CHANGED;
     }
     return SegmentViewChangeState.CHANGED;
@@ -172,8 +169,9 @@ public class SegmentService {
       Long key = link.getSegment().getId();
       if (segmentStateLinkMap.get(key) != null){
         segmentStateLinkMap.replace(key, link);
+      } else {
+        segmentStateLinkMap.put(key, link);
       }
-      segmentStateLinkMap.put(key, link);
     }
     return segmentStateLinkMap;
   }

@@ -1,15 +1,18 @@
 package ru.hhschool.segment.model.entity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.Table;
+import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.Column;
+import javax.persistence.OneToOne;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
+
 import ru.hhschool.segment.model.enums.StateType;
 
 @Entity
@@ -36,6 +39,7 @@ public class SegmentScreenEntrypointLink {
   private Screen screen;
   @Column(name = "screen_position", nullable = false)
   private Integer screenPosition;
+  @Enumerated(EnumType.STRING)
   @Column(name = "screen_state", nullable = false)
   private StateType screenState;
 

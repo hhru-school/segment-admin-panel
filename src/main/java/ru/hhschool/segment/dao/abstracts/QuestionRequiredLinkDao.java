@@ -5,5 +5,5 @@ import ru.hhschool.segment.model.entity.QuestionRequiredLink;
 import java.util.List;
 
 public interface QuestionRequiredLinkDao extends ReadWriteDao<QuestionRequiredLink, Long> {
-  List<QuestionRequiredLink> findAllByLayerIdSegmentId(Long layerId, Long segmentId);
+  Long countById(Long layerId, Long segmentId);
 }
