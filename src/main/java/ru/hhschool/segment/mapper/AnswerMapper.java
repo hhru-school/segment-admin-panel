@@ -11,8 +11,8 @@ public class AnswerMapper {
     AnswerDtoForQuestionsInfo answerDtoForQuestionsInfoPage = new AnswerDtoForQuestionsInfo();
     answerDtoForQuestionsInfoPage.setId(entity.getId());
     answerDtoForQuestionsInfoPage.setTitle(entity.getTitle());
-    answerDtoForQuestionsInfoPage.setOpenQuestonDtoList(openQuestionDtoList);
-    answerDtoForQuestionsInfoPage.setAnswerDefault(entity.isDefaultAnswer());
+    answerDtoForQuestionsInfoPage.setOpenQuestionList(openQuestionDtoList);
+    answerDtoForQuestionsInfoPage.setDefaultAnswer(entity.isDefaultAnswer());
     answerDtoForQuestionsInfoPage.setAnswerType(entity.getType());
     answerDtoForQuestionsInfoPage.setPositiveTitle(entity.getPositiveTitle());
     answerDtoForQuestionsInfoPage.setSkipAtResult(entity.isSkipAtResult());
