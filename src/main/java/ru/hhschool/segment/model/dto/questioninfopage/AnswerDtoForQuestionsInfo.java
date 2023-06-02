@@ -17,12 +17,12 @@ public class AnswerDtoForQuestionsInfo {
   public AnswerDtoForQuestionsInfo() {
   }
 
-  public AnswerDtoForQuestionsInfo(Long id, String title, String positiveTitle, AnswerType answerType, boolean answerDefault, boolean skipAtResult, boolean searchedObject, List<QuestionDtoForQuestionsInfo> openQuestonDtoList) {
+  public AnswerDtoForQuestionsInfo(Long id, String title, String positiveTitle, AnswerType answerType, boolean defaultAnswer, boolean skipAtResult, boolean searchedObject, List<QuestionDtoForQuestionsInfo> openQuestonDtoList) {
     this.id = id;
     this.title = title;
     this.positiveTitle = positiveTitle;
     this.answerType = answerType;
-    this.defaultAnswer = answerDefault;
+    this.defaultAnswer = defaultAnswer;
     this.skipAtResult = skipAtResult;
     this.searchedObject = searchedObject;
     this.openQuestionList = openQuestonDtoList;

@@ -13,18 +13,18 @@ public class QuestionFilterService {
 
   public List<QuestionDtoForQuestionsInfo> filterQuestionDtoListByString(String searchQuery, List<QuestionDtoForQuestionsInfo> questionDtoList) {
     filtredQuestionDtoMap.clear();
-    String searchStringLower = searchQuery.toLowerCase();
+    String searchStringLower = searchQuery.toLowerCase().trim();
     questionDtoList.forEach(questionDto -> {
       checkQuestion(questionDto, searchStringLower);
       checkAnswer(questionDto, searchStringLower);
     });
-    List<QuestionDtoForQuestionsInfo> list = new ArrayList<QuestionDtoForQuestionsInfo>(filtredQuestionDtoMap.values());
-    return list;
+
+    return new ArrayList<>(filtredQuestionDtoMap.values());
   }
 
   public void checkQuestion(QuestionDtoForQuestionsInfo questionDto, String searchStringLower) {
-    String titleLower = questionDto.getTitle().toLowerCase();
-    String descriptionLower = questionDto.getDescription().toLowerCase();
+    String titleLower = questionDto.getTitle().toLowerCase().trim();
+    String descriptionLower = questionDto.getDescription().toLowerCase().trim();
     if (titleLower.contains(searchStringLower) || descriptionLower.contains(searchStringLower)) {
       questionDto.setSearchedObject(true);
       filtredQuestionDtoMap.putIfAbsent(questionDto.getTitle(), questionDto);
@@ -33,7 +33,7 @@ public class QuestionFilterService {
 
   public void checkAnswer(QuestionDtoForQuestionsInfo questionDto, String searchStringLower) {
     questionDto.getPossibleAnswersList().forEach(answerDto -> {
-      String titleLower = answerDto.getTitle().toLowerCase();
+      String titleLower = answerDto.getTitle().toLowerCase().trim();
       if (titleLower.contains(searchStringLower)) {
         answerDto.setSearchedObject(true);
         filtredQuestionDtoMap.putIfAbsent(questionDto.getTitle(), questionDto);
@@ -44,8 +44,8 @@ public class QuestionFilterService {
 
   public void checkOpenQuestion(AnswerDtoForQuestionsInfo answerDto, QuestionDtoForQuestionsInfo mainQuestionDto, String searchStringLower) {
     answerDto.getOpenQuestionList().forEach(questionDto -> {
-      String titleLower = questionDto.getTitle().toLowerCase();
-      String descriptionLower = questionDto.getDescription().toLowerCase();
+      String titleLower = questionDto.getTitle().toLowerCase().trim();
+      String descriptionLower = questionDto.getDescription().toLowerCase().trim();
       if (titleLower.contains(searchStringLower) || descriptionLower.contains(searchStringLower)) {
         questionDto.setSearchedObject(true);
         filtredQuestionDtoMap.putIfAbsent(mainQuestionDto.getTitle(), mainQuestionDto);

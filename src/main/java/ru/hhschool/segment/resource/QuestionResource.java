@@ -4,7 +4,6 @@ import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInf
 import ru.hhschool.segment.service.QuestionService;
 
 import javax.inject.Inject;
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -38,7 +37,7 @@ public class QuestionResource {
   @GET
   @Path(value = "/{id}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getQuestionDtoInfoWithAnswers(@NotNull @PathParam("id") Long id) {
-    return Response.ok(questionService.getQuestionDtoForQuestionInfo(id)).build();
+  public Response getQuestionDtoInfoWithAnswers(@PathParam("id") Long questionId) {
+    return Response.ok(questionService.getQuestionDtoForQuestionInfo(questionId)).build();
   }
 }
