@@ -9,11 +9,14 @@ import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.mapper.LayerMapper;
 import ru.hhschool.segment.mapper.basicinfo.LayerBasicInfoMapper;
 import ru.hhschool.segment.mapper.change.LayerChangeMapper;
+import ru.hhschool.segment.mapper.layer.LayerStatusMapper;
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.change.LayerChangeDto;
+import ru.hhschool.segment.model.dto.layer.LayerForListDto;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.enums.ConflictStatus;
+import ru.hhschool.segment.model.enums.LayerStateType;
 
 public class LayerService {
   private final LayerDao layerDao;
@@ -52,4 +55,10 @@ public class LayerService {
     return Optional.empty();
   }
 
+  public List<LayerForListDto> getAll(List<String> layerStringStatus) {
+    List<LayerStateType> layerStatusList = LayerStatusMapper.toStatusList(layerStringStatus);
+    List<Layer> layerList = layerDao.findAll(layerStatusList);
+
+    return LayerMapper.toLayerForListDto(layerList);
+  }
 }

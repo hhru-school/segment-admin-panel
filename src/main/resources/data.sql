@@ -368,9 +368,16 @@ VALUES (26, 2, 2, 1, 1, 1, 1, 'SHOW_PREFILLED'), -- 26 изменены сост
 
 
 --Четвертый слой
+INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms)
+VALUES (1, 'Тестовый слой', 'Слой, унаследованный от второго слоя', 'TEST', '2023-04-14 02:02:00', '{1, 4, 5}');
 --Пятый слой
+INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms)
+VALUES (1, 'ARCHIVE слой', 'Слой, унаследованный от второго слоя', 'ARCHIVE', '2023-04-15 02:02:00', '{1, 4, 5}');
 --Шестой слой
+INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms)
+VALUES (1, 'CONFLICT слой', 'Слой, унаследованный от второго слоя', 'CONFLICT', '2023-04-16 02:02:00', '{1, 4, 5}');
 --Седьмой слой
+
 
 INSERT INTO PROFESSIONAL_ROLE (PROFESSIONAL_ROLE_ID, NAME) OVERRIDING SYSTEM VALUE
 VALUES (1, 'Event-менеджер'),
