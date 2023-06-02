@@ -1,7 +1,8 @@
 package ru.hhschool.segment.dao.abstracts;
 
-import java.util.List;
 import ru.hhschool.segment.model.entity.Role;
+
+import java.util.List;
 
 public interface RoleDao extends ReadWriteDao<Role, Long> {
   List<Role> findAllOrderByName();
