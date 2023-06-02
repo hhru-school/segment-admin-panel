@@ -1,7 +1,7 @@
 package ru.hhschool.segment.service;
 
-import ru.hhschool.segment.HttpBadRequestException;
 import ru.hhschool.segment.dao.abstracts.QuestionDao;
+import ru.hhschool.segment.exception.HttpBadRequestException;
 import ru.hhschool.segment.mapper.QuestionMapper;
 import ru.hhschool.segment.model.dto.questioninfopage.AnswerDtoForQuestionsInfo;
 import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfo;
