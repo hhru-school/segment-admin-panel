@@ -24,8 +24,8 @@ public class QuestionFilterService {
 
   public void checkQuestion(QuestionDtoForQuestionsInfo questionDto, String searchStringLower) {
     String titleLower = questionDto.getTitle().toLowerCase().trim();
-    String descriptionLower = questionDto.getDescription().toLowerCase().trim();
-    if (titleLower.contains(searchStringLower) || descriptionLower.contains(searchStringLower)) {
+
+    if (titleLower.contains(searchStringLower)) {
       questionDto.setSearchedObject(true);
       filtredQuestionDtoMap.putIfAbsent(questionDto.getTitle(), questionDto);
     }
@@ -45,8 +45,8 @@ public class QuestionFilterService {
   public void checkOpenQuestion(AnswerDtoForQuestionsInfo answerDto, QuestionDtoForQuestionsInfo mainQuestionDto, String searchStringLower) {
     answerDto.getOpenQuestionList().forEach(questionDto -> {
       String titleLower = questionDto.getTitle().toLowerCase().trim();
-      String descriptionLower = questionDto.getDescription().toLowerCase().trim();
-      if (titleLower.contains(searchStringLower) || descriptionLower.contains(searchStringLower)) {
+
+      if (titleLower.contains(searchStringLower)) {
         questionDto.setSearchedObject(true);
         filtredQuestionDtoMap.putIfAbsent(mainQuestionDto.getTitle(), mainQuestionDto);
       }
