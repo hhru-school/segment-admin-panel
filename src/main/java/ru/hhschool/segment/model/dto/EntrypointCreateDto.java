@@ -1,25 +1,15 @@
 package ru.hhschool.segment.model.dto;
 
-public class EntrypointDto {
-  private Long id;
+public class EntrypointCreateDto {
   private String title;
   private String description;
 
-  public EntrypointDto() {
+  public EntrypointCreateDto() {
   }
 
-  public EntrypointDto(Long id, String title, String description) {
-    this.id = id;
+  public EntrypointCreateDto(String title, String description) {
     this.title = title;
     this.description = description;
-  }
-
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
   }
 
   public String getTitle() {
