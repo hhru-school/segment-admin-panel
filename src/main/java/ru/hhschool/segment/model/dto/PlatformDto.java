@@ -1,16 +1,16 @@
-package ru.hhschool.segment.model.dto.viewsegments.layerview;
+package ru.hhschool.segment.model.dto;
 
 import ru.hhschool.segment.model.enums.PlatformType;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
-public class SegmentViewPlatformDto {
+public class PlatformDto {
   @Enumerated(EnumType.STRING)
   private PlatformType platform;
   private String version;
 
-  public SegmentViewPlatformDto(PlatformType platform, String version) {
+  public PlatformDto(PlatformType platform, String version) {
     this.platform = platform;
     this.version = version;
   }
