@@ -30,7 +30,8 @@ CREATE TABLE IF NOT EXISTS layers
     description     VARCHAR(255),
     state           VARCHAR(255),
     create_time     TIMESTAMP WITH TIME ZONE NOT NULL,
-    platforms       BIGINT[]
+    platforms       BIGINT[],
+    stabled_time     TIMESTAMP WITH TIME ZONE
 );
 COMMENT ON COLUMN layers.state IS 'enum (STABLE, ARCHIVE, TEST)';
 
