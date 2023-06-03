@@ -1,15 +1,18 @@
 package ru.hhschool.segment.model.dto.viewsegments.layerview;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import ru.hhschool.segment.model.entity.Role;
 import ru.hhschool.segment.model.enums.StateType;
 
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SegmentSelectedDto {
   private Long layerId;
   private String layerTitle;
   private Long segmentId;
   private StateType activeState;
+  private StateType oldActiveState;
   private Long parentSegmentId;
   private String title;
   private String description;
@@ -18,11 +21,12 @@ public class SegmentSelectedDto {
   private List<SegmentViewRequirementDto> requirements;
   private List<SegmentViewEntryPointDto> entryPoints;
 
-  public SegmentSelectedDto(Long layerId, String layerTitle, Long segmentId, StateType activeState, Long parentSegmentId, String title, String description, List<Role> roles, List<String> tags, List<SegmentViewRequirementDto> requirements, List<SegmentViewEntryPointDto> entryPoints) {
+  public SegmentSelectedDto(Long layerId, String layerTitle, Long segmentId, StateType activeState, StateType oldActiveState, Long parentSegmentId, String title, String description, List<Role> roles, List<String> tags, List<SegmentViewRequirementDto> requirements, List<SegmentViewEntryPointDto> entryPoints) {
     this.layerId = layerId;
     this.layerTitle = layerTitle;
     this.segmentId = segmentId;
     this.activeState = activeState;
+    this.oldActiveState = oldActiveState;
     this.parentSegmentId = parentSegmentId;
     this.title = title;
     this.description = description;
@@ -66,6 +70,14 @@ public class SegmentSelectedDto {
 
   public void setActiveState(StateType activeState) {
     this.activeState = activeState;
+  }
+
+  public StateType getOldActiveState() {
+    return oldActiveState;
+  }
+
+  public void setOldActiveState(StateType oldActiveState) {
+    this.oldActiveState = oldActiveState;
   }
 
   public Long getParentSegmentId() {

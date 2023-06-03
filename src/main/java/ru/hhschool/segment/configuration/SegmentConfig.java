@@ -10,7 +10,7 @@ import ru.hhschool.segment.dao.abstracts.ScreenQuestionLinkDao;
 import ru.hhschool.segment.dao.abstracts.SegmentScreenEntrypointLinkDao;
 import ru.hhschool.segment.dao.abstracts.QuestionRequiredLinkDao;
 import ru.hhschool.segment.dao.abstracts.RoleDao;
-import ru.hhschool.segment.dao.abstracts.PlatfromDao;
+import ru.hhschool.segment.dao.abstracts.PlatformDao;
 import ru.hhschool.segment.dao.impl.SegmentDaoImpl;
 import ru.hhschool.segment.service.SegmentService;
 
@@ -30,7 +30,7 @@ public class SegmentConfig {
                                           SegmentScreenEntrypointLinkDao segmentScreenEntrypointLinkDao,
                                           QuestionRequiredLinkDao questionRequiredLinkDao,
                                           RoleDao roleDao,
-                                          PlatfromDao platfromDao) {
-    return new SegmentService(layerDao, segmentDao, entrypointDao, segmentStateLinkDao, screenQuestionLinkDao, segmentScreenEntrypointLinkDao, questionRequiredLinkDao, roleDao, platfromDao);
+                                          PlatformDao platformDao) {
+    return new SegmentService(layerDao, segmentDao, entrypointDao, segmentStateLinkDao, screenQuestionLinkDao, segmentScreenEntrypointLinkDao, questionRequiredLinkDao, roleDao, platformDao);
   }
 }

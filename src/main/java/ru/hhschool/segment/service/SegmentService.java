@@ -1,15 +1,7 @@
 package ru.hhschool.segment.service;
 
-import ru.hhschool.segment.HttpBadRequestException;
-import ru.hhschool.segment.dao.abstracts.LayerDao;
-import ru.hhschool.segment.dao.abstracts.EntrypointDao;
-import ru.hhschool.segment.dao.abstracts.SegmentDao;
-import ru.hhschool.segment.dao.abstracts.PlatfromDao;
-import ru.hhschool.segment.dao.abstracts.RoleDao;
-import ru.hhschool.segment.dao.abstracts.ScreenQuestionLinkDao;
-import ru.hhschool.segment.dao.abstracts.SegmentStateLinkDao;
-import ru.hhschool.segment.dao.abstracts.QuestionRequiredLinkDao;
-import ru.hhschool.segment.dao.abstracts.SegmentScreenEntrypointLinkDao;
+import ru.hhschool.segment.dao.abstracts.*;
+import ru.hhschool.segment.exception.HttpBadRequestException;
 import ru.hhschool.segment.mapper.RoleMapper;
 import ru.hhschool.segment.mapper.SegmentMapper;
 import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentLayerViewMapper;
@@ -59,7 +51,7 @@ public class SegmentService {
   private final SegmentScreenEntrypointLinkDao segmentScreenEntrypointLinkDao;
   private final QuestionRequiredLinkDao questionRequiredLinkDao;
   private final RoleDao roleDao;
-  private final PlatfromDao platfromDao;
+  private final PlatformDao platformDao;
 
   @Inject
   public SegmentService(LayerDao layerDao,
@@ -69,7 +61,7 @@ public class SegmentService {
                         ScreenQuestionLinkDao screenQuestionLinkDao,
                         SegmentScreenEntrypointLinkDao segmentScreenEntrypointLinkDao,
                         QuestionRequiredLinkDao questionRequiredLinkDao,
-                        RoleDao roleDao, PlatfromDao platfromDao) {
+                        RoleDao roleDao, PlatformDao platformDao) {
     this.layerDao = layerDao;
     this.segmentDao = segmentDao;
     this.entrypointDao = entrypointDao;
@@ -78,7 +70,7 @@ public class SegmentService {
     this.segmentScreenEntrypointLinkDao = segmentScreenEntrypointLinkDao;
     this.questionRequiredLinkDao = questionRequiredLinkDao;
     this.roleDao = roleDao;
-    this.platfromDao = platfromDao;
+    this.platformDao = platformDao;
   }
 
   @Transactional
@@ -212,12 +204,12 @@ public class SegmentService {
     if (segmentStateLink.isPresent()){
       Segment segment = segmentStateLink.get().getSegment();
       Optional<Layer> layer = layerDao.findById(layerId);
-      List<Role> roles = getRoles(segment);
+      List<Role> roles = roleDao.findAll(segment.getRoleList());
       List<Layer> space = getLayersInSpace(layerId);
       List<QuestionRequiredLink> questionRequiredLinks = getLatestQRLInSpace(getQRLInSpace(space, segmentId));
       List<SegmentViewRequirementDto> segmentViewRequirementDtoList = getSegmentViewRequirementDtos(questionRequiredLinks, layerId);
       List<SegmentViewEntryPointDto> segmentViewEntryPointDtoList = getSegmentViewEntryPointDtos(layerId, segmentId);
-      return Optional.of(SegmentSelectedMapper.toDtoForSelectedSegmentViewPage(layer.get(), segment, segmentStateLink.get().getState(), roles, segmentViewRequirementDtoList, segmentViewEntryPointDtoList));
+      return Optional.of(SegmentSelectedMapper.toDtoForSelectedSegmentViewPage(layer.get(), segment, segmentStateLink.get(), roles, segmentViewRequirementDtoList, segmentViewEntryPointDtoList));
     }
     return Optional.empty();
   }
@@ -260,8 +252,9 @@ public class SegmentService {
     return segmentScreenEntrypointLinks.stream()
         .sorted(Comparator.comparing(SegmentScreenEntrypointLink::getScreenPosition))
         .map(link -> SegmentViewScreenMapper.toDtoForSelectedSegmentViewPage(link,
+            layerId,
             link.getLayer().getId().equals(layerId) && link.getOldSegmentScreenEntrypointLink() == null,
-            SegmentViewPlatformMapper.toDtoForSelectedSegmentViewPage(platfromDao.findAll(link.getScreen().getPlatforms())),
+            SegmentViewPlatformMapper.toDtoForSelectedSegmentViewPage(platformDao.findAll(link.getScreen().getPlatforms())),
             getSegmentViewQuestionDtos(layerId, link)))
         .toList();
   }
@@ -291,6 +284,7 @@ public class SegmentService {
     return screenQuestionLinks.stream()
         .sorted(Comparator.comparing(ScreenQuestionLink::getQuestionPosition))
         .map(questionLink -> SegmentViewQuestionMapper.toDtoForSelectedSegmentViewPage(questionLink.getQuestion(),
+            layerId,
             questionLink.getLayer().getId().equals(layerId) && questionLink.getOldScreenQuestionLink() == null,
             questionLink))
         .toList();
