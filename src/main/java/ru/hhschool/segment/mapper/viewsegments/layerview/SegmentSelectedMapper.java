@@ -6,6 +6,7 @@ import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewRequireme
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.Role;
 import ru.hhschool.segment.model.entity.Segment;
+import ru.hhschool.segment.model.entity.SegmentStateLink;
 import ru.hhschool.segment.model.enums.StateType;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 public class SegmentSelectedMapper {
   public static SegmentSelectedDto toDtoForSelectedSegmentViewPage(Layer layer,
                                                                    Segment segment,
-                                                                   StateType activeState,
+                                                                   SegmentStateLink link,
                                                                    List<Role> roles,
                                                                    List<SegmentViewRequirementDto> requirements,
                                                                    List<SegmentViewEntryPointDto> entryPoints){
@@ -22,7 +23,10 @@ public class SegmentSelectedMapper {
     segmentSelectedDto.setLayerTitle(layer.getTitle());
     segmentSelectedDto.setSegmentId(segment.getId());
     segmentSelectedDto.setSegmentId(segment.getId());
-    segmentSelectedDto.setActiveState(activeState);
+    segmentSelectedDto.setActiveState(link.getState());
+    if (link.getLayer().getId().equals(layer.getId())){
+      segmentSelectedDto.setOldActiveState(link.getOldSegmentStateLink().getState());
+    }
     if (segment.getParentSegment() != null){
       segmentSelectedDto.setParentSegmentId(segment.getParentSegment().getId());
     }

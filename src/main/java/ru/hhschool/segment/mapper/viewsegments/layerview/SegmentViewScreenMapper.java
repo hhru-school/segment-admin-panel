@@ -7,10 +7,12 @@ import ru.hhschool.segment.model.entity.Screen;
 import ru.hhschool.segment.model.entity.SegmentScreenEntrypointLink;
 
 import java.util.List;
+import java.util.Objects;
 
 public class SegmentViewScreenMapper {
 
   public static SegmentViewScreenDto toDtoForSelectedSegmentViewPage(SegmentScreenEntrypointLink link,
+                                                                     Long viewLayerId,
                                                                      Boolean isNew,
                                                                      List<SegmentViewPlatformDto> platforms,
                                                                      List<SegmentViewQuestionDto> questions){
@@ -22,8 +24,15 @@ public class SegmentViewScreenMapper {
     segmentViewScreenDto.setType(screen.getType());
     segmentViewScreenDto.setState(link.getScreenState());
     segmentViewScreenDto.setNew(isNew);
-    if (link.getOldSegmentScreenEntrypointLink() != null){
-      segmentViewScreenDto.setOldPosition(link.getOldSegmentScreenEntrypointLink().getScreenPosition());
+    if (link.getLayer().getId().equals(viewLayerId) && link.getOldSegmentScreenEntrypointLink() != null){
+      boolean positionChanged = !Objects.equals(link.getScreenPosition(), link.getOldSegmentScreenEntrypointLink().getScreenPosition());
+      boolean stateChanged = !Objects.equals(link.getScreenState(), link.getOldSegmentScreenEntrypointLink().getScreenState());
+      if (positionChanged) {
+        segmentViewScreenDto.setOldPosition(link.getOldSegmentScreenEntrypointLink().getScreenPosition());
+      }
+      if (stateChanged) {
+        segmentViewScreenDto.setOldState(link.getOldSegmentScreenEntrypointLink().getScreenState());
+      }
     }
     segmentViewScreenDto.setPlatforms(platforms);
     segmentViewScreenDto.setQuestions(questions);

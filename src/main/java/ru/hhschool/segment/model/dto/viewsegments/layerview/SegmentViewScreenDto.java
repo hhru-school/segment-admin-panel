@@ -1,18 +1,21 @@
 package ru.hhschool.segment.model.dto.viewsegments.layerview;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import ru.hhschool.segment.model.enums.ScreenType;
 import ru.hhschool.segment.model.enums.StateType;
 
 import java.util.List;
 
-@JsonPropertyOrder({"id", "title", "description", "type", "state", "new", "oldPosition", "platforms", "questions"})
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonPropertyOrder({"id", "title", "description", "type", "state", "oldState", "new", "oldPosition", "platforms", "questions"})
 public class SegmentViewScreenDto {
   private Long id;
   private String title;
   private String description;
   private ScreenType type;
   private StateType state;
+  private StateType oldState;
   private Boolean isNew;
   private Integer oldPosition;
   private List<SegmentViewPlatformDto> platforms;
@@ -22,12 +25,13 @@ public class SegmentViewScreenDto {
 
   }
 
-  public SegmentViewScreenDto(Long id, String title, String description, ScreenType type, StateType state, Boolean isNew, Integer oldPosition, List<SegmentViewPlatformDto> platforms, List<SegmentViewQuestionDto> questions) {
+  public SegmentViewScreenDto(Long id, String title, String description, ScreenType type, StateType state, StateType oldState, Boolean isNew, Integer oldPosition, List<SegmentViewPlatformDto> platforms, List<SegmentViewQuestionDto> questions) {
     this.id = id;
     this.title = title;
     this.description = description;
     this.type = type;
     this.state = state;
+    this.oldState = oldState;
     this.isNew = isNew;
     this.oldPosition = oldPosition;
     this.platforms = platforms;
@@ -72,6 +76,14 @@ public class SegmentViewScreenDto {
 
   public void setState(StateType state) {
     this.state = state;
+  }
+
+  public StateType getOldState() {
+    return oldState;
+  }
+
+  public void setOldState(StateType oldState) {
+    this.oldState = oldState;
   }
 
   public Boolean getNew() {

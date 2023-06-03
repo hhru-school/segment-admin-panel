@@ -1,7 +1,9 @@
 package ru.hhschool.segment.model.dto.viewsegments.layerview;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SegmentViewQuestionDto {
   private Long id;
   private String title;

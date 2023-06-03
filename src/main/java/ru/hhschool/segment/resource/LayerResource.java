@@ -6,6 +6,7 @@ import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentSelectedDto;
 import ru.hhschool.segment.service.LayerService;
 import ru.hhschool.segment.service.SegmentService;
 
+
 import javax.inject.Inject;
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
