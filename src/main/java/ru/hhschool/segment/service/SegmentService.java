@@ -10,7 +10,7 @@ import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentSelectedMapper;
 import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentViewRequirementMapper;
 import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentViewEntryPointMapper;
 import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentViewScreenMapper;
-import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentViewPlatformMapper;
+import ru.hhschool.segment.mapper.PlatformMapper;
 import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentViewQuestionMapper;
 import ru.hhschool.segment.model.dto.RoleDto;
 import ru.hhschool.segment.model.dto.segment.SegmentCreateDto;
@@ -254,7 +254,7 @@ public class SegmentService {
         .map(link -> SegmentViewScreenMapper.toDtoForSelectedSegmentViewPage(link,
             layerId,
             link.getLayer().getId().equals(layerId) && link.getOldSegmentScreenEntrypointLink() == null,
-            SegmentViewPlatformMapper.toDtoForSelectedSegmentViewPage(platformDao.findAll(link.getScreen().getPlatforms())),
+            PlatformMapper.toDtoForSelectedSegmentViewPage(platformDao.findAll(link.getScreen().getPlatforms())),
             getSegmentViewQuestionDtos(layerId, link)))
         .toList();
   }

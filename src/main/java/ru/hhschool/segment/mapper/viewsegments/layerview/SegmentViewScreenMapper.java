@@ -1,6 +1,6 @@
 package ru.hhschool.segment.mapper.viewsegments.layerview;
 
-import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewPlatformDto;
+import ru.hhschool.segment.model.dto.PlatformDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewQuestionDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewScreenDto;
 import ru.hhschool.segment.model.entity.Screen;
@@ -14,7 +14,7 @@ public class SegmentViewScreenMapper {
   public static SegmentViewScreenDto toDtoForSelectedSegmentViewPage(SegmentScreenEntrypointLink link,
                                                                      Long viewLayerId,
                                                                      Boolean isNew,
-                                                                     List<SegmentViewPlatformDto> platforms,
+                                                                     List<PlatformDto> platforms,
                                                                      List<SegmentViewQuestionDto> questions){
     Screen screen = link.getScreen();
     SegmentViewScreenDto segmentViewScreenDto = new SegmentViewScreenDto();

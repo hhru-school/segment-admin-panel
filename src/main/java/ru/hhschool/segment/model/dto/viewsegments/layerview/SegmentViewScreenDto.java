@@ -2,6 +2,7 @@ package ru.hhschool.segment.model.dto.viewsegments.layerview;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import ru.hhschool.segment.model.dto.PlatformDto;
 import ru.hhschool.segment.model.enums.ScreenType;
 import ru.hhschool.segment.model.enums.StateType;
 
@@ -18,14 +19,14 @@ public class SegmentViewScreenDto {
   private StateType oldState;
   private Boolean isNew;
   private Integer oldPosition;
-  private List<SegmentViewPlatformDto> platforms;
+  private List<PlatformDto> platforms;
   private List<SegmentViewQuestionDto> questions;
 
   public SegmentViewScreenDto() {
 
   }
 
-  public SegmentViewScreenDto(Long id, String title, String description, ScreenType type, StateType state, StateType oldState, Boolean isNew, Integer oldPosition, List<SegmentViewPlatformDto> platforms, List<SegmentViewQuestionDto> questions) {
+  public SegmentViewScreenDto(Long id, String title, String description, ScreenType type, StateType state, StateType oldState, Boolean isNew, Integer oldPosition, List<PlatformDto> platforms, List<SegmentViewQuestionDto> questions) {
     this.id = id;
     this.title = title;
     this.description = description;
@@ -102,11 +103,11 @@ public class SegmentViewScreenDto {
     this.oldPosition = oldPosition;
   }
 
-  public List<SegmentViewPlatformDto> getPlatforms() {
+  public List<PlatformDto> getPlatforms() {
     return platforms;
   }
 
-  public void setPlatforms(List<SegmentViewPlatformDto> platforms) {
+  public void setPlatforms(List<PlatformDto> platforms) {
     this.platforms = platforms;
   }
 
