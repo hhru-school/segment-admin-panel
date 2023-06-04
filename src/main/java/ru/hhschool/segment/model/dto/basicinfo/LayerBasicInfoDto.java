@@ -1,6 +1,7 @@
 package ru.hhschool.segment.model.dto.basicinfo;
 
 import ru.hhschool.segment.model.dto.LayerDto;
+import ru.hhschool.segment.model.dto.PlatformDto;
 import ru.hhschool.segment.model.enums.LayerStatus;
 
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ public class LayerBasicInfoDto {
   private String description;
   private LocalDateTime createTime;
   private LayerStatus layerStatus;
+  private List<PlatformDto> platforms;
   private List<LayerDto> parentLayersList;
 
   public LayerBasicInfoDto() {
@@ -23,6 +25,7 @@ public class LayerBasicInfoDto {
       String description,
       LocalDateTime createTime,
       LayerStatus layerStatus,
+      List<PlatformDto> platforms,
       List<LayerDto> parentLayersList
   ) {
     this.id = id;
@@ -30,6 +33,7 @@ public class LayerBasicInfoDto {
     this.description = description;
     this.createTime = createTime;
     this.layerStatus = layerStatus;
+    this.platforms = platforms;
     this.parentLayersList = parentLayersList;
   }
 
@@ -71,6 +75,14 @@ public class LayerBasicInfoDto {
 
   public void setLayerStatus(LayerStatus layerStatus) {
     this.layerStatus = layerStatus;
+  }
+
+  public List<PlatformDto> getPlatforms() {
+    return platforms;
+  }
+
+  public void setPlatforms(List<PlatformDto> platforms) {
+    this.platforms = platforms;
   }
 
   public List<LayerDto> getParentLayersList() {
