@@ -6,6 +6,8 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.NotFoundException;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
+import ru.hhschool.segment.exception.HttpBadRequestException;
+import ru.hhschool.segment.exception.HttpNotFoundException;
 import ru.hhschool.segment.dao.abstracts.PlatformDao;
 import ru.hhschool.segment.mapper.LayerMapper;
 import ru.hhschool.segment.mapper.PlatformMapper;
@@ -16,6 +18,7 @@ import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.change.LayerChangeDto;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.enums.ConflictStatus;
+import ru.hhschool.segment.model.enums.LayerStateType;
 
 public class LayerService {
   private final LayerDao layerDao;
@@ -58,4 +61,23 @@ public class LayerService {
     return Optional.empty();
   }
 
+  @Transactional
+  public void setLayerStateToArchive(Long layerId) {
+    Optional<Layer> layer = layerDao.findById(layerId);
+    if (layer.isEmpty()) {
+      throw new HttpNotFoundException("Слой не найден.");
+    }
+    layer.get().setState(LayerStateType.ARCHIVE);
+    try {
+      layerDao.update(layer.get());
+    } catch (Exception err) {
+      String lastMessage = err.getMessage();
+      Throwable cause = err.getCause();
+      while (cause != null) {
+        lastMessage = cause.getMessage();
+        cause = cause.getCause();
+      }
+      throw new HttpBadRequestException(lastMessage);
+    }
+  }
 }
