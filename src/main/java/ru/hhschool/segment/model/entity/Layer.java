@@ -1,7 +1,8 @@
 package ru.hhschool.segment.model.entity;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import org.hibernate.annotations.Type;
+import ru.hhschool.segment.model.enums.LayerStateType;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,8 +13,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import org.hibernate.annotations.Type;
-import ru.hhschool.segment.model.enums.LayerStateType;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "layers")
@@ -40,6 +41,8 @@ public class Layer {
   )
   private List<Long> platforms;
 
+  @Column(name = "stabled_time")
+  private LocalDateTime stabledTime;
 
   public Layer() {
   }
@@ -90,7 +93,10 @@ public class Layer {
   }
 
   public void setState(LayerStateType state) {
-    this.state = state;
+    if (state == LayerStateType.STABLE) {
+      this.stabledTime = LocalDateTime.now();
+      this.state = state;
+    }
   }
 
   public LocalDateTime getCreateTime() {
@@ -107,5 +113,9 @@ public class Layer {
 
   public void setPlatforms(List<Long> platforms) {
     this.platforms = platforms;
+  }
+
+  public LocalDateTime getStabledTime() {
+    return stabledTime;
   }
 }
