@@ -8,7 +8,9 @@ import javax.ws.rs.NotFoundException;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.exception.HttpBadRequestException;
 import ru.hhschool.segment.exception.HttpNotFoundException;
+import ru.hhschool.segment.dao.abstracts.PlatformDao;
 import ru.hhschool.segment.mapper.LayerMapper;
+import ru.hhschool.segment.mapper.PlatformMapper;
 import ru.hhschool.segment.mapper.basicinfo.LayerBasicInfoMapper;
 import ru.hhschool.segment.mapper.change.LayerChangeMapper;
 import ru.hhschool.segment.model.dto.LayerDto;
@@ -20,10 +22,12 @@ import ru.hhschool.segment.model.enums.LayerStateType;
 
 public class LayerService {
   private final LayerDao layerDao;
+  private final PlatformDao platformDao;
 
   @Inject
-  public LayerService(LayerDao layerDao) {
+  public LayerService(LayerDao layerDao, PlatformDao platformDao) {
     this.layerDao = layerDao;
+    this.platformDao = platformDao;
   }
 
   public List<LayerDto> getLayerDtoListForMainPage() {
@@ -46,7 +50,9 @@ public class LayerService {
     if (layer.isEmpty()) {
       return Optional.empty();
     }
-    LayerBasicInfoDto layerBasicInfoDto = LayerBasicInfoMapper.toDtoForBasicInfoPage(layer.get(), layerDao.getAllParents(id));
+    LayerBasicInfoDto layerBasicInfoDto = LayerBasicInfoMapper.toDtoForBasicInfoPage(layer.get(),
+        layerDao.getAllParents(id),
+        PlatformMapper.toDtoForSelectedSegmentViewPage(platformDao.findAll(layer.get().getPlatforms())));
     return Optional.of(layerBasicInfoDto);
   }
 
