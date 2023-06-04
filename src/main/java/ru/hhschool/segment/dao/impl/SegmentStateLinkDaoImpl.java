@@ -1,12 +1,10 @@
 package ru.hhschool.segment.dao.impl;
 
-import ru.hhschool.segment.dao.abstracts.SegmentStateLinkDao;
-import ru.hhschool.segment.model.entity.Segment;
-import ru.hhschool.segment.model.entity.SegmentStateLink;
-
-import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Optional;
+import javax.persistence.NoResultException;
+import ru.hhschool.segment.dao.abstracts.SegmentStateLinkDao;
+import ru.hhschool.segment.model.entity.SegmentStateLink;
 
 public class SegmentStateLinkDaoImpl extends ReadWriteDaoImpl<SegmentStateLink, Long> implements SegmentStateLinkDao {
 
@@ -26,11 +24,14 @@ public class SegmentStateLinkDaoImpl extends ReadWriteDaoImpl<SegmentStateLink, 
   @Override
   public Optional<SegmentStateLink> findById(Long layerId, Long segmentId) {
     try {
-      return Optional.of(em.createQuery("SELECT e FROM SegmentStateLink e WHERE e.layer.id = :layerId AND e.segment.id = :segmentId", SegmentStateLink.class)
+      return Optional.of(em.createQuery(
+              "SELECT e FROM SegmentStateLink e WHERE e.layer.id = :layerId AND e.segment.id = :segmentId",
+              SegmentStateLink.class
+          )
           .setParameter("layerId", layerId)
           .setParameter("segmentId", segmentId)
           .getSingleResult());
-    } catch (NoResultException noResultException){
+    } catch (NoResultException noResultException) {
       return Optional.empty();
     }
   }

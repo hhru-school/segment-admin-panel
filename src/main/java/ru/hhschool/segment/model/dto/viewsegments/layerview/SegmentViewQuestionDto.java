@@ -11,7 +11,14 @@ public class SegmentViewQuestionDto {
   private String title;
   private List<SegmentViewEntryPointDto> entryPoints;
 
-  public SegmentViewQuestionDto(Long questionId, Boolean required, Boolean requiredChanged, Boolean questionChanged, String title, List<SegmentViewEntryPointDto> entryPoints) {
+  public SegmentViewQuestionDto(
+      Long questionId,
+      Boolean required,
+      Boolean requiredChanged,
+      Boolean questionChanged,
+      String title,
+      List<SegmentViewEntryPointDto> entryPoints
+  ) {
     this.questionId = questionId;
     this.required = required;
     this.requiredChanged = requiredChanged;

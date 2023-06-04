@@ -1,6 +1,5 @@
 package ru.hhschool.segment.resource;
 
-import java.util.Optional;
 import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
@@ -10,16 +9,9 @@ import javax.ws.rs.PATCH;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
-import ru.hhschool.segment.model.dto.viewsegments.layerview.LayerSegmentsDto;
-import ru.hhschool.segment.service.LayerService;
-import ru.hhschool.segment.service.SegmentService;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.layer.LayerForListDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.LayerSegmentsDto;

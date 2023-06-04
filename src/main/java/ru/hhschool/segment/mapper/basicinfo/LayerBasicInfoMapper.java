@@ -3,7 +3,6 @@ package ru.hhschool.segment.mapper.basicinfo;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-
 import ru.hhschool.segment.mapper.LayerMapper;
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.PlatformDto;

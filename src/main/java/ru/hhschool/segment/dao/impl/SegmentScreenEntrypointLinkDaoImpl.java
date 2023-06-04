@@ -3,8 +3,6 @@ package ru.hhschool.segment.dao.impl;
 import ru.hhschool.segment.dao.abstracts.SegmentScreenEntrypointLinkDao;
 import ru.hhschool.segment.model.entity.SegmentScreenEntrypointLink;
 
-import java.util.List;
-
 public class SegmentScreenEntrypointLinkDaoImpl extends ReadWriteDaoImpl<SegmentScreenEntrypointLink, Long> implements SegmentScreenEntrypointLinkDao {
   @Override
   public Long countById(Long layerId, Long segmentId) {

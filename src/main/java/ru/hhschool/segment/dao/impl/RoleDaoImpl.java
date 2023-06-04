@@ -1,9 +1,8 @@
 package ru.hhschool.segment.dao.impl;
 
+import java.util.List;
 import ru.hhschool.segment.dao.abstracts.RoleDao;
 import ru.hhschool.segment.model.entity.Role;
-
-import java.util.List;
 
 public class RoleDaoImpl extends ReadWriteDaoImpl<Role, Long> implements RoleDao {
   @Override

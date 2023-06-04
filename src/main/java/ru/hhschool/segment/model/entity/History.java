@@ -1,17 +1,15 @@
 package ru.hhschool.segment.model.entity;
 
-import ru.hhschool.segment.model.enums.HistoryType;
-
+import java.time.LocalDateTime;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.GenerationType;
-import javax.persistence.Enumerated;
-import javax.persistence.EnumType;
-
-import java.time.LocalDateTime;
+import ru.hhschool.segment.model.enums.HistoryType;
 
 @Entity
 @Table(name = "history")
@@ -40,7 +38,8 @@ public class History {
     this.description = description;
   }
 
-  public History() {}
+  public History() {
+  }
 
   public Long getId() {
     return id;

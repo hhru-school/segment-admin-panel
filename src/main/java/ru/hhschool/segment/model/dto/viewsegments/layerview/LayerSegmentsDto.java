@@ -1,7 +1,5 @@
 package ru.hhschool.segment.model.dto.viewsegments.layerview;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
 
 public class LayerSegmentsDto {
@@ -9,7 +7,8 @@ public class LayerSegmentsDto {
   private String title;
   private List<SegmentLayerViewDto> segments;
 
-  public LayerSegmentsDto() {}
+  public LayerSegmentsDto() {
+  }
 
   public LayerSegmentsDto(Long id, String title, List<SegmentLayerViewDto> segments) {
     this.id = id;
