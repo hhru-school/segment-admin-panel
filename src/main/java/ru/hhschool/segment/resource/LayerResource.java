@@ -1,16 +1,25 @@
 package ru.hhschool.segment.resource;
 
+import java.util.Optional;
 import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.PATCH;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.LayerSegmentsDto;
+import ru.hhschool.segment.service.LayerService;
+import ru.hhschool.segment.service.SegmentService;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.layer.LayerForListDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.LayerSegmentsDto;
@@ -66,6 +75,14 @@ public class LayerResource {
       return Response.ok(layerSegmentsDto.get()).build();
     }
     return Response.status(Response.Status.NO_CONTENT).build();
+  }
+
+  @PATCH
+  @Path("/{layerId}/setArchive/")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response setLayerStateToArchive(@PathParam(value = "layerId") Long layerId) {
+    layerService.setLayerStateToArchive(layerId);
+    return Response.ok("Статус успешно изменен.").build();
   }
 
   @GET

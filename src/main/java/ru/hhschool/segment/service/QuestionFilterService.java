@@ -16,7 +16,7 @@ public class QuestionFilterService {
     String searchStringLower = searchQuery.toLowerCase().trim();
     questionDtoList.forEach(questionDto -> {
       checkQuestion(questionDto, searchStringLower);
-      checkAnswer(questionDto, searchStringLower);
+      checkAnswer(questionDto, questionDto, searchStringLower);
     });
 
     return new ArrayList<>(filtredQuestionDtoMap.values());
@@ -30,12 +30,12 @@ public class QuestionFilterService {
     }
   }
 
-  public void checkAnswer(QuestionDtoForQuestionsInfo questionDto, String searchStringLower) {
+  public void checkAnswer(QuestionDtoForQuestionsInfo questionDto, QuestionDtoForQuestionsInfo mainQuestionDto, String searchStringLower) {
     questionDto.getPossibleAnswersList().forEach(answerDto -> {
       String titleLower = answerDto.getTitle().toLowerCase().trim();
       if (titleLower.contains(searchStringLower)) {
         answerDto.setSearchedObject(true);
-        filtredQuestionDtoMap.putIfAbsent(questionDto.getTitle(), questionDto);
+        filtredQuestionDtoMap.putIfAbsent(mainQuestionDto.getTitle(), mainQuestionDto);
       }
       checkOpenQuestion(answerDto, questionDto, searchStringLower);
     });
@@ -48,7 +48,7 @@ public class QuestionFilterService {
         questionDto.setSearchedObject(true);
         filtredQuestionDtoMap.putIfAbsent(mainQuestionDto.getTitle(), mainQuestionDto);
       }
-      checkAnswer(questionDto, searchStringLower);
+      checkAnswer(questionDto, mainQuestionDto, searchStringLower);
     });
   }
 }
