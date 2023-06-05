@@ -1,7 +1,7 @@
 package ru.hhschool.segment.model.dto.screen;
 
 import java.util.List;
-import ru.hhschool.segment.model.dto.platform.PlatformDto;
+import ru.hhschool.segment.model.dto.PlatformDto;
 import ru.hhschool.segment.model.enums.ScreenType;
 import ru.hhschool.segment.model.enums.StateType;
 

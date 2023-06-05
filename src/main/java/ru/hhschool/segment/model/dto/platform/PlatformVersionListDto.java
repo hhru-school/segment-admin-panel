@@ -1,24 +1,26 @@
 package ru.hhschool.segment.model.dto.platform;
 
 import java.util.List;
+import ru.hhschool.segment.model.dto.PlatformDto;
+import ru.hhschool.segment.model.enums.PlatformType;
 
 public class PlatformVersionListDto {
-  private String platform;
+  private PlatformType platform;
   private List<PlatformDto> versions;
 
   public PlatformVersionListDto() {
   }
 
-  public PlatformVersionListDto(String platform, List<PlatformDto> versions) {
+  public PlatformVersionListDto(PlatformType platform, List<PlatformDto> versions) {
     this.platform = platform;
     this.versions = versions;
   }
 
-  public String getPlatform() {
+  public PlatformType getPlatform() {
     return platform;
   }
 
-  public void setPlatform(String platform) {
+  public void setPlatform(PlatformType platform) {
     this.platform = platform;
   }
 
