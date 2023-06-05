@@ -1,10 +1,9 @@
 package ru.hhschool.segment.mapper;
 
+import java.util.List;
 import ru.hhschool.segment.model.dto.questioninfopage.AnswerDtoForQuestionsInfo;
 import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfo;
 import ru.hhschool.segment.model.entity.Answer;
-
-import java.util.List;
 
 public class AnswerMapper {
   public static AnswerDtoForQuestionsInfo toDtoForQuestionsInfo(Answer entity, List<QuestionDtoForQuestionsInfo> openQuestionDtoList) {

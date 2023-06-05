@@ -4,7 +4,7 @@ import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewEntryPoin
 
 public class SegmentViewEntryPointMapper {
 
-  public static SegmentViewEntryPointDto toDtoForSelectedSegmentViewPage(){
+  public static SegmentViewEntryPointDto toDtoForSelectedSegmentViewPage() {
     return null;
   }
 }

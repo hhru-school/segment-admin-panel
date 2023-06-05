@@ -1,12 +1,11 @@
 package ru.hhschool.segment.dao.impl;
 
-import ru.hhschool.segment.dao.abstracts.ReadWriteDao;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Optional;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import ru.hhschool.segment.dao.abstracts.ReadWriteDao;
 
 public class ReadWriteDaoImpl<T, K> implements ReadWriteDao<T, K> {
   private final Class<T> clazz;

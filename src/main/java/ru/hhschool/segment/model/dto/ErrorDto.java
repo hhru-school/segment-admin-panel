@@ -3,7 +3,7 @@ package ru.hhschool.segment.model.dto;
 public class ErrorDto {
 
   private int responseCode;
-  private String message;
+  private final String message;
 
   public ErrorDto(int responseCode, String message) {
     this.responseCode = responseCode;

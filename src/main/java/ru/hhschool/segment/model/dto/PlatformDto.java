@@ -1,9 +1,8 @@
 package ru.hhschool.segment.model.dto;
 
-import ru.hhschool.segment.model.enums.PlatformType;
-
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import ru.hhschool.segment.model.enums.PlatformType;
 
 public class PlatformDto {
   @Enumerated(EnumType.STRING)

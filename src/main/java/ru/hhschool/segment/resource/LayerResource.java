@@ -1,5 +1,6 @@
 package ru.hhschool.segment.resource;
 
+import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
@@ -12,6 +13,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
+import ru.hhschool.segment.model.dto.layer.LayerForListDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.LayerSegmentsDto;
 import ru.hhschool.segment.service.LayerService;
 import ru.hhschool.segment.service.SegmentService;
@@ -30,8 +32,16 @@ public class LayerResource {
   @GET
   @Path(value = "/")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getLayerDtoListForMainPage() {
-    return Response.ok(layerService.getLayerDtoListForMainPage()).build();
+  public Response getLayerDtoListForMainPage(@QueryParam("status") List<String> layerStringStatus) {
+    if (layerStringStatus == null || layerStringStatus.size() == 0) {
+      return Response.ok(layerService.getLayerDtoListForMainPage()).build();
+    }
+
+    List<LayerForListDto> layerForMainPageDtoList = layerService.getAll(layerStringStatus);
+    if (layerForMainPageDtoList.isEmpty()) {
+      return Response.status(Response.Status.NO_CONTENT).build();
+    }
+    return Response.ok(layerForMainPageDtoList).build();
   }
 
   @GET

@@ -1,12 +1,8 @@
 package ru.hhschool.segment.dao.abstracts;
 
+import java.util.List;
 import ru.hhschool.segment.model.entity.Segment;
 
-import java.util.List;
-
-public interface SegmentDao extends ReadWriteDao<Segment, Long>{
-
-  List<Segment> findAll(Long layerId);
-
+public interface SegmentDao extends ReadWriteDao<Segment, Long> {
   List<Segment> findAll(String searchQuery);
 }
