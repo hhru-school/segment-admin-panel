@@ -1,4 +1,4 @@
-package ru.hhschool.segment.model.dto.viewsegments;
+package ru.hhschool.segment.model.dto.viewsegments.layerview;
 
 import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 

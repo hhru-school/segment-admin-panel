@@ -30,7 +30,8 @@ CREATE TABLE IF NOT EXISTS layers
     description     VARCHAR(255),
     state           VARCHAR(255),
     create_time     TIMESTAMP WITH TIME ZONE NOT NULL,
-    platforms       BIGINT[]
+    platforms       BIGINT[],
+    stabled_time     TIMESTAMP WITH TIME ZONE
 );
 COMMENT ON COLUMN layers.state IS 'enum (STABLE, ARCHIVE, TEST)';
 
@@ -38,7 +39,7 @@ COMMENT ON COLUMN layers.state IS 'enum (STABLE, ARCHIVE, TEST)';
 CREATE TABLE IF NOT EXISTS entrypoints
 (
     entrypoint_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    title         VARCHAR(255) NOT NULL,
+    title         VARCHAR(255) NOT NULL UNIQUE,
     description   VARCHAR(255)
 );
 

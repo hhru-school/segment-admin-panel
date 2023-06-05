@@ -17,5 +17,4 @@ public class SegmentDaoImpl extends ReadWriteDaoImpl<Segment, Long> implements S
     }
     return segmentList;
   }
-
 }

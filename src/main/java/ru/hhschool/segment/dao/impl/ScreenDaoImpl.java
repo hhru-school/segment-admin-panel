@@ -42,16 +42,14 @@ public class ScreenDaoImpl extends ReadWriteDaoImpl<Screen, Long> implements Scr
       webSql = " s.platforms && ARRAY (SELECT p1.platform_id FROM Platforms p1 WHERE p1.platform = 'WEB')";
     }
 
-    StringBuilder sql = new StringBuilder();
+    String sql = "SELECT * FROM Screens s WHERE \n" +
+        androidSql +
+        "\n AND " +
+        iosSql +
+        "\n AND " +
+        webSql;
 
-    sql.append("SELECT * FROM Screens s WHERE \n")
-        .append(androidSql)
-        .append("\n AND ")
-        .append(iosSql)
-        .append("\n AND ")
-        .append(webSql);
-
-    Query nativeQuery = em.createNativeQuery(sql.toString(), Screen.class);
+    Query nativeQuery = em.createNativeQuery(sql, Screen.class);
 
     if (androidVersion.isPresent()) {
       nativeQuery.setParameter("androidVersion", androidVersion.get());

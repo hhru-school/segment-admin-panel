@@ -40,6 +40,8 @@ public class Layer {
   )
   private List<Long> platforms;
 
+  @Column(name = "stabled_time")
+  private LocalDateTime stabledTime;
 
   public Layer() {
   }
@@ -90,7 +92,10 @@ public class Layer {
   }
 
   public void setState(LayerStateType state) {
-    this.state = state;
+    if (state == LayerStateType.STABLE) {
+      this.stabledTime = LocalDateTime.now();
+      this.state = state;
+    }
   }
 
   public LocalDateTime getCreateTime() {
@@ -107,5 +112,9 @@ public class Layer {
 
   public void setPlatforms(List<Long> platforms) {
     this.platforms = platforms;
+  }
+
+  public LocalDateTime getStabledTime() {
+    return stabledTime;
   }
 }

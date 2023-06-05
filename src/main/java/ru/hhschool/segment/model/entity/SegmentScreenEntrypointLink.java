@@ -2,6 +2,8 @@ package ru.hhschool.segment.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,6 +22,7 @@ public class SegmentScreenEntrypointLink {
   @Column(name = "id", nullable = false, unique = true)
   private Long id;
   @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "old_id")
   private SegmentScreenEntrypointLink oldSegmentScreenEntrypointLink;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "layer_id")
@@ -35,6 +38,7 @@ public class SegmentScreenEntrypointLink {
   private Screen screen;
   @Column(name = "screen_position", nullable = false)
   private Integer screenPosition;
+  @Enumerated(EnumType.STRING)
   @Column(name = "screen_state", nullable = false)
   private StateType screenState;
 

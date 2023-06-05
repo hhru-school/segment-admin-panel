@@ -2,6 +2,8 @@ package ru.hhschool.segment.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,6 +22,7 @@ public class ScreenQuestionLink {
   @Column(name = "id", nullable = false, unique = true)
   private Long id;
   @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "old_id")
   private ScreenQuestionLink oldScreenQuestionLink;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "layer_id")
@@ -38,6 +41,7 @@ public class ScreenQuestionLink {
   private Question question;
   @Column(name = "question_position", nullable = false)
   private Integer questionPosition;
+  @Enumerated(EnumType.STRING)
   @Column(name = "question_visibility", nullable = false)
   private QuestionVisibilityType questionVisibility;
 
