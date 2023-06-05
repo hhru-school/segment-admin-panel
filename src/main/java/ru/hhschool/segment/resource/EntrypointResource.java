@@ -41,7 +41,7 @@ public class EntrypointResource {
   @GET
   @Path(value = "/{entrypointId}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getEntrypointByIdWithQuestionStatus(@PathParam("entrypointId") Long entrypointId) {
+  public Response getEntrypointById(@PathParam("entrypointId") Long entrypointId) {
     Optional<EntrypointDto> entrypointDto = entrypointService.getEntrypointById(entrypointId);
     return Response.ok(entrypointDto.orElseThrow(() -> new HttpNotFoundException("entrypointID not found."))).build();
   }

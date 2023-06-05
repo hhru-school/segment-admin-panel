@@ -46,7 +46,7 @@ public class ScreenResource {
   @GET
   @Path("/{screenId}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getSegmentViewDtoListForViewSegmentPage(@PathParam(value = "screenId") Long screenId) {
+  public Response getScreenById(@PathParam(value = "screenId") Long screenId) {
     if (screenId == null) {
       throw new HttpBadRequestException("Отсутствует необходимый параметр");
     }
