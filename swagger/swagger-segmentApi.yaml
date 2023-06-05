@@ -9,7 +9,94 @@ info:
 servers:
   - url: http://localhost
 paths:
-  #roles
+# Entrypoints
+  /entrypoints/:
+    get:
+      tags:
+        - entrypoints
+      summary: Получить справочник "Точки Входа" 
+      description: возвращает имена "Точек входа".
+      operationId: getAllEntrypoint
+      parameters: 
+      responses:
+        '204':
+          description: No Content
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntrypointDto'
+
+  /entrypoints:
+    post:
+      tags:
+        - entrypoints
+      summary: Добавляет в справочник "Точки Входа" 
+      description: добавлят "Точеку входа" и вернет созданную сущность "точку входа".
+      operationId: addEntrypoint
+      requestBody:
+         content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntrypointCreateDto'
+      responses:
+        '400':
+          description: Bad Request
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntrypointDto'
+
+  /entrypoints/{entrypointId}:
+    get:
+      tags:
+        - entrypoints
+      summary: Получить состояния вопросов/полей по "Точке Входа" 
+      description: возвращает массив
+      operationId: getEntrypointById
+      parameters: 
+        - name: entrypointId
+          in: path
+          required: true
+          schema: 
+            type: number
+      responses:
+        '404':
+          description: Not found
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntrypointDto'
+
+#platforms
+  /platforms:
+    get:
+      tags:
+        - platforms
+      summary: Получить весь спосок Версий приложений
+      description:
+      operationId: getAllPlatforms
+      parameters:
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlatformVersionListDto'
+
+#roles
   /roles:
     get:
       tags:
@@ -38,18 +125,108 @@ paths:
         - name: roleId
           in: path
           required: true
-          schema:
+          schema: 
             type: integer
             format: int64
           example: 123
       responses:
+        '404':
+          description: Not found
         '200':
           description: successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/RoleDto'
-  #segments
+
+#screens
+  /screens/:
+    get:
+      tags:
+        - screens
+      summary: Получить экраны 
+      description: возвращает список экранов.
+      operationId: getAllScreens
+      parameters:
+        - name: androidId
+          in: query
+          description: ID из таблицы platforms
+          schema: 
+            type: integer
+            format: int64
+          example: 10
+        - name: iosId
+          in: query
+          description: ID из таблицы platforms
+          schema: 
+            type: integer
+            format: int64
+          example: 123
+        - name: web
+          in: query
+          schema: 
+            type: boolean
+          example: true
+      responses:
+        '204':
+          description: No Content
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScreenDto'
+
+  /screens:
+    post:
+      tags:
+        - screens
+      summary: Добавляет в справочник "Экран" 
+      description: добавлят "Экран" и вернет созданную сущность "экран".
+      operationId: addScreen
+      requestBody:
+         content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScreenCreateDto'
+      responses:
+        '400':
+          description: Bad Request
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScreenDto'
+
+  /screens/{screenId}:
+    get:
+      tags:
+        - screens
+      summary: Получить состояния вопросов/полей по "Точке Входа" 
+      description: возвращает массив
+      operationId: getScreenById
+      parameters: 
+        - name: screenId
+          in: path
+          required: true
+          schema: 
+            type: number
+      responses:
+        '404':
+          description: Not found
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScreenDto'
+
+#segments
   /segments:
     get:
       tags:
@@ -61,7 +238,7 @@ paths:
         - name: searchQuery
           in: query
           required: false
-          schema:
+          schema: 
             type: string
           example: Программист
       responses:
@@ -73,7 +250,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/SegmentDto'
-  ####### OLD
+####### OLD
   /layers:
     get:
       tags:
@@ -102,7 +279,7 @@ paths:
         - name: LayerId
           in: path
           required: true
-          schema:
+          schema: 
             type: number
       responses:
         '404':
@@ -123,11 +300,11 @@ paths:
       summary: Получить изменения слоя
       description:
       operationId: getLayerChanges
-      parameters:
+      parameters: 
         - name: LayerId
           in: path
           required: true
-          schema:
+          schema: 
             type: number
       responses:
         '404':
@@ -148,11 +325,11 @@ paths:
       summary: Сделать слой стабильным, объединить с родительским
       description:
       operationId: joinLayer
-      parameters:
+      parameters: 
         - name: LayerId
           in: path
           required: true
-          schema:
+          schema: 
             type: number
       responses:
         '404':
@@ -167,58 +344,74 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/LayerCgangeDto'
-  # Entrypoints
-  /entrypoints/layer/{layerId}:
-    get:
-      tags:
-        - entrypoints
-      summary: Получить "Точки Входа" слоя
-      description: возвращает имена "Точек входа" слоя включая наследуемые от слоёв родителей.
-      operationId: getAllEntrypointByLayerId
-      parameters:
-        - name: LayerId
-          in: path
-          required: true
-          schema:
-            type: number
-      responses:
-        '404':
-          description: Not found
-        '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/EntrypointDto'
-
-  /entrypoints/{entrypointId}/layer/{layerId}:
-    get:
-      tags:
-        - entrypoints
-      summary: Получить состояния вопросов/полей по "Точке Входа" слоя
-      description: возвращает массив
-      operationId: getEntrypointByIdWithQuestionStatus
-      parameters:
-        - name: LayerId
-          in: path
-          required: true
-          schema:
-            type: number
-      responses:
-        '404':
-          description: Not found
-        '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EntrypointWitchQuestionStatusDto'
-
+                  
 components:
   schemas:
-    #Segments
+#Screens
+    ScreenDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Программист
+        description:
+          type: string
+          example: IT специалист
+        type:
+          type: array
+          items:
+            $ref: '#/components/schemas/StateType'
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScreenFieldDto'
+        appVersions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlatformDto'
+
+    ScreenFieldDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Ваш пол
+
+    ScreenCreateDto:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Программист
+        description:
+          type: string
+          example: IT специалист
+        type:
+          type: array
+          items:
+            $ref: '#/components/schemas/StateType'
+        platformsId:
+          type: array
+          items:
+            type: integer
+            format: int64
+            example: [10, 20]
+        questionsId:
+          type: array
+          items:
+            type: integer
+            format: int64
+            example: [10, 20]
+      
+#Segments
     SegmentDto:
       type: object
       properties:
@@ -244,7 +437,7 @@ components:
             $ref: '#/components/schemas/RoleDto'
         tagList:
           type: array
-          items:
+          items: 
             type: string
 
     SegmentCreateDto:
@@ -267,7 +460,7 @@ components:
             format: int64
         tagList:
           type: array
-          items:
+          items: 
             type: string
 
     SegmentViewDto:
@@ -280,7 +473,28 @@ components:
         title:
           type: string
           example: Программист
-    #Role
+#Platform
+    PlatformVersionListDto:
+      type: object
+      properties:
+        platform:
+          $ref: '#/components/schemas/PlatformType'
+        versions:
+          $ref: '#/components/schemas/PlatformDto'
+
+    PlatformDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        platform:
+          $ref: '#/components/schemas/PlatformType'
+        version:
+          type: string
+          example: Повар
+#Role
     RoleDto:
       type: object
       properties:
@@ -291,24 +505,32 @@ components:
         name:
           type: string
           example: Повар
-    #enums
+#enums
+    StateType:
+      enum: 
+        - ACTIVE
+        - DISABLED
+      
+    PlatformType:
+      enum:  
+        - ANDROID
+        - IOS
+        - WEB
     QuestionVisibilityType:
-      type: string
-      examples:
+      enum: 
         - SHOW
         - HIDE
         - SHOW_PREFILLED
         - HIDE_PREFILLED
     EntityStatus:
-      type: string
-      examples:
+      enum: 
         - CREATED
         - ARCHIVED
         - NOT_LINKED
         - CONFLICT
-
-    ### OLD
-    #Entrypoints
+    
+### OLD
+#Entrypoints
     EntrypointDto:
       type: object
       properties:
@@ -322,30 +544,18 @@ components:
         description:
           type: string
           example: Описание onboard
-        layerId:
-          type: integer
-          format: int64
-          example: 10
 
-    EntrypointWitchQuestionStatusDto:
+    EntrypointCreateDto:
       type: object
       properties:
-        entrypointDto:
-          $ref: '#/components/schemas/EntrypointDto'
-        questionStatusDtoList:
-          type: array
-          items:
-            $ref: '#/components/schemas/QuestionStatusDto'
+        title:
+          type: string
+          example: Точка входа onboard
+        description:
+          type: string
+          example: Описание onboard
 
-    QuestionStatusDto:
-      type: object
-      properties:
-        questionStatus:
-          type: array
-          items:
-            $ref: '#/components/schemas/QuestionVisibilityType'
-
-    # Layers
+# Layers
     LayerDto:
       type: object
       properties:
@@ -362,17 +572,17 @@ components:
           example: 2023-03-01T18:16:15.12312
         layerStatus:
           type: string
-          examples:
+          examples: 
             - EXPEREMENTAL
             - ARCHIVED
             - STABLE
         groupOfStatusLAyer:
           type: string
-          examples:
+          examples: 
             - ACTIVE
             - FINISHED
-
-    # Layers Information
+            
+# Layers Information
     LayerBasicInfoDto:
       type: object
       properties:
@@ -391,7 +601,7 @@ components:
           example: 2023-03-01T18:16:15.12312
         layerStatus:
           type: string
-          examples:
+          examples: 
             - EXPEREMENTAL
             - ARCHIVED
             - STABLE
@@ -400,7 +610,7 @@ components:
           items:
             $ref: '#/components/schemas/LayerDto'
 
-    # Changes DTO
+# Changes DTO
     QuestionActivatorLinkChangeDto:
       type: object
       properties:
@@ -412,7 +622,7 @@ components:
           type: boolean
           example: true
         questionVisibility:
-          $ref: '#/components/schemas/QuestionVisibilityType'
+            $ref: '#/components/schemas/QuestionVisibilityType'
         entrypointTitle:
           type: string
           example: Onboard
@@ -445,7 +655,7 @@ components:
             $ref: '#/components/schemas/QuestionChangeDto'
         conflict:
           type: boolean
-
+    
     QuestionChangeDto:
       type: object
       properties:
@@ -465,7 +675,7 @@ components:
             $ref: '#/components/schemas/AnswerChangeDto'
         conflict:
           type: boolean
-
+             
     SegmentChangeDto:
       type: object
       properties:
@@ -528,10 +738,10 @@ components:
           properties:
             status:
               type: string
-              example: CREATED
+              example: CREATED 
             entrypointChangeDtoList:
               type: array
-              items:
+              items: 
                 $ref: '#/components/schemas/EntrypointChangeDto'
         segmentMap:
           type: object
@@ -544,24 +754,24 @@ components:
                 - CONFLICT
             segmentChangeDtoList:
               type: array
-              items:
+              items: 
                 $ref: '#/components/schemas/SegmentChangeDto'
         questionMap:
           type: object
           properties:
             status:
               type: string
-              example: CREATED
+              example: CREATED 
             questionChangeDtoList:
               type: array
-              items:
+              items: 
                 $ref: '#/components/schemas/QuestionChangeDto'
         answerMap:
           type: object
           properties:
             status:
               type: string
-              example: NOT_LINKED
+              example: NOT_LINKED 
             answerChangeDtoList:
               type: array
               items:
@@ -571,16 +781,16 @@ components:
           properties:
             status:
               type: string
-              example: CREATED
+              example: CREATED 
             questionActivatorLinkChangeDtoList:
               type: array
               items:
                 $ref: '#/components/schemas/QuestionActivatorLinkChangeDto'
         usedEntrypointTitleList:
           type: array
-          items:
+          items: 
             type: string
-            examples:
+            examples: 
               - Onboard
               - Резюме
-
+            
