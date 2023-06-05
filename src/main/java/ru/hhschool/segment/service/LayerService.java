@@ -6,9 +6,9 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.NotFoundException;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
+import ru.hhschool.segment.dao.abstracts.PlatformDao;
 import ru.hhschool.segment.exception.HttpBadRequestException;
 import ru.hhschool.segment.exception.HttpNotFoundException;
-import ru.hhschool.segment.dao.abstracts.PlatformDao;
 import ru.hhschool.segment.mapper.LayerMapper;
 import ru.hhschool.segment.mapper.PlatformMapper;
 import ru.hhschool.segment.mapper.basicinfo.LayerBasicInfoMapper;
@@ -54,7 +54,7 @@ public class LayerService {
     }
     LayerBasicInfoDto layerBasicInfoDto = LayerBasicInfoMapper.toDtoForBasicInfoPage(layer.get(),
         layerDao.getAllParents(id),
-        PlatformMapper.toDtoForSelectedSegmentViewPage(platformDao.findAll(layer.get().getPlatforms())));
+        PlatformMapper.toDtoList(platformDao.findAll(layer.get().getPlatforms())));
     return Optional.of(layerBasicInfoDto);
   }
 

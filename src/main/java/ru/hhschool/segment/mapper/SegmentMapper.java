@@ -26,7 +26,6 @@ public class SegmentMapper {
 
   public static Segment dtoToSegment(SegmentCreateDto segmentCreateDto, Optional<Segment> parentSegment) {
     return new Segment(
-
         parentSegment.orElse(null),
         LocalDateTime.now().withNano(0),
         segmentCreateDto.getTitle(),

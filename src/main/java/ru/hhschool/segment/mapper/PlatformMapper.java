@@ -7,17 +7,18 @@ import ru.hhschool.segment.model.entity.Platform;
 
 public class PlatformMapper {
 
-  private static PlatformDto toSegmentViewPlatformDto(Platform platform) {
-    PlatformDto segmentViewApplicationDto = new PlatformDto(
+  private static PlatformDto toDto(Platform platform) {
+    PlatformDto platformDto = new PlatformDto(
+        platform.getId(),
         platform.getPlatform(),
         platform.getApplicationVersion()
     );
-    return segmentViewApplicationDto;
+    return platformDto;
   }
 
-  public static List<PlatformDto> toDtoForSelectedSegmentViewPage(List<Platform> platforms) {
+  public static List<PlatformDto> toDtoList(List<Platform> platforms) {
     return platforms.stream()
-        .map(platform -> toSegmentViewPlatformDto(platform))
+        .map(platform -> toDto(platform))
         .sorted(Comparator.comparing(PlatformDto::getPlatform))
         .toList();
   }

@@ -1,17 +1,27 @@
 package ru.hhschool.segment.model.dto;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import ru.hhschool.segment.model.enums.PlatformType;
 
 public class PlatformDto {
-  @Enumerated(EnumType.STRING)
+  private Long id;
   private PlatformType platform;
   private String version;
 
-  public PlatformDto(PlatformType platform, String version) {
+  public PlatformDto() {
+  }
+
+  public PlatformDto(Long id, PlatformType platform, String version) {
+    this.id = id;
     this.platform = platform;
     this.version = version;
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public PlatformType getPlatform() {

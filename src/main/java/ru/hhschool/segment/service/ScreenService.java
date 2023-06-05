@@ -1,31 +1,32 @@
 package ru.hhschool.segment.service;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import ru.hhschool.segment.dao.abstracts.PlatformDao;
+import ru.hhschool.segment.dao.abstracts.QuestionDao;
 import ru.hhschool.segment.dao.abstracts.ScreenDao;
 import ru.hhschool.segment.exception.HttpBadRequestException;
+import ru.hhschool.segment.mapper.PlatformMapper;
 import ru.hhschool.segment.mapper.screen.ScreenMapper;
-import ru.hhschool.segment.mapper.screen.ScreenPlatformMapper;
+import ru.hhschool.segment.model.dto.PlatformDto;
+import ru.hhschool.segment.model.dto.screen.ScreenCreateDto;
 import ru.hhschool.segment.model.dto.screen.ScreenDto;
-import ru.hhschool.segment.model.dto.screen.ScreenPlatformDto;
-import ru.hhschool.segment.model.dto.screen.ScreenPlatformVersionDto;
 import ru.hhschool.segment.model.entity.Platform;
+import ru.hhschool.segment.model.entity.Question;
 import ru.hhschool.segment.model.entity.Screen;
 import ru.hhschool.segment.model.enums.PlatformType;
 
 public class ScreenService {
   private final ScreenDao screenDao;
   private final PlatformDao platformDao;
+  private final QuestionDao questionDao;
 
-  public ScreenService(ScreenDao screenDao, PlatformDao platformDao) {
+  public ScreenService(ScreenDao screenDao, PlatformDao platformDao, QuestionDao questionDao) {
     this.screenDao = screenDao;
     this.platformDao = platformDao;
+    this.questionDao = questionDao;
   }
 
   @Transactional
@@ -37,7 +38,7 @@ public class ScreenService {
     List<ScreenDto> screenDtoList = new ArrayList<>();
 
     for (Screen screen : screens) {
-      List<ScreenPlatformDto> platformVersions = ScreenPlatformMapper.platformListToDtoList(platformDao.findAll(screen.getPlatforms()));
+      List<PlatformDto> platformVersions = PlatformMapper.toDtoList(platformDao.findAll(screen.getPlatforms()));
       screenDtoList.add(ScreenMapper.screenToDto(screen, platformVersions));
     }
     return screenDtoList;
@@ -52,36 +53,51 @@ public class ScreenService {
 
     Screen screen = screenOptional.get();
 
-    List<ScreenPlatformDto> platformVersions = ScreenPlatformMapper.platformListToDtoList(platformDao.findAll(screen.getPlatforms()));
+    List<PlatformDto> platformVersions = PlatformMapper.toDtoList(platformDao.findAll(screen.getPlatforms()));
 
     return Optional.of(ScreenMapper.screenToDto(screen, platformVersions));
   }
 
-  public List<ScreenPlatformVersionDto> getAllPlatforms() {
-    List<ScreenPlatformDto> screenPlatformList = ScreenPlatformMapper.platformListToDtoList(screenDao.findAllPlatforms());
+  @Transactional
+  public Optional<ScreenDto> add(ScreenCreateDto screenCreateDto) {
+    if (screenCreateDto.getTitle() == null || screenCreateDto.getTitle().isBlank()) {
+      throw new HttpBadRequestException("Название(Title) неверно указанное значение или пустой.");
+    }
+    if (screenCreateDto.getQuestionsId() == null || screenCreateDto.getPlatformsId().isEmpty()) {
+      throw new HttpBadRequestException("Отсутствуют необходимые данные.");
+    }
 
-    Map<String, List<ScreenPlatformDto>> platformVersionMap = screenPlatformList
-        .stream()
-        .sorted(Comparator.comparing(ScreenPlatformDto::getVersion))
-        .collect(Collectors.groupingBy((p) -> p.getPlatform()));
+    List<Question> questionList = new ArrayList<>();
+    for (Long questionId : screenCreateDto.getQuestionsId()) {
+      questionList.add(questionDao.findById(questionId).orElseThrow(
+          () -> new HttpBadRequestException("Не обнаружен ID поля или вопроса.")
+      ));
+    }
 
-    List<ScreenPlatformVersionDto> platformVersionDtoList = platformVersionMap
-        .entrySet()
-        .stream()
-        .map(e -> new ScreenPlatformVersionDto(e.getKey(), e.getValue()))
-        .sorted(Comparator.comparing(ScreenPlatformVersionDto::getPlatform))
-        .toList();
+    Screen screen = ScreenMapper.dtoToScreen(screenCreateDto, questionList);
 
-    return platformVersionDtoList;
+    try {
+      screenDao.persist(screen);
+    } catch (Exception err) {
+      String lastMessage = err.getMessage();
+      Throwable cause = err.getCause();
+      while (cause != null) {
+        lastMessage = cause.getMessage();
+        cause = cause.getCause();
+      }
+      throw new HttpBadRequestException(lastMessage);
+    }
+
+    List<PlatformDto> platformVersions = PlatformMapper.toDtoList(platformDao.findAll(screen.getPlatforms()));
+
+    return Optional.of(ScreenMapper.screenToDto(screen, platformVersions));
   }
-
 
   private Optional<String> getPlatformVersionFromId(Long platformId, PlatformType platformType) {
     Optional<String> result = Optional.empty();
     if (platformId != null) {
       Optional<Platform> platform = platformDao.findById(platformId);
-      if (platform.isEmpty()
-          || (platform.isPresent() && platform.get().getPlatform() != platformType)) {
+      if (platform.isEmpty() || platform.get().getPlatform() != platformType) {
         throw new HttpBadRequestException("Error: bad " + platformType + " version.");
       }
       result = Optional.of(platform.get().getApplicationVersion());
