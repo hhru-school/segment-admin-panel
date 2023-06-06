@@ -11,6 +11,7 @@ public class SegmentScreenEntrypointLinkDaoImpl extends ReadWriteDaoImpl<Segment
         .setParameter("segmentId", segmentId)
         .getSingleResult();
   }
+
   @Override
   public List<SegmentScreenEntrypointLink> findAll(Long layerId, Long segmentId) {
     return em.createQuery("SELECT e FROM SegmentScreenEntrypointLink e WHERE e.layer.id = :layerId AND e.segment.id = :segmentId")
@@ -40,6 +41,14 @@ public class SegmentScreenEntrypointLinkDaoImpl extends ReadWriteDaoImpl<Segment
         .setParameter("layerId", layerId)
         .setParameter("segmentId", segmentId)
         .setParameter("entrypointId", entrypointId)
+        .getResultList();
+  }
+
+  @Override
+  public List<SegmentScreenEntrypointLink> findAll(Long layerId, Long segmentId) {
+    return em.createQuery("SELECT e FROM SegmentScreenEntrypointLink e WHERE e.layer.id = :layerId AND e.segment.id = :segmentId")
+        .setParameter("layerId", layerId)
+        .setParameter("segmentId", segmentId)
         .getResultList();
   }
 }

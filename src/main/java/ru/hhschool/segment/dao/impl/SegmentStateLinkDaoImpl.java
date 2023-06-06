@@ -51,6 +51,7 @@ public class SegmentStateLinkDaoImpl extends ReadWriteDaoImpl<SegmentStateLink, 
         .setParameter("layerId", layerId)
         .getResultList();
   }
+
   @Override
   public Optional<SegmentStateLink> findById(Long layerId, Long segmentId) {
     try {

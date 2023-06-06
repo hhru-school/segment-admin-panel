@@ -11,6 +11,7 @@ public class QuestionRequiredLinkDaoImpl extends ReadWriteDaoImpl<QuestionRequir
         .setParameter("segmentId", segmentId)
         .getSingleResult();
   }
+
   @Override
   public List<QuestionRequiredLink> findAllByLayerIdSegmentId(Long layerId, Long segmentId) {
     return em.createQuery("SELECT e FROM QuestionRequiredLink e WHERE e.layer.id = :layerId AND e.segment.id = :segmentId")

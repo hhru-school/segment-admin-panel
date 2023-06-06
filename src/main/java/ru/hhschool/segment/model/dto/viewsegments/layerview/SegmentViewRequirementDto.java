@@ -1,21 +1,26 @@
 package ru.hhschool.segment.model.dto.viewsegments.layerview;
 
+import ru.hhschool.segment.model.enums.StateType;
+
+
 public class SegmentViewRequirementDto {
   private Long id;
   private String title;
   private Boolean required;
-  private Boolean changed;
+  private Boolean isChanged;
+  private StateType state;
   private Boolean isNew;
 
   public SegmentViewRequirementDto() {
 
   }
 
-  public SegmentViewRequirementDto(Long id, String title, Boolean required, Boolean changed, Boolean isNew) {
+  public SegmentViewRequirementDto(Long id, String title, Boolean required, Boolean isChanged, StateType state, Boolean isNew) {
     this.id = id;
     this.title = title;
     this.required = required;
-    this.changed = changed;
+    this.isChanged = isChanged;
+    this.state = state;
     this.isNew = isNew;
   }
 
@@ -41,18 +46,27 @@ public class SegmentViewRequirementDto {
   public void setRequired(Boolean required) {
     this.required = required;
   }
-  public Boolean getChanged() {
-    return changed;
+  public Boolean getIsChanged() {
+    return isChanged;
   }
 
-  public void setChanged(Boolean changed) {
-    this.changed = changed;
+  public void setIsChanged(Boolean isChanged) {
+    this.isChanged = isChanged;
   }
-  public Boolean getNew() {
+
+  public StateType getState() {
+    return state;
+  }
+
+  public void setState(StateType state) {
+    this.state = state;
+  }
+
+  public Boolean getIsNew() {
     return isNew;
   }
 
-  public void setNew(Boolean aNew) {
+  public void setIsNew(Boolean aNew) {
     isNew = aNew;
   }
 }

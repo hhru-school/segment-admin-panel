@@ -1,7 +1,6 @@
 package ru.hhschool.segment.model.dto.viewsegments.layerview;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import ru.hhschool.segment.model.dto.PlatformDto;
 import ru.hhschool.segment.model.enums.ScreenType;
 import ru.hhschool.segment.model.enums.StateType;
@@ -9,7 +8,6 @@ import ru.hhschool.segment.model.enums.StateType;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({"id", "title", "description", "type", "state", "oldState", "new", "oldPosition", "platforms", "questions"})
 public class SegmentViewScreenDto {
   private Long id;
   private String title;
@@ -19,14 +17,14 @@ public class SegmentViewScreenDto {
   private StateType oldState;
   private Boolean isNew;
   private Integer oldPosition;
-  private List<PlatformDto> platforms;
-  private List<SegmentViewQuestionDto> questions;
+  private List<PlatformDto> appVersions;
+  private List<SegmentViewQuestionDto> fields;
 
   public SegmentViewScreenDto() {
 
   }
 
-  public SegmentViewScreenDto(Long id, String title, String description, ScreenType type, StateType state, StateType oldState, Boolean isNew, Integer oldPosition, List<PlatformDto> platforms, List<SegmentViewQuestionDto> questions) {
+  public SegmentViewScreenDto(Long id, String title, String description, ScreenType type, StateType state, StateType oldState, Boolean isNew, Integer oldPosition, List<PlatformDto> appVersions, List<SegmentViewQuestionDto> fields) {
     this.id = id;
     this.title = title;
     this.description = description;
@@ -35,8 +33,8 @@ public class SegmentViewScreenDto {
     this.oldState = oldState;
     this.isNew = isNew;
     this.oldPosition = oldPosition;
-    this.platforms = platforms;
-    this.questions = questions;
+    this.appVersions = appVersions;
+    this.fields = fields;
   }
 
   public Long getId() {
@@ -87,11 +85,11 @@ public class SegmentViewScreenDto {
     this.oldState = oldState;
   }
 
-  public Boolean getNew() {
+  public Boolean getIsNew() {
     return isNew;
   }
 
-  public void setNew(Boolean aNew) {
+  public void setIsNew(Boolean aNew) {
     isNew = aNew;
   }
 
@@ -103,19 +101,19 @@ public class SegmentViewScreenDto {
     this.oldPosition = oldPosition;
   }
 
-  public List<PlatformDto> getPlatforms() {
-    return platforms;
+  public List<PlatformDto> getAppVersions() {
+    return appVersions;
   }
 
-  public void setPlatforms(List<PlatformDto> platforms) {
-    this.platforms = platforms;
+  public void setAppVersions(List<PlatformDto> appVersions) {
+    this.appVersions = appVersions;
   }
 
-  public List<SegmentViewQuestionDto> getQuestions() {
-    return questions;
+  public List<SegmentViewQuestionDto> getFields() {
+    return fields;
   }
 
-  public void setQuestions(List<SegmentViewQuestionDto> questions) {
-    this.questions = questions;
+  public void setFields(List<SegmentViewQuestionDto> fields) {
+    this.fields = fields;
   }
 }
