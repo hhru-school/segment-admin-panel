@@ -1,274 +1,556 @@
+INSERT INTO questions (title, description, type, answer_type, possible_answers)
+VALUES ('Опыт работы, лет', 'Опыт работы на аналогичной должности, указанный в годах', 'QUESTION', 'SINGLE_CHOICE', '{1, 2, 3, 7}'),             --1
+       ('Высшее образование', 'Наличие высшего образования', 'RESUME_FIELD', 'SINGLE_CHOICE', '{4, 5, 6}'),                                      --2
+       ('Опыт работы за границей', 'Опыт работы переводчиком за границей', 'QUESTION', 'SINGLE_CHOICE', '{1, 2, 3, 7}'),                         --3
+       ('Опыт работы на официальных мероприятиях', 'Опыт работы переводчиком на мероприятиях с участием официальных лиц', 'QUESTION', 'SINGLE_CHOICE',
+        '{7, 8}'),                                                                                                                               --4
+       ('Время владения китайским языком', 'Количество лет практики китайского языка', 'QUESTION', 'SINGLE_CHOICE', '{1, 2, 3, 7}'),             --5
+       ('Опыт проживания в Китае', 'Был ли опыт проживания в КНР', 'QUESTION', 'SINGLE_CHOICE', '{9, 10}'),                                      --6
+       ('Имеете ли разряд', 'Был ли опыт прохождения обучения в Китае', 'QUESTION', 'SINGLE_CHOICE', '{9, 10}'),                                 --7
+       ('Разряд', 'Имеющийся разряд по профессии', 'QUESTION', 'SINGLE_CHOICE', '{13, 14, 15, 16, 17, 18}'),                                     --8
+       ('Технологический стэк', 'Перечень технологий, которыми умеет пользоваться кандидат', 'QUESTION', 'MULTI_SELECT', '{19, 20, 21, 22}'),    --9
+       ('Разрешение на оружие', 'Имеется ли разрешение на ношение оружия', 'QUESTION', 'SINGLE_CHOICE', '{9, 10}'),                              --10
+       ('Владение боевыми искусствами', 'Владеет ли кандидат боевыми искусствами', 'QUESTION', 'SINGLE_CHOICE', '{9, 10}'),                      --11
+       ('Доступные категории транспортных средств', 'Доступные категории транспортных средств', 'QUESTION', 'MULTI_SELECT', '{23, 24, 25, 26}'), --12
+       ('Водительский стаж', 'Водительский стаж в годах', 'QUESTION', 'SINGLE_CHOICE', '{1, 2, 3}'),                                             --13
+       ('Умение работать в 1С', 'Умение работать в 1С', 'QUESTION', 'SINGLE_CHOICE', '{7, 8}'),                                                  --14
+       ('Курсы повышения квалификации', 'Факт прохождения курсов повышения квалификации', 'QUESTION', 'SINGLE_CHOICE', '{9, 10}'),               --15
+       ('Возможен ли прием онлайн', 'Проводит ли специалист онлайн приемы пациентов', 'QUESTION', 'SINGLE_CHOICE', '{9, 10}'),                   --16
+       ('Опыт работы в качестве CTO', 'Опыт работы в качестве CTO', 'QUESTION', 'SINGLE_CHOICE', '{26}'),                                        --17
+       ('Работали ли на других управляющих должностях', 'Работали ли на других управляющих должностях', 'QUESTION', 'SINGLE_CHOICE',
+        '{9, 10}'),                                                                                                                              --18                                                                                                                        --18
+       ('Величина компании, в которой вы работали', 'Величина компании, в которой вы работали', 'QUESTION', 'SINGLE_CHOICE',
+        '{29, 30, 31, 32}'),                                                                                                                     --19                                                                                                                       --19
+       ('Доводилось ли проходить курсы по управлению персоналом', 'Доводилось ли проходить курсы по управлению персоналом', 'QUESTION',
+        'SINGLE_CHOICE',
+        '{9, 10}'),                                                                                                                              --20
+       ('Какой формат работы предпочитаете', 'Какой формат работы предпочитаете', 'QUESTION', 'MULTI_SELECT', '{32, 33, 34, 35}'),               --21
+       ('Доводилось ли работать в международных компаниях', 'Доводилось ли работать в международных компаниях', 'QUESTION', 'SINGLE_CHOICE',
+        '{36, 37}'),--22                                                                                                                        --22
+       ('Уровень английского', 'Уровень английского', 'QUESTION', 'SINGLE_CHOICE', '{38, 39, 40}'),                                              --23
+       ('Владение другими иностранными языками', 'Владение другими иностранными языками', 'QUESTION', 'SINGLE_CHOICE', '{9, 10}'),               --24
+       ('Технологический стэк', 'Перечень технологий, которыми умеет пользоваться кандидат', 'QUESTION', 'MULTI_SELECT',
+        '{19, 20, 21, 22, 41, 42, 43}'),                                                                                                         --25
+       ('Имя', 'Имя', 'RESUME_FIELD', 'NONE', '{}'),                                                                                             --26
+       ('Фамилия', 'Фамилия', 'RESUME_FIELD', 'NONE', '{}'),                                                                                     --27
+       ('Отчество', 'Отчество', 'RESUME_FIELD', 'NONE', '{}'),                                                                                   --28
+       ('Дата рождения', 'Дата рождения', 'RESUME_FIELD', 'NONE', '{}'); --29
+
+
+INSERT INTO answers (open_questions, title, positive_title, type, default_answer, skip_at_result)
+VALUES (NULL, 'Менее года', 'Менее года', 'POSITIVE', FALSE, FALSE),                                                        --1
+       (NULL, 'От 1 до 3 лет', 'От 1 до 3 лет', 'POSITIVE', FALSE, FALSE),                                                  --2
+       (NULL, 'От 3 до 6 лет', 'От 3 до 6 лет', 'POSITIVE', FALSE, FALSE),                                                  --3
+       (NULL, 'Нет', 'Нет высшего образования', 'NEGATIVE', FALSE, FALSE),                                                  --4
+       (NULL, 'Незаконченное', 'Незаконченное высшее образование', 'NEUTRAL', FALSE, TRUE),                                 --5
+       (NULL, 'Есть', 'Есть высшее образование', 'POSITIVE', FALSE, FALSE),                                                 --6
+       (NULL, 'Нет опыта', 'Нет опыта подобной работы', 'NEGATIVE', FALSE, FALSE),                                          --7
+       (NULL, 'Есть опыт', 'Есть опыт подобной работы', 'POSITIVE', FALSE, FALSE),                                          --8
+       (NULL, 'Да', 'Утвердительный ответ', 'POSITIVE', FALSE, FALSE),                                                      --9
+       (NULL, 'Нет', 'Отрицательный ответ', 'NEGATIVE', FALSE, FALSE),                                                      --10
+       ('{8}', 'Да, есть разряд', 'Разряд имеется', 'POSITIVE', FALSE, FALSE),                                              --11
+       (NULL, 'Разряда нет', 'Разряд отстутствует', 'NEGATIVE', FALSE, FALSE),                                              --12
+       (NULL, '1-й разряд', '1-й разряд', 'POSITIVE', TRUE, FALSE),                                                         --13
+       (NULL, '2-й разряд', '2-й разряд', 'POSITIVE', FALSE, FALSE),                                                        --14
+       (NULL, '3-й разряд', '3-й разряд', 'POSITIVE', FALSE, FALSE),                                                        --15
+       (NULL, '4-й разряд', '4-й разряд', 'POSITIVE', FALSE, FALSE),                                                        --16
+       (NULL, '5-й разряд', '5-й разряд', 'POSITIVE', FALSE, FALSE),                                                        --17
+       (NULL, '6-й разряд', '6-й разряд', 'POSITIVE', FALSE, FALSE),                                                        --18
+       (NULL, 'Spring Framework', 'Spring Framework', 'POSITIVE', FALSE, FALSE),                                            --19
+       (NULL, 'Stream API', 'Stream API', 'POSITIVE', FALSE, FALSE),                                                        --20
+       (NULL, 'Hibernate', 'Hibernate', 'POSITIVE', FALSE, FALSE),                                                          --21
+       (NULL, 'Java Concurrency', 'Java Concurrency', 'POSITIVE', FALSE, FALSE),                                            --22
+       (NULL, 'A', 'Категория A', 'NEUTRAL', FALSE, FALSE),                                                                 --23
+       (NULL, 'B', 'Категория B', 'NEUTRAL', FALSE, FALSE),                                                                 --24
+       (NULL, 'C', 'Категория C', 'NEUTRAL', FALSE, FALSE),                                                                 --25
+       (NULL, 'D', 'Категория D', 'NEUTRAL', FALSE, FALSE),                                                                 --26
+       ('{19, 20, 22}', 'Да, работал CTO', 'Да, работал CTO', 'POSITIVE', FALSE, FALSE),                                    --27
+       ('{18, 19, 20}', 'Нет, не работал CTO', 'Нет, не работал CTO', 'NEGATIVE', FALSE, FALSE),                            --28
+       (NULL, 'До 100 сотрудников', 'До 100 сотрудников', 'NEUTRAL', FALSE, FALSE),                                         --29
+       (NULL, 'До 500 сотрудников', 'До 500 сотрудников', 'NEUTRAL', FALSE, FALSE),                                         --30
+       (NULL, 'До 1000 сотрудников', 'До 1000 сотрудников', 'NEUTRAL', FALSE, FALSE),                                       --31
+       (NULL, 'Офис', 'Работа в офисе', 'NEUTRAL', FALSE, FALSE),                                                           --32
+       (NULL, 'Удаленная работа', 'Удаленная работа', 'NEUTRAL', FALSE, FALSE),                                             --33
+       (NULL, 'Гибрид', 'гибридный формат работы', 'NEUTRAL', FALSE, FALSE),                                                --34
+       (NULL, 'Не важен формат работы', 'Не важен формат работы', 'NEUTRAL', FALSE, FALSE),                                 --35
+       ('{23, 24}', 'Работал в международной компании', 'Работал в международной компании', 'NEUTRAL', FALSE, FALSE),       --36
+       ('{23, 24}', 'Не работал в международной компании', 'Не работал в международной компании', 'NEUTRAL', FALSE, FALSE), --37
+       (NULL, 'Низкий', 'Низкий', 'NEUTRAL', FALSE, FALSE),                                                                 --38
+       (NULL, 'Средний', 'Средний', 'NEUTRAL', FALSE, FALSE),                                                               --39
+       (NULL, 'Высокий', 'Высокий', 'NEUTRAL', FALSE, FALSE),                                                               --40
+       (NULL, 'Java Core', 'Java Core', 'NEUTRAL', FALSE, FALSE),                                                           --41
+       (NULL, 'PostgreSQL', 'PostgreSQL', 'NEUTRAL', FALSE, FALSE),                                                         --42
+       (NULL, 'Kafka', 'Kafka', 'NEUTRAL', FALSE, FALSE); --43
+
+INSERT INTO platforms (platform, application_version)
+VALUES ('WEB', '1'),       --1
+       ('IOS', '1.3'),     --2
+       ('ANDROID', '1.2'), --3
+       ('IOS', '2.2'),     --4
+       ('ANDROID', '2.7'), --5
+       ('IOS', '1.0'),     --6
+       ('IOS', '1.10'),    --7
+       ('IOS', '10.01'),   --8
+       ('IOS', '10.10'),   --9
+       ('IOS', '20.4'),    --10
+       ('IOS', '100.11'); --11
+
+INSERT INTO segments (parent_segment_id, create_time, title, description, roles, tags)
+VALUES (NULL, '2023-02-12 02:02:00', 'Программист, разработчик', 'Разработчик программного обеспечения', '{96}',
+        '{"Programmer", "Software", "IT"}'),                                                                                     -- 1
+       (NULL, '2023-02-12 02:02:00', 'Переводчик', 'Переводчик', '{93}', '{"Translator", "ForeignLanguages"}'),                  --2
+       (2, '2023-02-12 02:02:00', 'Переводчик с китайского', 'Переводчик, владеющмя китайским языком, унаследован от переводчика', '{93}',
+        '{"Translator", "Chinese"}'),                                                                                            --3
+       (NULL, '2023-02-12 02:02:00', 'Охранник', 'Охранник', '{90}', '{"Security", "Safety", "Guard"}'),                         --4
+       (1, '2023-02-12 02:02:00', 'Java-разработчик', 'Разработчик серверной части приложений на языке Java', '{96}',
+        '{"Java", "Backend", "Programmer", "Software", "IT"}'),                                                                  --5
+       (3, '2023-02-12 02:02:00', 'Телохранитель', 'Телохранитель, унаследован от охранника', '{90}',
+        '{"Bodyguard", "Security", "PrivateProtection"}'),                                                                       --6
+       (NULL, '2023-02-12 02:02:00', 'Водитель', 'Водитель транспортного средства', '{21}', '{"Driver", "Car", "Road"}'),        --7
+       (NULL, '2023-02-12 02:02:00', 'Бухгатлер', 'Бухгатлер', '{3, 18}', '{"Finance", "Accounting", "Money", "Calculations"}'), --8
+       (NULL, '2023-02-12 02:02:00', 'Механик', 'Специалист по сборке или ремонту различной техники', '{173}',
+        '{"Repair", "Mechanic", "Assembly"}'),                                                                                   --9
+       (NULL, '2023-02-12 02:02:00', 'Психолог', 'Психолог', '{101}', '{"Psychologist", "Life", "Thoughts", "Help"}'),           --10
+       (NULL, '2023-02-12 02:02:00', 'Технический директор (CTO)', 'Технический директор (CTO)', '{11, 125}',
+        '{"CTO", "Director", "Management"}'); --11
+
+INSERT INTO entrypoints (title, description)
+VALUES ('Onboarding', 'Размещение вакансии работодателем'), --1
+       ('Резюме', 'Размещение резюме соискателем'); --2
+
+INSERT INTO screens (title, description, type, state, platforms)
+VALUES ('Разряд не ниже 4', 'Разряд не ниже 4', 'DYNAMIC', 'ACTIVE', '{1, 2, 3}'),                                     --1
+       ('Должность', 'Выбор должности для поиска', 'DYNAMIC', 'ACTIVE', '{1, 3}'),                                     --2
+       ('Наличие опыта работы', 'Заполнение инормации по опыту работы', 'DYNAMIC', 'ACTIVE', '{1, 4, 3}'),             --3
+       ('Узкоспециализированные вопросы', 'Заполнение ответов на спецаильные вопросы', 'DYNAMIC', 'ACTIVE', '{2, 5}'), --4
+       ('Наличие образования', 'Заполнение информации об образовании', 'STATIC', 'ACTIVE', '{1, 4, 5}'),               --5
+       ('Основная информация', 'Заполнение основной информации', 'STATIC', 'ACTIVE', '{1, 4, 5}'),                     --6
+       ('Неактивный экран', 'Просто Архивный', 'STATIC', 'DISABLED', '{4, 5}'),                                         --7
+       ('Только для Web', 'Только для Web', 'STATIC', 'ACTIVE', '{1}'),                                                --8
+       ('Ios 2.2', 'Просто Архивный', 'STATIC', 'DISABLED', '{4}'),                                                     --9                                       --7
+       ('Ios 1.0', 'Просто Архивный', 'STATIC', 'DISABLED', '{6}'),                                                     --9                                       --7
+       ('Ios 1.10', 'Просто Архивный', 'STATIC', 'DISABLED', '{7}'),                                                    --9                                       --7
+       ('Ios 10.01', 'Просто Архивный', 'STATIC', 'DISABLED', '{8}'),                                                   --9                                       --7
+       ('Ios 10.10', 'Просто Архивный', 'STATIC', 'DISABLED', '{9}'),                                                   --9                                       --7
+       ('Ios 20.4', 'Просто Архивный', 'STATIC', 'DISABLED', '{10}'),                                                   --10                                  --7
+       ('Ios 100.11', 'Просто Архивный', 'STATIC', 'DISABLED', '{11}'); --11
+
+INSERT INTO screen_questions (screen_id, question_id)
+VALUES (1, 1),
+       (1, 2),
+       (1, 3),
+       (1, 4),
+
+       (2, 5),
+       (2, 6),
+
+       (3, 7),
+       (3, 8),
+       (3, 9),
+
+       (4, 10),
+
+       (5, 22),
+       (5, 23),
+       (5, 24),
+       (5, 25),
+
+       (6, 26),
+       (6, 27),
+       (6, 28),
+       (6, 29);
+
+
 --Первый слой
-INSERT INTO layers (parent_layer_id, title, description, layer_stable, layer_archive, layer_deleted, create_time)
-VALUES (NULL, 'Первый слой', 'Базовый слой', TRUE, FALSE, FALSE, '2023-04-12 02:02:00'); -- 1
+INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms)
+VALUES (NULL, 'Первый слой', 'Базовый слой', 'STABLE', '2023-04-12 02:02:00', '{1, 2, 3}'); -- 1
 
-INSERT INTO entrypoints (layer_id, title, description)
-VALUES (1, 'Onboarding', 'Размещение вакансии работодателем'),
-       (1, 'Резюме', 'Размещение резюме соискателем');
+INSERT INTO segment_state_links (old_id, layer_id, segment_id, state)
+VALUES (NULL, 1, 1, 'ACTIVE'); -- 1
 
-INSERT INTO segments (layer_id, parent_segment_id, title, description, role, tag)
-VALUES (1, NULL, 'Программист, разработчик', 'Разработчик программного обеспечения', '{96}', '{"Programmer", "Software", "IT"}'); --1
+INSERT INTO question_required_links (old_id, layer_id, segment_id, question_id, question_required)
+VALUES (NULL, 1, 1, 1, TRUE),  -- 1
+       (NULL, 1, 1, 2, TRUE),  -- 2
+       (NULL, 1, 1, 3, TRUE),  -- 3
 
-INSERT INTO questions (layer_id, question_title, question_type, description, possible_answers, question_required, question_visibility, resume_field)
-VALUES (1, 'Опыт работы, лет', 'SINGLE_CHOICE', 'Опыт работы на аналогичной должности, указанный в годах', '{1, 2, 3, 7}', TRUE, 'SHOW', FALSE), --1
-       (1, 'Высшее образование', 'SINGLE_CHOICE', 'Наличие высшего образования', '{4, 5, 6}', TRUE, 'SHOW', TRUE); --2
+       (NULL, 1, 1, 4, TRUE),  -- 4
+       (NULL, 1, 1, 5, FALSE), -- 5
+       (NULL, 1, 1, 6, TRUE); -- 6
 
-INSERT INTO answers (layer_id, open_questions, title, POSITIVE_title, answer_type, is_default_answer, skip_at_result)
-VALUES (1, NULL, 'Менее года', 'Менее года', 'POSITIVE', FALSE, FALSE),                        --1
-       (1, NULL, 'От 1 до 3 лет', 'От 1 до 3 лет', 'POSITIVE', FALSE, FALSE),                  --2
-       (1, NULL, 'От 3 до 6 лет', 'От 3 до 6 лет', 'POSITIVE', FALSE, FALSE),                  --3
-       (1, NULL, 'Нет', 'Нет высшего образования', 'NEGATIVE', FALSE, FALSE),                  --4
-       (1, NULL, 'Незаконченное', 'Незаконченное высшее образование', 'NEUTRAL', FALSE, TRUE), --5
-       (1, NULL, 'Есть', 'Есть высшее образование', 'POSITIVE', FALSE, FALSE),                 --6
-       (1, NULL, 'Нет опыта', 'Нет опыта подобной работы', 'NEGATIVE', FALSE, FALSE),          --7
-       (1, NULL, 'Есть опыт', 'Есть опыт подобной работы', 'POSITIVE', FALSE, FALSE),          --8
-       (1, NULL, 'Да', 'Утвердительный ответ', 'POSITIVE', FALSE, FALSE),                      --9
-       (1, NULL, 'Нет', 'Отрицательный ответ', 'NEGATIVE', FALSE, FALSE); --10
+INSERT INTO segment_screen_entrypoint_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, screen_position, screen_state)
+VALUES (NULL, 1, 1, 1, 6, 1, 'ACTIVE'), -- 1
+       (NULL, 1, 1, 1, 2, 2, 'ACTIVE'), -- 2
+       (NULL, 1, 1, 1, 3, 3, 'ACTIVE'), -- 3
+       (NULL, 1, 1, 1, 4, 4, 'ACTIVE'), -- 4
 
-INSERT INTO question_activate_links (layer_id, segment_id, question_id, entrypoint_id, question_required, question_visibility)
-VALUES (1, 1, 1, 1, TRUE, 'SHOW'),
-       (1, 1, 2, 1, TRUE, 'SHOW'),
-       (1, 1, 1, 2, TRUE, 'SHOW'),
-       (1, 1, 2, 2, TRUE, 'HIDE');
+       (NULL, 1, 1, 2, 6, 1, 'ACTIVE'), -- 5
+       (NULL, 1, 1, 2, 2, 2, 'ACTIVE'), -- 6
+       (NULL, 1, 1, 2, 3, 3, 'ACTIVE'), -- 7
+       (NULL, 1, 1, 2, 4, 4, 'ACTIVE'), -- 8
+       (NULL, 1, 1, 2, 5, 5, 'ACTIVE'); -- 9
 
-INSERT INTO history (user_id, name_db, time, type, description)
-VALUES (1, 'segment-db', '2023-04-12 02:02:00', 'CREATE', 'Новая сессия');
+INSERT INTO screen_question_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, question_id, question_position, question_visibility)
+VALUES (NULL, 1, 1, 1, 6, 26, 1, 'SHOW'),           -- 1
+       (NULL, 1, 1, 1, 6, 27, 2, 'HIDE'),           -- 2
+       (NULL, 1, 1, 1, 6, 28, 3, 'SHOW_PREFILLED'), -- 3
+       (NULL, 1, 1, 1, 6, 29, 4, 'HIDE_PREFILLED'), -- 4
+
+       (NULL, 1, 1, 1, 2, 5, 1, 'SHOW'),            -- 5
+       (NULL, 1, 1, 1, 2, 6, 2, 'HIDE'),            -- 6
+
+       (NULL, 1, 1, 1, 3, 7, 1, 'SHOW'),            -- 7
+       (NULL, 1, 1, 1, 3, 8, 2, 'HIDE'),            -- 8
+       (NULL, 1, 1, 1, 3, 9, 3, 'SHOW'),            -- 9
+
+       (NULL, 1, 1, 1, 4, 10, 1, 'HIDE'),           -- 10
+
+       (NULL, 1, 1, 2, 6, 26, 1, 'SHOW'),           -- 11
+       (NULL, 1, 1, 2, 6, 27, 2, 'HIDE'),           -- 12
+       (NULL, 1, 1, 2, 6, 28, 3, 'SHOW_PREFILLED'), -- 13
+       (NULL, 1, 1, 2, 6, 29, 4, 'HIDE_PREFILLED'), -- 14
+
+       (NULL, 1, 1, 2, 2, 5, 1, 'SHOW'),            -- 15
+       (NULL, 1, 1, 2, 2, 6, 2, 'HIDE'),            -- 16
+
+       (NULL, 1, 1, 2, 3, 7, 1, 'SHOW'),            -- 17
+       (NULL, 1, 1, 2, 3, 8, 2, 'HIDE'),            -- 18
+       (NULL, 1, 1, 2, 3, 9, 3, 'SHOW'),            -- 19
+
+       (NULL, 1, 1, 2, 4, 10, 1, 'HIDE'),           -- 20
+
+       (NULL, 1, 1, 2, 5, 11, 1, 'HIDE'),           -- 22
+       (NULL, 1, 1, 2, 5, 12, 2, 'SHOW'),           -- 23
+       (NULL, 1, 1, 2, 5, 13, 3, 'HIDE'),           -- 24
+       (NULL, 1, 1, 2, 5, 14, 4, 'SHOW');
+-- 25
+
 
 --Второй слой
-INSERT INTO layers (parent_layer_id, title, description, layer_stable, layer_archive, layer_deleted, create_time)
-VALUES (1, 'Второй слой', 'Слой, унаследованный от базового слоя', TRUE, FALSE, FALSE, '2023-04-13 02:02:00'); -- 2
+INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms)
+VALUES (1, 'Второй слой', 'Слой, унаследованный от базового слоя', 'STABLE', '2023-04-13 02:02:00', '{1, 4, 3}');
+-- 2
 
-INSERT INTO segments (layer_id, parent_segment_id, title, description, role, tag)
-VALUES (2, NULL, 'Переводчик', 'Переводчик', '{93}', '{"Translator", "ForeignLanguages"}'); --2
+INSERT INTO segment_state_links (old_id, layer_id, segment_id, state)
+VALUES (NULL, 2, 2, 'ACTIVE'), -- 2
+       (1, 2, 1, 'DISABLED'); -- 3
 
-INSERT INTO questions (layer_id, question_title, question_type, description, possible_answers, question_required, question_visibility)
-VALUES (2, 'Опыт работы за границей', 'SINGLE_CHOICE', 'Опыт работы переводчиком за границей', '{1, 2, 3, 7}', TRUE, 'SHOW'), --3
-       (2, 'Опыт работы на официальных мероприятиях', 'SINGLE_CHOICE', 'Опыт работы переводчиком на мероприятиях с участием официальных лиц',
-        '{7, 8}', TRUE, 'HIDE'); --4
+INSERT INTO question_required_links (old_id, layer_id, segment_id, question_id, question_required)
+VALUES (NULL, 2, 2, 7, TRUE),   -- 7
+       (NULL, 2, 2, 8, FALSE),  -- 8
+       (NULL, 2, 2, 9, TRUE),   -- 9
 
-INSERT INTO question_activate_links (layer_id, segment_id, question_id, entrypoint_id, question_required, question_visibility)
-VALUES (2, 2, 2, 1, TRUE, 'SHOW'),
-       (2, 2, 3, 1, TRUE, 'SHOW'),
-       (2, 2, 4, 1, TRUE, 'HIDE'),
-       (2, 2, 2, 2, TRUE, 'HIDE_PREFILLED'),
-       (2, 2, 3, 2, TRUE, 'SHOW'),
-       (2, 2, 4, 2, TRUE, 'HIDE');
+       (NULL, 2, 2, 10, TRUE),  -- 10
+       (NULL, 2, 2, 11, FALSE), -- 11
+       (NULL, 2, 2, 12, TRUE); -- 12
 
-INSERT INTO history (user_id, name_db, time, type, description)
-VALUES (2, 'segment-db', '2023-04-13 02:02:00', 'CREATE', 'Новая сессия');
+INSERT INTO segment_screen_entrypoint_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, screen_position, screen_state)
+VALUES (NULL, 2, 2, 1, 1, 1, 'ACTIVE'), -- 10
+       (NULL, 2, 2, 1, 2, 2, 'ACTIVE'), -- 11
+       (NULL, 2, 2, 1, 5, 3, 'ACTIVE'), -- 12
+       (NULL, 2, 2, 1, 3, 4, 'ACTIVE'), -- 13
+       (NULL, 2, 2, 1, 4, 5, 'ACTIVE'), -- 14
+
+       (NULL, 2, 2, 2, 1, 1, 'ACTIVE'), -- 15
+       (NULL, 2, 2, 2, 2, 2, 'ACTIVE'), -- 16
+       (NULL, 2, 2, 2, 3, 3, 'ACTIVE'), -- 17
+       (NULL, 2, 2, 2, 4, 4, 'ACTIVE'), -- 18
+       (NULL, 2, 2, 2, 5, 5, 'ACTIVE'); -- 19
+
+INSERT INTO screen_question_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, question_id, question_position, question_visibility)
+VALUES (NULL, 2, 2, 1, 1, 1, 1, 'SHOW'),           -- 26
+       (NULL, 2, 2, 1, 1, 2, 2, 'HIDE'),           -- 27
+       (NULL, 2, 2, 1, 1, 3, 3, 'SHOW_PREFILLED'), -- 28
+       (NULL, 2, 2, 1, 1, 4, 4, 'HIDE_PREFILLED'), -- 29
+
+       (NULL, 2, 2, 1, 2, 5, 1, 'SHOW'),           -- 30
+       (NULL, 2, 2, 1, 2, 6, 2, 'SHOW'),           -- 31
+
+       (NULL, 2, 2, 1, 5, 22, 1, 'HIDE'),          -- 32
+       (NULL, 2, 2, 1, 5, 23, 2, 'HIDE'),          -- 33
+       (NULL, 2, 2, 1, 5, 24, 3, 'HIDE'),          -- 34
+       (NULL, 2, 2, 1, 5, 25, 4, 'HIDE'),          -- 35
+
+       (NULL, 2, 2, 1, 3, 7, 1, 'SHOW'),           -- 36
+       (NULL, 2, 2, 1, 3, 8, 2, 'HIDE'),           -- 37
+       (NULL, 2, 2, 1, 3, 9, 3, 'SHOW'),           -- 38
+
+       (NULL, 2, 2, 1, 4, 10, 1, 'HIDE'),          -- 39
+
+       (NULL, 2, 2, 2, 1, 1, 1, 'SHOW'),           -- 40
+       (NULL, 2, 2, 2, 1, 2, 2, 'HIDE'),           -- 41
+       (NULL, 2, 2, 2, 1, 3, 3, 'SHOW'),           -- 42
+       (NULL, 2, 2, 2, 1, 4, 4, 'HIDE'),           -- 43
+
+       (NULL, 2, 2, 2, 2, 5, 1, 'HIDE'),           -- 44
+       (NULL, 2, 2, 2, 2, 6, 2, 'HIDE'),           -- 45
+
+       (NULL, 2, 2, 2, 4, 10, 1, 'HIDE'),          -- 46
+
+       (NULL, 2, 2, 2, 5, 22, 1, 'HIDE'),          -- 47
+       (NULL, 2, 2, 2, 5, 23, 2, 'SHOW'),          -- 48
+       (NULL, 2, 2, 2, 5, 24, 3, 'HIDE'),          -- 49
+       (NULL, 2, 2, 2, 5, 25, 4, 'SHOW');
+-- 50
+
 
 --Третий слой
-INSERT INTO layers (parent_layer_id, title, description, layer_stable, layer_archive, layer_deleted, create_time)
-VALUES (2, 'Третий слой', 'Слой, унаследованный от второго слоя', TRUE, FALSE, FALSE, '2023-04-13 02:02:00'); -- 3
+INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms)
+VALUES (2, 'Третий слой', 'Слой, унаследованный от второго слоя', 'STABLE', '2023-04-13 02:02:00', '{1, 4, 5}');
+-- 3
 
-INSERT INTO segments (layer_id, parent_segment_id, title, description, role, tag)
-VALUES (3, 2, 'Переводчик с китайского', 'Переводчик, владеющмя китайским языком, унаследован от переводчика', '{93}',
-        '{"Translator", "Chinese"}'),                                                --3
-       (3, NULL, 'Охранник', 'Охранник', '{90}', '{"Security", "Safety", "Guard"}'), --4
-       (3, 1, 'Java-разработчик', 'Разработчик серверной части приложений на языке Java', '{96}',
-        '{"Java", "Backend", "Programmer", "Software", "IT"}'); --5
+INSERT INTO segment_state_links (old_id, layer_id, segment_id, state)
+VALUES (NULL, 3, 3, 'ACTIVE'), -- 4
+       (1, 3, 1, 'ACTIVE'),    -- 5
+       (2, 3, 2, 'DISABLED'); -- 6
 
-INSERT INTO questions (layer_id, question_title, question_type, description, possible_answers, question_required, question_visibility)
-VALUES (3, 'Время владения китайским языком', 'SINGLE_CHOICE', 'Количество лет практики китайского языка', '{1, 2, 3, 7}', TRUE, 'SHOW'), --5
-       (3, 'Опыт проживания в Китае', 'SINGLE_CHOICE', 'Был ли опыт проживания в КНР', '{9, 10}', FALSE, 'SHOW'),                         --6
-       (3, 'Имеете ли разряд', 'SINGLE_CHOICE', 'Был ли опыт прохождения обучения в Китае', '{9, 10}', TRUE, 'SHOW'),                     --7
-       (3, 'Разряд', 'SINGLE_CHOICE', 'Имеющийся разряд по профессии', '{13, 14, 15, 16, 17, 18}', TRUE, 'SHOW'),                         --8
-       (3, 'Технологический стэк', 'MULTI_SELECT', 'Перечень технологий, которыми умеет пользоваться кандидат', '{19, 20, 21, 22}', TRUE, 'SHOW'); --9
+INSERT INTO question_required_links (old_id, layer_id, segment_id, question_id, question_required)
+VALUES (NULL, 3, 3, 7, TRUE),  -- 13
+       (NULL, 3, 3, 8, FALSE), -- 14
+       (3, 3, 1, 3, FALSE),    -- 15
 
-INSERT INTO answers (layer_id, open_questions, title, POSITIVE_title, answer_type, is_default_answer, skip_at_result)
-VALUES (3, '{8}', 'Да, есть разряд', 'Разряд имеется', 'POSITIVE', FALSE, FALSE),   --11
-       (3, NULL, 'Разряда нет', 'Разряд отстутствует', 'NEGATIVE', FALSE, FALSE),   --12
-       (3, NULL, '1-й разряд', '1-й разряд', 'POSITIVE', TRUE, FALSE),              --13
-       (3, NULL, '2-й разряд', '2-й разряд', 'POSITIVE', FALSE, FALSE),             --14
-       (3, NULL, '3-й разряд', '3-й разряд', 'POSITIVE', FALSE, FALSE),             --15
-       (3, NULL, '4-й разряд', '4-й разряд', 'POSITIVE', FALSE, FALSE),             --16
-       (3, NULL, '5-й разряд', '5-й разряд', 'POSITIVE', FALSE, FALSE),             --17
-       (3, NULL, '6-й разряд', '6-й разряд', 'POSITIVE', FALSE, FALSE),             --18
-       (3, NULL, 'Spring Framework', 'Spring Framework', 'POSITIVE', FALSE, FALSE), --19
-       (3, NULL, 'Stream API', 'Stream API', 'POSITIVE', FALSE, FALSE),             --20
-       (3, NULL, 'Hibernate', 'Hibernate', 'POSITIVE', FALSE, FALSE),               --21
-       (3, NULL, 'Java Concurrency', 'Java Concurrency', 'POSITIVE', FALSE, FALSE); --22
+       (10, 3, 2, 10, FALSE),  -- 16
+       (11, 3, 2, 11, TRUE);
+-- 17
+-- (NULL, 5, 13, TRUE); -- 18  это из прошлого слоя должно прийти
 
-INSERT INTO question_activate_links (layer_id, segment_id, question_id, entrypoint_id, question_required, question_visibility)
-VALUES (3, 3, 1, 1, TRUE, 'SHOW'),
-       (3, 3, 2, 1, TRUE, 'SHOW'),
-       (3, 3, 5, 1, TRUE, 'SHOW'),
-       (3, 3, 6, 1, FALSE, 'SHOW'),
-       (3, 3, 1, 2, TRUE, 'SHOW'),
-       (3, 3, 2, 2, TRUE, 'SHOW'),
-       (3, 3, 5, 2, TRUE, 'SHOW'),
-       (3, 3, 6, 2, FALSE, 'SHOW'),
-       (3, 4, 7, 1, TRUE, 'SHOW'),
-       (3, 4, 8, 1, TRUE, 'SHOW'),
-       (3, 4, 7, 2, TRUE, 'SHOW'),
-       (3, 4, 8, 2, TRUE, 'SHOW'),
-       (3, 5, 1, 1, TRUE, 'SHOW'),
-       (3, 5, 2, 1, TRUE, 'SHOW'),
-       (3, 5, 9, 1, TRUE, 'SHOW'),
-       (3, 5, 1, 2, TRUE, 'SHOW'),
-       (3, 5, 2, 2, TRUE, 'SHOW'),
-       (3, 5, 9, 2, TRUE, 'SHOW');
+INSERT INTO segment_screen_entrypoint_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, screen_position, screen_state)
+VALUES -- (NULL, 3, 2, 1, 1, 1), -- 10 это из прошлого слоя должно прийти
+       -- (NULL, 3, 2, 1, 2, 2), -- 11 это из прошлого слоя должно прийти
+       -- (NULL, 3, 2, 1, 5, 3), -- 12 это из прошлого слоя должно прийти
+       (13, 3, 2, 1, 4, 5, 'ACTIVE'), -- 20
+       (14, 3, 2, 1, 3, 4, 'ACTIVE'), -- 21
 
-INSERT INTO history (user_id, name_db, time, type, description)
-VALUES (3, 'segment-db', '2023-04-14 02:02:00', 'CREATE', 'Новая сессия');
+       (15, 3, 2, 2, 2, 2, 'ACTIVE'), -- 15
+       (16, 3, 2, 2, 1, 1, 'ACTIVE'),
 
---Четвертый слой, архивный
-INSERT INTO layers (parent_layer_id, title, description, layer_stable, layer_archive, layer_deleted, create_time)
-VALUES (3, 'Четвертый слой', 'Слой, унаследованный от третьего слоя, архивный', FALSE, TRUE, FALSE, '2023-04-15 02:02:00'); -- 4
+       (18, 2, 2, 2, 4, 4, 'DISABLED'),-- 18
+       (19, 2, 2, 2, 5, 4, 'ACTIVE');
+-- 19
+--        (NULL, 3, 2, 2, 3, 3), -- 17 это из прошлого слоя должно прийти
+--        (NULL, 3, 2, 2, 4, 4), -- 18 это из прошлого слоя должно прийти
+--        (NULL, 3, 2, 2, 5, 4); -- 19 это из прошлого слоя должно прийти
 
-INSERT INTO segments (layer_id, parent_segment_id, title, description, role, tag)
-VALUES (4, 4, 'Телохранитель', 'Телохранитель, унаследован от охранника', '{90}', '{"Bodyguard", "Security", "PrivateProtection"}'); --6
+INSERT INTO screen_question_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, question_id, question_position, question_visibility)
+VALUES (26, 2, 2, 1, 1, 1, 1, 'SHOW_PREFILLED'), -- 26 изменены состояния визибилити
+       (27, 2, 2, 1, 1, 2, 2, 'HIDE_PREFILLED'), -- 27
+--        (NULL, 10, 1, 1, 'SHOW_PREFILLED'), -- 28 это из прошлого слоя должно прийти
+--        (NULL, 10, 1, 1, 'HIDE_PREFILLED'), -- 29 это из прошлого слоя должно прийти
 
-INSERT INTO questions (layer_id, question_title, question_type, description, possible_answers, question_required, question_visibility)
-VALUES (4, 'Разрешение на оружие', 'SINGLE_CHOICE', 'Имеется ли разрешение на ношение оружия', '{9, 10}', TRUE, 'SHOW'), --10
-       (4, 'Владение боевыми искусствами', 'SINGLE_CHOICE', 'Владеет ли кандидат боевыми искусствами', '{9, 10}', TRUE, 'SHOW'); --11
+       (30, 2, 2, 1, 2, 6, 2, 'SHOW'),           -- 30 поменяны позиции вопросов.
+       (31, 2, 2, 1, 5, 5, 1, 'SHOW');
+-- 31
 
-INSERT INTO question_activate_links (layer_id, segment_id, question_id, entrypoint_id, question_required, question_visibility)
-VALUES (4, 6, 7, 1, TRUE, 'SHOW'),
-       (4, 6, 8, 1, TRUE, 'SHOW'),
-       (4, 6, 10, 1, TRUE, 'SHOW'),
-       (4, 6, 11, 1, TRUE, 'SHOW'),
-       (4, 6, 7, 2, TRUE, 'SHOW'),
-       (4, 6, 8, 2, TRUE, 'SHOW'),
-       (4, 6, 10, 2, TRUE, 'SHOW'),
-       (4, 6, 11, 2, TRUE, 'SHOW');
+--        (NULL, 13, 9, 1, 'SHOW'),           -- 32 это из прошлого слоя должно прийти
+--        (NULL, 13, 9, 1, 'HIDE'),           -- 33 это из прошлого слоя должно прийти
+--        (NULL, 13, 9, 1, 'SHOW'),           -- 34 это из прошлого слоя должно прийти
+--
+--        (NULL, 14, 9, 1, 'HIDE'),           -- 35 это из прошлого слоя должно прийти
+--
+--        (NULL, 15, 9, 1, 'SHOW'),           -- 36 это из прошлого слоя должно прийти
+--        (NULL, 15, 1, 1, 'HIDE'),           -- 37 это из прошлого слоя должно прийти
+--        (NULL, 15, 9, 1, 'SHOW'),           -- 38 это из прошлого слоя должно прийти
+--        (NULL, 15, 9, 1, 'HIDE'),           -- 39 это из прошлого слоя должно прийти
+--        (NULL, 15, 9, 1, 'SHOW'),           -- 40 это из прошлого слоя должно прийти
+--
+--        (NULL, 16, 9, 1, 'HIDE'),           -- 41 это из прошлого слоя должно прийти
+--
+--        (NULL, 17, 9, 1, 'SHOW'),           -- 42 это из прошлого слоя должно прийти
+--        (NULL, 17, 1, 1, 'HIDE'),           -- 43 это из прошлого слоя должно прийти
+--        (NULL, 17, 9, 1, 'SHOW'),           -- 44 это из прошлого слоя должно прийти
+--
+--        (NULL, 18, 9, 1, 'HIDE'),           -- 45 это из прошлого слоя должно прийти
+--        (NULL, 18, 9, 1, 'SHOW'),           -- 46 это из прошлого слоя должно прийти
+--
+--        (NULL, 19, 9, 1, 'HIDE'),           -- 47 это из прошлого слоя должно прийти
+--        (NULL, 19, 9, 1, 'SHOW'),           -- 48 это из прошлого слоя должно прийти
+--        (NULL, 19, 1, 1, 'HIDE'),           -- 49 это из прошлого слоя должно прийти
+--        (NULL, 19, 9, 1, 'SHOW'); -- 50 это из прошлого слоя должно прийти
 
-INSERT INTO history (user_id, name_db, time, type, description)
-VALUES (4, 'segment-db', '2023-04-15 02:02:00', 'UPDATE', 'Новая сессия');
 
+--Четвертый слой
+INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms)
+VALUES (1, 'Тестовый слой', 'Слой, унаследованный от второго слоя', 'TEST', '2023-04-14 02:02:00', '{1, 4, 5}');
 --Пятый слой
-INSERT INTO layers (parent_layer_id, title, description, layer_stable, layer_archive, layer_deleted, create_time)
-VALUES (3, 'Пятый слой', 'Слой, унаследованный от третьего слоя', TRUE, FALSE, FALSE, '2023-04-16 02:02:00'); -- 5
+INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms)
+VALUES (1, 'ARCHIVE слой', 'Слой, унаследованный от второго слоя', 'ARCHIVE', '2023-04-15 02:02:00', '{1, 4, 5}');
+--Шестой слой
+INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms)
+VALUES (1, 'CONFLICT слой', 'Слой, унаследованный от второго слоя', 'CONFLICT', '2023-04-16 02:02:00', '{1, 4, 5}');
+--Седьмой слой
 
-INSERT INTO entrypoints (layer_id, title, description)
-VALUES (5, 'Редактирование резюме', 'Размещение резюме соискателем');
 
-INSERT INTO segments (layer_id, parent_segment_id, title, description, role, tag)
-VALUES (5, NULL, 'Водитель', 'Водитель транспортного средства', '{21}', '{"Driver", "Car", "Road"}'), --7
-       (5, NULL, 'Бухгатлер', 'Бухгатлер', '{3, 18}', '{"Finance", "Accounting", "Money", "Calculations"}'); --8
-
-INSERT INTO questions (layer_id, question_title, question_type, description, possible_answers, question_required, question_visibility)
-VALUES (5, 'Доступные категории транспортных средств', 'MULTI_SELECT', 'Доступные категории транспортных средств', '{23, 24, 25, 26}', TRUE,
-        'SHOW'),                                                                                          --12
-       (5, 'Водительский стаж', 'SINGLE_CHOICE', 'Водительский стаж в годах', '{1, 2, 3}', TRUE, 'SHOW'), --13
-       (5, 'Умение работать в 1С', 'SINGLE_CHOICE', 'Умение работать в 1С', '{7, 8}', TRUE, 'SHOW'); --14
-
-INSERT INTO answers (layer_id, open_questions, title, POSITIVE_title, answer_type, is_default_answer, skip_at_result)
-VALUES (5, NULL, 'A', 'Категория A', 'NEUTRAL', FALSE, FALSE), --23
-       (5, NULL, 'B', 'Категория B', 'NEUTRAL', FALSE, FALSE), --24
-       (5, NULL, 'C', 'Категория C', 'NEUTRAL', FALSE, FALSE), --25
-       (5, NULL, 'D', 'Категория D', 'NEUTRAL', FALSE, FALSE); --26
-
-INSERT INTO question_activate_links (layer_id, segment_id, question_id, entrypoint_id, question_required, question_visibility)
-VALUES (5, 7, 12, 1, TRUE, 'SHOW'),
-       (5, 7, 13, 1, TRUE, 'SHOW'),
-       (5, 7, 12, 2, TRUE, 'SHOW'),
-       (5, 7, 13, 2, TRUE, 'SHOW'),
-       (5, 8, 1, 1, TRUE, 'SHOW'),
-       (5, 8, 2, 1, TRUE, 'SHOW'),
-       (5, 8, 14, 1, TRUE, 'SHOW'),
-       (5, 8, 1, 2, TRUE, 'SHOW'),
-       (5, 8, 2, 2, TRUE, 'SHOW'),
-       (5, 8, 14, 2, TRUE, 'SHOW'),
-       (5, 5, 9, 1, FALSE, 'HIDE'),
-       (5, 5, 9, 2, FALSE, 'HIDE');
-
-INSERT INTO history (user_id, name_db, time, type, description)
-VALUES (5, 'segment-db', '2023-04-16 02:02:00', 'CREATE', 'Новая сессия');
-
---Шестой слой, удаленный
-INSERT INTO layers (parent_layer_id, title, description, layer_stable, layer_archive, layer_deleted, create_time)
-VALUES (5, 'Шестой слой', 'Слой, унаследованный от пятого слоя, удаленный', FALSE, FALSE, TRUE, '2023-04-17 02:02:00'); -- 6
-
-INSERT INTO segments (layer_id, parent_segment_id, title, description, role, tag)
-VALUES (6, NULL, 'Механик', 'Специалист по сборке или ремонту различной техники', '{173}', '{"Repair", "Mechanic", "Assembly"}'); --9
-
-INSERT INTO question_activate_links (layer_id, segment_id, question_id, entrypoint_id, question_required, question_visibility)
-VALUES (6, 9, 1, 1, TRUE, 'SHOW'),
-       (6, 9, 2, 1, TRUE, 'SHOW'),
-       (6, 9, 7, 1, TRUE, 'SHOW'),
-       (6, 9, 1, 2, TRUE, 'SHOW'),
-       (6, 9, 2, 2, TRUE, 'SHOW'),
-       (6, 9, 7, 2, TRUE, 'SHOW');
-
-INSERT INTO history (user_id, name_db, time, type, description)
-VALUES (6, 'segment-db', '2023-04-17 02:02:00', 'DELETE', 'Новая сессия');
-
---Седьмой слой, экспериментальный
-INSERT INTO layers (parent_layer_id, title, description, layer_stable, layer_archive, layer_deleted, create_time)
-VALUES (5, 'Седьмой слой', 'Слой, унаследованный от пятого слоя, экспериментальный', FALSE, FALSE, FALSE, '2023-04-18 02:02:00'); -- 7
-
-INSERT INTO segments (layer_id, parent_segment_id, title, description, role, tag)
-VALUES (7, NULL, 'Психолог', 'Психолог', '{101}', '{"Psychologist", "Life", "Thoughts", "Help"}'), --10
-       (7, NULL, 'Технический директор (CTO)', 'Технический директор (CTO)', '{11, 125}', '{"CTO", "Director", "Management"}'); --11
-
-INSERT INTO questions (layer_id, question_title, question_type, description, possible_answers, question_required, question_visibility, resume_field)
-VALUES (7, 'Курсы повышения квалификации', 'SINGLE_CHOICE', 'Факт прохождения курсов повышения квалификации', '{9, 10}', FALSE,
-        'HIDE_PREFILLED', TRUE); --15
-
-INSERT INTO questions (layer_id, question_title, question_type, description, possible_answers, question_required, question_visibility)
-VALUES (7, 'Возможен ли прием онлайн', 'SINGLE_CHOICE', 'Проводит ли специалист онлайн приемы пациентов', '{9, 10}', FALSE, 'HIDE'),    --16
-       (7, 'Опыт работы в качестве CTO', 'SINGLE_CHOICE', 'Опыт работы в качестве CTO', '{26}', TRUE, 'SHOW'),                          --17
-       (7, 'Работали ли на других управляющих должностях', 'SINGLE_CHOICE', 'Работали ли на других управляющих должностях', '{9, 10}', TRUE,
-        'HIDE'),                                                                                                                        --18
-       (7, 'Величина компании, в которой вы работали', 'SINGLE_CHOICE', 'Величина компании, в которой вы работали', '{29, 30, 31, 32}', TRUE,
-        'HIDE'),                                                                                                                        --19
-       (7, 'Доводилось ли проходить курсы по управлению персоналом', 'SINGLE_CHOICE', 'Доводилось ли проходить курсы по управлению персоналом',
-        '{9, 10}', TRUE, 'HIDE'),                                                                                                       --20
-       (7, 'Какой формат работы предпочитаете', 'MULTI_SELECT', 'Какой формат работы предпочитаете', '{32, 33, 34, 35}', TRUE, 'HIDE'), --21
-       (7, 'Доводилось ли работать в международных компаниях', 'SINGLE_CHOICE', 'Доводилось ли работать в международных компаниях', '{36, 37}', TRUE,
-        'HIDE'),                                                                                                                        --22
-       (7, 'Уровень английского', 'SINGLE_CHOICE', 'Уровень английского', '{38, 39, 40}', TRUE, 'HIDE'),                                --23
-       (7, 'Владение другими иностранными языками', 'SINGLE_CHOICE', 'Владение другими иностранными языками', '{9, 10}', TRUE, 'HIDE'), --24
-       (7, 'Технологический стэк', 'MULTI_SELECT', 'Перечень технологий, которыми умеет пользоваться кандидат', '{19, 20, 21, 22, 41, 42, 43}', TRUE, 'SHOW'); --25
-
-INSERT INTO answers (layer_id, open_questions, title, POSITIVE_title, answer_type, is_default_answer, skip_at_result)
-VALUES (7, '{19, 20, 22}', 'Да, работал CTO', 'Да, работал CTO', 'POSITIVE', FALSE, FALSE),                                    --27
-       (7, '{18, 19, 20}', 'Нет, не работал CTO', 'Нет, не работал CTO', 'NEGATIVE', FALSE, FALSE),                            --28
-       (7, NULL, 'До 100 сотрудников', 'До 100 сотрудников', 'NEUTRAL', FALSE, FALSE),                                         --29
-       (7, NULL, 'До 500 сотрудников', 'До 500 сотрудников', 'NEUTRAL', FALSE, FALSE),                                         --30
-       (7, NULL, 'До 1000 сотрудников', 'До 1000 сотрудников', 'NEUTRAL', FALSE, FALSE),                                       --31
-       (7, NULL, 'Офис', 'Работа в офисе', 'NEUTRAL', FALSE, FALSE),                                                           --32
-       (7, NULL, 'Удаленная работа', 'Удаленная работа', 'NEUTRAL', FALSE, FALSE),                                             --33
-       (7, NULL, 'Гибрид', 'гибридный формат работы', 'NEUTRAL', FALSE, FALSE),                                                --34
-       (7, NULL, 'Не важен формат работы', 'Не важен формат работы', 'NEUTRAL', FALSE, FALSE),                                 --35
-       (7, '{23, 24}', 'Работал в международной компании', 'Работал в международной компании', 'NEUTRAL', FALSE, FALSE),       --36
-       (7, '{23, 24}', 'Не работал в международной компании', 'Не работал в международной компании', 'NEUTRAL', FALSE, FALSE), --37
-       (7, NULL, 'Низкий', 'Низкий', 'NEUTRAL', FALSE, FALSE),                                                                 --38
-       (7, NULL, 'Средний', 'Средний', 'NEUTRAL', FALSE, FALSE),                                                               --39
-       (7, NULL, 'Высокий', 'Высокий', 'NEUTRAL', FALSE, FALSE), --40
-       (7, NULL, 'Java Core', 'Java Core', 'NEUTRAL', FALSE, FALSE), --41
-       (7, NULL, 'PostgreSQL', 'PostgreSQL', 'NEUTRAL', FALSE, FALSE), --42
-       (7, NULL, 'Kafka', 'Kafka', 'NEUTRAL', FALSE, FALSE); --43
-
-INSERT INTO question_activate_links (layer_id, segment_id, question_id, entrypoint_id, question_required, question_visibility)
-VALUES (7, 10, 1, 1, TRUE, 'SHOW'),
-       (7, 10, 2, 1, TRUE, 'SHOW'),
-       (7, 10, 15, 1, FALSE, 'HIDE_PREFILLED'),
-       (7, 10, 16, 1, FALSE, 'HIDE'),
-       (7, 11, 17, 1, FALSE, 'HIDE'),
-       (7, 11, 18, 1, FALSE, 'HIDE'),
-       (7, 11, 19, 1, FALSE, 'HIDE'),
-       (7, 11, 20, 1, FALSE, 'HIDE'),
-       (7, 11, 21, 1, FALSE, 'HIDE'),
-       (7, 11, 22, 1, FALSE, 'HIDE'),
-       (7, 11, 23, 1, FALSE, 'HIDE'),
-       (7, 11, 24, 1, FALSE, 'HIDE'),
-       (7, 10, 1, 2, TRUE, 'SHOW'),
-       (7, 10, 2, 2, TRUE, 'HIDE'),
-       (7, 10, 15, 2, FALSE, 'HIDE'),
-       (7, 10, 16, 2, FALSE, 'HIDE'),
-       (7, 11, 17, 2, FALSE, 'HIDE'),
-       (7, 11, 18, 2, FALSE, 'HIDE'),
-       (7, 11, 19, 2, FALSE, 'HIDE'),
-       (7, 11, 20, 2, FALSE, 'HIDE'),
-       (7, 11, 21, 2, FALSE, 'HIDE'),
-       (7, 11, 22, 2, FALSE, 'HIDE'),
-       (7, 11, 23, 2, FALSE, 'HIDE'),
-       (7, 11, 24, 2, FALSE, 'HIDE'),
-       (7, 5, 25, 1, FALSE, 'SHOW'),
-       (7, 5, 25, 2, FALSE, 'SHOW');
-
-INSERT INTO history (user_id, name_db, time, type, description)
-VALUES (7, 'segment-db', '2023-04-18 02:02:00', 'CREATE', 'Новая сессия');
-
+INSERT INTO PROFESSIONAL_ROLE (PROFESSIONAL_ROLE_ID, NAME) OVERRIDING SYSTEM VALUE
+VALUES (1, 'Event-менеджер'),
+       (2, 'PR-менеджер'),
+       (3, 'SMM-менеджер, контент-менеджер'),
+       (4, 'Автомойщик'),
+       (5, 'Автослесарь, автомеханик'),
+       (6, 'Агент по недвижимости'),
+       (7, 'Агроном'),
+       (8, 'Администратор'),
+       (9, 'Администратор магазина, администратор торгового зала'),
+       (10, 'Аналитик'),
+       (11, 'Андеррайтер'),
+       (12, 'Арт-директор, креативный директор'),
+       (13, 'Артист, актер, аниматор'),
+       (14, 'Архитектор'),
+       (15, 'Ассистент врача'),
+       (16, 'Аудитор'),
+       (17, 'Бизнес-тренер'),
+       (18, 'Бухгалтер'),
+       (19, 'Ветеринарный врач'),
+       (20, 'Видеооператор, видеомонтажер'),
+       (21, 'Водитель'),
+       (22, 'Военнослужащий'),
+       (23, 'Воспитатель, няня'),
+       (24, 'Врач'),
+       (25, 'Гейм-дизайнер'),
+       (26, 'Генеральный директор, исполнительный директор (CEO)'),
+       (27, 'Геодезист'),
+       (28, 'Геолог'),
+       (29, 'Главный врач, заведующий отделением'),
+       (30, 'Главный инженер проекта'),
+       (31, 'Грузчик'),
+       (32, 'Дворник'),
+       (33, 'Делопроизводитель, архивариус'),
+       (34, 'Дизайнер, художник'),
+       (35, 'Директор магазина, директор сети магазинов'),
+       (36, 'Директор по информационным технологиям (CIO)'),
+       (37, 'Директор по маркетингу и PR (CMO)'),
+       (38, 'Директор по персоналу (HRD)'),
+       (39, 'Диспетчер'),
+       (40, 'Другое'),
+       (41, 'Журналист, корреспондент'),
+       (42, 'Заведующий аптекой'),
+       (43, 'Зоотехник'),
+       (44, 'Инженер по качеству'),
+       (45, 'Инженер по охране труда и технике безопасности, инженер-эколог'),
+       (46, 'Инженер по эксплуатации'),
+       (47, 'Инженер ПТО, инженер-сметчик'),
+       (48, 'Инженер-конструктор, инженер-проектировщик'),
+       (49, 'Технолог'),
+       (50, 'Казначей'),
+       (51, 'Кассир-операционист'),
+       (52, 'Кладовщик'),
+       (53, 'Коммерческий директор (CCO)'),
+       (54, 'Координатор отдела продаж'),
+       (55, 'Копирайтер, редактор, корректор'),
+       (56, 'Косметолог'),
+       (57, 'Кредитный специалист'),
+       (58, 'Курьер'),
+       (59, 'Маляр, штукатур'),
+       (60, 'Массажист'),
+       (61, 'Мастер ногтевого сервиса'),
+       (62, 'Мастер-приемщик'),
+       (63, 'Машинист'),
+       (64, 'Медицинская сестра, медицинский брат'),
+       (65, 'Медицинский представитель'),
+       (66, 'Менеджер по закупкам'),
+       (67, 'Менеджер по логистике, менеджер по ВЭД'),
+       (68, 'Менеджер по маркетингу, интернет-маркетолог'),
+       (69, 'Менеджер по персоналу'),
+       (70, 'Менеджер по продажам, менеджер по работе с клиентами'),
+       (71, 'Менеджер по работе с партнерами'),
+       (72, 'Менеджер по туризму'),
+       (73, 'Менеджер продукта'),
+       (74, 'Менеджер ресторана'),
+       (75, 'Менеджер/консультант по стратегии'),
+       (76, 'Менеджер/руководитель АХО'),
+       (77, 'Мерчандайзер'),
+       (78, 'Монтажник'),
+       (79, 'Научный специалист, исследователь'),
+       (80, 'Начальник производства'),
+       (81, 'Начальник склада'),
+       (82, 'Начальник смены, мастер участка'),
+       (83, 'Оператор call-центра, специалист контактного центра'),
+       (84, 'Оператор ПК, оператор базы данных'),
+       (85, 'Оператор производственной линии'),
+       (86, 'Оператор станков с ЧПУ'),
+       (87, 'Операционный директор (COO)'),
+       (88, 'Офис-менеджер'),
+       (89, 'Официант, бармен, бариста'),
+       (90, 'Охранник'),
+       (91, 'Оценщик'),
+       (92, 'Парикмахер'),
+       (93, 'Переводчик'),
+       (94, 'Повар, пекарь, кондитер'),
+       (95, 'Полицейский'),
+       (96, 'Программист, разработчик'),
+       (97, 'Продавец-консультант, продавец-кассир'),
+       (98, 'Продюсер'),
+       (99, 'Промоутер'),
+       (100, 'Прораб, мастер СМР'),
+       (101, 'Психолог'),
+       (102, 'Разнорабочий'),
+       (103, 'Режиссер, сценарист'),
+       (104, 'Руководитель группы разработки'),
+       (105, 'Руководитель отдела клиентского обслуживания'),
+       (106, 'Руководитель отдела продаж'),
+       (107, 'Руководитель проектов'),
+       (108, 'Руководитель строительного проекта'),
+       (109, 'Сварщик'),
+       (110, 'Секретарь, помощник руководителя, ассистент'),
+       (111, 'Сервисный инженер, инженер-механик'),
+       (112, 'Сетевой инженер'),
+       (113, 'Системный администратор'),
+       (114, 'Системный инженер'),
+       (115, 'Слесарь, сантехник'),
+       (116, 'Специалист по информационной безопасности'),
+       (117, 'Специалист по кадрам'),
+       (118, 'Специалист по подбору персонала'),
+       (119, 'Специалист по тендерам'),
+       (120, 'Специалист службы безопасности'),
+       (121, 'Специалист технической поддержки'),
+       (122, 'Страховой агент'),
+       (123, 'Супервайзер'),
+       (124, 'Тестировщик'),
+       (125, 'Технический директор (CTO)'),
+       (126, 'Технический писатель'),
+       (127, 'Товаровед'),
+       (128, 'Токарь, фрезеровщик, шлифовщик'),
+       (129, 'Торговый представитель'),
+       (130, 'Уборщица, уборщик'),
+       (131, 'Упаковщик, комплектовщик'),
+       (132, 'Учитель, преподаватель, педагог'),
+       (133, 'Фармацевт-провизор'),
+       (134, 'Финансовый аналитик, инвестиционный аналитик'),
+       (135, 'Финансовый директор (CFO)'),
+       (136, 'Финансовый контролер'),
+       (137, 'Финансовый менеджер'),
+       (138, 'Фитнес-тренер, инструктор тренажерного зала'),
+       (139, 'Фотограф, ретушер'),
+       (140, 'Хостес'),
+       (141, 'Швея, портной, закройщик'),
+       (142, 'Экономист'),
+       (143, 'Электромонтажник'),
+       (144, 'Инженер-энергетик, инженер-электрик'),
+       (145, 'Юрисконсульт'),
+       (146, 'Юрист'),
+       (147, 'Специалист по взысканию задолженности'),
+       (148, 'Системный аналитик'),
+       (149, 'Контролёр ОТК'),
+       (150, 'Бизнес-аналитик'),
+       (151, 'Специалист по сертификации'),
+       (152, 'Метролог'),
+       (153, 'Менеджер по компенсациям и льготам'),
+       (154, 'Брокер'),
+       (155, 'Методолог'),
+       (156, 'BI-аналитик, аналитик данных'),
+       (157, 'Руководитель отдела аналитики'),
+       (158, 'Комплаенс-менеджер'),
+       (159, 'Бортпроводник'),
+       (160, 'DevOps-инженер'),
+       (161, 'Руководитель филиала'),
+       (162, 'Мастер по ремонту оборудования, техники'),
+       (163, 'Маркетолог-аналитик'),
+       (164, 'Продуктовый аналитик'),
+       (165, 'Дата-сайентист'),
+       (166, 'Директор юридического департамента (CLO)'),
+       (167, 'Методист'),
+       (168, 'Лаборант'),
+       (169, 'Инженер-электроник, инженер-электронщик'),
+       (170, 'Руководитель отдела маркетинга и рекламы'),
+       (171, 'Руководитель отдела персонала'),
+       (172, 'Руководитель отдела логистики'),
+       (173, 'Механик'),
+       (174, 'Инженер ПНР');

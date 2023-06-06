@@ -1,78 +1,181 @@
 package ru.hhschool.segment.service;
 
+import ru.hhschool.segment.exception.HttpBadRequestException;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
-import ru.hhschool.segment.dao.abstracts.QuestionActivatorLinkDao;
 import ru.hhschool.segment.dao.abstracts.SegmentDao;
-import ru.hhschool.segment.mapper.viewsegments.SegmentSelectedMapper;
-import ru.hhschool.segment.mapper.viewsegments.SegmentViewEntryPointMapper;
-import ru.hhschool.segment.mapper.viewsegments.SegmentViewMapper;
-import ru.hhschool.segment.mapper.viewsegments.SegmentViewQuestionMapper;
-import ru.hhschool.segment.model.dto.viewsegments.SegmentSelectedDto;
-import ru.hhschool.segment.model.dto.viewsegments.SegmentViewDto;
-import ru.hhschool.segment.model.dto.viewsegments.SegmentViewEntryPointDto;
-import ru.hhschool.segment.model.dto.viewsegments.SegmentViewQuestionDto;
-import ru.hhschool.segment.model.entity.*;
+import ru.hhschool.segment.dao.abstracts.SegmentStateLinkDao;
+import ru.hhschool.segment.dao.abstracts.ScreenQuestionLinkDao;
+import ru.hhschool.segment.dao.abstracts.SegmentScreenEntrypointLinkDao;
+import ru.hhschool.segment.dao.abstracts.QuestionRequiredLinkDao;
+import ru.hhschool.segment.dao.abstracts.RoleDao;
+import ru.hhschool.segment.mapper.RoleMapper;
+import ru.hhschool.segment.mapper.SegmentMapper;
+import ru.hhschool.segment.mapper.viewsegments.layerview.LayerSegmentsMapper;
+import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentLayerViewMapper;
+import ru.hhschool.segment.model.dto.RoleDto;
+import ru.hhschool.segment.model.dto.segment.SegmentCreateDto;
+import ru.hhschool.segment.model.dto.segment.SegmentDto;
+import ru.hhschool.segment.model.dto.viewsegments.enums.SegmentViewChangeState;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.LayerSegmentsDto;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentLayerViewDto;
+import ru.hhschool.segment.model.entity.Segment;
+import ru.hhschool.segment.model.entity.Layer;
+import ru.hhschool.segment.model.entity.SegmentStateLink;
+import ru.hhschool.segment.model.entity.Role;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.Map;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Collections;
 
 public class SegmentService {
-  private final SegmentDao segmentDao;
   private final LayerDao layerDao;
-  private final QuestionActivatorLinkDao questionActivatorLinkDao;
+  private final SegmentDao segmentDao;
+  private final SegmentStateLinkDao segmentStateLinkDao;
+  private final ScreenQuestionLinkDao screenQuestionLinkDao;
+  private final SegmentScreenEntrypointLinkDao segmentScreenEntrypointLinkDao;
+  private final QuestionRequiredLinkDao questionRequiredLinkDao;
+  private final RoleDao roleDao;
 
   @Inject
-  public SegmentService(SegmentDao segmentDao, LayerDao layerDao, QuestionActivatorLinkDao questionActivatorLinkDao) {
-    this.segmentDao = segmentDao;
+  public SegmentService(LayerDao layerDao,
+                        SegmentDao segmentDao, SegmentStateLinkDao segmentStateLinkDao,
+                        ScreenQuestionLinkDao screenQuestionLinkDao,
+                        SegmentScreenEntrypointLinkDao segmentScreenEntrypointLinkDao,
+                        QuestionRequiredLinkDao questionRequiredLinkDao,
+                        RoleDao roleDao) {
     this.layerDao = layerDao;
-    this.questionActivatorLinkDao = questionActivatorLinkDao;
+    this.segmentDao = segmentDao;
+    this.segmentStateLinkDao = segmentStateLinkDao;
+    this.screenQuestionLinkDao = screenQuestionLinkDao;
+    this.segmentScreenEntrypointLinkDao = segmentScreenEntrypointLinkDao;
+    this.questionRequiredLinkDao = questionRequiredLinkDao;
+    this.roleDao = roleDao;
   }
 
   @Transactional
-  public List<SegmentViewDto> getSegmentViewDtoListForAllSegmentsPage(Long layerId) {
-    return SegmentViewMapper.toDtoListForAllSegmentsPage(getSegmentsForSpace(layerId));
-  }
+  public List<SegmentDto> getAll(String searchQuery) {
+    List<Segment> segmentList = segmentDao.findAll(searchQuery.trim());
 
-  public List<Segment> getSegmentsForSpace(Long layerId) {
-    Optional<Layer> layer = layerDao.findById(layerId);
-    if (layer.isPresent()){
-      List<Layer> layersInSpace = layerDao.getAllParents(layerId);
-      layersInSpace.add(layer.get());
-      return findSegmentsInSpace(layersInSpace);
+    List<SegmentDto> segmentDtoList = new ArrayList<>();
+    for (Segment segment : segmentList) {
+      List<RoleDto> roleList = RoleMapper.roleListToDto(roleDao.findAll(segment.getRoleList()));
+      segmentDtoList.add(SegmentMapper.segmentToDto(segment, roleList));
     }
-    return Collections.EMPTY_LIST;
-  }
 
-  private List<Segment> findSegmentsInSpace(Collection<Layer> space) {
-    List<Segment> segmentList = new ArrayList<>();
-    for (Layer layer : space) {
-      segmentList.addAll(segmentDao.findAll(layer.getId()));
-    }
-    return segmentList;
+    return segmentDtoList;
   }
 
   @Transactional
-  public Optional<SegmentSelectedDto> getSegmentSelectedDto(Long layerId, Long segmentId) {
+  public Optional<SegmentDto> add(SegmentCreateDto segmentCreateDto) {
+    if (segmentCreateDto.getTitle() == null || segmentCreateDto.getTitle().isBlank()) {
+      throw new HttpBadRequestException("Название(Title) неверно указанное значение или пустой.");
+    }
+    if (segmentCreateDto.getRolesId() == null || segmentCreateDto.getRolesId().isEmpty()) {
+      throw new HttpBadRequestException("Не заданы значения массива Roles");
+    }
+    Optional<Segment> parentSegment = Optional.empty();
+    if (segmentCreateDto.getParentSegmentId() != null) {
+      parentSegment = segmentDao.findById(segmentCreateDto.getParentSegmentId());
+      if (parentSegment.isEmpty()) {
+        throw new HttpBadRequestException("Указанный ParentId не существует.");
+      }
+    }
+
+    Segment segment = SegmentMapper.dtoToSegment(segmentCreateDto, parentSegment);
+    try {
+      segmentDao.persist(segment);
+    } catch (Exception err) {
+      String lastMessage = err.getMessage();
+      Throwable cause = err.getCause();
+      while (cause != null) {
+        lastMessage = cause.getMessage();
+        cause = cause.getCause();
+      }
+      throw new HttpBadRequestException(lastMessage);
+    }
+
+    List<RoleDto> roleList = RoleMapper.roleListToDto(roleDao.findAll(segment.getRoleList()));
+
+    return Optional.of(SegmentMapper.segmentToDto(segment, roleList));
+  }
+
+  @Transactional
+  public Optional<SegmentDto> getById(Long segmentId) {
     Optional<Segment> segment = segmentDao.findById(segmentId);
-    if (segment.isPresent() && getSegmentsForSpace(layerId).contains(segment.get())){
-      List<Layer> layersInSpace = getLayersInSpace(layerId);
-      List<QuestionActivatorLink> questionActivatorLinksInSpace = findQALInSpace(layersInSpace, segmentId);
-      Map<String, QuestionActivatorLink> latestQuestionActivatorLinkMap = getLatestQALInSpace(questionActivatorLinksInSpace, layersInSpace);
-      List<Question> questions = getUniqueQuestionsInSpace(latestQuestionActivatorLinkMap);
-      List<SegmentViewQuestionDto> segmentViewQuestionDtoList = getSegmentViewQuestionDtoList(questions, latestQuestionActivatorLinkMap);
-      SegmentSelectedDto segmentSelectedDto = SegmentSelectedMapper.toDtoForSelectedSegmentViewPage(segment.get(), segmentViewQuestionDtoList);
-      return Optional.of(segmentSelectedDto);
+    if (segment.isEmpty()) {
+      return Optional.empty();
     }
-    return Optional.empty();
+    List<RoleDto> roleList = RoleMapper.roleListToDto(roleDao.findAll(segment.get().getRoleList()));
+
+    return Optional.of(SegmentMapper.segmentToDto(segment.get(), roleList));
   }
-  private List<QuestionActivatorLink> findQALInSpace(List<Layer> layerSpace, Long segmentId) {
-    List<QuestionActivatorLink> questionActivatorLinkList = new ArrayList<>();
+
+  @Transactional
+  public Optional<LayerSegmentsDto> getSegmentViewDtoListForSegmentsInLayerPage(Long layerId, String searchQuery) {
+    Optional<Layer> layer = layerDao.findById(layerId);
+    if (layer.isEmpty()){
+      return Optional.empty();
+    }
+    List<Layer> space = getLayersInSpace(layerId);
+    Map<Long, SegmentStateLink> stateLinkMap = getLatestSSLInSpace(getSSLInSpace(space, searchQuery));
+    List<SegmentLayerViewDto> segmentLayerViewDtos = new ArrayList<>();
+    for (Long key : stateLinkMap.keySet()) {
+      SegmentStateLink link = stateLinkMap.get(key);
+      Segment segment = link.getSegment();
+      List<Role> roles = roleDao.findAll(segment.getRoleList());
+      SegmentViewChangeState changeState = getChangeSegmentState(layerId, segment.getId());
+      segmentLayerViewDtos.add(SegmentLayerViewMapper.toDtoForSegmentsInLayerPage(segment, roles, changeState, link.getState()));
+    }
+    segmentLayerViewDtos.sort(Comparator.comparing(SegmentLayerViewDto::getTitle));
+    LayerSegmentsDto layerSegmentsDto = LayerSegmentsMapper.toDtoForSegmentsInLayerPage(layer.get(), segmentLayerViewDtos);
+    return Optional.of(layerSegmentsDto);
+  }
+
+  private SegmentViewChangeState getChangeSegmentState(Long layerId, Long segmentId) {
+    Optional<SegmentStateLink> segmentStateLink = segmentStateLinkDao.findById(layerId, segmentId);
+    if (segmentStateLink.isPresent()) {
+      if (segmentStateLink.get().getOldSegmentStateLink() == null){
+        return SegmentViewChangeState.NEW;
+      } else {
+        return SegmentViewChangeState.CHANGED;
+      }
+    }
+    Long screenQuestionLinksCount = screenQuestionLinkDao.countById(layerId, segmentId);
+    Long segmentScreenEntrypointLinksCount = segmentScreenEntrypointLinkDao.countById(layerId, segmentId);
+    Long questionRequiredLinksCount = questionRequiredLinkDao.countById(layerId, segmentId);
+    if (screenQuestionLinksCount.equals(0) && segmentScreenEntrypointLinksCount.equals(0) && questionRequiredLinksCount.equals(0)) {
+      return SegmentViewChangeState.NOT_CHANGED;
+    }
+    return SegmentViewChangeState.CHANGED;
+  }
+
+  private List<SegmentStateLink> getSSLInSpace(List<Layer> layerSpace, String searchQuery) {
+    List<SegmentStateLink> questionActivatorLinkList = new ArrayList<>();
     for(Layer layer : layerSpace){
-      questionActivatorLinkList.addAll(questionActivatorLinkDao.findAll(layer.getId(), segmentId));
+      questionActivatorLinkList.addAll(segmentStateLinkDao.findAll(layer.getId(), searchQuery));
     }
     return questionActivatorLinkList;
   }
+
+  private Map<Long, SegmentStateLink> getLatestSSLInSpace(List<SegmentStateLink> links) {
+    Map<Long, SegmentStateLink> segmentStateLinkMap = new HashMap<>();
+    for (SegmentStateLink link : links) {
+      Long key = link.getSegment().getId();
+      if (segmentStateLinkMap.get(key) != null){
+        segmentStateLinkMap.replace(key, link);
+      } else {
+        segmentStateLinkMap.put(key, link);
+      }
+    }
+    return segmentStateLinkMap;
+  }
+
   private List<Layer> getLayersInSpace(Long layerId){
     Optional<Layer> layer = layerDao.findById(layerId);
     if (layer.isPresent()) {
@@ -82,94 +185,5 @@ public class SegmentService {
       return layersInSpace;
     }
     return Collections.EMPTY_LIST;
-  }
-
-  /**
-   * Находим все крайние линки для пространства выбранного слоя.
-   * Важно, чтобы линки были отсортированы по порядку слоев в пространстве
-   */
-  private Map<String, QuestionActivatorLink> getLatestQALInSpace(List<QuestionActivatorLink> links, List<Layer> layersInSpace) {
-    Map<String, QuestionActivatorLink> questionActivatorLinkMap = new HashMap<>();
-    for(QuestionActivatorLink link : links){
-      String key = link.getQuestion().getTitle() + link.getEntrypoint().getTitle();
-      if (questionActivatorLinkMap.get(key) != null){
-        questionActivatorLinkMap.replace(key, link);
-      }
-      questionActivatorLinkMap.put(key, link);
-    }
-    return questionActivatorLinkMap;
-  }
-
-  /**
-   * Находим все уникальные вопросы для сегмента, сортированные по названию
-   */
-  private List<Question> getUniqueQuestionsInSpace(Map<String, QuestionActivatorLink> latestLinksInSpace) {
-    Set<Question> questions = new HashSet<>();
-    for (String key : latestLinksInSpace.keySet()){
-      questions.add(latestLinksInSpace.get(key).getQuestion());
-    }
-    return questions.stream().sorted(Comparator.comparing(Question::getTitle)).toList();
-  }
-
-  /**
-   * Получаем DTO для вопросов на странице просмотра сегмента,
-   * при этом мобираем точки входа для каждог вопроса
-   */
-  private List<SegmentViewQuestionDto> getSegmentViewQuestionDtoList(Collection<Question> questions,
-                                                                     Map<String, QuestionActivatorLink> questionActivatorLinkMap) {
-    List<SegmentViewQuestionDto> segmentViewQuestionDtoList = new ArrayList<>();
-    for (Question question : questions){
-      List<SegmentViewEntryPointDto> segmentViewEntryPointDtoList = new ArrayList<>();
-      for (QuestionActivatorLink link : questionActivatorLinkMap.values()){
-        if (link.getQuestion().equals(question)){
-          segmentViewEntryPointDtoList.add(SegmentViewEntryPointMapper.toDtoForSelectedSegmentViewPage(link, hasVisibilityChanged(link)));
-        }
-      }
-      Optional<String> key = questionActivatorLinkMap.keySet().stream().filter(k -> k.contains(question.getTitle())).findFirst();
-      QuestionActivatorLink someLinkForQuestion = questionActivatorLinkMap.get(key.get());
-      SegmentViewQuestionDto segmentViewQuestionDto = SegmentViewQuestionMapper.toDtoForSelectedSegmentViewPage(question,
-          someLinkForQuestion.isQuestionRequired(),
-          hasRequiredChanged(someLinkForQuestion),
-          hasQuestionChanged(someLinkForQuestion),
-          segmentViewEntryPointDtoList);
-      segmentViewQuestionDtoList.add(segmentViewQuestionDto);
-    }
-    return segmentViewQuestionDtoList;
-  }
-
-  private Boolean hasVisibilityChanged(QuestionActivatorLink currentLink){
-    Optional<QuestionActivatorLink> parentLink = getParentLink(currentLink);
-    if (parentLink.isEmpty()){
-      return false;
-    }
-    return !currentLink.getQuestionVisibility().equals(parentLink.get().getQuestionVisibility());
-  }
-
-  private Boolean hasRequiredChanged(QuestionActivatorLink currentLink){
-    Optional<QuestionActivatorLink> parentLink = getParentLink(currentLink);
-    if (parentLink.isEmpty()){
-      return false;
-    }
-    return currentLink.isQuestionRequired() != parentLink.get().isQuestionRequired();
-  }
-
-  private Boolean hasQuestionChanged(QuestionActivatorLink currentLink){
-    Optional<QuestionActivatorLink> parentLink = getParentLink(currentLink);
-    if (parentLink.isEmpty()){
-      return false;
-    }
-    return !currentLink.getQuestion().equals(parentLink.get().getQuestion());
-  }
-
-  private Optional<QuestionActivatorLink> getParentLink(QuestionActivatorLink currentLink){
-    Optional<Layer> layer = layerDao.findById(currentLink.getLayerId());
-    Layer parentLayer = layer.get().getParent();
-    if (parentLayer == null){
-      return Optional.empty();
-    }
-    return questionActivatorLinkDao.findExactly(parentLayer.getId(),
-        currentLink.getSegment().getId(),
-        currentLink.getQuestion().getTitle(),
-        currentLink.getEntrypoint().getId());
   }
 }

@@ -8,13 +8,15 @@ import java.util.List;
 
 public class QuestionMapper {
 
-  public static QuestionDtoForQuestionsInfo toDtoForQuestionsInfo(Question question, List<AnswerDtoForQuestionsInfo> answerDtoList) {
-    QuestionDtoForQuestionsInfo questionDtoForQuestionsInfoPage = new QuestionDtoForQuestionsInfo();
-    questionDtoForQuestionsInfoPage.setId(question.getId());
-    questionDtoForQuestionsInfoPage.setTitle(question.getTitle());
-    questionDtoForQuestionsInfoPage.setDescription(question.getDescription());
-    questionDtoForQuestionsInfoPage.setAnswerDtoList(answerDtoList);
-    questionDtoForQuestionsInfoPage.setType(question.getType());
-    return questionDtoForQuestionsInfoPage;
+  public static QuestionDtoForQuestionsInfo questionToDto(Question question, List<AnswerDtoForQuestionsInfo> answerDtoList) {
+    QuestionDtoForQuestionsInfo questionDtoForQuestionsInfo = new QuestionDtoForQuestionsInfo();
+    questionDtoForQuestionsInfo.setId(question.getId());
+    questionDtoForQuestionsInfo.setTitle(question.getTitle());
+    questionDtoForQuestionsInfo.setDescription(question.getDescription());
+    questionDtoForQuestionsInfo.setType(question.getType());
+    questionDtoForQuestionsInfo.setType(question.getType());
+    questionDtoForQuestionsInfo.setAnswersType(question.getAnswerType());
+    questionDtoForQuestionsInfo.setPossibleAnswersList(answerDtoList);
+    return questionDtoForQuestionsInfo;
   }
 }

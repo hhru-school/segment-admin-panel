@@ -6,22 +6,30 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.NotFoundException;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
+import ru.hhschool.segment.dao.abstracts.PlatformDao;
+import ru.hhschool.segment.exception.HttpBadRequestException;
+import ru.hhschool.segment.exception.HttpNotFoundException;
 import ru.hhschool.segment.mapper.LayerMapper;
+import ru.hhschool.segment.mapper.PlatformMapper;
 import ru.hhschool.segment.mapper.basicinfo.LayerBasicInfoMapper;
 import ru.hhschool.segment.mapper.change.LayerChangeMapper;
+import ru.hhschool.segment.mapper.layer.LayerStatusMapper;
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.change.LayerChangeDto;
+import ru.hhschool.segment.model.dto.layer.LayerForListDto;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.enums.ConflictStatus;
-import ru.hhschool.segment.util.LayerConflictChecker;
+import ru.hhschool.segment.model.enums.LayerStateType;
 
 public class LayerService {
   private final LayerDao layerDao;
+  private final PlatformDao platformDao;
 
   @Inject
-  public LayerService(LayerDao layerDao) {
+  public LayerService(LayerDao layerDao, PlatformDao platformDao) {
     this.layerDao = layerDao;
+    this.platformDao = platformDao;
   }
 
   public List<LayerDto> getLayerDtoListForMainPage() {
@@ -44,88 +52,41 @@ public class LayerService {
     if (layer.isEmpty()) {
       return Optional.empty();
     }
-    LayerBasicInfoDto layerBasicInfoDto = LayerBasicInfoMapper.toDtoForBasicInfoPage(layer.get(), layerDao.getAllParents(id));
+    LayerBasicInfoDto layerBasicInfoDto = LayerBasicInfoMapper.toDtoForBasicInfoPage(layer.get(),
+        layerDao.getAllParents(id),
+        PlatformMapper.toDtoList(platformDao.findAll(layer.get().getPlatforms())));
     return Optional.of(layerBasicInfoDto);
   }
 
   @Transactional
   public Optional<LayerChangeDto> mergeLayerWithParent(Long layerId) throws NotFoundException, IllegalStateException {
-    Optional<Layer> layerOptional = layerDao.findById(layerId);
-
-    Layer layer = layerOptional
-        .orElseThrow(() -> new NotFoundException("Not found."));
-
-    if (layer.isStable()) {
-      throw new IllegalStateException("Already stable.");
-    }
-
-    /**
-     * если parent == null это базовый слой, записываем его сразу.
-     */
-    if (layer.getParent() == null) {
-      layer.setStable(true);
-      layerDao.update(layer);
-
-      return Optional.of(LayerChangeMapper.layerChangeToDto(layer, ConflictStatus.NONE));
-    }
-
-    Layer layerParent = layerDao.findById(layer.getParent().getId())
-        .orElseThrow(() -> new IllegalStateException("Error. Parent not found."));
-
-    if (layerId.equals(layerParent.getId())) {
-      throw new IllegalStateException("Error recursion. LayerId equals ParentId.");
-    }
-
-    Optional<LayerChangeDto> layerChangeDto = Optional.empty();
-    List<Layer> layerStableChildList = List.of();
-
-    do {
-      layerStableChildList = layerDao.findStableChildById(layerParent.getId());
-      /**
-       * Детей в состоянии stable не обнаружено, сохраняем.
-       */
-      if (layerStableChildList.size() == 0) {
-        /**
-         * Если это прямой родитель сохраняем, иначе.
-         * Это не прямой родитель, а ребенок, относительно него ищем конфликты.
-         */
-        if (layer.getParent().getId().equals(layerParent.getId())) {
-          break;
-        }
-      }
-      if (layerStableChildList.size() > 1) {
-        throw new IllegalStateException("Error. More that one Stable child.");
-      }
-      /**
-       * у наследника нашлись еще stable наследники.
-       */
-      if (layerStableChildList.size() > 0) {
-        layerParent = layerStableChildList.get(0);
-
-        /**
-         * Сравниваем с каждым наследником. Независимо есть stable наследники у него или нет.
-         */
-        layerChangeDto = LayerConflictChecker.getConflict(layer, layerParent);
-        if (layerChangeDto.isPresent() && layerChangeDto.get().isConflict()) {
-          return layerChangeDto;
-        }
-      }
-      /**
-       * Если у нас еще найдены stable наследники.
-       * И при этом не обнаружено конфликтов с прошлым наследником.
-       */
-    } while (layerStableChildList.size() > 0 && layerChangeDto.isPresent());
-
-    /**
-     * Были проходы по stable наследникам
-     * переписывает родителя на layerParent.id
-     */
-    if (layerChangeDto.isPresent()) {
-      layer.setParent(layerParent);
-    }
-    layer.setStable(true);
-    layerDao.update(layer);
-    return Optional.of(LayerChangeMapper.layerChangeToDto(layer, ConflictStatus.NONE));
+    return Optional.empty();
   }
 
+  public List<LayerForListDto> getAll(List<String> layerStringStatus) {
+    List<LayerStateType> layerStatusList = LayerStatusMapper.toStatusList(layerStringStatus);
+    List<Layer> layerList = layerDao.findAll(layerStatusList);
+
+    return LayerMapper.toLayerForListDto(layerList);
+  }
+
+  @Transactional
+  public void setLayerStateToArchive(Long layerId) {
+    Optional<Layer> layer = layerDao.findById(layerId);
+    if (layer.isEmpty()) {
+      throw new HttpNotFoundException("Слой не найден.");
+    }
+    layer.get().setState(LayerStateType.ARCHIVE);
+    try {
+      layerDao.update(layer.get());
+    } catch (Exception err) {
+      String lastMessage = err.getMessage();
+      Throwable cause = err.getCause();
+      while (cause != null) {
+        lastMessage = cause.getMessage();
+        cause = cause.getCause();
+      }
+      throw new HttpBadRequestException(lastMessage);
+    }
+  }
 }

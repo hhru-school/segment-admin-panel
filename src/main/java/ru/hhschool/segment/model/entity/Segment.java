@@ -1,7 +1,7 @@
 package ru.hhschool.segment.model.entity;
 
 import io.hypersistence.utils.hibernate.type.array.ListArrayType;
-import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import org.hibernate.annotations.Type;
@@ -17,45 +18,50 @@ import org.hibernate.annotations.TypeDef;
 @Entity
 @TypeDef(name = "list-array", typeClass = ListArrayType.class)
 @Table(name = "segments")
-public class Segment implements Serializable {
+public class Segment {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "segment_id", nullable = false, unique = true)
   private Long id;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "parent_segment_id")
+  private Segment parentSegment;
+  @Column(name = "create_time", nullable = false)
+  private LocalDateTime createTime;
   @Column(name = "title", nullable = false)
   private String title;
   @Column(name = "description")
   private String description;
   @Type(type = "list-array")
   @Column(
-      name = "role",
+      name = "roles",
       columnDefinition = "bigint[]"
   )
   private List<Long> roleList;
   @Type(type = "list-array")
   @Column(
-      name = "tag",
+      name = "tags",
       columnDefinition = "text[]"
   )
-  private List<String> tagList;
-  @ManyToOne(fetch = FetchType.LAZY)
-  private Segment parent;
-  @Column(name = "layer_id")
-  private Long layerId;
-  @Column(name = "archived")
-  private boolean archived;
+  private List<String> tags;
 
+  public Segment() {
+  }
 
-  public Segment(String title, String description, List<Long> roleList, List<String> tagList, Segment parent, Long layerId) {
+  public Segment(
+      Segment parentSegment,
+      LocalDateTime createTime,
+      String title,
+      String description,
+      List<Long> roleList,
+      List<String> tags
+  ) {
+    this.parentSegment = parentSegment;
+    this.createTime = createTime;
     this.title = title;
     this.description = description;
     this.roleList = roleList;
-    this.tagList = tagList;
-    this.parent = parent;
-    this.layerId = layerId;
-  }
-
-  public Segment() {
+    this.tags = tags;
   }
 
   public Long getId() {
@@ -64,6 +70,22 @@ public class Segment implements Serializable {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public Segment getParentSegment() {
+    return parentSegment;
+  }
+
+  public void setParentSegment(Segment parentSegment) {
+    this.parentSegment = parentSegment;
+  }
+
+  public LocalDateTime getCreateTime() {
+    return createTime;
+  }
+
+  public void setCreateTime(LocalDateTime createTime) {
+    this.createTime = createTime;
   }
 
   public String getTitle() {
@@ -90,35 +112,11 @@ public class Segment implements Serializable {
     this.roleList = roleList;
   }
 
-  public List<String> getTagList() {
-    return tagList;
+  public List<String> getTags() {
+    return tags;
   }
 
-  public void setTagList(List<String> tagList) {
-    this.tagList = tagList;
-  }
-
-  public Segment getParent() {
-    return parent;
-  }
-
-  public void setParent(Segment parent) {
-    this.parent = parent;
-  }
-
-  public Long getLayerId() {
-    return layerId;
-  }
-
-  public void setLayerId(Long layerId) {
-    this.layerId = layerId;
-  }
-
-  public boolean isArchived() {
-    return archived;
-  }
-
-  public void setArchived(boolean archived) {
-    this.archived = archived;
+  public void setTags(List<String> tagList) {
+    this.tags = tagList;
   }
 }

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.model.entity.Layer;
+import ru.hhschool.segment.model.enums.LayerStateType;
 
 public class LayerDaoImpl extends ReadWriteDaoImpl<Layer, Long> implements LayerDao {
   @Override
@@ -23,17 +24,16 @@ public class LayerDaoImpl extends ReadWriteDaoImpl<Layer, Long> implements Layer
   }
 
   @Override
-  public List<Layer> findStableChildById(Long layerId) {
-    List<Layer> layerStableChildList = em.createQuery("""
-              SELECT l
-              FROM Layer l
-               WHERE l.parent.id = :layerId
-                AND l.stable = TRUE
-            """, Layer.class)
-        .setParameter("layerId", layerId)
+  public List<Layer> findAll(List<LayerStateType> layerStatusList) {
+    List<Layer> layerList = em.createQuery("""
+            SELECT l
+             FROM Layer l
+             WHERE l.state IN :layerStatusList
+             ORDER BY l.createTime DESC 
+            """)
+        .setParameter("layerStatusList", layerStatusList)
         .getResultList();
-
-    return layerStableChildList;
+    return layerList;
   }
 
 }

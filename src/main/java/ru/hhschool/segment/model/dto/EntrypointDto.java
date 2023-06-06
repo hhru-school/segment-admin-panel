@@ -4,16 +4,14 @@ public class EntrypointDto {
   private Long id;
   private String title;
   private String description;
-  private Long layerId;
 
   public EntrypointDto() {
   }
 
-  public EntrypointDto(Long id, String title, String description, Long layerId) {
+  public EntrypointDto(Long id, String title, String description) {
     this.id = id;
     this.title = title;
     this.description = description;
-    this.layerId = layerId;
   }
 
   public Long getId() {
@@ -39,13 +37,4 @@ public class EntrypointDto {
   public void setDescription(String description) {
     this.description = description;
   }
-
-  public Long getLayerId() {
-    return layerId;
-  }
-
-  public void setLayerId(Long layerId) {
-    this.layerId = layerId;
-  }
-
 }

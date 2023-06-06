@@ -1,7 +1,6 @@
 package ru.hhschool.segment.model.entity;
 
 import io.hypersistence.utils.hibernate.type.array.ListArrayType;
-import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,7 +17,7 @@ import ru.hhschool.segment.model.enums.AnswerType;
 @Entity
 @TypeDef(name = "list-array", typeClass = ListArrayType.class)
 @Table(name = "answers")
-public class Answer implements Serializable {
+public class Answer {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "answer_id", nullable = false, unique = true)
@@ -28,10 +27,10 @@ public class Answer implements Serializable {
   @Column(name = "positive_title")
   private String positiveTitle;
   @Enumerated(EnumType.STRING)
-  @Column(name = "answer_type")
-  private AnswerType answerType;
-  @Column(name = "is_default_answer", nullable = false)
-  private boolean isDefault;
+  @Column(name = "type")
+  private AnswerType type;
+  @Column(name = "default_answer", nullable = false)
+  private boolean defaultAnswer;
   @Column(name = "skip_at_result")
   private boolean skipAtResult;
   @Type(type = "list-array")
@@ -39,29 +38,18 @@ public class Answer implements Serializable {
       name = "open_questions",
       columnDefinition = "bigint[]"
   )
-  private List<Long> openQuestionList;
-  @Column(name = "layer_id")
-  private Long layerId;
+  private List<Long> openQuestions;
 
   public Answer() {
   }
 
-  public Answer(
-      String title,
-      String positiveTitle,
-      AnswerType answerType,
-      boolean isDefault,
-      boolean skipAtResult,
-      List<Long> openQuestionList,
-      Long layerId
-  ) {
+  public Answer(String title, String positiveTitle, AnswerType type, boolean defaultAnswer, boolean skipAtResult, List<Long> openQuestions) {
     this.title = title;
     this.positiveTitle = positiveTitle;
-    this.answerType = answerType;
-    this.isDefault = isDefault;
+    this.type = type;
+    this.defaultAnswer = defaultAnswer;
     this.skipAtResult = skipAtResult;
-    this.openQuestionList = openQuestionList;
-    this.layerId = layerId;
+    this.openQuestions = openQuestions;
   }
 
   public Long getId() {
@@ -88,20 +76,20 @@ public class Answer implements Serializable {
     this.positiveTitle = positiveTitle;
   }
 
-  public AnswerType getAnswerType() {
-    return answerType;
+  public AnswerType getType() {
+    return type;
   }
 
-  public void setAnswerType(AnswerType answerType) {
-    this.answerType = answerType;
+  public void setType(AnswerType type) {
+    this.type = type;
   }
 
-  public boolean isDefault() {
-    return isDefault;
+  public boolean isDefaultAnswer() {
+    return defaultAnswer;
   }
 
-  public void setDefault(boolean aDefault) {
-    isDefault = aDefault;
+  public void setDefaultAnswer(boolean defaultAnswer) {
+    this.defaultAnswer = defaultAnswer;
   }
 
   public boolean isSkipAtResult() {
@@ -112,19 +100,11 @@ public class Answer implements Serializable {
     this.skipAtResult = skipAtResult;
   }
 
-  public List<Long> getOpenQuestionList() {
-    return openQuestionList;
+  public List<Long> getOpenQuestions() {
+    return openQuestions;
   }
 
-  public void setOpenQuestionList(List<Long> openQuestionList) {
-    this.openQuestionList = openQuestionList;
-  }
-
-  public Long getLayerId() {
-    return layerId;
-  }
-
-  public void setLayerId(Long layerId) {
-    this.layerId = layerId;
+  public void setOpenQuestions(List<Long> openQuestions) {
+    this.openQuestions = openQuestions;
   }
 }

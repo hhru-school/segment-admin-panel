@@ -1,16 +1,14 @@
 package ru.hhschool.segment.model.dto;
 
-import ru.hhschool.segment.model.enums.QuestionType;
-import ru.hhschool.segment.model.enums.QuestionVisibilityType;
-
 import java.util.List;
-import java.util.Objects;
+import ru.hhschool.segment.model.enums.AnswersNumberType;
+import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 
 public class QuestionDto {
   private Long id;
   private String title;
   private String description;
-  private QuestionType type;
+  private AnswersNumberType type;
   private boolean required;
   private QuestionVisibilityType questionVisibilityType;
   private List<AnswerDto> answerDtoList;
@@ -21,7 +19,17 @@ public class QuestionDto {
   public QuestionDto() {
   }
 
-  public QuestionDto(Long id, String title, String description, QuestionType type, boolean required, QuestionVisibilityType questionVisibilityType, List<AnswerDto> answerDtoList, Long layerId, boolean resumeField) {
+  public QuestionDto(
+      Long id,
+      String title,
+      String description,
+      AnswersNumberType type,
+      boolean required,
+      QuestionVisibilityType questionVisibilityType,
+      List<AnswerDto> answerDtoList,
+      Long layerId,
+      boolean resumeField
+  ) {
     this.id = id;
     this.title = title;
     this.description = description;
@@ -57,11 +65,11 @@ public class QuestionDto {
     this.description = description;
   }
 
-  public QuestionType getType() {
+  public AnswersNumberType getType() {
     return type;
   }
 
-  public void setType(QuestionType type) {
+  public void setType(AnswersNumberType type) {
     this.type = type;
   }
 

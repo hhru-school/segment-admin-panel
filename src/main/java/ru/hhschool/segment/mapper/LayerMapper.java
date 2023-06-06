@@ -1,12 +1,13 @@
 package ru.hhschool.segment.mapper;
 
-import ru.hhschool.segment.model.dto.LayerDto;
-import ru.hhschool.segment.model.entity.Layer;
-import ru.hhschool.segment.model.enums.LayerStatus;
-
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import ru.hhschool.segment.model.dto.LayerDto;
+import ru.hhschool.segment.model.dto.layer.LayerForListDto;
+import ru.hhschool.segment.model.entity.Layer;
+import ru.hhschool.segment.model.enums.LayerStateType;
+import ru.hhschool.segment.model.enums.LayerStatus;
 
 public class LayerMapper {
   public static LayerDto toDtoForMainPage(Layer entity) {
@@ -14,9 +15,9 @@ public class LayerMapper {
     layerDto.setId(entity.getId());
     layerDto.setTitle(entity.getTitle());
     layerDto.setCreateTime(entity.getCreateTime());
-    if (entity.isStable()) {
+    if (entity.getState().equals(LayerStateType.STABLE)) {
       layerDto.setLayerStatus(LayerStatus.STABLE);
-    } else if (entity.isArchive()) {
+    } else if (entity.getState().equals(LayerStateType.ARCHIVE)) {
       layerDto.setLayerStatus(LayerStatus.ARCHIVED);
     } else {
       layerDto.setLayerStatus(LayerStatus.EXPERIMENTAL);
@@ -33,12 +34,19 @@ public class LayerMapper {
         .toList();
   }
 
-  public static List<LayerDto> toDtoListForBasicPage(Collection<Layer> entityCollection) {
+  public static List<LayerForListDto> toLayerForListDto(List<Layer> layerList) {
+    if (layerList == null) {
+      return List.of();
+    }
 
-    return entityCollection
-        .stream()
-        .map(LayerMapper::toDtoForMainPage)
-        .sorted(Comparator.comparing(LayerDto::getId, Comparator.reverseOrder()))
-        .toList();
+    return layerList.stream().map(
+        layer -> new LayerForListDto(
+            layer.getId(),
+            layer.getTitle(),
+            layer.getDescription(),
+            layer.getState(),
+            layer.getCreateTime()
+        )
+    ).toList();
   }
 }

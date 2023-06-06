@@ -1,9 +1,8 @@
 package ru.hhschool.segment.model.dto.entrypointinfo;
 
-import ru.hhschool.segment.model.enums.QuestionVisibilityType;
-
 import java.util.HashSet;
 import java.util.Set;
+import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 
 public class QuestionStatusDto {
   Set<QuestionVisibilityType> questionStatus = new HashSet<>();

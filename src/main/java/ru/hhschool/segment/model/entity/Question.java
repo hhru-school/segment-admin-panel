@@ -1,11 +1,7 @@
 package ru.hhschool.segment.model.entity;
 
 import io.hypersistence.utils.hibernate.type.array.ListArrayType;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import ru.hhschool.segment.model.enums.QuestionType;
-import ru.hhschool.segment.model.enums.QuestionVisibilityType;
-
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,64 +10,45 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.util.List;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import ru.hhschool.segment.model.enums.AnswersNumberType;
+import ru.hhschool.segment.model.enums.QuestionType;
 
 @Entity
 @TypeDef(name = "list-array", typeClass = ListArrayType.class)
 @Table(name = "questions")
-public class Question implements Serializable {
+public class Question {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "question_id", nullable = false, unique = true)
   private Long id;
-  @Column(name = "question_title", nullable = false)
+  @Column(name = "title", nullable = false)
   private String title;
   @Column(name = "description")
   private String description;
   @Enumerated(EnumType.STRING)
-  @Column(name = "question_type", nullable = false)
+  @Column(name = "type", nullable = false)
   private QuestionType type;
-  @Column(name = "question_required")
-  private boolean required;
   @Enumerated(EnumType.STRING)
-  @Column(name = "question_visibility")
-  private QuestionVisibilityType questionVisibilityType;
+  @Column(name = "answer_type", nullable = false)
+  private AnswersNumberType answerType;
   @Type(type = "list-array")
   @Column(
       name = "possible_answers",
       columnDefinition = "bigint[]"
   )
-  private List<Long> possibleAnswerIdList;
-  @Column(name = "layer_id")
-  private Long layerId;
+  private List<Long> possibleAnswers;
 
-  @Column(name = "resume_field")
-  private boolean resumeField;
+  public Question() {
+  }
 
-  public Question(
-      Long id,
-      String title,
-      String description,
-      QuestionType type,
-      boolean required,
-      QuestionVisibilityType questionVisibilityType,
-      List<Long> possibleAnswerIdList,
-      Long layerId,
-      boolean resumeField
-  ) {
-    this.id = id;
+  public Question(String title, String description, QuestionType type, AnswersNumberType answerType, List<Long> possibleAnswers) {
     this.title = title;
     this.description = description;
     this.type = type;
-    this.required = required;
-    this.questionVisibilityType = questionVisibilityType;
-    this.possibleAnswerIdList = possibleAnswerIdList;
-    this.layerId = layerId;
-    this.resumeField = resumeField;
-  }
-
-  public Question() {
+    this.answerType = answerType;
+    this.possibleAnswers = possibleAnswers;
   }
 
   public Long getId() {
@@ -106,43 +83,19 @@ public class Question implements Serializable {
     this.type = type;
   }
 
-  public boolean isRequired() {
-    return required;
+  public AnswersNumberType getAnswerType() {
+    return answerType;
   }
 
-  public void setRequired(boolean required) {
-    this.required = required;
+  public void setAnswerType(AnswersNumberType answerType) {
+    this.answerType = answerType;
   }
 
-  public QuestionVisibilityType getQuestionVisibilityType() {
-    return questionVisibilityType;
+  public List<Long> getPossibleAnswers() {
+    return possibleAnswers;
   }
 
-  public void setQuestionVisibilityType(QuestionVisibilityType questionVisibilityType) {
-    this.questionVisibilityType = questionVisibilityType;
-  }
-
-  public List<Long> getPossibleAnswerIdList() {
-    return possibleAnswerIdList;
-  }
-
-  public void setPossibleAnswerIdList(List<Long> possibleAnswerIdList) {
-    this.possibleAnswerIdList = possibleAnswerIdList;
-  }
-
-  public Long getLayerId() {
-    return layerId;
-  }
-
-  public void setLayerId(Long layerId) {
-    this.layerId = layerId;
-  }
-
-  public boolean isResumeField() {
-    return resumeField;
-  }
-
-  public void setResumeField(boolean resumeField) {
-    this.resumeField = resumeField;
+  public void setPossibleAnswers(List<Long> possibleAnswers) {
+    this.possibleAnswers = possibleAnswers;
   }
 }
