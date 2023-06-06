@@ -27,7 +27,7 @@ public class QuestionResource {
   @Path(value = "/")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getQuestionDtoListWithAnswers(@QueryParam("searchQuery") @DefaultValue("") String searchQuery,
-                                                @QueryParam("questionType") List<String> questionTypeStringList) {
+                                                @QueryParam("type") List<String> questionTypeStringList) {
     List<QuestionDtoForQuestionsInfo> questionDtoList = questionService.getAllQuestionDtoListForQuestionsInfo(searchQuery, questionTypeStringList);
     if (!questionDtoList.isEmpty()) {
       return Response.ok(questionDtoList).build();
