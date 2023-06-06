@@ -45,12 +45,13 @@ public class SegmentViewQuestionDto {
   public void setTitle(String title) {
     this.title = title;
   }
-  public Boolean getNew() {
+
+  public Boolean getIsNew() {
     return isNew;
   }
 
-  public void setNew(Boolean aNew) {
-    isNew = aNew;
+  public void setIsNew(Boolean isNew) {
+    this.isNew = isNew;
   }
 
   public QuestionVisibilityType getVisibility() {

@@ -13,6 +13,7 @@ public class ScreenQuestionLinkDaoImpl extends ReadWriteDaoImpl<ScreenQuestionLi
         .setParameter("segmentId", segmentId)
         .getSingleResult();
   }
+
   @Override
   public List<ScreenQuestionLink> findAll(Long layerId, Long segmentId, Long entrypointId, Long screenId) {
     return em.createQuery("SELECT e FROM ScreenQuestionLink e WHERE " +
@@ -26,5 +27,4 @@ public class ScreenQuestionLinkDaoImpl extends ReadWriteDaoImpl<ScreenQuestionLi
         .setParameter("screenId", screenId)
         .getResultList();
   }
-
 }

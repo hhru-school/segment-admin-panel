@@ -20,12 +20,14 @@ public class SegmentStateLinkDaoImpl extends ReadWriteDaoImpl<SegmentStateLink, 
           .getResultList();
     }
   }
+
   @Override
   public List<SegmentStateLink> findAll(Long layerId) {
     return em.createQuery("SELECT e FROM SegmentStateLink e WHERE e.layer.id = :layerId")
         .setParameter("layerId", layerId)
         .getResultList();
   }
+
   @Override
   public Optional<SegmentStateLink> findById(Long layerId, Long segmentId) {
     try {

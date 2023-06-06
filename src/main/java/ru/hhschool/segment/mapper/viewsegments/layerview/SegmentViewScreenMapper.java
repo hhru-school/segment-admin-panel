@@ -23,7 +23,7 @@ public class SegmentViewScreenMapper {
     segmentViewScreenDto.setDescription(screen.getDescription());
     segmentViewScreenDto.setType(screen.getType());
     segmentViewScreenDto.setState(link.getScreenState());
-    segmentViewScreenDto.setNew(isNew);
+    segmentViewScreenDto.setIsNew(isNew);
     if (link.getLayer().getId().equals(viewLayerId) && link.getOldSegmentScreenEntrypointLink() != null){
       boolean positionChanged = !Objects.equals(link.getScreenPosition(), link.getOldSegmentScreenEntrypointLink().getScreenPosition());
       boolean stateChanged = !Objects.equals(link.getScreenState(), link.getOldSegmentScreenEntrypointLink().getScreenState());
@@ -34,8 +34,8 @@ public class SegmentViewScreenMapper {
         segmentViewScreenDto.setOldState(link.getOldSegmentScreenEntrypointLink().getScreenState());
       }
     }
-    segmentViewScreenDto.setPlatforms(platforms);
-    segmentViewScreenDto.setQuestions(questions);
+    segmentViewScreenDto.setAppVersions(platforms);
+    segmentViewScreenDto.setFields(questions);
     return segmentViewScreenDto;
   }
 }

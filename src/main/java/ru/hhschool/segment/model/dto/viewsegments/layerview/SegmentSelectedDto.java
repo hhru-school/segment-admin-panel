@@ -18,10 +18,10 @@ public class SegmentSelectedDto {
   private String description;
   private List<Role> roles;
   private List<String> tags;
-  private List<SegmentViewRequirementDto> requirements;
+  private List<SegmentViewRequirementDto> fields;
   private List<SegmentViewEntryPointDto> entryPoints;
 
-  public SegmentSelectedDto(Long layerId, String layerTitle, Long segmentId, StateType activeState, StateType oldActiveState, Long parentSegmentId, String title, String description, List<Role> roles, List<String> tags, List<SegmentViewRequirementDto> requirements, List<SegmentViewEntryPointDto> entryPoints) {
+  public SegmentSelectedDto(Long layerId, String layerTitle, Long segmentId, StateType activeState, StateType oldActiveState, Long parentSegmentId, String title, String description, List<Role> roles, List<String> tags, List<SegmentViewRequirementDto> fields, List<SegmentViewEntryPointDto> entryPoints) {
     this.layerId = layerId;
     this.layerTitle = layerTitle;
     this.segmentId = segmentId;
@@ -32,7 +32,7 @@ public class SegmentSelectedDto {
     this.description = description;
     this.roles = roles;
     this.tags = tags;
-    this.requirements = requirements;
+    this.fields = fields;
     this.entryPoints = entryPoints;
   }
 
@@ -120,12 +120,12 @@ public class SegmentSelectedDto {
     this.tags = tags;
   }
 
-  public List<SegmentViewRequirementDto> getRequirements() {
-    return requirements;
+  public List<SegmentViewRequirementDto> getFields() {
+    return fields;
   }
 
-  public void setRequirements(List<SegmentViewRequirementDto> requirements) {
-    this.requirements = requirements;
+  public void setFields(List<SegmentViewRequirementDto> fields) {
+    this.fields = fields;
   }
 
   public List<SegmentViewEntryPointDto> getEntryPoints() {

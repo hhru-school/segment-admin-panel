@@ -9,11 +9,12 @@ import java.util.List;
 public class PlatformMapper {
 
   private static PlatformDto toSegmentViewPlatformDto(Platform platform){
-    PlatformDto segmentViewApplicationDto = new PlatformDto(
+    PlatformDto platformDto = new PlatformDto(
+        platform.getId(),
         platform.getPlatform(),
         platform.getApplicationVersion()
     );
-    return segmentViewApplicationDto;
+    return platformDto;
   }
 
   public static List<PlatformDto> toDtoForSelectedSegmentViewPage(List<Platform> platforms){

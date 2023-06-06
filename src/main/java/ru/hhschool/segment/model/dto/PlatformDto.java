@@ -6,13 +6,22 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 public class PlatformDto {
-  @Enumerated(EnumType.STRING)
+  private Long id;
   private PlatformType platform;
   private String version;
 
-  public PlatformDto(PlatformType platform, String version) {
+  public PlatformDto(Long id, PlatformType platform, String version) {
+    this.id = id;
     this.platform = platform;
     this.version = version;
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public PlatformType getPlatform() {

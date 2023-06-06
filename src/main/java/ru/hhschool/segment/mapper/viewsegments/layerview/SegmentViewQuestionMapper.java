@@ -15,7 +15,7 @@ public class SegmentViewQuestionMapper {
     SegmentViewQuestionDto segmentViewQuestionDto = new SegmentViewQuestionDto();
     segmentViewQuestionDto.setId(question.getId());
     segmentViewQuestionDto.setTitle(question.getTitle());
-    segmentViewQuestionDto.setNew(isNew);
+    segmentViewQuestionDto.setIsNew(isNew);
     segmentViewQuestionDto.setVisibility(link.getQuestionVisibility());
     if (link.getLayer().getId().equals(viewLayerId) && link.getOldScreenQuestionLink() != null){
       boolean positionChanged = !Objects.equals(link.getQuestionPosition(), link.getOldScreenQuestionLink().getQuestionPosition());

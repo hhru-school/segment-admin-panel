@@ -7,7 +7,6 @@ import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.Role;
 import ru.hhschool.segment.model.entity.Segment;
 import ru.hhschool.segment.model.entity.SegmentStateLink;
-import ru.hhschool.segment.model.enums.StateType;
 
 import java.util.List;
 
@@ -24,7 +23,7 @@ public class SegmentSelectedMapper {
     segmentSelectedDto.setSegmentId(segment.getId());
     segmentSelectedDto.setSegmentId(segment.getId());
     segmentSelectedDto.setActiveState(link.getState());
-    if (link.getLayer().getId().equals(layer.getId())){
+    if (link.getLayer().getId().equals(layer.getId()) && link.getOldSegmentStateLink() != null){
       segmentSelectedDto.setOldActiveState(link.getOldSegmentStateLink().getState());
     }
     if (segment.getParentSegment() != null){
@@ -34,7 +33,7 @@ public class SegmentSelectedMapper {
     segmentSelectedDto.setDescription(segment.getDescription());
     segmentSelectedDto.setRoles(roles);
     segmentSelectedDto.setTags(segment.getTags());
-    segmentSelectedDto.setRequirements(requirements);
+    segmentSelectedDto.setFields(requirements);
     segmentSelectedDto.setEntryPoints(entryPoints);
     return segmentSelectedDto;
   }
