@@ -11,7 +11,9 @@ public class SegmentStateLinkDaoImpl extends ReadWriteDaoImpl<SegmentStateLink, 
   @Override
   public List<SegmentStateLink> findAll(Long layerId, String searchQuery) {
     if (searchQuery.isBlank()) {
-      return findAll();
+      return em.createQuery("SELECT e FROM SegmentStateLink e WHERE e.layer.id = :layerId")
+          .setParameter("layerId", layerId)
+          .getResultList();
     } else {
       return em.createQuery("SELECT e FROM SegmentStateLink e WHERE e.layer.id = :layerId " +
               "AND LOWER(e.segment.title) LIKE LOWER(:searchQuery)")
