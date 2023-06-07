@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import ru.hhschool.segment.model.dto.LayerDto;
-import ru.hhschool.segment.model.dto.layer.LayerForListDto;
+import ru.hhschool.segment.model.dto.layer.LayerDtoForList;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.enums.LayerStateType;
 import ru.hhschool.segment.model.enums.LayerStatus;
@@ -34,13 +34,13 @@ public class LayerMapper {
         .toList();
   }
 
-  public static List<LayerForListDto> toLayerForListDto(List<Layer> layerList) {
+  public static List<LayerDtoForList> toLayerForListDto(List<Layer> layerList) {
     if (layerList == null) {
       return List.of();
     }
 
     return layerList.stream().map(
-        layer -> new LayerForListDto(
+        layer -> new LayerDtoForList(
             layer.getId(),
             layer.getTitle(),
             layer.getDescription(),
