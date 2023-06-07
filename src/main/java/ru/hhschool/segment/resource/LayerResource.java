@@ -55,7 +55,7 @@ public class LayerResource {
     if (layerSegmentsDto.isPresent()){
       return Response.ok(layerSegmentsDto.get()).build();
     }
-    return Response.status(Response.Status.NO_CONTENT).build();
+    return Response.status(Response.Status.NOT_FOUND).build();
   }
 
   @GET
@@ -66,7 +66,7 @@ public class LayerResource {
     if (segmentSelectedDto.isPresent()){
       return Response.ok(segmentSelectedDto).build();
     }
-    return Response.status(Response.Status.NO_CONTENT).build();
+    return Response.status(Response.Status.NOT_FOUND).build();
   }
 
   @GET
