@@ -167,11 +167,7 @@ public class SegmentService {
     Map<Long, SegmentStateLink> segmentStateLinkMap = new HashMap<>();
     for (SegmentStateLink link : links) {
       Long key = link.getSegment().getId();
-      if (segmentStateLinkMap.get(key) != null){
-        segmentStateLinkMap.replace(key, link);
-      } else {
-        segmentStateLinkMap.put(key, link);
-      }
+      segmentStateLinkMap.put(key, link);
     }
     return segmentStateLinkMap;
   }
