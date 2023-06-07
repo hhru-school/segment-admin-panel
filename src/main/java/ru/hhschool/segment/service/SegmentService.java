@@ -244,7 +244,7 @@ public class SegmentService {
     return links.stream()
         .map(link -> SegmentViewRequirementMapper.toDtoForSelectedSegmentViewPage(link,
             link.getLayer().getId().equals(layerId) && link.getOldQuestionRequiredLink() != null && link.isQuestionRequired() != link.getOldQuestionRequiredLink().isQuestionRequired(),
-            questionMap.containsKey(link.getQuestion().getTitle()) ? StateType.ACTIVE : StateType.DISABLED,
+            questionMap.get(link.getQuestion().getTitle()) != null ? StateType.ACTIVE : StateType.DISABLED,
             link.getLayer().getId().equals(layerId) && link.getOldQuestionRequiredLink() == null))
         .sorted(Comparator.comparing(SegmentViewRequirementDto::getTitle))
         .toList();
@@ -258,13 +258,15 @@ public class SegmentService {
   private List<SegmentViewScreenDto> getSegmentViewScreenDtos(Long layerId, Long segmentId, Long entrypointId){
     List<Layer> space = getLayersInSpace(layerId);
     List<SegmentScreenEntrypointLink> segmentScreenEntrypointLinks = getLatestSSELInSpace(getSSELInSpace(space, segmentId, entrypointId));
+    Long parentLayerId = layerDao.findById(layerId).get().getParent().getId();
+    Map<String, Question> parentLayerQuestions = getAllQuestions(parentLayerId, segmentId);
     return segmentScreenEntrypointLinks.stream()
         .sorted(Comparator.comparing(SegmentScreenEntrypointLink::getScreenPosition))
         .map(link -> SegmentViewScreenMapper.toDtoForSelectedSegmentViewPage(link,
             layerId,
             link.getLayer().getId().equals(layerId) && link.getOldSegmentScreenEntrypointLink() == null,
             PlatformMapper.toDtoForSelectedSegmentViewPage(platformDao.findAll(link.getScreen().getPlatforms())),
-            getSegmentViewQuestionDtos(layerId, link)))
+            getSegmentViewQuestionDtos(layerId, link, parentLayerQuestions)))
         .toList();
   }
   private List<SegmentScreenEntrypointLink> getSSELInSpace(List<Layer> space, Long segmentId, Long entrypointId) {
@@ -293,16 +295,24 @@ public class SegmentService {
     }
     return segmentScreenEntrypointLinkMap.values().stream().toList();
   }
-  private List<SegmentViewQuestionDto> getSegmentViewQuestionDtos(Long layerId, SegmentScreenEntrypointLink link){
+  private List<SegmentViewQuestionDto> getSegmentViewQuestionDtos(Long layerId, SegmentScreenEntrypointLink link, Map<String, Question> parentLayerQuestions){
     List<Layer> space = getLayersInSpace(layerId);
     List<ScreenQuestionLink> screenQuestionLinks = getLatestSQLInSpace(getSQLInSpace(space, link));
     return screenQuestionLinks.stream()
         .sorted(Comparator.comparing(ScreenQuestionLink::getQuestionPosition))
         .map(questionLink -> SegmentViewQuestionMapper.toDtoForSelectedSegmentViewPage(questionLink.getQuestion(),
             layerId,
-            questionLink.getLayer().getId().equals(layerId) && questionLink.getOldScreenQuestionLink() == null,
+            questionLink.getLayer().getId().equals(layerId) && questionLink.getOldScreenQuestionLink() == null && parentLayerQuestions.get(questionLink.getQuestion().getTitle()) == null,
             questionLink))
         .toList();
+  }
+  private Map<String, Question> getAllQuestions(Long layerId, Long segmentId){
+    List<Layer> space = getLayersInSpace(layerId);
+    List<SegmentScreenEntrypointLink> segmentScreenEntrypointLinks = getLatestSSELInSpace(getSSELInSpace(space, segmentId));
+    return segmentScreenEntrypointLinks.stream()
+        .flatMap(link -> getLatestSQLInSpace(getSQLInSpace(space, link)).stream())
+        .map(ScreenQuestionLink::getQuestion)
+        .collect(Collectors.toMap(Question::getTitle, question -> question, (question1, question2) -> question1));
   }
   private List<ScreenQuestionLink> getSQLInSpace(List<Layer> space, SegmentScreenEntrypointLink link) {
     List<ScreenQuestionLink> screenQuestionLinks = new ArrayList<>();
