@@ -52,9 +52,11 @@ public class LayerService {
     if (layer.isEmpty()) {
       return Optional.empty();
     }
-    LayerBasicInfoDto layerBasicInfoDto = LayerBasicInfoMapper.toDtoForBasicInfoPage(layer.get(),
+    LayerBasicInfoDto layerBasicInfoDto = LayerBasicInfoMapper.toDtoForBasicInfoPage(
+        layer.get(),
         layerDao.getAllParents(id),
-        PlatformMapper.toDtoList(platformDao.findAll(layer.get().getPlatforms())));
+        PlatformMapper.toDtoList(platformDao.findAll(layer.get().getPlatforms()))
+    );
     return Optional.of(layerBasicInfoDto);
   }
 
@@ -75,6 +77,9 @@ public class LayerService {
     Optional<Layer> layer = layerDao.findById(layerId);
     if (layer.isEmpty()) {
       throw new HttpNotFoundException("Слой не найден.");
+    }
+    if (layer.get().getState() == LayerStateType.STABLE) {
+      throw new HttpBadRequestException("Не возможно STABLE слой сделать архивным.");
     }
     layer.get().setState(LayerStateType.ARCHIVE);
     try {
