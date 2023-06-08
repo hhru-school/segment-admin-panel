@@ -19,6 +19,7 @@ public class QuestionService {
   private final QuestionDao questionDao;
   private final AnswerService answerService;
   private final QuestionFilterService questionFilterService;
+  final int MAX_DEPTH_OF_TREE = 3;
 
   @Inject
   public QuestionService(QuestionDao questionDao, AnswerService answerService, QuestionFilterService questionFilterService) {
@@ -38,7 +39,7 @@ public class QuestionService {
     }
     List<Question> finalQuestionList = questionList;
     questionList.forEach(question -> {
-      List<AnswerDtoForQuestionsInfo> answerDtoList = answerService.getAllAnswerDtoListByListId(question.getPossibleAnswers(), finalQuestionList, 3);
+      List<AnswerDtoForQuestionsInfo> answerDtoList = answerService.getAllAnswerDtoListByListId(question.getPossibleAnswers(), finalQuestionList, MAX_DEPTH_OF_TREE);
       QuestionDtoForQuestionsInfo questionDto = QuestionMapper.questionToDto(question, answerDtoList);
       questionDtoForQuestionsInfoList.add(questionDto);
     });
