@@ -1,4 +1,4 @@
-package ru.hhschool.segment.mapper;
+package ru.hhschool.segment.mapper.question;
 
 import ru.hhschool.segment.model.dto.questioninfopage.AnswerDtoForQuestionsInfo;
 import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfo;
