@@ -19,7 +19,7 @@ public class QuestionService {
   private final QuestionDao questionDao;
   private final AnswerService answerService;
   private final QuestionFilterService questionFilterService;
-  final int MAX_DEPTH_OF_TREE = 3;
+  private static final int MAX_DEPTH_OF_TREE = 3;
 
   @Inject
   public QuestionService(QuestionDao questionDao, AnswerService answerService, QuestionFilterService questionFilterService) {
