@@ -3,17 +3,17 @@ package ru.hhschool.segment.model.dto.layer;
 import java.time.LocalDateTime;
 import ru.hhschool.segment.model.enums.LayerStateType;
 
-public class LayerForListDto {
+public class LayerDtoForList {
   private Long id;
   private String title;
   private String description;
   private LayerStateType state;
   private LocalDateTime createTime;
 
-  public LayerForListDto() {
+  public LayerDtoForList() {
   }
 
-  public LayerForListDto(Long id, String title, String description, LayerStateType state, LocalDateTime createTime) {
+  public LayerDtoForList(Long id, String title, String description, LayerStateType state, LocalDateTime createTime) {
     this.id = id;
     this.title = title;
     this.description = description;

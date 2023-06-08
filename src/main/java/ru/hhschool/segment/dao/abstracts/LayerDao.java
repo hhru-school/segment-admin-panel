@@ -7,5 +7,5 @@ import ru.hhschool.segment.model.enums.LayerStateType;
 public interface LayerDao extends ReadWriteDao<Layer, Long> {
   List<Layer> getAllParents(Long id);
 
-  List<Layer> findAll(List<LayerStateType> layerStatusList);
+  List<Layer> findAll(List<LayerStateType> layerStateTypes);
 }

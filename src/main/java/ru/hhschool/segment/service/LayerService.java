@@ -17,7 +17,7 @@ import ru.hhschool.segment.mapper.layer.LayerStatusMapper;
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.change.LayerChangeDto;
-import ru.hhschool.segment.model.dto.layer.LayerForListDto;
+import ru.hhschool.segment.model.dto.layer.LayerDtoForList;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.enums.ConflictStatus;
 import ru.hhschool.segment.model.enums.LayerStateType;
@@ -32,7 +32,7 @@ public class LayerService {
     this.platformDao = platformDao;
   }
 
-  public List<LayerDto> getLayerDtoListForMainPage() {
+  public List<LayerDto> getLayerGroupList() {
     return LayerMapper.toDtoListForMainPage(layerDao.findAll());
   }
 
@@ -55,9 +55,9 @@ public class LayerService {
     return Optional.empty();
   }
 
-  public List<LayerForListDto> getAll(List<String> layerStringStatus) {
-    List<LayerStateType> layerStatusList = LayerStatusMapper.toStatusList(layerStringStatus);
-    List<Layer> layerList = layerDao.findAll(layerStatusList);
+  public List<LayerDtoForList> getAll(List<String> layerStringStateTypes) {
+    List<LayerStateType> layerStateTypes = LayerStatusMapper.toStatusList(layerStringStateTypes);
+    List<Layer> layerList = layerDao.findAll(layerStateTypes);
 
     return LayerMapper.toLayerForListDto(layerList);
   }
