@@ -31,7 +31,15 @@ import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentLayerViewDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewEntryPointDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewRequirementDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewQuestionDto;
-import ru.hhschool.segment.model.entity.*;
+import ru.hhschool.segment.model.entity.Segment;
+import ru.hhschool.segment.model.entity.Layer;
+import ru.hhschool.segment.model.entity.Entrypoint;
+import ru.hhschool.segment.model.entity.Question;
+import ru.hhschool.segment.model.entity.Role;
+import ru.hhschool.segment.model.entity.ScreenQuestionLink;
+import ru.hhschool.segment.model.entity.SegmentScreenEntrypointLink;
+import ru.hhschool.segment.model.entity.QuestionRequiredLink;
+import ru.hhschool.segment.model.entity.SegmentStateLink;
 import ru.hhschool.segment.model.enums.StateType;
 
 import javax.inject.Inject;
@@ -203,18 +211,19 @@ public class SegmentService {
 
   @Transactional
   public Optional<SegmentSelectedDto> getSegmentSelectedDto(Long layerId, Long segmentId) {
-    Optional<SegmentStateLink> segmentStateLink = segmentStateLinkDao.findById(layerId, segmentId);
-    if (segmentStateLink.isEmpty()) {
+    Optional<Layer> layer = layerDao.findById(layerId);
+    Optional<Segment> segment = segmentDao.findById(segmentId);
+    if (segment.isEmpty() || layer.isEmpty()){
       return Optional.empty();
     }
-    Segment segment = segmentStateLink.get().getSegment();
-    Layer layer = segmentStateLink.get().getLayer();
-    List<Role> roles = roleDao.findAll(segment.getRoleList());
     List<Layer> space = getLayersInSpace(layerId);
+    Map<Long, SegmentStateLink> segmentStateLinkMap = getLatestSSLInSpace(getSSLInSpace(space, segment.get().getTitle()));
+    SegmentStateLink segmentStateLink = segmentStateLinkMap.get(segmentId);
+    List<Role> roles = roleDao.findAll(segment.get().getRoleList());
     List<QuestionRequiredLink> questionRequiredLinks = getLatestQRLInSpace(getQRLInSpace(space, segmentId));
     List<SegmentViewRequirementDto> segmentViewRequirementDtoList = getSegmentViewRequirementDtos(questionRequiredLinks, layerId, space, segmentId);
-    List<SegmentViewEntryPointDto> segmentViewEntryPointDtoList = getSegmentViewEntryPointDtos(layer, segmentId);
-    return Optional.of(SegmentSelectedMapper.toDtoForSelectedSegmentViewPage(layer, segment, segmentStateLink.get(), roles, segmentViewRequirementDtoList, segmentViewEntryPointDtoList));
+    List<SegmentViewEntryPointDto> segmentViewEntryPointDtoList = getSegmentViewEntryPointDtos(layer.get(), segmentId);
+    return Optional.of(SegmentSelectedMapper.toDtoForSelectedSegmentViewPage(layer.get(), segment.get(), segmentStateLink, roles, segmentViewRequirementDtoList, segmentViewEntryPointDtoList));
   }
   private List<QuestionRequiredLink> getQRLInSpace(List<Layer> space, Long segmentId) {
     List<QuestionRequiredLink> questionRequiredLinks = new ArrayList<>();
@@ -263,7 +272,7 @@ public class SegmentService {
         .map(link -> SegmentViewScreenMapper.toDtoForSelectedSegmentViewPage(link,
             layerId,
             link.getLayer().getId().equals(layerId) && link.getOldSegmentScreenEntrypointLink() == null,
-            PlatformMapper.toDtoForSelectedSegmentViewPage(platformDao.findAll(link.getScreen().getPlatforms())),
+            PlatformMapper.toDtoList(platformDao.findAll(link.getScreen().getPlatforms())),
             getSegmentViewQuestionDtos(layerId, link, parentLayerQuestions)))
         .toList();
   }
