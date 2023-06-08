@@ -149,7 +149,7 @@ public class SegmentService {
     Long screenQuestionLinksCount = screenQuestionLinkDao.countById(layerId, segmentId);
     Long segmentScreenEntrypointLinksCount = segmentScreenEntrypointLinkDao.countById(layerId, segmentId);
     Long questionRequiredLinksCount = questionRequiredLinkDao.countById(layerId, segmentId);
-    if (screenQuestionLinksCount.equals(0) && segmentScreenEntrypointLinksCount.equals(0) && questionRequiredLinksCount.equals(0)) {
+    if (screenQuestionLinksCount == 0 && segmentScreenEntrypointLinksCount == 0 && questionRequiredLinksCount == 0) {
       return SegmentViewChangeState.NOT_CHANGED;
     }
     return SegmentViewChangeState.CHANGED;
