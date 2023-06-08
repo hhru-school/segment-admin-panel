@@ -1,16 +1,26 @@
 package ru.hhschool.segment.model.dto.viewsegments.layerview;
 
-import ru.hhschool.segment.model.enums.QuestionVisibilityType;
+import java.util.List;
 
 public class SegmentViewEntryPointDto {
+  private Long id;
   private String title;
-  private QuestionVisibilityType visibility;
-  private Boolean status;
+  private String description;
+  private List<SegmentViewScreenDto> screens;
 
-  public SegmentViewEntryPointDto(String title, QuestionVisibilityType visibility, Boolean status) {
+  public SegmentViewEntryPointDto(Long id, String title, String description, List<SegmentViewScreenDto> screens) {
+    this.id = id;
     this.title = title;
-    this.visibility = visibility;
-    this.status = status;
+    this.description = description;
+    this.screens = screens;
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public String getTitle() {
@@ -21,19 +31,19 @@ public class SegmentViewEntryPointDto {
     this.title = title;
   }
 
-  public QuestionVisibilityType getVisibility() {
-    return visibility;
+  public String getDescription() {
+    return description;
   }
 
-  public void setVisibility(QuestionVisibilityType visibility) {
-    this.visibility = visibility;
+  public void setDescription(String description) {
+    this.description = description;
   }
 
-  public Boolean getStatus() {
-    return status;
+  public List<SegmentViewScreenDto> getScreens() {
+    return screens;
   }
 
-  public void setStatus(Boolean status) {
-    this.status = status;
+  public void setScreens(List<SegmentViewScreenDto> screens) {
+    this.screens = screens;
   }
 }

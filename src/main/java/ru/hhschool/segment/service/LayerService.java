@@ -37,16 +37,6 @@ public class LayerService {
   }
 
   @Transactional
-  public Optional<LayerChangeDto> getLayerChanges(Long layerId) {
-    Optional<Layer> layer = layerDao.findById(layerId);
-    if (layer.isEmpty()) {
-      return Optional.empty();
-    }
-
-    return Optional.of(LayerChangeMapper.layerChangeToDto(layer.get(), ConflictStatus.NONE));
-  }
-
-  @Transactional
   public Optional<LayerBasicInfoDto> getLayerDtoForBasicInfoPage(Long id) {
     Optional<Layer> layer = layerDao.findById(id);
     if (layer.isEmpty()) {
