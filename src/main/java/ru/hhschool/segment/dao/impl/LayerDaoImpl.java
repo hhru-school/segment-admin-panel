@@ -1,11 +1,12 @@
 package ru.hhschool.segment.dao.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.enums.LayerStateType;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class LayerDaoImpl extends ReadWriteDaoImpl<Layer, Long> implements LayerDao {
   @Override
@@ -34,6 +35,19 @@ public class LayerDaoImpl extends ReadWriteDaoImpl<Layer, Long> implements Layer
         .setParameter("layerStatusList", layerStatusList)
         .getResultList();
     return layerList;
+  }
+
+  @Override
+  public Layer findLastStableLayer() {
+    return (Layer) em.createQuery("""
+            SELECT l
+             FROM Layer l
+             WHERE l.state IN :layerStatus
+             ORDER BY l.stabledTime DESC 
+            """)
+        .setParameter("layerStatus", LayerStateType.STABLE)
+        .setMaxResults(1)
+        .getSingleResult();
   }
 
 }

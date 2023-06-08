@@ -8,4 +8,6 @@ public interface LayerDao extends ReadWriteDao<Layer, Long> {
   List<Layer> getAllParents(Long id);
 
   List<Layer> findAll(List<LayerStateType> layerStatusList);
+
+  Layer findLastStableLayer();
 }

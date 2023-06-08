@@ -162,8 +162,8 @@ VALUES (1, 1),
 
 
 --Первый слой
-INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms)
-VALUES (NULL, 'Первый слой', 'Базовый слой', 'STABLE', '2023-04-12 02:02:00', '{1, 2, 3}'); -- 1
+INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms, stabled_time)
+VALUES (NULL, 'Первый слой', 'Базовый слой', 'STABLE', '2023-04-12 02:02:00', '{1, 2, 3}','2023-04-12 02:02:00'); -- 1
 
 INSERT INTO segment_state_links (old_id, layer_id, segment_id, state)
 VALUES (NULL, 1, 1, 'ACTIVE'); -- 1
@@ -226,8 +226,8 @@ VALUES (NULL, 1, 1, 1, 6, 26, 1, 'SHOW'),           -- 1
 
 
 --Второй слой
-INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms)
-VALUES (1, 'Второй слой', 'Слой, унаследованный от базового слоя', 'STABLE', '2023-04-13 02:02:00', '{1, 4, 3}');
+INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms,stabled_time)
+VALUES (1, 'Второй слой', 'Слой, унаследованный от базового слоя', 'STABLE', '2023-04-13 02:02:00', '{1, 4, 3}','2023-04-13 02:02:00');
 -- 2
 
 INSERT INTO segment_state_links (old_id, layer_id, segment_id, state)
@@ -294,8 +294,8 @@ VALUES (NULL, 2, 2, 1, 1, 1, 1, 'SHOW'),           -- 26
 
 
 --Третий слой
-INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms)
-VALUES (2, 'Третий слой', 'Слой, унаследованный от второго слоя', 'STABLE', '2023-04-13 02:02:00', '{1, 4, 5}');
+INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms, stabled_time)
+VALUES (2, 'Третий слой', 'Слой, унаследованный от второго слоя', 'STABLE', '2023-04-13 02:02:00', '{1, 4, 5}','2023-04-14 02:02:00');
 -- 3
 
 INSERT INTO segment_state_links (old_id, layer_id, segment_id, state)
