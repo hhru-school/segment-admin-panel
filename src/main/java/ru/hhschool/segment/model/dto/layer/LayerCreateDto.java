@@ -10,6 +10,7 @@ public class LayerCreateDto {
   private List<QuestionRequiredLinkCreateDto> questionRequiredLinks;
   private List<ScreenQuestionLinkCreateDto> screenQuestionLinks;
   private List<SegmentScreenEntrypointLinkCreateDto> segmentScreenEntrypointLinks;
+  private List<DynamicScreenCreateDto> dynamicScreens;
 
   public LayerCreateDto() {
   }
@@ -21,7 +22,8 @@ public class LayerCreateDto {
       List<SegmentStateLinkCreateDto> segmentStateLinks,
       List<QuestionRequiredLinkCreateDto> questionRequiredLinks,
       List<ScreenQuestionLinkCreateDto> screenQuestionLinks,
-      List<SegmentScreenEntrypointLinkCreateDto> segmentScreenEntrypointLinks
+      List<SegmentScreenEntrypointLinkCreateDto> segmentScreenEntrypointLinks,
+      List<DynamicScreenCreateDto> dynamicScreens
   ) {
     this.title = title;
     this.description = description;
@@ -30,6 +32,7 @@ public class LayerCreateDto {
     this.questionRequiredLinks = questionRequiredLinks;
     this.screenQuestionLinks = screenQuestionLinks;
     this.segmentScreenEntrypointLinks = segmentScreenEntrypointLinks;
+    this.dynamicScreens = dynamicScreens;
   }
 
   public String getTitle() {
@@ -86,5 +89,13 @@ public class LayerCreateDto {
 
   public void setSegmentScreenEntrypointLinks(List<SegmentScreenEntrypointLinkCreateDto> segmentScreenEntrypointLinks) {
     this.segmentScreenEntrypointLinks = segmentScreenEntrypointLinks;
+  }
+
+  public List<DynamicScreenCreateDto> getDynamicScreens() {
+    return dynamicScreens;
+  }
+
+  public void setDynamicScreens(List<DynamicScreenCreateDto> dynamicScreens) {
+    this.dynamicScreens = dynamicScreens;
   }
 }
