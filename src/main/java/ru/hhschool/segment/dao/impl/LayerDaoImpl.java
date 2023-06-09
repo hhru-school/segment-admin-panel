@@ -29,7 +29,7 @@ public class LayerDaoImpl extends ReadWriteDaoImpl<Layer, Long> implements Layer
             SELECT l
              FROM Layer l
              WHERE l.state IN :layerStatusList
-             ORDER BY l.createTime DESC 
+             ORDER BY l.stabledTime DESC , l.title
             """)
         .setParameter("layerStatusList", layerStatusList)
         .getResultList();

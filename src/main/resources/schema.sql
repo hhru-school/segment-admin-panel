@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS layers
     state           VARCHAR(255),
     create_time     TIMESTAMP WITH TIME ZONE NOT NULL,
     platforms       BIGINT[],
-    stabled_time     TIMESTAMP WITH TIME ZONE
+    stabled_time    TIMESTAMP WITH TIME ZONE
 );
 COMMENT ON COLUMN layers.state IS 'enum (STABLE, ARCHIVE, TEST)';
 
@@ -89,15 +89,15 @@ CREATE TABLE IF NOT EXISTS screens
     description VARCHAR(255),
     type        VARCHAR(255) NOT NULL,
     state       VARCHAR(255),
-    platforms   BIGINT[] NOT NULL
+    platforms   BIGINT[]     NOT NULL
 );
 COMMENT ON COLUMN screens.type IS 'enum (STATIC, DYNAMIC)';
 COMMENT ON COLUMN screens.state IS 'enum (ACTIVE, ARCHIVE)';
 
 CREATE TABLE IF NOT EXISTS screen_questions
 (
-    screen_id         BIGINT REFERENCES screens (screen_id),
-    question_id       BIGINT REFERENCES questions (question_id),
+    screen_id   BIGINT REFERENCES screens (screen_id),
+    question_id BIGINT REFERENCES questions (question_id),
     PRIMARY KEY (screen_id, question_id)
 );
 
