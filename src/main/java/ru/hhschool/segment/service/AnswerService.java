@@ -1,17 +1,18 @@
 package ru.hhschool.segment.service;
 
+import ru.hhschool.segment.dao.abstracts.AnswerDao;
+import ru.hhschool.segment.dao.abstracts.QuestionDao;
+import ru.hhschool.segment.mapper.AnswerMapper;
+import ru.hhschool.segment.mapper.question.QuestionMapper;
+import ru.hhschool.segment.model.dto.questioninfopage.AnswerDtoForQuestionsInfo;
+import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfo;
+import ru.hhschool.segment.model.entity.Question;
+
+import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.inject.Inject;
-import ru.hhschool.segment.dao.abstracts.AnswerDao;
-import ru.hhschool.segment.dao.abstracts.QuestionDao;
-import ru.hhschool.segment.mapper.AnswerMapper;
-import ru.hhschool.segment.mapper.QuestionMapper;
-import ru.hhschool.segment.model.dto.questioninfopage.AnswerDtoForQuestionsInfo;
-import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfo;
-import ru.hhschool.segment.model.entity.Question;
 
 public class AnswerService {
   private final AnswerDao answerDao;
@@ -35,13 +36,13 @@ public class AnswerService {
         .collect(Collectors.toList());
   }
 
-  public List<QuestionDtoForQuestionsInfo> getAllOpenQuestionForAnswer(List<Long> openQuestionIdList, List<Question> questionList,int depth) {
-    if (openQuestionIdList == null|| depth <= 0) {
+  public List<QuestionDtoForQuestionsInfo> getAllOpenQuestionForAnswer(List<Long> openQuestionIdList, List<Question> questionList, int depth) {
+    if (openQuestionIdList == null || depth <= 0) {
       return Collections.emptyList();
     }
     return questionList.stream()
         .filter(question -> openQuestionIdList.contains(question.getId()))
-        .map(question -> QuestionMapper.questionToDto(question, getAllAnswerDtoListByListId(question.getPossibleAnswers(), questionList, depth-1)))
+        .map(question -> QuestionMapper.questionToDto(question, getAllAnswerDtoListByListId(question.getPossibleAnswers(), questionList, depth - 1)))
         .toList();
   }
 }

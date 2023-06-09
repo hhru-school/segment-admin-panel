@@ -1,6 +1,8 @@
 package ru.hhschool.segment.resource;
 
-import java.util.List;
+import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfo;
+import ru.hhschool.segment.service.QuestionService;
+
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -10,8 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfo;
-import ru.hhschool.segment.service.QuestionService;
+import java.util.List;
 
 @Path("/questions")
 public class QuestionResource {
@@ -25,8 +26,9 @@ public class QuestionResource {
   @GET
   @Path(value = "/")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getQuestionDtoListWithAnswers(@QueryParam("searchQuery") @DefaultValue("") String searchQuery) {
-    List<QuestionDtoForQuestionsInfo> questionDtoList = questionService.getAllQuestionDtoListForQuestionsInfo(searchQuery);
+  public Response getQuestionDtoListWithAnswers(@QueryParam("searchQuery") @DefaultValue("") String searchQuery,
+                                                @QueryParam("type") List<String> questionTypeStringList) {
+    List<QuestionDtoForQuestionsInfo> questionDtoList = questionService.getAllQuestionDtoListForQuestionsInfo(searchQuery, questionTypeStringList);
     if (!questionDtoList.isEmpty()) {
       return Response.ok(questionDtoList).build();
     }
