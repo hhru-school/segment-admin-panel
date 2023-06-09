@@ -19,7 +19,6 @@ public class DynamicScreenCreateDto {
       String title,
       String description,
       Integer screenPosition,
-      StateType screenState,
       Long segmentId,
       Long entrypointId,
       List<DynamicScreenQuestionCreateDto> questions

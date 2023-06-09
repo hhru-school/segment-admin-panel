@@ -17,7 +17,7 @@ import ru.hhschool.segment.mapper.layer.LayerStatusMapper;
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.change.LayerChangeDto;
-import ru.hhschool.segment.model.dto.layer.LayerForListDto;
+import ru.hhschool.segment.model.dto.layer.LayerDtoForList;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.enums.ConflictStatus;
 import ru.hhschool.segment.model.enums.LayerStateType;
@@ -32,18 +32,8 @@ public class LayerService {
     this.platformDao = platformDao;
   }
 
-  public List<LayerDto> getLayerDtoListForMainPage() {
+  public List<LayerDto> getLayerGroupList() {
     return LayerMapper.toDtoListForMainPage(layerDao.findAll());
-  }
-
-  @Transactional
-  public Optional<LayerChangeDto> getLayerChanges(Long layerId) {
-    Optional<Layer> layer = layerDao.findById(layerId);
-    if (layer.isEmpty()) {
-      return Optional.empty();
-    }
-
-    return Optional.of(LayerChangeMapper.layerChangeToDto(layer.get(), ConflictStatus.NONE));
   }
 
   @Transactional
@@ -52,9 +42,11 @@ public class LayerService {
     if (layer.isEmpty()) {
       return Optional.empty();
     }
-    LayerBasicInfoDto layerBasicInfoDto = LayerBasicInfoMapper.toDtoForBasicInfoPage(layer.get(),
+    LayerBasicInfoDto layerBasicInfoDto = LayerBasicInfoMapper.toDtoForBasicInfoPage(
+        layer.get(),
         layerDao.getAllParents(id),
-        PlatformMapper.toDtoList(platformDao.findAll(layer.get().getPlatforms())));
+        PlatformMapper.toDtoList(platformDao.findAll(layer.get().getPlatforms()))
+    );
     return Optional.of(layerBasicInfoDto);
   }
 
@@ -63,9 +55,9 @@ public class LayerService {
     return Optional.empty();
   }
 
-  public List<LayerForListDto> getAll(List<String> layerStringStatus) {
-    List<LayerStateType> layerStatusList = LayerStatusMapper.toStatusList(layerStringStatus);
-    List<Layer> layerList = layerDao.findAll(layerStatusList);
+  public List<LayerDtoForList> getAll(List<String> layerStringStateTypes) {
+    List<LayerStateType> layerStateTypes = LayerStatusMapper.toStatusList(layerStringStateTypes);
+    List<Layer> layerList = layerDao.findAll(layerStateTypes);
 
     return LayerMapper.toLayerForListDto(layerList);
   }
@@ -75,6 +67,9 @@ public class LayerService {
     Optional<Layer> layer = layerDao.findById(layerId);
     if (layer.isEmpty()) {
       throw new HttpNotFoundException("Слой не найден.");
+    }
+    if (layer.get().getState() == LayerStateType.STABLE) {
+      throw new HttpBadRequestException("Не возможно STABLE слой сделать архивным.");
     }
     layer.get().setState(LayerStateType.ARCHIVE);
     try {

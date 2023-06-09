@@ -1,16 +1,59 @@
 package ru.hhschool.segment.model.dto.viewsegments.layerview;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import ru.hhschool.segment.model.entity.Role;
+import ru.hhschool.segment.model.enums.StateType;
+
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SegmentSelectedDto {
+  private Long layerId;
+  private String layerTitle;
   private Long segmentId;
+  private StateType activeState;
+  private StateType oldActiveState;
+  private Long parentSegmentId;
   private String title;
-  private List<SegmentViewQuestionDto> questions;
+  private String description;
+  private List<Role> roles;
+  private List<String> tags;
+  private List<SegmentViewRequirementDto> fields;
+  private List<SegmentViewEntryPointDto> entryPoints;
 
-  public SegmentSelectedDto(Long segmentId, String title, List<SegmentViewQuestionDto> questions) {
+  public SegmentSelectedDto(Long layerId, String layerTitle, Long segmentId, StateType activeState, StateType oldActiveState, Long parentSegmentId, String title, String description, List<Role> roles, List<String> tags, List<SegmentViewRequirementDto> fields, List<SegmentViewEntryPointDto> entryPoints) {
+    this.layerId = layerId;
+    this.layerTitle = layerTitle;
     this.segmentId = segmentId;
+    this.activeState = activeState;
+    this.oldActiveState = oldActiveState;
+    this.parentSegmentId = parentSegmentId;
     this.title = title;
-    this.questions = questions;
+    this.description = description;
+    this.roles = roles;
+    this.tags = tags;
+    this.fields = fields;
+    this.entryPoints = entryPoints;
+  }
+
+  public SegmentSelectedDto() {
+
+  }
+
+  public Long getLayerId() {
+    return layerId;
+  }
+
+  public void setLayerId(Long layerId) {
+    this.layerId = layerId;
+  }
+
+  public String getLayerTitle() {
+    return layerTitle;
+  }
+
+  public void setLayerTitle(String layerTitle) {
+    this.layerTitle = layerTitle;
   }
 
   public Long getSegmentId() {
@@ -21,6 +64,30 @@ public class SegmentSelectedDto {
     this.segmentId = segmentId;
   }
 
+  public StateType getActiveState() {
+    return activeState;
+  }
+
+  public void setActiveState(StateType activeState) {
+    this.activeState = activeState;
+  }
+
+  public StateType getOldActiveState() {
+    return oldActiveState;
+  }
+
+  public void setOldActiveState(StateType oldActiveState) {
+    this.oldActiveState = oldActiveState;
+  }
+
+  public Long getParentSegmentId() {
+    return parentSegmentId;
+  }
+
+  public void setParentSegmentId(Long parentSegmentId) {
+    this.parentSegmentId = parentSegmentId;
+  }
+
   public String getTitle() {
     return title;
   }
@@ -29,11 +96,43 @@ public class SegmentSelectedDto {
     this.title = title;
   }
 
-  public List<SegmentViewQuestionDto> getQuestions() {
-    return questions;
+  public String getDescription() {
+    return description;
   }
 
-  public void setQuestions(List<SegmentViewQuestionDto> questions) {
-    this.questions = questions;
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public List<Role> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(List<Role> roles) {
+    this.roles = roles;
+  }
+
+  public List<String> getTags() {
+    return tags;
+  }
+
+  public void setTags(List<String> tags) {
+    this.tags = tags;
+  }
+
+  public List<SegmentViewRequirementDto> getFields() {
+    return fields;
+  }
+
+  public void setFields(List<SegmentViewRequirementDto> fields) {
+    this.fields = fields;
+  }
+
+  public List<SegmentViewEntryPointDto> getEntryPoints() {
+    return entryPoints;
+  }
+
+  public void setEntryPoints(List<SegmentViewEntryPointDto> entryPoints) {
+    this.entryPoints = entryPoints;
   }
 }

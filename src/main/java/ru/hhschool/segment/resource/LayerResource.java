@@ -12,9 +12,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
-import ru.hhschool.segment.model.dto.layer.LayerForListDto;
+import ru.hhschool.segment.model.dto.layer.LayerDtoForList;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.LayerSegmentsDto;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentSelectedDto;
 import ru.hhschool.segment.service.LayerService;
 import ru.hhschool.segment.service.SegmentService;
 
@@ -32,16 +34,23 @@ public class LayerResource {
   @GET
   @Path(value = "/")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getLayerDtoListForMainPage(@QueryParam("status") List<String> layerStringStatus) {
-    if (layerStringStatus == null || layerStringStatus.size() == 0) {
-      return Response.ok(layerService.getLayerDtoListForMainPage()).build();
-    }
-
-    List<LayerForListDto> layerForMainPageDtoList = layerService.getAll(layerStringStatus);
-    if (layerForMainPageDtoList.isEmpty()) {
+  public Response getLayerGroupList() {
+    List<LayerDto> layerDtoList = layerService.getLayerGroupList();
+    if (layerDtoList.isEmpty()) {
       return Response.status(Response.Status.NO_CONTENT).build();
     }
-    return Response.ok(layerForMainPageDtoList).build();
+    return Response.ok(layerDtoList).build();
+  }
+
+  @GET
+  @Path(value = "/list")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getLayerFilteredList(@QueryParam("state") List<String> layerStringStateTypes) {
+    List<LayerDtoForList> layerDtoList = layerService.getAll(layerStringStateTypes);
+    if (layerDtoList.isEmpty()) {
+      return Response.status(Response.Status.NO_CONTENT).build();
+    }
+    return Response.ok(layerDtoList).build();
   }
 
   @GET
@@ -67,6 +76,17 @@ public class LayerResource {
       return Response.ok(layerSegmentsDto.get()).build();
     }
     return Response.status(Response.Status.NO_CONTENT).build();
+  }
+
+  @GET
+  @Path("/{layerId}/segments/{segmentId}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getSegmentViewDtoListForViewSegmentPage(@PathParam("layerId") Long layerId, @PathParam("segmentId") Long segmentId){
+    Optional<SegmentSelectedDto> segmentSelectedDto = segmentService.getSegmentSelectedDto(layerId, segmentId);
+    if (segmentSelectedDto.isPresent()){
+      return Response.ok(segmentSelectedDto).build();
+    }
+    return Response.status(Response.Status.NOT_FOUND).build();
   }
 
   @PATCH

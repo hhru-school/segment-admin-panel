@@ -1,62 +1,41 @@
 package ru.hhschool.segment.model.dto.viewsegments.layerview;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 
-import java.util.List;
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SegmentViewQuestionDto {
-  private Long questionId;
-  private Boolean required;
-  private Boolean requiredChanged;
-  private Boolean questionChanged;
+  private Long id;
   private String title;
-  private List<SegmentViewEntryPointDto> entryPoints;
+  private Boolean isNew;
+  private QuestionVisibilityType visibility;
+  private QuestionVisibilityType oldVisibility;
+  private Integer oldPosition;
 
-  public SegmentViewQuestionDto(
-      Long questionId,
-      Boolean required,
-      Boolean requiredChanged,
-      Boolean questionChanged,
-      String title,
-      List<SegmentViewEntryPointDto> entryPoints
-  ) {
-    this.questionId = questionId;
-    this.required = required;
-    this.requiredChanged = requiredChanged;
-    this.questionChanged = questionChanged;
+  public SegmentViewQuestionDto(Long id,
+                                String title,
+                                Boolean isNew,
+                                QuestionVisibilityType visibility,
+                                QuestionVisibilityType oldVisibility,
+                                Integer oldPosition) {
+    this.id = id;
     this.title = title;
-    this.entryPoints = entryPoints;
+    this.isNew = isNew;
+    this.visibility = visibility;
+    this.oldVisibility = oldVisibility;
+    this.oldPosition = oldPosition;
   }
 
-  public Long getQuestionId() {
-    return questionId;
+  public SegmentViewQuestionDto() {
+
   }
 
-  public void setQuestionId(Long questionId) {
-    this.questionId = questionId;
+  public Long getId() {
+    return id;
   }
 
-  public Boolean getRequired() {
-    return required;
-  }
-
-  public void setRequired(Boolean required) {
-    this.required = required;
-  }
-
-  public Boolean getRequiredChanged() {
-    return requiredChanged;
-  }
-
-  public void setRequiredChanged(Boolean requiredChanged) {
-    this.requiredChanged = requiredChanged;
-  }
-
-  public Boolean getQuestionChanged() {
-    return questionChanged;
-  }
-
-  public void setQuestionChanged(Boolean questionChanged) {
-    this.questionChanged = questionChanged;
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public String getTitle() {
@@ -67,11 +46,35 @@ public class SegmentViewQuestionDto {
     this.title = title;
   }
 
-  public List<SegmentViewEntryPointDto> getEntryPoints() {
-    return entryPoints;
+  public Boolean getIsNew() {
+    return isNew;
   }
 
-  public void setEntryPoints(List<SegmentViewEntryPointDto> entryPoints) {
-    this.entryPoints = entryPoints;
+  public void setIsNew(Boolean isNew) {
+    this.isNew = isNew;
+  }
+
+  public QuestionVisibilityType getVisibility() {
+    return visibility;
+  }
+
+  public void setVisibility(QuestionVisibilityType visibility) {
+    this.visibility = visibility;
+  }
+
+  public QuestionVisibilityType getOldVisibility() {
+    return oldVisibility;
+  }
+
+  public void setOldVisibility(QuestionVisibilityType oldVisibility) {
+    this.oldVisibility = oldVisibility;
+  }
+
+  public Integer getOldPosition() {
+    return oldPosition;
+  }
+
+  public void setOldPosition(Integer oldPosition) {
+    this.oldPosition = oldPosition;
   }
 }
