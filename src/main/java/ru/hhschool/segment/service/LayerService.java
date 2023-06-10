@@ -17,6 +17,7 @@ import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentLayerViewDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentSelectedDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewEntryPointDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewQuestionDto;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewRequirementDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewScreenDto;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.enums.LayerStateType;
@@ -66,7 +67,6 @@ public class LayerService {
       throw new HttpNotFoundException("Такого слоя не сущестсвует");
     }
     Layer mergingLayer = optionalMergingLayer.get();
-
     if (Objects.equals(mergingLayer.getParent().getId(), lastStableLayer.getId()) && mergingLayer.getState() != LayerStateType.CONFLICT) {
       if (mergingLayer.getState() == LayerStateType.STABLE) {
         throw new HttpBadRequestException("Слой с Id " + mergingLayer.getId() + " уже стабильный");
@@ -87,12 +87,15 @@ public class LayerService {
     });
     if (!checkStateSegment(selectedDtoList) ||
         !checkQuestionVisibilityAndPosition(selectedDtoList) ||
-        !checkScreenPostion(selectedDtoList)) {
+        !checkScreenPositionAndState(selectedDtoList) ||
+        !checkRequiredQuestion(selectedDtoList)) {
       mergingLayer.setState(LayerStateType.CONFLICT);
       layerDao.update(mergingLayer);
       return MergeResponseMapper.toDtoResponse(mergingLayer);
     }
-    return null;
+    mergingLayer.setState(LayerStateType.STABLE);
+    layerDao.update(mergingLayer);
+    return MergeResponseMapper.toDtoResponse(mergingLayer);
   }
 
   public boolean checkStateSegment(List<SegmentSelectedDto> selectedDtoList) {
@@ -119,7 +122,7 @@ public class LayerService {
     return true;
   }
 
-  public boolean checkScreenPostion(List<SegmentSelectedDto> selectedDtoList) {
+  public boolean checkScreenPositionAndState(List<SegmentSelectedDto> selectedDtoList) {
     for (SegmentSelectedDto segmentSelectedDto : selectedDtoList) {
       for (SegmentViewEntryPointDto segmentViewEntryPointDto : segmentSelectedDto.getEntryPoints()) {
         for (SegmentViewScreenDto segmentViewScreenDto : segmentViewEntryPointDto.getScreens()) {
@@ -131,6 +134,18 @@ public class LayerService {
     }
     return true;
   }
+
+  public boolean checkRequiredQuestion(List<SegmentSelectedDto> selectedDtoList) {
+    for (SegmentSelectedDto segmentSelectedDto : selectedDtoList) {
+      for (SegmentViewRequirementDto segmentViewRequirementDto : segmentSelectedDto.getFields()) {
+        if (segmentViewRequirementDto.getIsChanged()) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
 
   public List<LayerForListDto> getAll(List<String> layerStringStatus) {
     List<LayerStateType> layerStatusList = LayerStatusMapper.toStatusList(layerStringStatus);
