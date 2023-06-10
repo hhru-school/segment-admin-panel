@@ -89,6 +89,17 @@ public class LayerResource {
     return Response.status(Response.Status.NOT_FOUND).build();
   }
 
+  @GET
+  @Path("/{layerId}/segmentDetails/{segmentId}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getCreateLayerSegmentDto(@PathParam("layerId") Long layerId, @PathParam("segmentId") Long segmentId){
+    Optional<CreateLayerSegmentDto> createLayerSegmentDto = segmentService.getCreateLayerSegmentDto(layerId, segmentId);
+    if (createLayerSegmentDto.isPresent()){
+      return Response.ok(createLayerSegmentDto).build();
+    }
+    return Response.status(Response.Status.NOT_FOUND).build();
+  }
+
   @PATCH
   @Path("/{layerId}/setArchive/")
   @Produces(MediaType.APPLICATION_JSON)

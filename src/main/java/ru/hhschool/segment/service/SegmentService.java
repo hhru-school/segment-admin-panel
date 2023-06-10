@@ -361,9 +361,6 @@ public class SegmentService {
     List<Layer> space = getLayersInSpace(layerId);
     Map<Long, SegmentStateLink> segmentStateLinkMap = getLatestSSLInSpace(getSSLInSpace(space, segment.get().getTitle()));
     SegmentStateLink segmentStateLink = segmentStateLinkMap.get(segmentId);
-    if (segmentStateLink == null){
-      return Optional.empty();
-    }
     List<Role> roles = roleDao.findAll(segment.get().getRoleList());
     List<CreateLayerRequirementDto> createLayerRequirementDtos = getCreateLayerRequirementDtos(space, segmentId);
     List<CreateLayerEntryPointDto> createLayerEntryPointDtos = getCreateLayerEntryPointDtos(space, segmentId);
