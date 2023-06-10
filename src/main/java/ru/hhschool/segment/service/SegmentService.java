@@ -12,6 +12,11 @@ import ru.hhschool.segment.dao.abstracts.ScreenQuestionLinkDao;
 import ru.hhschool.segment.exception.HttpBadRequestException;
 import ru.hhschool.segment.mapper.RoleMapper;
 import ru.hhschool.segment.mapper.SegmentMapper;
+import ru.hhschool.segment.mapper.createlayer.CreateLayerEntryPointMapper;
+import ru.hhschool.segment.mapper.createlayer.CreateLayerQuestionMapper;
+import ru.hhschool.segment.mapper.createlayer.CreateLayerRequirementMapper;
+import ru.hhschool.segment.mapper.createlayer.CreateLayerScreenMapper;
+import ru.hhschool.segment.mapper.createlayer.CreateLayerSegmentMapper;
 import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentLayerViewMapper;
 import ru.hhschool.segment.mapper.viewsegments.layerview.LayerSegmentsMapper;
 import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentSelectedMapper;
@@ -21,6 +26,11 @@ import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentViewScreenMapper
 import ru.hhschool.segment.mapper.PlatformMapper;
 import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentViewQuestionMapper;
 import ru.hhschool.segment.model.dto.RoleDto;
+import ru.hhschool.segment.model.dto.createlayer.CreateLayerEntryPointDto;
+import ru.hhschool.segment.model.dto.createlayer.CreateLayerQuestionDto;
+import ru.hhschool.segment.model.dto.createlayer.CreateLayerRequirementDto;
+import ru.hhschool.segment.model.dto.createlayer.CreateLayerScreenDto;
+import ru.hhschool.segment.model.dto.createlayer.CreateLayerSegmentDto;
 import ru.hhschool.segment.model.dto.segment.SegmentCreateDto;
 import ru.hhschool.segment.model.dto.segment.SegmentDto;
 import ru.hhschool.segment.model.dto.viewsegments.enums.SegmentViewChangeState;
@@ -339,5 +349,51 @@ public class SegmentService {
         .flatMap(link -> getLatestSQLInSpace(getSQLInSpace(space, link)).stream())
         .map(ScreenQuestionLink::getQuestion)
         .collect(Collectors.toMap(Question::getTitle, question -> question, (question1, question2) -> question1));
+  }
+
+  @Transactional
+  public Optional<CreateLayerSegmentDto> getCreateLayerSegmentDto(Long layerId, Long segmentId) {
+    Optional<Layer> layer = layerDao.findById(layerId);
+    Optional<Segment> segment = segmentDao.findById(segmentId);
+    if (segment.isEmpty() || layer.isEmpty()){
+      return Optional.empty();
+    }
+    List<Layer> space = getLayersInSpace(layerId);
+    Map<Long, SegmentStateLink> segmentStateLinkMap = getLatestSSLInSpace(getSSLInSpace(space, segment.get().getTitle()));
+    SegmentStateLink segmentStateLink = segmentStateLinkMap.get(segmentId);
+    List<Role> roles = roleDao.findAll(segment.get().getRoleList());
+    List<CreateLayerRequirementDto> createLayerRequirementDtos = getCreateLayerRequirementDtos(space, segmentId);
+    List<CreateLayerEntryPointDto> createLayerEntryPointDtos = getCreateLayerEntryPointDtos(space, segmentId);
+    return Optional.of(CreateLayerSegmentMapper.toDtoForLayerCreation(segmentStateLink, roles, createLayerRequirementDtos, createLayerEntryPointDtos));
+  }
+
+  private List<CreateLayerRequirementDto> getCreateLayerRequirementDtos(List<Layer> space, Long segmentId) {
+    List<QuestionRequiredLink> questionRequiredLinks = getLatestQRLInSpace(getQRLInSpace(space, segmentId));
+    return questionRequiredLinks.stream()
+        .map(link -> CreateLayerRequirementMapper.toDtoForLayerCreation(link))
+        .sorted(Comparator.comparing(CreateLayerRequirementDto::getTitle))
+        .toList();
+  }
+  private List<CreateLayerEntryPointDto> getCreateLayerEntryPointDtos(List<Layer> space, Long segmentId){
+    List<Entrypoint> entrypoints = entrypointDao.findAll();
+    return entrypoints.stream()
+        .map(entrypoint -> CreateLayerEntryPointMapper.toDtoForLayerCreation(entrypoint, getCreateLayerScreenDtos(space, segmentId, entrypoint.getId())))
+        .toList();
+  }
+  private List<CreateLayerScreenDto> getCreateLayerScreenDtos(List<Layer> space, Long segmentId, Long entrypointId){
+    List<SegmentScreenEntrypointLink> segmentScreenEntrypointLinks = getLatestSSELInSpace(getSSELInSpace(space, segmentId, entrypointId));
+    return segmentScreenEntrypointLinks.stream()
+        .sorted(Comparator.comparing(SegmentScreenEntrypointLink::getScreenPosition))
+        .map(link -> CreateLayerScreenMapper.toDtoForLayerCreation(link,
+            PlatformMapper.toDtoList(platformDao.findAll(link.getScreen().getPlatforms())),
+            getCreateLayerQuestionDtos(space, link)))
+        .toList();
+  }
+  private List<CreateLayerQuestionDto> getCreateLayerQuestionDtos(List<Layer> space, SegmentScreenEntrypointLink link){
+    List<ScreenQuestionLink> screenQuestionLinks = getLatestSQLInSpace(getSQLInSpace(space, link));
+    return screenQuestionLinks.stream()
+        .sorted(Comparator.comparing(ScreenQuestionLink::getQuestionPosition))
+        .map(questionLink -> CreateLayerQuestionMapper.toDtoForLayerCreation(questionLink))
+        .toList();
   }
 }
