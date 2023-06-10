@@ -8,11 +8,16 @@ import ru.hhschool.segment.mapper.LayerMapper;
 import ru.hhschool.segment.mapper.PlatformMapper;
 import ru.hhschool.segment.mapper.basicinfo.LayerBasicInfoMapper;
 import ru.hhschool.segment.mapper.layer.LayerStatusMapper;
+import ru.hhschool.segment.mapper.merge.MergeResponseMapper;
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.layer.LayerForListDto;
+import ru.hhschool.segment.model.dto.merge.MergeResponseDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentLayerViewDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentSelectedDto;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewEntryPointDto;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewQuestionDto;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewScreenDto;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.enums.LayerStateType;
 
@@ -53,100 +58,78 @@ public class LayerService {
   }
 
   @Transactional
-  public List<List<String>> mergeLayerWithParent(Long layerId) {
+  public MergeResponseDto mergeLayerWithParent(Long layerId) {
     List<SegmentSelectedDto> selectedDtoList = new ArrayList<>();
-    List<List<String>> conflictMessages = new ArrayList<>();
     Optional<Layer> optionalMergingLayer = layerDao.findById(layerId);
     Layer lastStableLayer = layerDao.findLastStableLayer();
     if (optionalMergingLayer.isEmpty()) {
-      return List.of(List.of("Такого слоя не существует.  Последний стабильный слой имеет id" + lastStableLayer.getId()));
+      throw new HttpNotFoundException("Такого слоя не сущестсвует");
     }
     Layer mergingLayer = optionalMergingLayer.get();
 
-    if (Objects.equals(mergingLayer.getParent().getId(), lastStableLayer.getId())) {
+    if (Objects.equals(mergingLayer.getParent().getId(), lastStableLayer.getId()) && mergingLayer.getState() != LayerStateType.CONFLICT) {
+      if (mergingLayer.getState() == LayerStateType.STABLE) {
+        throw new HttpBadRequestException("Слой с Id " + mergingLayer.getId() + " уже стабильный");
+      }
       mergingLayer.setState(LayerStateType.STABLE);
       layerDao.update(mergingLayer);
-      return List.of(List.of("Тестовый слой унаследован от последнего стабильного слоя. [Сделал тестовый слой с Id" + mergingLayer.getId() + " стабильным]"));
+      return MergeResponseMapper.toDtoResponse(mergingLayer);
     }
     mergingLayer.setParent(lastStableLayer);
     layerDao.update(mergingLayer);
     List<SegmentLayerViewDto> segmentLayerViewDtoList = segmentService
         .getSegmentViewDtoListForSegmentsInLayerPage(mergingLayer.getId(), "").get()
         .getSegments();
+
     segmentLayerViewDtoList.forEach(segmentLayerViewDto -> {
       SegmentSelectedDto selectedDto = segmentService.getSegmentSelectedDto(mergingLayer.getId(), segmentLayerViewDto.getId()).get();
       selectedDtoList.add(selectedDto);
     });
-    conflictMessages.add(List.of("Мерджим  Слой с Id" + mergingLayer.getId() + "с последним стаблильным Id " + lastStableLayer.getId()));
-    conflictMessages.add(checkStateSegment(selectedDtoList));
-    conflictMessages.add(checkScreenPostion(selectedDtoList));
-    conflictMessages.add(checkQuestionVisibilityAndPosition(selectedDtoList));
-    if (conflictMessages.get(0) == null && conflictMessages.get(1) == null && conflictMessages.get(2) == null) {
-      mergingLayer.setState(LayerStateType.STABLE);
+    if (!checkStateSegment(selectedDtoList) ||
+        !checkQuestionVisibilityAndPosition(selectedDtoList) ||
+        !checkScreenPostion(selectedDtoList)) {
+      mergingLayer.setState(LayerStateType.CONFLICT);
       layerDao.update(mergingLayer);
-      List.of(List.of("Конфликтов нет, сделал Слой с Id " + mergingLayer.getId() + "стабльиным"));
+      return MergeResponseMapper.toDtoResponse(mergingLayer);
     }
-    return conflictMessages;
+    return null;
   }
 
-  public List<String> checkStateSegment(List<SegmentSelectedDto> selectedDtoList) {
-    List<String> conflictMessages = new ArrayList<>();
-    selectedDtoList.forEach(segmentSelectedDto -> {
+  public boolean checkStateSegment(List<SegmentSelectedDto> selectedDtoList) {
+    for (SegmentSelectedDto segmentSelectedDto : selectedDtoList) {
       if (segmentSelectedDto.getOldActiveState() != null) {
-        conflictMessages.add(
-            "Есть конфликт состояния сегмента. Id сегмента " + segmentSelectedDto.getSegmentId() +
-                " Старый статус " + segmentSelectedDto.getOldActiveState() +
-                " Новый статус " + segmentSelectedDto.getActiveState());
+        return false;
       }
-    });
-    return conflictMessages;
+    }
+    return true;
   }
 
-  public List<String> checkQuestionVisibilityAndPosition(List<SegmentSelectedDto> selectedDtoList) {
-    List<String> conflictMessages = new ArrayList<>();
-    selectedDtoList.forEach(segmentSelectedDto -> {
-      segmentSelectedDto.getEntryPoints().forEach(segmentViewEntryPointDto -> {
-        segmentViewEntryPointDto.getScreens().forEach(segmentViewScreenDto -> {
-          segmentViewScreenDto.getFields().forEach(segmentViewQuestionDto -> {
-            if (segmentViewQuestionDto.getOldPosition() != null) {
-              conflictMessages.add(
-                  "Есть конфликт позиции поля. Id сегмента " + segmentSelectedDto.getSegmentId() +
-                      " Точка доступа " + segmentViewEntryPointDto.getTitle() +
-                      " Название экрана " + segmentViewScreenDto.getTitle() +
-                      " Старая позиция " + segmentViewQuestionDto.getOldPosition());
+  public boolean checkQuestionVisibilityAndPosition(List<SegmentSelectedDto> selectedDtoList) {
+    for (SegmentSelectedDto segmentSelectedDto : selectedDtoList) {
+      for (SegmentViewEntryPointDto segmentViewEntryPointDto : segmentSelectedDto.getEntryPoints()) {
+        for (SegmentViewScreenDto segmentViewScreenDto : segmentViewEntryPointDto.getScreens()) {
+          for (SegmentViewQuestionDto segmentViewQuestionDto : segmentViewScreenDto.getFields()) {
+            if (segmentViewQuestionDto.getOldPosition() != null || segmentViewQuestionDto.getOldVisibility() != null) {
+              return false;
             }
-            if (segmentViewQuestionDto.getOldVisibility() != null) {
-              conflictMessages.add(
-                  "Есть конфликт видимости поля. Id сегмента " + segmentSelectedDto.getSegmentId() +
-                      " Точка доступа " + segmentViewEntryPointDto.getTitle() +
-                      " Название экрана " + segmentViewScreenDto.getTitle() +
-                      " Старая видимость " + segmentViewQuestionDto.getOldVisibility());
-            }
-          });
-        });
-      });
-    });
-
-    return conflictMessages;
-  }
-
-  public List<String> checkScreenPostion(List<SegmentSelectedDto> selectedDtoList) {
-    List<String> conflictMessages = new ArrayList<>();
-    selectedDtoList.forEach(segmentSelectedDto -> {
-      segmentSelectedDto.getEntryPoints().forEach(segmentViewEntryPointDto -> {
-        segmentViewEntryPointDto.getScreens().forEach(segmentViewScreenDto -> {
-          if (segmentViewScreenDto.getOldPosition() != null) {
-            conflictMessages.add(
-                "Есть конфликт позиции экрана. Id сегмента " + segmentSelectedDto.getSegmentId() +
-                    " Точка доступа " + segmentViewEntryPointDto.getTitle() +
-                    " Название экрана " + segmentViewScreenDto.getTitle() +
-                    " Старая позиция " + segmentViewScreenDto.getOldPosition());
           }
-        });
-      });
-    });
+        }
+      }
+    }
+    return true;
+  }
 
-    return conflictMessages;
+  public boolean checkScreenPostion(List<SegmentSelectedDto> selectedDtoList) {
+    for (SegmentSelectedDto segmentSelectedDto : selectedDtoList) {
+      for (SegmentViewEntryPointDto segmentViewEntryPointDto : segmentSelectedDto.getEntryPoints()) {
+        for (SegmentViewScreenDto segmentViewScreenDto : segmentViewEntryPointDto.getScreens()) {
+          if (segmentViewScreenDto.getOldPosition() != null) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
   }
 
   public List<LayerForListDto> getAll(List<String> layerStringStatus) {

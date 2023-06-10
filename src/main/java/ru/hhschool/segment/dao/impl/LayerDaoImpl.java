@@ -39,12 +39,12 @@ public class LayerDaoImpl extends ReadWriteDaoImpl<Layer, Long> implements Layer
 
   @Override
   public Layer findLastStableLayer() {
-    return (Layer) em.createQuery("""
+    return em.createQuery("""
             SELECT l
              FROM Layer l
              WHERE l.state IN :layerStatus
              ORDER BY l.stabledTime DESC 
-            """)
+            """, Layer.class)
         .setParameter("layerStatus", LayerStateType.STABLE)
         .setMaxResults(1)
         .getSingleResult();
