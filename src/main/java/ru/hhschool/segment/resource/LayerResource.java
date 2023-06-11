@@ -90,7 +90,7 @@ public class LayerResource {
   }
 
   @GET
-  @Path("/{layerId}/segmentDetails/{segmentId}")
+  @Path("/{layerId}/segments/{segmentId}/details")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCreateLayerSegmentDto(@PathParam("layerId") Long layerId, @PathParam("segmentId") Long segmentId){
     Optional<CreateLayerSegmentDto> createLayerSegmentDto = segmentService.getCreateLayerSegmentDto(layerId, segmentId);
