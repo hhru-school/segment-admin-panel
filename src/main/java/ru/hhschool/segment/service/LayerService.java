@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 import javax.ws.rs.NotFoundException;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.dao.abstracts.PlatformDao;
+import ru.hhschool.segment.dao.abstracts.QuestionDao;
 import ru.hhschool.segment.dao.abstracts.SegmentStateLinkDao;
 import ru.hhschool.segment.exception.HttpBadRequestException;
 import ru.hhschool.segment.exception.HttpNotFoundException;
@@ -15,9 +16,12 @@ import ru.hhschool.segment.mapper.LayerMapper;
 import ru.hhschool.segment.mapper.PlatformMapper;
 import ru.hhschool.segment.mapper.basicinfo.LayerBasicInfoMapper;
 import ru.hhschool.segment.mapper.layer.LayerStatusMapper;
+import ru.hhschool.segment.mapper.screen.ScreenMapper;
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.change.LayerChangeDto;
+import ru.hhschool.segment.model.dto.layer.DynamicScreenCreateDto;
+import ru.hhschool.segment.model.dto.layer.DynamicScreenQuestionCreateDto;
 import ru.hhschool.segment.model.dto.layer.LayerCreateDto;
 import ru.hhschool.segment.model.dto.layer.LayerDtoForList;
 import ru.hhschool.segment.model.dto.layer.QuestionRequiredLinkCreateDto;
@@ -27,17 +31,21 @@ import ru.hhschool.segment.model.dto.layer.SegmentStateLinkCreateDto;
 import ru.hhschool.segment.model.dto.screen.ScreenDto;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.Platform;
+import ru.hhschool.segment.model.entity.Question;
+import ru.hhschool.segment.model.entity.Screen;
 import ru.hhschool.segment.model.enums.LayerStateType;
 
 public class LayerService {
   private final LayerDao layerDao;
   private final PlatformDao platformDao;
+  private final QuestionDao questionDao;
   private final SegmentStateLinkDao segmentStateLinkDao;
 
   @Inject
-  public LayerService(LayerDao layerDao, PlatformDao platformDao, SegmentStateLinkDao segmentStateLinkDao) {
+  public LayerService(LayerDao layerDao, PlatformDao platformDao, QuestionDao questionDao, SegmentStateLinkDao segmentStateLinkDao) {
     this.layerDao = layerDao;
     this.platformDao = platformDao;
+    this.questionDao = questionDao;
     this.segmentStateLinkDao = segmentStateLinkDao;
   }
 
@@ -94,6 +102,17 @@ public class LayerService {
     }
   }
 
+  /**
+   * 1. получить Id layer для этого создать Layer из Dto
+   * 1.1. получить parentLayer
+   * 1.2. получить плотформы и выбрать только самые старшие версии.
+   * 1.3. сохраняем Layer в базу
+   * 2. Сохраняем все DYNAMIC экраны и создаем связи.
+   * 2.1. Получаем все вопросы по ID и формируем список.
+   * 2.2. Сохраняем экран с вопросами в базу, получаем ID
+   * 2.1. Сохраняем все полученные связи DYNAMIC экранов в базу.
+   * 2.2.
+   */
   @Transactional
   public Optional<ScreenDto> add(LayerCreateDto layerCreateDto) {
     if (layerCreateDto.getParentLayerId() == null) {
@@ -113,6 +132,35 @@ public class LayerService {
     List<Long> layerPlatforms = getLayerPlatforms(layerCreateDto);
 
     Layer layer = LayerMapper.dtoToLayer(layerCreateDto, parentLayer.get(), layerPlatforms);
+    try {
+      layerDao.persist(layer);
+    } catch (Exception err) {
+      String lastMessage = err.getMessage();
+      Throwable cause = err.getCause();
+      while (cause != null) {
+        lastMessage = cause.getMessage();
+        cause = cause.getCause();
+      }
+      throw new HttpBadRequestException(lastMessage);
+    }
+
+    Long layerId = layer.getId();
+
+    List<DynamicScreenCreateDto> dynamicScreens = layerCreateDto.getDynamicScreens();
+
+    for (DynamicScreenCreateDto dynamicScreen : dynamicScreens) {
+      List<Question> questionList = new ArrayList<>();
+      for (DynamicScreenQuestionCreateDto questionDto : dynamicScreen.getQuestions()) {
+        Question question = questionDao.findById(questionDto.getQuestionId())
+            .orElseThrow(
+                () -> new HttpBadRequestException("Не правильно задан список вопросов.")
+            );
+        questionList.add(question);
+      }
+      Screen screen = ScreenMapper.dtoToScreen(dynamicScreen, questionList);
+
+    }
+
     return null;
   }
 
@@ -127,29 +175,17 @@ public class LayerService {
 
     for (Platform platform : platformList) {
       switch (platform.getPlatform()) {
-        case WEB:
-          webPlatform = Optional.of(platform);
-          break;
-        case ANDROID:
-          androidPlatform = getMaxVersion(androidPlatform, Optional.of(platform));
-          break;
-        case IOS:
-          iosPlatform = getMaxVersion(iosPlatform, Optional.of(platform));
-          break;
+        case WEB -> webPlatform = Optional.of(platform);
+        case ANDROID -> androidPlatform = getMaxVersion(androidPlatform, Optional.of(platform));
+        case IOS -> iosPlatform = getMaxVersion(iosPlatform, Optional.of(platform));
       }
     }
 
     List<Long> layerPlatforms = new ArrayList<>();
 
-    if (androidPlatform.isPresent()) {
-      layerPlatforms.add(androidPlatform.get().getId());
-    }
-    if (iosPlatform.isPresent()) {
-      layerPlatforms.add(iosPlatform.get().getId());
-    }
-    if (webPlatform.isPresent()) {
-      layerPlatforms.add(webPlatform.get().getId());
-    }
+    androidPlatform.ifPresent(platform -> layerPlatforms.add(platform.getId()));
+    iosPlatform.ifPresent(platform -> layerPlatforms.add(platform.getId()));
+    webPlatform.ifPresent(platform -> layerPlatforms.add(platform.getId()));
 
     if (layerPlatforms.isEmpty()) {
       throw new HttpBadRequestException("Версии платформ не обнаружены.");

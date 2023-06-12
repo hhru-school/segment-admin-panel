@@ -2,10 +2,12 @@ package ru.hhschool.segment.mapper.screen;
 
 import java.util.List;
 import ru.hhschool.segment.model.dto.PlatformDto;
+import ru.hhschool.segment.model.dto.layer.DynamicScreenCreateDto;
 import ru.hhschool.segment.model.dto.screen.ScreenCreateDto;
 import ru.hhschool.segment.model.dto.screen.ScreenDto;
 import ru.hhschool.segment.model.entity.Question;
 import ru.hhschool.segment.model.entity.Screen;
+import ru.hhschool.segment.model.enums.ScreenType;
 import ru.hhschool.segment.model.enums.StateType;
 
 public class ScreenMapper {
@@ -34,4 +36,15 @@ public class ScreenMapper {
     return screen;
   }
 
+  public static Screen dtoToScreen(DynamicScreenCreateDto dynamicScreen, List<Question> questionList) {
+    Screen screen = new Screen(
+        dynamicScreen.getTitle(),
+        dynamicScreen.getDescription(),
+        ScreenType.DYNAMIC,
+        StateType.ACTIVE,
+        List.of(),
+        questionList
+    );
+    return screen;
+  }
 }
