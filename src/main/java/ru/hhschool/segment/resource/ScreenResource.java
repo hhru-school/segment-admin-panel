@@ -17,6 +17,7 @@ import ru.hhschool.segment.exception.HttpBadRequestException;
 import ru.hhschool.segment.model.dto.ErrorDto;
 import ru.hhschool.segment.model.dto.screen.ScreenCreateDto;
 import ru.hhschool.segment.model.dto.screen.ScreenDto;
+import ru.hhschool.segment.model.enums.ScreenType;
 import ru.hhschool.segment.service.ScreenService;
 
 @Path("/screens")
@@ -32,11 +33,12 @@ public class ScreenResource {
   @Path("/")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getAllScreens(
+      @QueryParam("screenType") @DefaultValue("") ScreenType screenType,
       @QueryParam("androidId") Long androidId,
       @QueryParam("iosId") Long iosId,
       @QueryParam("web") @DefaultValue("false") boolean webSelect
   ) {
-    List<ScreenDto> screenDtoList = screenService.getAll(androidId, iosId, webSelect);
+    List<ScreenDto> screenDtoList = screenService.getAll(screenType, androidId, iosId, webSelect);
     if (!screenDtoList.isEmpty()) {
       return Response.ok(screenDtoList).build();
     }
@@ -46,7 +48,7 @@ public class ScreenResource {
   @GET
   @Path("/{screenId}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getSegmentViewDtoListForViewSegmentPage(@PathParam(value = "screenId") Long screenId) {
+  public Response getScreenById(@PathParam(value = "screenId") Long screenId) {
     if (screenId == null) {
       throw new HttpBadRequestException("Отсутствует необходимый параметр");
     }

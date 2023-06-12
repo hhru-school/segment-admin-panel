@@ -5,12 +5,13 @@ import java.util.Optional;
 import javax.persistence.Query;
 import ru.hhschool.segment.dao.abstracts.ScreenDao;
 import ru.hhschool.segment.model.entity.Screen;
+import ru.hhschool.segment.model.enums.ScreenType;
 
 public class ScreenDaoImpl extends ReadWriteDaoImpl<Screen, Long> implements ScreenDao {
   @Override
-  public List<Screen> findAll(Optional<String> androidVersion, Optional<String> iosVersion, boolean webSelect) {
+  public List<Screen> findAll(List<ScreenType> screenTypeList, Optional<String> androidVersion, Optional<String> iosVersion, boolean webSelect) {
     if (androidVersion.isEmpty() && iosVersion.isEmpty() && !webSelect) {
-      return findAll();
+      return findAll(screenTypeList);
     }
 
     String androidSql = """
@@ -42,7 +43,7 @@ public class ScreenDaoImpl extends ReadWriteDaoImpl<Screen, Long> implements Scr
       webSql = " s.platforms && ARRAY (SELECT p1.platform_id FROM Platforms p1 WHERE p1.platform = 'WEB')";
     }
 
-    String sql = "SELECT * FROM Screens s WHERE \n" +
+    String sql = "SELECT * FROM Screens s WHERE s.type IN (:screenTypeList) AND \n" +
         androidSql +
         "\n AND " +
         iosSql +
@@ -59,7 +60,17 @@ public class ScreenDaoImpl extends ReadWriteDaoImpl<Screen, Long> implements Scr
       nativeQuery.setParameter("iosVersion", iosVersion.get());
     }
 
+    nativeQuery.setParameter("screenTypeList", screenTypeList.stream().map(Enum::toString).toList());
+
     return nativeQuery.getResultList();
 
+  }
+
+  public List<Screen> findAll(List<ScreenType> screenTypeList) {
+    List<Screen> screenList = em.createQuery("SELECT s FROM Screen s WHERE s.type IN (:screenTypeList)")
+        .setParameter("screenTypeList", screenTypeList)
+        .getResultList();
+
+    return screenList;
   }
 }

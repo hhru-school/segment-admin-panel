@@ -2,7 +2,8 @@ package ru.hhschool.segment.service;
 
 import ru.hhschool.segment.dao.abstracts.QuestionDao;
 import ru.hhschool.segment.exception.HttpBadRequestException;
-import ru.hhschool.segment.mapper.QuestionMapper;
+import ru.hhschool.segment.mapper.question.QuestionMapper;
+import ru.hhschool.segment.mapper.question.QuestionSatusMapper;
 import ru.hhschool.segment.model.dto.questioninfopage.AnswerDtoForQuestionsInfo;
 import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfo;
 import ru.hhschool.segment.model.entity.Question;
@@ -18,6 +19,7 @@ public class QuestionService {
   private final QuestionDao questionDao;
   private final AnswerService answerService;
   private final QuestionFilterService questionFilterService;
+  private static final int MAX_DEPTH_OF_TREE = 3;
 
   @Inject
   public QuestionService(QuestionDao questionDao, AnswerService answerService, QuestionFilterService questionFilterService) {
@@ -27,11 +29,17 @@ public class QuestionService {
   }
 
   @Transactional
-  public List<QuestionDtoForQuestionsInfo> getAllQuestionDtoListForQuestionsInfo(String searchQuery) {
+  public List<QuestionDtoForQuestionsInfo> getAllQuestionDtoListForQuestionsInfo(String searchQuery, List<String> questionTypeStringList) {
     List<QuestionDtoForQuestionsInfo> questionDtoForQuestionsInfoList = new ArrayList<>();
-    List<Question> questionList = questionDao.findAll();
+    List<Question> questionList;
+    if (questionTypeStringList == null || questionTypeStringList.size() == 0) {
+      questionList = questionDao.findAll();
+    } else {
+      questionList = questionDao.findAllByType(QuestionSatusMapper.toTypeList(questionTypeStringList));
+    }
+    List<Question> finalQuestionList = questionList;
     questionList.forEach(question -> {
-      List<AnswerDtoForQuestionsInfo> answerDtoList = answerService.getAllAnswerDtoListByListId(question.getPossibleAnswers(), questionList, 3);
+      List<AnswerDtoForQuestionsInfo> answerDtoList = answerService.getAllAnswerDtoListByListId(question.getPossibleAnswers(), finalQuestionList, MAX_DEPTH_OF_TREE);
       QuestionDtoForQuestionsInfo questionDto = QuestionMapper.questionToDto(question, answerDtoList);
       questionDtoForQuestionsInfoList.add(questionDto);
     });
