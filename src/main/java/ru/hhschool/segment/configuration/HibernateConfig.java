@@ -28,12 +28,15 @@ public class HibernateConfig {
   private String dialect;
   @Value("${hibernate.show_sql}")
   private String showSql;
+  @Value("${hibernate.format_sql}")
+  private String formatSql;
 
   @Bean
   public LocalSessionFactoryBean getSessionFactory() {
     Properties properties = new Properties();
     properties.put(Environment.DIALECT, dialect);
     properties.put(Environment.SHOW_SQL, showSql);
+    properties.put(Environment.FORMAT_SQL, formatSql);
     LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
     factoryBean.setPackagesToScan("ru.hhschool.segment.model.entity");
     factoryBean.setDataSource(dataSource());
