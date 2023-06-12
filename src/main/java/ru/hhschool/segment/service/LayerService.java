@@ -7,29 +7,37 @@ import javax.transaction.Transactional;
 import javax.ws.rs.NotFoundException;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.dao.abstracts.PlatformDao;
+import ru.hhschool.segment.dao.abstracts.SegmentStateLinkDao;
 import ru.hhschool.segment.exception.HttpBadRequestException;
 import ru.hhschool.segment.exception.HttpNotFoundException;
 import ru.hhschool.segment.mapper.LayerMapper;
 import ru.hhschool.segment.mapper.PlatformMapper;
 import ru.hhschool.segment.mapper.basicinfo.LayerBasicInfoMapper;
-import ru.hhschool.segment.mapper.change.LayerChangeMapper;
 import ru.hhschool.segment.mapper.layer.LayerStatusMapper;
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.change.LayerChangeDto;
+import ru.hhschool.segment.model.dto.layer.LayerCreateDto;
 import ru.hhschool.segment.model.dto.layer.LayerDtoForList;
+import ru.hhschool.segment.model.dto.layer.QuestionRequiredLinkCreateDto;
+import ru.hhschool.segment.model.dto.layer.ScreenQuestionLinkCreateDto;
+import ru.hhschool.segment.model.dto.layer.SegmentScreenEntrypointLinkCreateDto;
+import ru.hhschool.segment.model.dto.layer.SegmentStateLinkCreateDto;
+import ru.hhschool.segment.model.dto.screen.ScreenDto;
 import ru.hhschool.segment.model.entity.Layer;
-import ru.hhschool.segment.model.enums.ConflictStatus;
+import ru.hhschool.segment.model.entity.Screen;
 import ru.hhschool.segment.model.enums.LayerStateType;
 
 public class LayerService {
   private final LayerDao layerDao;
   private final PlatformDao platformDao;
+  private final SegmentStateLinkDao segmentStateLinkDao;
 
   @Inject
-  public LayerService(LayerDao layerDao, PlatformDao platformDao) {
+  public LayerService(LayerDao layerDao, PlatformDao platformDao, SegmentStateLinkDao segmentStateLinkDao) {
     this.layerDao = layerDao;
     this.platformDao = platformDao;
+    this.segmentStateLinkDao = segmentStateLinkDao;
   }
 
   public List<LayerDto> getLayerGroupList() {
@@ -83,5 +91,29 @@ public class LayerService {
       }
       throw new HttpBadRequestException(lastMessage);
     }
+  }
+
+  public Optional<ScreenDto> add(LayerCreateDto layerCreateDto) {
+    if (layerCreateDto.getParentLayerId() == null) {
+      throw new HttpBadRequestException("Не указан родительский слой.");
+    }
+
+    Optional<Layer> parentLayer = layerDao.findById(layerCreateDto.getParentLayerId());
+    if (parentLayer.isEmpty()) {
+      throw new HttpBadRequestException("Родительский слой не найден.");
+    }
+
+    List<SegmentStateLinkCreateDto> segmentStateLinks = layerCreateDto.getSegmentStateLinks();
+    List<QuestionRequiredLinkCreateDto> questionRequiredLinks = layerCreateDto.getQuestionRequiredLinks();
+    List<ScreenQuestionLinkCreateDto> screenQuestionLinks = layerCreateDto.getScreenQuestionLinks();
+    List<SegmentScreenEntrypointLinkCreateDto> segmentScreenEntrypointLinks = layerCreateDto.getSegmentScreenEntrypointLinks();
+
+    List<Layer> parentList = layerDao.getAllParents(layerCreateDto.getParentLayerId());
+    parentList.add(0, parentLayer.get());
+
+    List<Screen> platforms = platformDao.getMaxVer
+
+    Layer layer = LayerMapper.dtoToLayer(layerCreateDto, parentLayer);
+    return null;
   }
 }

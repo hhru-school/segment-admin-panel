@@ -1,9 +1,11 @@
 package ru.hhschool.segment.mapper;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import ru.hhschool.segment.model.dto.LayerDto;
+import ru.hhschool.segment.model.dto.layer.LayerCreateDto;
 import ru.hhschool.segment.model.dto.layer.LayerDtoForList;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.enums.LayerStateType;
@@ -48,5 +50,17 @@ public class LayerMapper {
             layer.getCreateTime()
         )
     ).toList();
+  }
+
+  public static Layer dtoToLayer(LayerCreateDto layerCreateDto, Layer parentLayer, List<Long> platformIdList) {
+    Layer layer = new Layer(
+        layerCreateDto.getTitle(),
+        parentLayer,
+        layerCreateDto.getDescription(),
+        LayerStateType.TEST,
+        LocalDateTime.now().withNano(0),
+        platformIdList
+    );
+    return null;
   }
 }
