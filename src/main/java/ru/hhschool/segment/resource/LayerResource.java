@@ -103,5 +103,10 @@ public class LayerResource {
   public Response mergeLayer(@PathParam(value = "layerId") Long layerId) {
     return Response.ok(layerService.mergeLayerWithParent(layerId)).build();
   }
-
+  @GET
+  @Path(value = "/{layerId}/forcemerge")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response forceMergeLayer(@PathParam(value = "layerId") Long layerId) {
+    return Response.ok(layerService.forceMergeLayer(layerId)).build();
+  }
 }

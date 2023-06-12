@@ -100,6 +100,24 @@ public class LayerService {
     return MergeResponseMapper.toDtoResponse(mergingLayer);
   }
 
+  @Transactional
+  public MergeResponseDto forceMergeLayer(Long layerId) {
+    Optional<Layer> optionalMergingLayer = layerDao.findById(layerId);
+    if (optionalMergingLayer.isEmpty()) {
+      throw new HttpNotFoundException("Такого слоя не сущестсвует");
+    }
+    Layer mergingLayer = optionalMergingLayer.get();
+    if (mergingLayer.getState() == LayerStateType.STABLE) {
+      throw new HttpBadRequestException("Слой с Id " + mergingLayer.getId() + " уже стабильный");
+    }
+    if (mergingLayer.getState() == LayerStateType.CONFLICT) {
+      throw new HttpBadRequestException("Имеются конфликты");
+    }
+    mergingLayer.setState(LayerStateType.STABLE);
+    layerDao.update(mergingLayer);
+    return MergeResponseMapper.toDtoResponse(mergingLayer);
+  }
+
   public boolean checkStateSegment(List<SegmentSelectedDto> selectedDtoList) {
     for (SegmentSelectedDto segmentSelectedDto : selectedDtoList) {
       if (segmentSelectedDto.getOldActiveState() != null) {
