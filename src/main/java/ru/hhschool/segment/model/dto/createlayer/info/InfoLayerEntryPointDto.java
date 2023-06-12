@@ -1,14 +1,14 @@
-package ru.hhschool.segment.model.dto.createlayer;
+package ru.hhschool.segment.model.dto.createlayer.info;
 
 import java.util.List;
 
-public class CreateLayerEntryPointDto {
+public class InfoLayerEntryPointDto {
   private Long entripointId;
   private String title;
   private String description;
-  private List<CreateLayerScreenDto> screens;
+  private List<InfoLayerScreenDto> screens;
 
-  public CreateLayerEntryPointDto(Long entripointId, String title, String description, List<CreateLayerScreenDto> screens) {
+  public InfoLayerEntryPointDto(Long entripointId, String title, String description, List<InfoLayerScreenDto> screens) {
     this.entripointId = entripointId;
     this.title = title;
     this.description = description;
@@ -39,11 +39,11 @@ public class CreateLayerEntryPointDto {
     this.description = description;
   }
 
-  public List<CreateLayerScreenDto> getScreens() {
+  public List<InfoLayerScreenDto> getScreens() {
     return screens;
   }
 
-  public void setScreens(List<CreateLayerScreenDto> screens) {
+  public void setScreens(List<InfoLayerScreenDto> screens) {
     this.screens = screens;
   }
 }

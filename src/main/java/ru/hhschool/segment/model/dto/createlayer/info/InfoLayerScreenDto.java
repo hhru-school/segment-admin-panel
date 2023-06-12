@@ -1,4 +1,4 @@
-package ru.hhschool.segment.model.dto.createlayer;
+package ru.hhschool.segment.model.dto.createlayer.info;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import ru.hhschool.segment.model.dto.PlatformDto;
@@ -7,7 +7,7 @@ import ru.hhschool.segment.model.enums.ScreenType;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CreateLayerScreenDto {
+public class InfoLayerScreenDto {
   private Long screenId;
   private Long segmentScreenEntrypointLinkId;
   private String title;
@@ -15,20 +15,20 @@ public class CreateLayerScreenDto {
   private ScreenType type;
   private Integer position;
   private List<PlatformDto> appVersions;
-  private List<CreateLayerQuestionDto> fields;
+  private List<InfoLayerQuestionDto> fields;
 
-  public CreateLayerScreenDto() {
+  public InfoLayerScreenDto() {
 
   }
 
-  public CreateLayerScreenDto(Long screenId,
-                              Long segmentScreenEntrypointLinkId,
-                              String title,
-                              String description,
-                              ScreenType type,
-                              Integer position,
-                              List<PlatformDto> appVersions,
-                              List<CreateLayerQuestionDto> fields) {
+  public InfoLayerScreenDto(Long screenId,
+                            Long segmentScreenEntrypointLinkId,
+                            String title,
+                            String description,
+                            ScreenType type,
+                            Integer position,
+                            List<PlatformDto> appVersions,
+                            List<InfoLayerQuestionDto> fields) {
     this.screenId = screenId;
     this.segmentScreenEntrypointLinkId = segmentScreenEntrypointLinkId;
     this.title = title;
@@ -95,11 +95,11 @@ public class CreateLayerScreenDto {
     this.appVersions = appVersions;
   }
 
-  public List<CreateLayerQuestionDto> getFields() {
+  public List<InfoLayerQuestionDto> getFields() {
     return fields;
   }
 
-  public void setFields(List<CreateLayerQuestionDto> fields) {
+  public void setFields(List<InfoLayerQuestionDto> fields) {
     this.fields = fields;
   }
 }
