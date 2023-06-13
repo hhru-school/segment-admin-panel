@@ -102,16 +102,13 @@ public class LayerService {
 
   @Transactional
   public MergeResponseDto forceMergeLayer(Long layerId) {
-    Optional<Layer> optionalMergingLayer = layerDao.findById(layerId);
-    if (optionalMergingLayer.isEmpty()) {
-      throw new HttpNotFoundException("Такого слоя не сущестсвует");
-    }
-    Layer mergingLayer = optionalMergingLayer.get();
+    Layer mergingLayer = layerDao.findById(layerId)
+        .orElseThrow(() -> new HttpNotFoundException("Такого слоя не существует"));
     if (mergingLayer.getState() == LayerStateType.STABLE) {
       throw new HttpBadRequestException("Слой с Id " + mergingLayer.getId() + " уже стабильный");
     }
-    if (mergingLayer.getState() == LayerStateType.CONFLICT) {
-      throw new HttpBadRequestException("Имеются конфликты");
+    if (mergingLayer.getState() == LayerStateType.TEST) {
+      throw new HttpBadRequestException("Этот слой тестовый");
     }
     mergingLayer.setState(LayerStateType.STABLE);
     layerDao.update(mergingLayer);
