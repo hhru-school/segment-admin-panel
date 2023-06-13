@@ -62,17 +62,16 @@ public class LayerService {
 
   @Transactional
   public MergeResponseDto mergeLayerWithParent(Long layerId) {
-    List<SegmentSelectedDto> selectedDtoList = new ArrayList<>();
-    Optional<Layer> optionalMergingLayer = layerDao.findById(layerId);
+    Layer mergingLayer = layerDao.findById(layerId)
+        .orElseThrow(() -> new HttpNotFoundException("Такого слоя не существует"));
     Layer lastStableLayer = layerDao.findLastStableLayer();
-    if (optionalMergingLayer.isEmpty()) {
-      throw new HttpNotFoundException("Такого слоя не сущестсвует");
+    if (mergingLayer.getState() == LayerStateType.STABLE) {
+      throw new HttpBadRequestException("Слой с Id " + mergingLayer.getId() + " уже стабильный");
     }
-    Layer mergingLayer = optionalMergingLayer.get();
+    if (mergingLayer.getState() == LayerStateType.ARCHIVE) {
+      throw new HttpBadRequestException("Слой с Id " + mergingLayer.getId() + "архивный");
+    }
     if (Objects.equals(mergingLayer.getParent().getId(), lastStableLayer.getId()) && mergingLayer.getState() != LayerStateType.CONFLICT) {
-      if (mergingLayer.getState() == LayerStateType.STABLE) {
-        throw new HttpBadRequestException("Слой с Id " + mergingLayer.getId() + " уже стабильный");
-      }
       mergingLayer.setState(LayerStateType.STABLE);
       layerDao.update(mergingLayer);
       return MergeResponseMapper.toDtoResponse(mergingLayer);
@@ -82,7 +81,7 @@ public class LayerService {
     List<SegmentLayerViewDto> segmentLayerViewDtoList = segmentService
         .getSegmentViewDtoListForSegmentsInLayerPage(mergingLayer.getId(), "").get()
         .getSegments();
-
+    List<SegmentSelectedDto> selectedDtoList = new ArrayList<>();
     segmentLayerViewDtoList.forEach(segmentLayerViewDto -> {
       SegmentSelectedDto selectedDto = segmentService.getSegmentSelectedDto(mergingLayer.getId(), segmentLayerViewDto.getId()).get();
       selectedDtoList.add(selectedDto);
@@ -129,6 +128,9 @@ public class LayerService {
       for (SegmentViewEntryPointDto segmentViewEntryPointDto : segmentSelectedDto.getEntryPoints()) {
         for (SegmentViewScreenDto segmentViewScreenDto : segmentViewEntryPointDto.getScreens()) {
           if (segmentViewScreenDto.getOldPosition() != null) {
+            return false;
+          }
+          if (segmentViewScreenDto.getOldState() != null) {
             return false;
           }
         }
