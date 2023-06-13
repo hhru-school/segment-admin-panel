@@ -104,14 +104,8 @@ public class LayerService {
   public MergeResponseDto forceMergeLayer(Long layerId) {
     Layer mergingLayer = layerDao.findById(layerId)
         .orElseThrow(() -> new HttpNotFoundException("Такого слоя не существует"));
-    if (mergingLayer.getState() == LayerStateType.STABLE) {
-      throw new HttpBadRequestException("Слой с Id " + mergingLayer.getId() + " уже стабильный");
-    }
-    if (mergingLayer.getState() == LayerStateType.TEST) {
-      throw new HttpBadRequestException("Этот слой тестовый");
-    }
-    if (mergingLayer.getState() == LayerStateType.ARCHIVE) {
-      throw new HttpBadRequestException("Этот слой архивный");
+    if (mergingLayer.getState() != LayerStateType.CONFLICT) {
+      throw new HttpNotFoundException("Force merge невозможен");
     }
     mergingLayer.setState(LayerStateType.STABLE);
     layerDao.update(mergingLayer);
