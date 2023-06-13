@@ -110,6 +110,9 @@ public class LayerService {
     if (mergingLayer.getState() == LayerStateType.TEST) {
       throw new HttpBadRequestException("Этот слой тестовый");
     }
+    if (mergingLayer.getState() == LayerStateType.ARCHIVE) {
+      throw new HttpBadRequestException("Этот слой архивный");
+    }
     mergingLayer.setState(LayerStateType.STABLE);
     layerDao.update(mergingLayer);
     return MergeResponseMapper.toDtoResponse(mergingLayer);
