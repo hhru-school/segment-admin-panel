@@ -109,19 +109,13 @@ public class LayerService {
   public void changeSSL(Layer mergingLayer) {
     List<Layer> parentsOfMergingLayer = layerDao.getAllParents(mergingLayer.getId());
     Collections.reverse(parentsOfMergingLayer);
-    List<SegmentLayerViewDto> segmentDtoList = segmentService
-        .getSegmentViewDtoListForSegmentsInLayerPage(mergingLayer.getId(), "")
-        .get()
-        .getSegments();
-    segmentDtoList.forEach(segmentSelectedDto -> {
-      Map<Long, SegmentStateLink> segmentStateLinkMap = segmentService.getLatestSSLInSpace(segmentService.getSSLInSpace(parentsOfMergingLayer, ""));
-      Map<Long, SegmentStateLink> segmentStateLinkMapMerging = segmentService.getLatestSSLInSpace(segmentService.getSSLInSpace(List.of(mergingLayer), ""));
-      segmentStateLinkMapMerging.forEach((id, segmentStateLink) -> {
-        if (segmentStateLink.getOldSegmentStateLink().getId()) {
-          segmentStateLink.setOldSegmentStateLink(segmentStateLinkMap.get(segmentStateLink.getSegment().getId()));
-          segmentStateLinkDao.update(segmentStateLink);
-        }
-      });
+    Map<Long, SegmentStateLink> segmentStateLinkMapParents = segmentService.getLatestSSLInSpace(segmentService.getSSLInSpace(parentsOfMergingLayer, ""));
+    Map<Long, SegmentStateLink> segmentStateLinkMapMerging = segmentService.getLatestSSLInSpace(segmentService.getSSLInSpace(List.of(mergingLayer), ""));
+    segmentStateLinkMapMerging.forEach((id, segmentStateLink) -> {
+      if (segmentStateLink.getOldSegmentStateLink().getId() != segmentStateLinkMapParents.get(id).getId()) {
+        segmentStateLink.setOldSegmentStateLink(segmentStateLinkMapParents.get(id));
+        segmentStateLinkDao.update(segmentStateLink);
+      }
     });
   }
 
