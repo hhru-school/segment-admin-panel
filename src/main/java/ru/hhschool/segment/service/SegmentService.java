@@ -191,7 +191,7 @@ public class SegmentService {
     return SegmentViewChangeState.CHANGED;
   }
 
-  private List<SegmentStateLink> getSSLInSpace(List<Layer> layerSpace, String searchQuery) {
+  public List<SegmentStateLink> getSSLInSpace(List<Layer> layerSpace, String searchQuery) {
     List<SegmentStateLink> questionActivatorLinkList = new ArrayList<>();
     for(Layer layer : layerSpace){
       questionActivatorLinkList.addAll(segmentStateLinkDao.findAll(layer.getId(), searchQuery));
@@ -199,7 +199,7 @@ public class SegmentService {
     return questionActivatorLinkList;
   }
 
-  private Map<Long, SegmentStateLink> getLatestSSLInSpace(List<SegmentStateLink> links) {
+  public Map<Long, SegmentStateLink> getLatestSSLInSpace(List<SegmentStateLink> links) {
     Map<Long, SegmentStateLink> segmentStateLinkMap = new HashMap<>();
     for (SegmentStateLink link : links) {
       Long key = link.getSegment().getId();

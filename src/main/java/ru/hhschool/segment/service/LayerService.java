@@ -2,6 +2,7 @@ package ru.hhschool.segment.service;
 
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.dao.abstracts.PlatformDao;
+import ru.hhschool.segment.dao.abstracts.SegmentStateLinkDao;
 import ru.hhschool.segment.exception.HttpBadRequestException;
 import ru.hhschool.segment.exception.HttpNotFoundException;
 import ru.hhschool.segment.mapper.LayerMapper;
@@ -20,25 +21,29 @@ import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewQuestionD
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewRequirementDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewScreenDto;
 import ru.hhschool.segment.model.entity.Layer;
+import ru.hhschool.segment.model.entity.SegmentStateLink;
 import ru.hhschool.segment.model.enums.LayerStateType;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 public class LayerService {
   private final LayerDao layerDao;
   private final PlatformDao platformDao;
-
+  private final SegmentStateLinkDao segmentStateLinkDao;
   private final SegmentService segmentService;
 
   @Inject
-  public LayerService(LayerDao layerDao, PlatformDao platformDao, SegmentService segmentService) {
+  public LayerService(LayerDao layerDao, PlatformDao platformDao, SegmentStateLinkDao segmentStateLinkDao, SegmentService segmentService) {
     this.layerDao = layerDao;
     this.platformDao = platformDao;
+    this.segmentStateLinkDao = segmentStateLinkDao;
     this.segmentService = segmentService;
   }
 
@@ -77,6 +82,7 @@ public class LayerService {
       return MergeResponseMapper.toDtoResponse(mergingLayer);
     }
     mergingLayer.setParent(lastStableLayer);
+    changeSSL(mergingLayer);
     layerDao.update(mergingLayer);
     List<SegmentLayerViewDto> segmentLayerViewDtoList = segmentService
         .getSegmentViewDtoListForSegmentsInLayerPage(mergingLayer.getId(), "").get()
@@ -99,9 +105,29 @@ public class LayerService {
     return MergeResponseMapper.toDtoResponse(mergingLayer);
   }
 
+  @Transactional
+  public void changeSSL(Layer mergingLayer) {
+    List<Layer> parentsOfMergingLayer = layerDao.getAllParents(mergingLayer.getId());
+    Collections.reverse(parentsOfMergingLayer);
+    List<SegmentLayerViewDto> segmentDtoList = segmentService
+        .getSegmentViewDtoListForSegmentsInLayerPage(mergingLayer.getId(), "")
+        .get()
+        .getSegments();
+    segmentDtoList.forEach(segmentSelectedDto -> {
+      Map<Long, SegmentStateLink> segmentStateLinkMap = segmentService.getLatestSSLInSpace(segmentService.getSSLInSpace(parentsOfMergingLayer, ""));
+      Map<Long, SegmentStateLink> segmentStateLinkMapMerging = segmentService.getLatestSSLInSpace(segmentService.getSSLInSpace(List.of(mergingLayer), ""));
+      segmentStateLinkMapMerging.forEach((id, segmentStateLink) -> {
+        if (segmentStateLink.getOldSegmentStateLink().getId()) {
+          segmentStateLink.setOldSegmentStateLink(segmentStateLinkMap.get(segmentStateLink.getSegment().getId()));
+          segmentStateLinkDao.update(segmentStateLink);
+        }
+      });
+    });
+  }
+
   public boolean checkStateSegment(List<SegmentSelectedDto> selectedDtoList) {
     for (SegmentSelectedDto segmentSelectedDto : selectedDtoList) {
-      if (segmentSelectedDto.getOldActiveState() != null) {
+      if (segmentSelectedDto.getOldActiveState() != null && segmentSelectedDto.getActiveState() != segmentSelectedDto.getOldActiveState()) {
         return false;
       }
     }
