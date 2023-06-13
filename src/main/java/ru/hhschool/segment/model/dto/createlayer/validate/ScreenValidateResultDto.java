@@ -1,20 +1,13 @@
 package ru.hhschool.segment.model.dto.createlayer.validate;
 
 public class ScreenValidateResultDto {
-  private String screenTitle;
   private Long screenId;
+  private String screenTitle;
+
   public ScreenValidateResultDto(){}
 
-  public ScreenValidateResultDto(String screenTitle, Long screenId) {
-    this.screenTitle = screenTitle;
+  public ScreenValidateResultDto(Long screenId, String screenTitle) {
     this.screenId = screenId;
-  }
-
-  public String getScreenTitle() {
-    return screenTitle;
-  }
-
-  public void setScreenTitle(String screenTitle) {
     this.screenTitle = screenTitle;
   }
 
@@ -24,5 +17,13 @@ public class ScreenValidateResultDto {
 
   public void setScreenId(Long screenId) {
     this.screenId = screenId;
+  }
+
+  public String getScreenTitle() {
+    return screenTitle;
+  }
+
+  public void setScreenTitle(String screenTitle) {
+    this.screenTitle = screenTitle;
   }
 }

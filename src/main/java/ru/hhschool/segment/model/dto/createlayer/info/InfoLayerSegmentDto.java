@@ -1,4 +1,4 @@
-package ru.hhschool.segment.model.dto.createlayer;
+package ru.hhschool.segment.model.dto.createlayer.info;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import ru.hhschool.segment.model.entity.Role;
@@ -7,7 +7,7 @@ import ru.hhschool.segment.model.enums.StateType;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CreateLayerSegmentDto {
+public class InfoLayerSegmentDto {
   private Long segmentId;
   private Long segmentStateLinkId;
   private StateType activeState;
@@ -15,22 +15,22 @@ public class CreateLayerSegmentDto {
   private String description;
   private List<Role> roles;
   private List<String> tags;
-  private List<CreateLayerRequirementDto> fields;
-  private List<CreateLayerEntryPointDto> entryPoints;
+  private List<InfoLayerRequirementDto> fields;
+  private List<InfoLayerEntryPointDto> entryPoints;
 
-  public CreateLayerSegmentDto() {
+  public InfoLayerSegmentDto() {
 
   }
 
-  public CreateLayerSegmentDto(Long segmentId,
-                               Long segmentStateLinkId ,
-                               StateType activeState,
-                               String title,
-                               String description,
-                               List<Role> roles,
-                               List<String> tags,
-                               List<CreateLayerRequirementDto> fields,
-                               List<CreateLayerEntryPointDto> entryPoints) {
+  public InfoLayerSegmentDto(Long segmentId,
+                             Long segmentStateLinkId ,
+                             StateType activeState,
+                             String title,
+                             String description,
+                             List<Role> roles,
+                             List<String> tags,
+                             List<InfoLayerRequirementDto> fields,
+                             List<InfoLayerEntryPointDto> entryPoints) {
     this.segmentId = segmentId;
     this.segmentStateLinkId = segmentStateLinkId;
     this.activeState = activeState;
@@ -98,19 +98,19 @@ public class CreateLayerSegmentDto {
     this.tags = tags;
   }
 
-  public List<CreateLayerRequirementDto> getFields() {
+  public List<InfoLayerRequirementDto> getFields() {
     return fields;
   }
 
-  public void setFields(List<CreateLayerRequirementDto> fields) {
+  public void setFields(List<InfoLayerRequirementDto> fields) {
     this.fields = fields;
   }
 
-  public List<CreateLayerEntryPointDto> getEntryPoints() {
+  public List<InfoLayerEntryPointDto> getEntryPoints() {
     return entryPoints;
   }
 
-  public void setEntryPoints(List<CreateLayerEntryPointDto> entryPoints) {
+  public void setEntryPoints(List<InfoLayerEntryPointDto> entryPoints) {
     this.entryPoints = entryPoints;
   }
 }

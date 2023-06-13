@@ -1,25 +1,25 @@
-package ru.hhschool.segment.model.dto.createlayer;
+package ru.hhschool.segment.model.dto.createlayer.info;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CreateLayerQuestionDto {
+public class InfoLayerQuestionDto {
   private Long questionId;
   private Long screenQuestionLinkId;
   private String title;
   private QuestionVisibilityType visibility;
   private Integer position;
 
-  public CreateLayerQuestionDto() {
+  public InfoLayerQuestionDto() {
 
   }
 
-  public CreateLayerQuestionDto(Long questionId,
-                                Long screenQuestionLinkId,
-                                String title,
-                                QuestionVisibilityType visibility,
-                                Integer position) {
+  public InfoLayerQuestionDto(Long questionId,
+                              Long screenQuestionLinkId,
+                              String title,
+                              QuestionVisibilityType visibility,
+                              Integer position) {
     this.questionId = questionId;
     this.screenQuestionLinkId = screenQuestionLinkId;
     this.title = title;

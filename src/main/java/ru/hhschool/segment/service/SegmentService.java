@@ -21,6 +21,9 @@ import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentViewScreenMapper
 import ru.hhschool.segment.mapper.PlatformMapper;
 import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentViewQuestionMapper;
 import ru.hhschool.segment.model.dto.RoleDto;
+import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerSegmentDto;
+import ru.hhschool.segment.model.dto.createlayer.validate.QuestionValidateResultDto;
+import ru.hhschool.segment.model.dto.createlayer.validate.ValidateResultDto;
 import ru.hhschool.segment.model.dto.segment.SegmentCreateDto;
 import ru.hhschool.segment.model.dto.segment.SegmentDto;
 import ru.hhschool.segment.model.dto.viewsegments.enums.SegmentViewChangeState;
@@ -40,6 +43,7 @@ import ru.hhschool.segment.model.entity.ScreenQuestionLink;
 import ru.hhschool.segment.model.entity.SegmentScreenEntrypointLink;
 import ru.hhschool.segment.model.entity.QuestionRequiredLink;
 import ru.hhschool.segment.model.entity.SegmentStateLink;
+import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 import ru.hhschool.segment.model.enums.StateType;
 
 import javax.inject.Inject;
@@ -339,5 +343,26 @@ public class SegmentService {
         .flatMap(link -> getLatestSQLInSpace(getSQLInSpace(space, link)).stream())
         .map(ScreenQuestionLink::getQuestion)
         .collect(Collectors.toMap(Question::getTitle, question -> question, (question1, question2) -> question1));
+  }
+
+  public Optional<ValidateResultDto> validateSegment(InfoLayerSegmentDto segmentDto) {
+    if (segmentDto.getTitle() == null || segmentDto.getTitle().isBlank()) {
+      throw new HttpBadRequestException("Название(Title) неверно указанное значение или пустой.");
+    }
+    if (segmentDto.getFields().isEmpty() || segmentDto.getEntryPoints().isEmpty()) {
+      throw new HttpBadRequestException("Отсутствуют необходимые данные.");
+    }
+    segmentDto.getEntryPoints().forEach(entrypoint -> {
+      Map<String, QuestionVisibilityType> stringVisibilityMap = new HashMap<>();
+      entrypoint.getScreens().forEach(screen -> {
+        screen.getFields().forEach(field -> {
+          String questionTitle = field.getTitle();
+          if (stringVisibilityMap.containsKey(questionTitle)){
+
+          }
+        });
+      });
+    });
+    return Optional.empty();
   }
 }

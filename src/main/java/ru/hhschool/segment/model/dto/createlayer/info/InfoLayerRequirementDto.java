@@ -1,17 +1,17 @@
-package ru.hhschool.segment.model.dto.createlayer;
+package ru.hhschool.segment.model.dto.createlayer.info;
 
 
-public class CreateLayerRequirementDto {
+public class InfoLayerRequirementDto {
   private Long questionId;
   private Long questionRequiredLinkId;
   private String title;
   private Boolean required;
 
-  public CreateLayerRequirementDto() {
+  public InfoLayerRequirementDto() {
 
   }
 
-  public CreateLayerRequirementDto(Long questionId, Long questionRequiredLinkId, String title, Boolean required) {
+  public InfoLayerRequirementDto(Long questionId, Long questionRequiredLinkId, String title, Boolean required) {
     this.questionId = questionId;
     this.questionRequiredLinkId = questionRequiredLinkId;
     this.title = title;
