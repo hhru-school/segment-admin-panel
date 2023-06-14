@@ -1,5 +1,8 @@
 package ru.hhschool.segment.model.dto.createlayer.validate;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ValidateResultDto<T> {
   private String error;
   private T result;
