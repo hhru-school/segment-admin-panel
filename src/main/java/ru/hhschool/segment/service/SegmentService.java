@@ -12,6 +12,8 @@ import ru.hhschool.segment.dao.abstracts.ScreenQuestionLinkDao;
 import ru.hhschool.segment.exception.HttpBadRequestException;
 import ru.hhschool.segment.mapper.RoleMapper;
 import ru.hhschool.segment.mapper.SegmentMapper;
+import ru.hhschool.segment.mapper.validate.QuestionValidateResultMapper;
+import ru.hhschool.segment.mapper.validate.ScreenValidateResultMapper;
 import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentLayerViewMapper;
 import ru.hhschool.segment.mapper.viewsegments.layerview.LayerSegmentsMapper;
 import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentSelectedMapper;
@@ -21,8 +23,10 @@ import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentViewScreenMapper
 import ru.hhschool.segment.mapper.PlatformMapper;
 import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentViewQuestionMapper;
 import ru.hhschool.segment.model.dto.RoleDto;
-import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerSegmentDto;
+import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerQuestionDto;
+import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerScreenDto;
 import ru.hhschool.segment.model.dto.createlayer.validate.QuestionValidateResultDto;
+import ru.hhschool.segment.model.dto.createlayer.validate.SegmentValidateInfoDto;
 import ru.hhschool.segment.model.dto.createlayer.validate.ValidateResultDto;
 import ru.hhschool.segment.model.dto.segment.SegmentCreateDto;
 import ru.hhschool.segment.model.dto.segment.SegmentDto;
@@ -345,24 +349,39 @@ public class SegmentService {
         .collect(Collectors.toMap(Question::getTitle, question -> question, (question1, question2) -> question1));
   }
 
-  public Optional<ValidateResultDto> validateSegment(InfoLayerSegmentDto segmentDto) {
-    if (segmentDto.getTitle() == null || segmentDto.getTitle().isBlank()) {
-      throw new HttpBadRequestException("Название(Title) неверно указанное значение или пустой.");
-    }
-    if (segmentDto.getFields().isEmpty() || segmentDto.getEntryPoints().isEmpty()) {
+  public List<ValidateResultDto> validateSegment(SegmentValidateInfoDto segmentValidateInfoDto) {
+    if (segmentValidateInfoDto.getFields().isEmpty() || segmentValidateInfoDto.getEntryPoints().isEmpty()) {
       throw new HttpBadRequestException("Отсутствуют необходимые данные.");
     }
-    segmentDto.getEntryPoints().forEach(entrypoint -> {
-      Map<String, QuestionVisibilityType> stringVisibilityMap = new HashMap<>();
+    List<ValidateResultDto> validateResultDtos = new ArrayList<>();
+    segmentValidateInfoDto.getEntryPoints().forEach(entrypoint -> {
+      Map<String, InfoLayerQuestionDto> stringVisibilityMap = new HashMap<>();
+      Map<String, List<InfoLayerScreenDto>> validateMap = new HashMap<>();
       entrypoint.getScreens().forEach(screen -> {
         screen.getFields().forEach(field -> {
           String questionTitle = field.getTitle();
-          if (stringVisibilityMap.containsKey(questionTitle)){
-
+          if (field.getVisibility().equals(QuestionVisibilityType.SHOW) || field.getVisibility().equals(QuestionVisibilityType.SHOW_PREFILLED)) {
+            if (stringVisibilityMap.containsKey(questionTitle)) {
+              List<InfoLayerScreenDto> screens = new ArrayList<>(validateMap.get(questionTitle));
+              screens.add(screen);
+              validateMap.put(questionTitle, screens);
+            } else {
+              stringVisibilityMap.put(questionTitle, field);
+              validateMap.put(questionTitle, List.of(screen));
+            }
           }
         });
       });
+      validateMap.forEach((questionTitle, infoLayerScreenDtos) -> {
+        if (infoLayerScreenDtos.size() > 1){
+          ValidateResultDto<QuestionValidateResultDto> validateResultDto = new ValidateResultDto<>();
+          InfoLayerQuestionDto question = stringVisibilityMap.get(questionTitle);
+          validateResultDto.setError("Для вопроса " + '[' + questionTitle + ']' + " найдено более 1 использования с видимостью SHOW или SHOW_PREFILLED.");
+          validateResultDto.setResult(QuestionValidateResultMapper.toDto(entrypoint, question, ScreenValidateResultMapper.toListDto(infoLayerScreenDtos)));
+          validateResultDtos.add(validateResultDto);
+        }
+      });
     });
-    return Optional.empty();
+    return validateResultDtos;
   }
 }

@@ -1,16 +1,14 @@
 package ru.hhschool.segment.model.dto.createlayer.validate;
 
-import java.util.List;
-
 public class ValidateResultDto<T> {
   private String error;
-  private List<T> results;
+  private T result;
 
   public ValidateResultDto(){};
 
-  public ValidateResultDto(String error, List<T> results) {
+  public ValidateResultDto(String error, T result) {
     this.error = error;
-    this.results = results;
+    this.result = result;
   }
 
   public String getError() {
@@ -21,11 +19,11 @@ public class ValidateResultDto<T> {
     this.error = error;
   }
 
-  public List<T> getResults() {
-    return results;
+  public T getResult() {
+    return result;
   }
 
-  public void setResults(List<T> results) {
-    this.results = results;
+  public void setResult(T result) {
+    this.result = result;
   }
 }

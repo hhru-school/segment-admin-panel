@@ -15,6 +15,8 @@ import javax.ws.rs.core.Response;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.hhschool.segment.exception.HttpBadRequestException;
 import ru.hhschool.segment.model.dto.ErrorDto;
+import ru.hhschool.segment.model.dto.createlayer.validate.SegmentValidateInfoDto;
+import ru.hhschool.segment.model.dto.createlayer.validate.ValidateResultDto;
 import ru.hhschool.segment.model.dto.segment.SegmentCreateDto;
 import ru.hhschool.segment.model.dto.segment.SegmentDto;
 import ru.hhschool.segment.service.SegmentService;
@@ -70,15 +72,17 @@ public class SegmentResource {
     return Response.status(Response.Status.NOT_FOUND).build();
   }
 
-  @GET
-  @Path("/details")
+  @POST
+  @Path("/validate")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getSegmentViewDtoListForViewSegmentPage(@QueryParam("layerId") Long layerId, @QueryParam("segmentId") Long segmentId) {
-//    Optional<SegmentSelectedDto> segmentSelectedDto = segmentService.getSegmentSelectedDto(layerId, segmentId);
-//    if (segmentSelectedDto.isPresent()){
-//      return Response.ok(segmentSelectedDto).build();
-//    }
-//    return Response.status(Response.Status.NO_CONTENT).build();
-    return Response.ok("TEST").build();
+  public Response getCreateLayerSegmentDto(@RequestBody SegmentValidateInfoDto segmentValidateInfoDto){
+    if (segmentValidateInfoDto == null) {
+      throw new HttpBadRequestException("Отсутствует необходимый параметр");
+    }
+    List<ValidateResultDto> validateResultDtos = segmentService.validateSegment(segmentValidateInfoDto);
+    if (validateResultDtos.isEmpty()){
+      return Response.ok().build();
+    }
+    return Response.ok(validateResultDtos).build();
   }
 }
