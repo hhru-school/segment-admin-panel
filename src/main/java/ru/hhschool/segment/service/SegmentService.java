@@ -300,7 +300,7 @@ public class SegmentService {
     }
     return segmentScreenEntrypointLinks;
   }
-  private List<SegmentScreenEntrypointLink> getLatestSSELInSpace(List<SegmentScreenEntrypointLink> links){
+  public List<SegmentScreenEntrypointLink> getLatestSSELInSpace(List<SegmentScreenEntrypointLink> links){
     Map<String, SegmentScreenEntrypointLink> segmentScreenEntrypointLinkMap = new HashMap<>();
     for (SegmentScreenEntrypointLink link : links) {
       String key = String.format("%s,%s,%s", link.getSegment().getTitle(), link.getEntrypoint().getTitle(), link.getScreen().getTitle());

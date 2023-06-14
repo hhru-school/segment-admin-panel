@@ -370,6 +370,12 @@ VALUES (1, 'Тестовый слой', 'Слой, унаследованный 
 
 INSERT INTO segment_state_links (old_id, layer_id, segment_id, state)
 VALUES (1, 4, 1, 'DISABLED');
+
+INSERT INTO screen_question_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, question_id, question_position, question_visibility)
+VALUES  (31, 4, 2, 1, 5, 5, 1, 'SHOW');
+
+INSERT INTO segment_screen_entrypoint_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, screen_position, screen_state)
+VALUES(19, 4, 2, 2, 5, 4, 'ACTIVE');
 --Пятый слой
 INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms, stabled_time)
 VALUES (1, 'ARCHIVE слой', 'Слой, унаследованный от второго слоя', 'ARCHIVE', '2023-04-15 02:02:00', '{1, 4, 5}', null);

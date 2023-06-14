@@ -6,6 +6,7 @@ import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.dao.abstracts.PlatformDao;
 import ru.hhschool.segment.dao.abstracts.QuestionRequiredLinkDao;
 import ru.hhschool.segment.dao.abstracts.ScreenQuestionLinkDao;
+import ru.hhschool.segment.dao.abstracts.SegmentScreenEntrypointLinkDao;
 import ru.hhschool.segment.dao.abstracts.SegmentStateLinkDao;
 import ru.hhschool.segment.dao.impl.LayerDaoImpl;
 import ru.hhschool.segment.service.LayerService;
@@ -19,8 +20,15 @@ public class LayerConfig {
                                       SegmentService segmentService,
                                       SegmentStateLinkDao segmentStateLinkDao,
                                       QuestionRequiredLinkDao questionRequiredLinkDao,
-                                      ScreenQuestionLinkDao screenQuestionLinkDao) {
-    return new LayerService(layerDao, platformDao, segmentStateLinkDao, segmentService, questionRequiredLinkDao, screenQuestionLinkDao);
+                                      ScreenQuestionLinkDao screenQuestionLinkDao,
+                                      SegmentScreenEntrypointLinkDao segmentScreenEntrypointLinkDao) {
+    return new LayerService(layerDao,
+        platformDao,
+        segmentStateLinkDao,
+        segmentService,
+        questionRequiredLinkDao,
+        screenQuestionLinkDao,
+        segmentScreenEntrypointLinkDao);
   }
 
   @Bean
