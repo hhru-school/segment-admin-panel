@@ -327,14 +327,14 @@ public class SegmentService {
         .map(ScreenQuestionLink::getQuestion)
         .collect(Collectors.toMap(Question::getTitle, question -> question, (question1, question2) -> question1));
   }
-  private List<ScreenQuestionLink> getSQLInSpace(List<Layer> space, SegmentScreenEntrypointLink link) {
+  public List<ScreenQuestionLink> getSQLInSpace(List<Layer> space, SegmentScreenEntrypointLink link) {
     List<ScreenQuestionLink> screenQuestionLinks = new ArrayList<>();
     for (Layer layer : space) {
       screenQuestionLinks.addAll(screenQuestionLinkDao.findAll(layer.getId(), link.getSegment().getId(), link.getEntrypoint().getId(), link.getScreen().getId()));
     }
     return screenQuestionLinks;
   }
-  private List<ScreenQuestionLink> getLatestSQLInSpace(List<ScreenQuestionLink> links){
+  public List<ScreenQuestionLink> getLatestSQLInSpace(List<ScreenQuestionLink> links){
     Map<String, ScreenQuestionLink> screenQuestionLinkMap = new HashMap<>();
     for (ScreenQuestionLink link : links) {
       String key = String.format("%s,%s,%s,%s", link.getSegment().getTitle(), link.getEntrypoint().getTitle(), link.getScreen().getTitle(), link.getQuestion().getTitle());

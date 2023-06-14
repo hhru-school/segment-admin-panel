@@ -15,6 +15,14 @@ public class ScreenQuestionLinkDaoImpl extends ReadWriteDaoImpl<ScreenQuestionLi
   }
 
   @Override
+  public List<ScreenQuestionLink> findAll(Long layerId) {
+    return em.createQuery("SELECT e FROM ScreenQuestionLink e WHERE " +
+            "e.layer.id = :layerId", ScreenQuestionLink.class)
+        .setParameter("layerId", layerId)
+        .getResultList();
+  }
+
+  @Override
   public List<ScreenQuestionLink> findAll(Long layerId, Long segmentId, Long entrypointId, Long screenId) {
     return em.createQuery("SELECT e FROM ScreenQuestionLink e WHERE " +
             "e.layer.id = :layerId AND " +

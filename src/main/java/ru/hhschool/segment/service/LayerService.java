@@ -3,6 +3,7 @@ package ru.hhschool.segment.service;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.dao.abstracts.PlatformDao;
 import ru.hhschool.segment.dao.abstracts.QuestionRequiredLinkDao;
+import ru.hhschool.segment.dao.abstracts.ScreenQuestionLinkDao;
 import ru.hhschool.segment.dao.abstracts.SegmentStateLinkDao;
 import ru.hhschool.segment.exception.HttpBadRequestException;
 import ru.hhschool.segment.exception.HttpNotFoundException;
@@ -23,6 +24,7 @@ import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewRequireme
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewScreenDto;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.QuestionRequiredLink;
+import ru.hhschool.segment.model.entity.ScreenQuestionLink;
 import ru.hhschool.segment.model.entity.SegmentStateLink;
 import ru.hhschool.segment.model.enums.LayerStateType;
 
@@ -43,14 +45,16 @@ public class LayerService {
   private final SegmentStateLinkDao segmentStateLinkDao;
   private final SegmentService segmentService;
   private final QuestionRequiredLinkDao questionRequiredLinkDao;
+  private final ScreenQuestionLinkDao screenQuestionLinkDao;
 
   @Inject
-  public LayerService(LayerDao layerDao, PlatformDao platformDao, SegmentStateLinkDao segmentStateLinkDao, SegmentService segmentService, QuestionRequiredLinkDao questionRequiredLinkDao) {
+  public LayerService(LayerDao layerDao, PlatformDao platformDao, SegmentStateLinkDao segmentStateLinkDao, SegmentService segmentService, QuestionRequiredLinkDao questionRequiredLinkDao, ScreenQuestionLinkDao screenQuestionLinkDao) {
     this.layerDao = layerDao;
     this.platformDao = platformDao;
     this.segmentStateLinkDao = segmentStateLinkDao;
     this.segmentService = segmentService;
     this.questionRequiredLinkDao = questionRequiredLinkDao;
+    this.screenQuestionLinkDao = screenQuestionLinkDao;
   }
 
   public List<LayerDto> getLayerGroupList() {
@@ -93,8 +97,11 @@ public class LayerService {
 
     List<Layer> parentsOfMergingLayer = layerDao.getAllParents(mergingLayer.getId());
     Collections.reverse(parentsOfMergingLayer);
+
     changeOldSegmentStateLinks(mergingLayer, parentsOfMergingLayer);
     changeOldQuestionRequiredLinks(mergingLayer, parentsOfMergingLayer);
+    changeOldScreenQuestionLinks(mergingLayer, parentsOfMergingLayer);
+    changeOldScreenEntrypointLinks(mergingLayer, parentsOfMergingLayer);
 
     List<SegmentLayerViewDto> segmentLayerViewDtoList = segmentService
         .getSegmentViewDtoListForSegmentsInLayerPage(mergingLayer.getId(), "").get()
@@ -153,6 +160,39 @@ public class LayerService {
         questionRequiredLinkDao.update(questionRequiredLink);
       }
     });
+  }
+
+  @Transactional
+  public void changeOldScreenQuestionLinks(Layer mergingLayer, List<Layer> parentsOfMergingLayer) {
+    List<ScreenQuestionLink> parentsScreenQuestionLink = new ArrayList<>();
+    for (Layer layer : parentsOfMergingLayer) {
+      parentsScreenQuestionLink.addAll(screenQuestionLinkDao.findAll(layer.getId()));
+    }
+    List<ScreenQuestionLink> latestParentsScreenQuestionLinks = segmentService.getLatestSQLInSpace(parentsScreenQuestionLink);
+    List<ScreenQuestionLink> mergingScreenQuestionLinks = screenQuestionLinkDao.findAll(mergingLayer.getId());
+    Map<String, ScreenQuestionLink> parentsScreenQuestionLinkMap = latestParentsScreenQuestionLinks.stream()
+        .collect(Collectors.toMap(screenQuestionLink -> String.format("%s,%s,%s,%s", screenQuestionLink.getSegment().getTitle(),
+                screenQuestionLink.getEntrypoint().getTitle(),
+                screenQuestionLink.getScreen().getTitle(),
+                screenQuestionLink.getQuestion().getTitle()),
+            Function.identity(), (link1, link2) -> link1));
+    Map<String, ScreenQuestionLink> mergingScreenQuestionLinkMap = mergingScreenQuestionLinks.stream()
+        .collect(Collectors.toMap(screenQuestionLink -> String.format("%s,%s,%s,%s", screenQuestionLink.getSegment().getTitle(),
+                screenQuestionLink.getEntrypoint().getTitle(),
+                screenQuestionLink.getScreen().getTitle(),
+                screenQuestionLink.getQuestion().getTitle()),
+            Function.identity(), (link1, link2) -> link1));
+    mergingScreenQuestionLinkMap.forEach((id, screenQuestionLink) -> {
+      if (screenQuestionLink.getOldScreenQuestionLink().getId() != parentsScreenQuestionLinkMap.get(id).getId()) {
+        screenQuestionLink.setOldScreenQuestionLink(parentsScreenQuestionLinkMap.get(id));
+        screenQuestionLinkDao.update(screenQuestionLink);
+      }
+    });
+  }
+
+  @Transactional
+  public void changeOldScreenEntrypointLinks(Layer mergingLayer, List<Layer> parentsOfMergingLayer) {
+
   }
 
   public boolean checkStateSegment(List<SegmentSelectedDto> selectedDtoList) {

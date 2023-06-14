@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.dao.abstracts.PlatformDao;
 import ru.hhschool.segment.dao.abstracts.QuestionRequiredLinkDao;
+import ru.hhschool.segment.dao.abstracts.ScreenQuestionLinkDao;
 import ru.hhschool.segment.dao.abstracts.SegmentStateLinkDao;
 import ru.hhschool.segment.dao.impl.LayerDaoImpl;
 import ru.hhschool.segment.service.LayerService;
@@ -17,8 +18,9 @@ public class LayerConfig {
                                       PlatformDao platformDao,
                                       SegmentService segmentService,
                                       SegmentStateLinkDao segmentStateLinkDao,
-                                      QuestionRequiredLinkDao questionRequiredLinkDao) {
-    return new LayerService(layerDao, platformDao, segmentStateLinkDao, segmentService, questionRequiredLinkDao);
+                                      QuestionRequiredLinkDao questionRequiredLinkDao,
+                                      ScreenQuestionLinkDao screenQuestionLinkDao) {
+    return new LayerService(layerDao, platformDao, segmentStateLinkDao, segmentService, questionRequiredLinkDao, screenQuestionLinkDao);
   }
 
   @Bean
