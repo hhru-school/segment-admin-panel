@@ -87,19 +87,25 @@ public class LayerService {
       layerDao.update(mergingLayer);
       return MergeResponseMapper.toDtoResponse(mergingLayer);
     }
+
     mergingLayer.setParent(lastStableLayer);
     layerDao.update(mergingLayer);
+
     List<Layer> parentsOfMergingLayer = layerDao.getAllParents(mergingLayer.getId());
+    Collections.reverse(parentsOfMergingLayer);
     changeOldSegmentStateLinks(mergingLayer, parentsOfMergingLayer);
     changeOldQuestionRequiredLinks(mergingLayer, parentsOfMergingLayer);
+
     List<SegmentLayerViewDto> segmentLayerViewDtoList = segmentService
         .getSegmentViewDtoListForSegmentsInLayerPage(mergingLayer.getId(), "").get()
         .getSegments();
+
     List<SegmentSelectedDto> selectedDtoList = new ArrayList<>();
     segmentLayerViewDtoList.forEach(segmentLayerViewDto -> {
       SegmentSelectedDto selectedDto = segmentService.getSegmentSelectedDto(mergingLayer.getId(), segmentLayerViewDto.getId()).get();
       selectedDtoList.add(selectedDto);
     });
+
     if (!checkStateSegment(selectedDtoList) ||
         !checkQuestionVisibilityAndPosition(selectedDtoList) ||
         !checkScreenPositionAndState(selectedDtoList) ||
@@ -115,8 +121,6 @@ public class LayerService {
 
   @Transactional
   public void changeOldSegmentStateLinks(Layer mergingLayer, List<Layer> parentsOfMergingLayer) {
-
-    Collections.reverse(parentsOfMergingLayer);
     Map<Long, SegmentStateLink> parentsSegmentStateLinkMap = segmentService.getLatestSSLInSpace(segmentService.getSSLInSpace(parentsOfMergingLayer, ""));
     Map<Long, SegmentStateLink> margingSegmentStateLinkMap = segmentService.getLatestSSLInSpace(segmentService.getSSLInSpace(List.of(mergingLayer), ""));
     margingSegmentStateLinkMap.forEach((id, segmentStateLink) -> {
@@ -137,12 +141,12 @@ public class LayerService {
     List<QuestionRequiredLink> mergingQuestionRequiredLinks = questionRequiredLinkDao.findAll(mergingLayer.getId());
     Map<Long, QuestionRequiredLink> parentsQuestionRequiredLinksMap = latestParentsQuestionRequiredLinks
         .stream()
-        .collect(Collectors.toMap(questionRequiredLink -> questionRequiredLink.getSegment().getId(),
-            Function.identity()));
+        .collect(Collectors.toMap(questionRequiredLink -> questionRequiredLink.getQuestion().getId(),
+            Function.identity(), (link1, link2) -> link1));
     Map<Long, QuestionRequiredLink> mergingQuestionRequiredLinksMap = mergingQuestionRequiredLinks
         .stream()
-        .collect(Collectors.toMap(questionRequiredLink -> questionRequiredLink.getSegment().getId(),
-            Function.identity()));
+        .collect(Collectors.toMap(questionRequiredLink -> questionRequiredLink.getQuestion().getId(),
+            Function.identity(), (link1, link2) -> link1));
     mergingQuestionRequiredLinksMap.forEach((id, questionRequiredLink) -> {
       if (questionRequiredLink.getOldQuestionRequiredLink().getId() != parentsQuestionRequiredLinksMap.get(id).getId()) {
         questionRequiredLink.setOldQuestionRequiredLink(parentsQuestionRequiredLinksMap.get(id));
