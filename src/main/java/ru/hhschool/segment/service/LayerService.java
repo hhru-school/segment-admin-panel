@@ -6,9 +6,12 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.NotFoundException;
+import ru.hhschool.segment.dao.abstracts.EntrypointDao;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.dao.abstracts.PlatformDao;
 import ru.hhschool.segment.dao.abstracts.QuestionDao;
+import ru.hhschool.segment.dao.abstracts.ScreenDao;
+import ru.hhschool.segment.dao.abstracts.SegmentDao;
 import ru.hhschool.segment.dao.abstracts.SegmentStateLinkDao;
 import ru.hhschool.segment.exception.HttpBadRequestException;
 import ru.hhschool.segment.exception.HttpNotFoundException;
@@ -29,23 +32,38 @@ import ru.hhschool.segment.model.dto.layer.ScreenQuestionLinkCreateDto;
 import ru.hhschool.segment.model.dto.layer.SegmentScreenEntrypointLinkCreateDto;
 import ru.hhschool.segment.model.dto.layer.SegmentStateLinkCreateDto;
 import ru.hhschool.segment.model.dto.screen.ScreenDto;
+import ru.hhschool.segment.model.entity.Entrypoint;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.Platform;
 import ru.hhschool.segment.model.entity.Question;
 import ru.hhschool.segment.model.entity.Screen;
+import ru.hhschool.segment.model.entity.Segment;
+import ru.hhschool.segment.model.entity.SegmentScreenEntrypointLink;
 import ru.hhschool.segment.model.enums.LayerStateType;
 
 public class LayerService {
   private final LayerDao layerDao;
   private final PlatformDao platformDao;
   private final QuestionDao questionDao;
+  private final ScreenDao screenDao;
+  private final SegmentDao segmentDao;
+  private final EntrypointDao entrypointDao;
   private final SegmentStateLinkDao segmentStateLinkDao;
 
   @Inject
-  public LayerService(LayerDao layerDao, PlatformDao platformDao, QuestionDao questionDao, SegmentStateLinkDao segmentStateLinkDao) {
+  public LayerService(
+      LayerDao layerDao,
+      PlatformDao platformDao,
+      QuestionDao questionDao,
+      ScreenDao screenDao,
+      SegmentDao segmentDao, EntrypointDao entrypointDao, SegmentStateLinkDao segmentStateLinkDao
+  ) {
     this.layerDao = layerDao;
     this.platformDao = platformDao;
     this.questionDao = questionDao;
+    this.screenDao = screenDao;
+    this.segmentDao = segmentDao;
+    this.entrypointDao = entrypointDao;
     this.segmentStateLinkDao = segmentStateLinkDao;
   }
 
@@ -110,6 +128,7 @@ public class LayerService {
    * 2. Сохраняем все DYNAMIC экраны и создаем связи.
    * 2.1. Получаем все вопросы по ID и формируем список.
    * 2.2. Сохраняем экран с вопросами в базу, получаем ID
+   * <p>
    * 2.1. Сохраняем все полученные связи DYNAMIC экранов в базу.
    * 2.2.
    */
@@ -158,8 +177,26 @@ public class LayerService {
         questionList.add(question);
       }
       Screen screen = ScreenMapper.dtoToScreen(dynamicScreen, questionList);
-//      screenDao.
+      screenDao.persist(screen);
 
+      Segment segment = segmentDao.findById(dynamicScreen.getSegmentId()).orElseThrow(
+          () -> new HttpBadRequestException("Не правильно задан сегмент в динамическом экране.")
+      );
+      Entrypoint entrypoint = entrypointDao.findById(dynamicScreen.getEntrypointId()).orElseThrow(
+          () -> new HttpBadRequestException("Не правильно задана точка в динамическом экране.")
+      );
+
+      SegmentScreenEntrypointLink segmentScreenEntrypointLink = new SegmentScreenEntrypointLink(
+          null,
+          layer,
+          segment,
+          entrypoint,
+          screen,
+          dynamicScreen.getScreenPosition(),
+          dynamicScreen.getScreenState()
+          );
+
+//      ScreenQuestionLink screenQuestionLink =
 
 
     }
