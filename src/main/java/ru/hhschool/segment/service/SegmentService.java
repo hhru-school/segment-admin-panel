@@ -235,14 +235,14 @@ public class SegmentService {
     List<SegmentViewEntryPointDto> segmentViewEntryPointDtoList = getSegmentViewEntryPointDtos(layer.get(), segmentId);
     return Optional.of(SegmentSelectedMapper.toDtoForSelectedSegmentViewPage(layer.get(), segment.get(), segmentStateLink, roles, segmentViewRequirementDtoList, segmentViewEntryPointDtoList));
   }
-  private List<QuestionRequiredLink> getQRLInSpace(List<Layer> space, Long segmentId) {
+  public List<QuestionRequiredLink> getQRLInSpace(List<Layer> space, Long segmentId) {
     List<QuestionRequiredLink> questionRequiredLinks = new ArrayList<>();
     for (Layer layer : space) {
       questionRequiredLinks.addAll(questionRequiredLinkDao.findAll(layer.getId(), segmentId));
     }
     return questionRequiredLinks;
   }
-  private List<QuestionRequiredLink> getLatestQRLInSpace(List<QuestionRequiredLink> links){
+  public List<QuestionRequiredLink> getLatestQRLInSpace(List<QuestionRequiredLink> links){
     Map<String, QuestionRequiredLink> questionRequiredLinkMap = new HashMap<>();
     for (QuestionRequiredLink link : links) {
       String key = String.format("%s,%s", link.getSegment().getTitle(), link.getQuestion().getTitle());

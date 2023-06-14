@@ -2,6 +2,7 @@ package ru.hhschool.segment.service;
 
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.dao.abstracts.PlatformDao;
+import ru.hhschool.segment.dao.abstracts.QuestionRequiredLinkDao;
 import ru.hhschool.segment.dao.abstracts.SegmentStateLinkDao;
 import ru.hhschool.segment.exception.HttpBadRequestException;
 import ru.hhschool.segment.exception.HttpNotFoundException;
@@ -21,6 +22,7 @@ import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewQuestionD
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewRequirementDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewScreenDto;
 import ru.hhschool.segment.model.entity.Layer;
+import ru.hhschool.segment.model.entity.QuestionRequiredLink;
 import ru.hhschool.segment.model.entity.SegmentStateLink;
 import ru.hhschool.segment.model.enums.LayerStateType;
 
@@ -32,19 +34,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class LayerService {
   private final LayerDao layerDao;
   private final PlatformDao platformDao;
   private final SegmentStateLinkDao segmentStateLinkDao;
   private final SegmentService segmentService;
+  private final QuestionRequiredLinkDao questionRequiredLinkDao;
 
   @Inject
-  public LayerService(LayerDao layerDao, PlatformDao platformDao, SegmentStateLinkDao segmentStateLinkDao, SegmentService segmentService) {
+  public LayerService(LayerDao layerDao, PlatformDao platformDao, SegmentStateLinkDao segmentStateLinkDao, SegmentService segmentService, QuestionRequiredLinkDao questionRequiredLinkDao) {
     this.layerDao = layerDao;
     this.platformDao = platformDao;
     this.segmentStateLinkDao = segmentStateLinkDao;
     this.segmentService = segmentService;
+    this.questionRequiredLinkDao = questionRequiredLinkDao;
   }
 
   public List<LayerDto> getLayerGroupList() {
@@ -82,8 +88,10 @@ public class LayerService {
       return MergeResponseMapper.toDtoResponse(mergingLayer);
     }
     mergingLayer.setParent(lastStableLayer);
-    changeSSL(mergingLayer);
     layerDao.update(mergingLayer);
+    List<Layer> parentsOfMergingLayer = layerDao.getAllParents(mergingLayer.getId());
+    changeOldSegmentStateLinks(mergingLayer, parentsOfMergingLayer);
+    changeOldQuestionRequiredLinks(mergingLayer, parentsOfMergingLayer);
     List<SegmentLayerViewDto> segmentLayerViewDtoList = segmentService
         .getSegmentViewDtoListForSegmentsInLayerPage(mergingLayer.getId(), "").get()
         .getSegments();
@@ -106,15 +114,39 @@ public class LayerService {
   }
 
   @Transactional
-  public void changeSSL(Layer mergingLayer) {
-    List<Layer> parentsOfMergingLayer = layerDao.getAllParents(mergingLayer.getId());
+  public void changeOldSegmentStateLinks(Layer mergingLayer, List<Layer> parentsOfMergingLayer) {
+
     Collections.reverse(parentsOfMergingLayer);
-    Map<Long, SegmentStateLink> segmentStateLinkMapParents = segmentService.getLatestSSLInSpace(segmentService.getSSLInSpace(parentsOfMergingLayer, ""));
-    Map<Long, SegmentStateLink> segmentStateLinkMapMerging = segmentService.getLatestSSLInSpace(segmentService.getSSLInSpace(List.of(mergingLayer), ""));
-    segmentStateLinkMapMerging.forEach((id, segmentStateLink) -> {
-      if (segmentStateLink.getOldSegmentStateLink().getId() != segmentStateLinkMapParents.get(id).getId()) {
-        segmentStateLink.setOldSegmentStateLink(segmentStateLinkMapParents.get(id));
+    Map<Long, SegmentStateLink> parentsSegmentStateLinkMap = segmentService.getLatestSSLInSpace(segmentService.getSSLInSpace(parentsOfMergingLayer, ""));
+    Map<Long, SegmentStateLink> margingSegmentStateLinkMap = segmentService.getLatestSSLInSpace(segmentService.getSSLInSpace(List.of(mergingLayer), ""));
+    margingSegmentStateLinkMap.forEach((id, segmentStateLink) -> {
+      if (segmentStateLink.getOldSegmentStateLink().getId() != parentsSegmentStateLinkMap.get(id).getId()) {
+        segmentStateLink.setOldSegmentStateLink(parentsSegmentStateLinkMap.get(id));
         segmentStateLinkDao.update(segmentStateLink);
+      }
+    });
+  }
+
+  @Transactional
+  public void changeOldQuestionRequiredLinks(Layer mergingLayer, List<Layer> parentsOfMergingLayer) {
+    List<QuestionRequiredLink> parentsQuestionRequiredLinks = new ArrayList<>();
+    for (Layer layer : parentsOfMergingLayer) {
+      parentsQuestionRequiredLinks.addAll(questionRequiredLinkDao.findAll(layer.getId()));
+    }
+    List<QuestionRequiredLink> latestParentsQuestionRequiredLinks = segmentService.getLatestQRLInSpace(parentsQuestionRequiredLinks);
+    List<QuestionRequiredLink> mergingQuestionRequiredLinks = questionRequiredLinkDao.findAll(mergingLayer.getId());
+    Map<Long, QuestionRequiredLink> parentsQuestionRequiredLinksMap = latestParentsQuestionRequiredLinks
+        .stream()
+        .collect(Collectors.toMap(questionRequiredLink -> questionRequiredLink.getSegment().getId(),
+            Function.identity()));
+    Map<Long, QuestionRequiredLink> mergingQuestionRequiredLinksMap = mergingQuestionRequiredLinks
+        .stream()
+        .collect(Collectors.toMap(questionRequiredLink -> questionRequiredLink.getSegment().getId(),
+            Function.identity()));
+    mergingQuestionRequiredLinksMap.forEach((id, questionRequiredLink) -> {
+      if (questionRequiredLink.getOldQuestionRequiredLink().getId() != parentsQuestionRequiredLinksMap.get(id).getId()) {
+        questionRequiredLink.setOldQuestionRequiredLink(parentsQuestionRequiredLinksMap.get(id));
+        questionRequiredLinkDao.update(questionRequiredLink);
       }
     });
   }

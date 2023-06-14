@@ -367,6 +367,9 @@ VALUES (26, 3, 2, 1, 1, 1, 1, 'SHOW_PREFILLED'), -- 26 изменены сост
 --Четвертый слой
 INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms, stabled_time)
 VALUES (1, 'Тестовый слой', 'Слой, унаследованный от второго слоя', 'TEST', '2023-04-14 02:02:00', '{1, 4, 5}', null);
+
+INSERT INTO segment_state_links (old_id, layer_id, segment_id, state)
+VALUES (1, 4, 1, 'DISABLED');
 --Пятый слой
 INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms, stabled_time)
 VALUES (1, 'ARCHIVE слой', 'Слой, унаследованный от второго слоя', 'ARCHIVE', '2023-04-15 02:02:00', '{1, 4, 5}', null);
