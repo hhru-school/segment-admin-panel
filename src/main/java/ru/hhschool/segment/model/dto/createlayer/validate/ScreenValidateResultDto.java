@@ -28,17 +28,4 @@ public class ScreenValidateResultDto {
   public void setScreenTitle(String screenTitle) {
     this.screenTitle = screenTitle;
   }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    ScreenValidateResultDto that = (ScreenValidateResultDto) o;
-    return Objects.equals(screenId, that.screenId) && Objects.equals(screenTitle, that.screenTitle);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(screenId, screenTitle);
-  }
 }
