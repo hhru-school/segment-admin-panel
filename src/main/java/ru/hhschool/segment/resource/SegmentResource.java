@@ -75,7 +75,7 @@ public class SegmentResource {
   @POST
   @Path("/validate")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getCreateLayerSegmentDto(@RequestBody SegmentValidateInfoDto segmentValidateInfoDto){
+  public Response validateSegment(@RequestBody SegmentValidateInfoDto segmentValidateInfoDto){
     if (segmentValidateInfoDto == null) {
       throw new HttpBadRequestException("Отсутствует необходимый параметр");
     }

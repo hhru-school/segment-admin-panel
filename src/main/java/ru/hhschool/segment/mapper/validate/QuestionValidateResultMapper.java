@@ -10,11 +10,18 @@ import java.util.List;
 public class QuestionValidateResultMapper {
   public static QuestionValidateResultDto toDto(InfoLayerEntryPointDto entrypoint, InfoLayerQuestionDto question, List<ScreenValidateResultDto> screenValidateResultDtos) {
     QuestionValidateResultDto questionValidateResultDto = new QuestionValidateResultDto(
-        entrypoint.getEntripointId(),
+        entrypoint.getId(),
         entrypoint.getTitle(),
-        question.getQuestionId(),
+        question.getId(),
         question.getTitle(),
         screenValidateResultDtos
+    );
+    return questionValidateResultDto;
+  }
+  public static QuestionValidateResultDto toDto(InfoLayerQuestionDto question) {
+    QuestionValidateResultDto questionValidateResultDto = new QuestionValidateResultDto(
+        question.getId(),
+        question.getTitle()
     );
     return questionValidateResultDto;
   }

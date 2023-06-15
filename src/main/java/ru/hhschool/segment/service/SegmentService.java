@@ -12,6 +12,7 @@ import ru.hhschool.segment.dao.abstracts.ScreenQuestionLinkDao;
 import ru.hhschool.segment.exception.HttpBadRequestException;
 import ru.hhschool.segment.mapper.RoleMapper;
 import ru.hhschool.segment.mapper.SegmentMapper;
+import ru.hhschool.segment.mapper.validate.EntrypointValidateResultMapper;
 import ru.hhschool.segment.mapper.validate.QuestionValidateResultMapper;
 import ru.hhschool.segment.mapper.validate.ScreenValidateResultMapper;
 import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentLayerViewMapper;
@@ -25,6 +26,7 @@ import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentViewQuestionMapp
 import ru.hhschool.segment.model.dto.RoleDto;
 import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerQuestionDto;
 import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerScreenDto;
+import ru.hhschool.segment.model.dto.createlayer.validate.EntrypointValidateResultDto;
 import ru.hhschool.segment.model.dto.createlayer.validate.QuestionValidateResultDto;
 import ru.hhschool.segment.model.dto.createlayer.validate.SegmentValidateInfoDto;
 import ru.hhschool.segment.model.dto.createlayer.validate.ValidateResultDto;
@@ -358,19 +360,24 @@ public class SegmentService {
     segmentValidateInfoDto.getEntryPoints().forEach(entrypoint -> {
       Map<Long, InfoLayerQuestionDto> infoLayerQuestionDtoMap = new HashMap<>();
       Map<Long, List<InfoLayerScreenDto>> validateVisibilityMap = new HashMap<>();
-      entrypoint.getScreens().forEach(screen -> {
+      Map<Integer, InfoLayerScreenDto> infoLayerScreenDtoMap = new HashMap<>();
+      Map<Integer, List<InfoLayerScreenDto>> validateScreenPositionMap = new HashMap<>();
+      entrypoint.getScreens().stream()
+          .filter(screen -> screen.getState().equals(StateType.ACTIVE))
+          .forEach(screen -> {
+            Integer screenPosition = screen.getPosition();
+            List<InfoLayerScreenDto> screens = validateScreenPositionMap.getOrDefault(screenPosition, new ArrayList<>());
+            screens.add(screen);
+            validateScreenPositionMap.put(screenPosition, screens);
+            infoLayerScreenDtoMap.putIfAbsent(screenPosition, screen);
         screen.getFields().forEach(field -> {
-          Long questionId = field.getQuestionId();
           if (field.getVisibility().equals(QuestionVisibilityType.SHOW) || field.getVisibility().equals(QuestionVisibilityType.SHOW_PREFILLED)) {
+            Long questionId = field.getId();
             requireQuestionsMap.put(questionId, field);
-            if (infoLayerQuestionDtoMap.containsKey(questionId)) {
-              List<InfoLayerScreenDto> screens = new ArrayList<>(validateVisibilityMap.get(questionId));
-              screens.add(screen);
-              validateVisibilityMap.put(questionId, screens);
-            } else {
-              infoLayerQuestionDtoMap.put(questionId, field);
-              validateVisibilityMap.put(questionId, List.of(screen));
-            }
+            List<InfoLayerScreenDto> screensForQuestion = validateVisibilityMap.getOrDefault(questionId, new ArrayList<>());
+            screensForQuestion.add(screen);
+            validateVisibilityMap.put(questionId, screensForQuestion);
+            infoLayerQuestionDtoMap.putIfAbsent(questionId, field);
           }
         });
       });
@@ -378,20 +385,28 @@ public class SegmentService {
         if (infoLayerScreenDtos.size() > 1){
           ValidateResultDto<QuestionValidateResultDto> validateResultDto = new ValidateResultDto<>();
           InfoLayerQuestionDto question = infoLayerQuestionDtoMap.get(questionId);
-          validateResultDto.setError("Вопроса " + '[' + question.getTitle() + ']' + " является видимым более чем на 1 экране внутри точки входа " + '[' + entrypoint.getTitle() + ']');
+          validateResultDto.setError("Вопрос " + '[' + question.getTitle() + ']' + " является видимым более чем на 1 экране внутри точки входа " + '[' + entrypoint.getTitle() + ']');
           validateResultDto.setResult(QuestionValidateResultMapper.toDto(entrypoint, question, ScreenValidateResultMapper.toListDto(infoLayerScreenDtos)));
+          validateResultDtos.add(validateResultDto);
+        }
+      });
+      validateScreenPositionMap.forEach((position, infoLayerScreenDtos) -> {
+        if (infoLayerScreenDtos.size() > 1){
+          ValidateResultDto<EntrypointValidateResultDto> validateResultDto = new ValidateResultDto<>();
+          validateResultDto.setError("Внутри точки входа " + '[' + entrypoint.getTitle() + ']' + " на позиции " + position + " располагается более одного активного экрана.");
+          validateResultDto.setResult(EntrypointValidateResultMapper.toDto(entrypoint, position, ScreenValidateResultMapper.toListDto(infoLayerScreenDtos)));
           validateResultDtos.add(validateResultDto);
         }
       });
     });
     segmentValidateInfoDto.getFields().forEach(field -> {
-      if (field.getRequired() && !requireQuestionsMap.containsKey(field.getQuestionId())){
+      if (field.getRequired() && !requireQuestionsMap.containsKey(field.getId())){
         ValidateResultDto validateResultDto = new ValidateResultDto();
         validateResultDto.setError("Вопрос " + '[' + field.getTitle() + ']' + " является обязательным, однако не отображается ни на одном экране.");
         InfoLayerQuestionDto question = new InfoLayerQuestionDto();
-        question.setQuestionId(field.getQuestionId());
+        question.setId(field.getId());
         question.setTitle(field.getTitle());
-        validateResultDto.setResult(question);
+        validateResultDto.setResult(QuestionValidateResultMapper.toDto(question));
         validateResultDtos.add(validateResultDto);
       }
     });

@@ -14,6 +14,10 @@ public class QuestionValidateResultDto {
 
   public QuestionValidateResultDto(){};
 
+  public QuestionValidateResultDto(Long questionId, String questionTitle) {
+    this.questionId = questionId;
+    this.questionTitle = questionTitle;
+  }
   public QuestionValidateResultDto(Long entryPointId, String entryPointTitle, Long questionId, String questionTitle, List<ScreenValidateResultDto> screens) {
     this.entryPointId = entryPointId;
     this.entryPointTitle = entryPointTitle;

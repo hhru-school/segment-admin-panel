@@ -10,7 +10,7 @@ import java.util.List;
 public class ScreenValidateResultMapper {
   public static ScreenValidateResultDto toDto(InfoLayerScreenDto screen) {
     ScreenValidateResultDto screenValidateResultDto = new ScreenValidateResultDto(
-        screen.getScreenId(),
+        screen.getId(),
         screen.getTitle()
     );
     return screenValidateResultDto;
