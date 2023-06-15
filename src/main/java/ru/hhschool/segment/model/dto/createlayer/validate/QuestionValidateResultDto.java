@@ -1,38 +1,41 @@
 package ru.hhschool.segment.model.dto.createlayer.validate;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class QuestionValidateResultDto {
-  private Long entrypointId;
-  private String entrypointTitle;
+  private Long entryPointId;
+  private String entryPointTitle;
   private Long questionId;
   private String questionTitle;
   private List<ScreenValidateResultDto> screens;
 
   public QuestionValidateResultDto(){};
 
-  public QuestionValidateResultDto(Long entrypointId, String entrypointTitle, Long questionId, String questionTitle, List<ScreenValidateResultDto> screens) {
-    this.entrypointId = entrypointId;
-    this.entrypointTitle = entrypointTitle;
+  public QuestionValidateResultDto(Long entryPointId, String entryPointTitle, Long questionId, String questionTitle, List<ScreenValidateResultDto> screens) {
+    this.entryPointId = entryPointId;
+    this.entryPointTitle = entryPointTitle;
     this.questionId = questionId;
     this.questionTitle = questionTitle;
     this.screens = screens;
   }
 
-  public Long getEntrypointId() {
-    return entrypointId;
+  public Long getEntryPointId() {
+    return entryPointId;
   }
 
-  public void setEntrypointId(Long entrypointId) {
-    this.entrypointId = entrypointId;
+  public void setEntryPointId(Long entryPointId) {
+    this.entryPointId = entryPointId;
   }
 
-  public String getEntrypointTitle() {
-    return entrypointTitle;
+  public String getEntryPointTitle() {
+    return entryPointTitle;
   }
 
-  public void setEntrypointTitle(String entrypointTitle) {
-    this.entrypointTitle = entrypointTitle;
+  public void setEntryPointTitle(String entryPointTitle) {
+    this.entryPointTitle = entryPointTitle;
   }
 
   public Long getQuestionId() {

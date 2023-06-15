@@ -388,6 +388,10 @@ public class SegmentService {
       if (field.getRequired() && !requireQuestionsMap.containsKey(field.getQuestionId())){
         ValidateResultDto validateResultDto = new ValidateResultDto();
         validateResultDto.setError("Вопрос " + '[' + field.getTitle() + ']' + " является обязательным, однако не отображается ни на одном экране.");
+        InfoLayerQuestionDto question = new InfoLayerQuestionDto();
+        question.setQuestionId(field.getQuestionId());
+        question.setTitle(field.getTitle());
+        validateResultDto.setResult(question);
         validateResultDtos.add(validateResultDto);
       }
     });
