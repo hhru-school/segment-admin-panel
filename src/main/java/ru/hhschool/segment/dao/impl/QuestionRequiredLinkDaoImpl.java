@@ -21,4 +21,12 @@ public class QuestionRequiredLinkDaoImpl extends ReadWriteDaoImpl<QuestionRequir
         .setParameter("segmentId", segmentId)
         .getResultList();
   }
+
+  @Override
+  public List<QuestionRequiredLink> findAll(Long layerId) {
+    return em.createQuery("SELECT e FROM QuestionRequiredLink e WHERE e.layer.id = :layerId", QuestionRequiredLink.class)
+        .setParameter("layerId", layerId)
+        .getResultList();
+  }
+
 }

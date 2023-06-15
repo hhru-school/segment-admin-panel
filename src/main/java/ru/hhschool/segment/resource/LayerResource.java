@@ -112,8 +112,7 @@ public class LayerResource {
   @GET
   @Path(value = "/{layerId}/merge")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response joinLayer(@PathParam(value = "layerId") Long layerId) {
-    return Response.ok("TEST").build();
+  public Response mergeLayer(@PathParam(value = "layerId") Long layerId) {
+    return Response.ok(layerService.mergeLayerWithParent(layerId)).build();
   }
-
 }
