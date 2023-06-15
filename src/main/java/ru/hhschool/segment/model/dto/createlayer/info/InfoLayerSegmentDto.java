@@ -8,7 +8,7 @@ import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class InfoLayerSegmentDto {
-  private Long segmentId;
+  private Long id;
   private Long segmentStateLinkId;
   private StateType activeState;
   private String title;
@@ -22,7 +22,7 @@ public class InfoLayerSegmentDto {
 
   }
 
-  public InfoLayerSegmentDto(Long segmentId,
+  public InfoLayerSegmentDto(Long id,
                              Long segmentStateLinkId ,
                              StateType activeState,
                              String title,
@@ -31,7 +31,7 @@ public class InfoLayerSegmentDto {
                              List<String> tags,
                              List<InfoLayerRequirementDto> fields,
                              List<InfoLayerEntryPointDto> entryPoints) {
-    this.segmentId = segmentId;
+    this.id = id;
     this.segmentStateLinkId = segmentStateLinkId;
     this.activeState = activeState;
     this.title = title;
@@ -42,12 +42,12 @@ public class InfoLayerSegmentDto {
     this.entryPoints = entryPoints;
   }
 
-  public Long getSegmentId() {
-    return segmentId;
+  public Long getId() {
+    return id;
   }
 
-  public void setSegmentId(Long segmentId) {
-    this.segmentId = segmentId;
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public Long getSegmentStateLinkId() {
