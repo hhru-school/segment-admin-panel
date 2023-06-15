@@ -3,16 +3,18 @@ package ru.hhschool.segment.model.dto.createlayer.info;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import ru.hhschool.segment.model.dto.PlatformDto;
 import ru.hhschool.segment.model.enums.ScreenType;
+import ru.hhschool.segment.model.enums.StateType;
 
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class InfoLayerScreenDto {
-  private Long screenId;
+  private Long id;
   private Long segmentScreenEntrypointLinkId;
   private String title;
   private String description;
   private ScreenType type;
+  private StateType state;
   private Integer position;
   private List<PlatformDto> appVersions;
   private List<InfoLayerQuestionDto> fields;
@@ -21,30 +23,32 @@ public class InfoLayerScreenDto {
 
   }
 
-  public InfoLayerScreenDto(Long screenId,
+  public InfoLayerScreenDto(Long id,
                             Long segmentScreenEntrypointLinkId,
                             String title,
                             String description,
                             ScreenType type,
+                            StateType state,
                             Integer position,
                             List<PlatformDto> appVersions,
                             List<InfoLayerQuestionDto> fields) {
-    this.screenId = screenId;
+    this.id = id;
     this.segmentScreenEntrypointLinkId = segmentScreenEntrypointLinkId;
     this.title = title;
     this.description = description;
     this.type = type;
+    this.state = state;
     this.position = position;
     this.appVersions = appVersions;
     this.fields = fields;
   }
 
-  public Long getScreenId() {
-    return screenId;
+  public Long getId() {
+    return id;
   }
 
-  public void setScreenId(Long screenId) {
-    this.screenId = screenId;
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public Long getSegmentScreenEntrypointLinkId() {
@@ -77,6 +81,14 @@ public class InfoLayerScreenDto {
 
   public void setType(ScreenType type) {
     this.type = type;
+  }
+
+  public StateType getState() {
+    return state;
+  }
+
+  public void setState(StateType state) {
+    this.state = state;
   }
 
   public Integer getPosition() {

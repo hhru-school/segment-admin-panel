@@ -20,6 +20,7 @@ public class InfoLayerScreenMapper {
         screen.getTitle(),
         screen.getDescription(),
         screen.getType(),
+        link.getScreenState(),
         link.getScreenPosition(),
         platforms,
         fields

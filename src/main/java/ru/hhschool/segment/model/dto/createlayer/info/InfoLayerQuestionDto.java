@@ -5,7 +5,7 @@ import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class InfoLayerQuestionDto {
-  private Long questionId;
+  private Long id;
   private Long screenQuestionLinkId;
   private String title;
   private QuestionVisibilityType visibility;
@@ -15,24 +15,24 @@ public class InfoLayerQuestionDto {
 
   }
 
-  public InfoLayerQuestionDto(Long questionId,
+  public InfoLayerQuestionDto(Long id,
                               Long screenQuestionLinkId,
                               String title,
                               QuestionVisibilityType visibility,
                               Integer position) {
-    this.questionId = questionId;
+    this.id = id;
     this.screenQuestionLinkId = screenQuestionLinkId;
     this.title = title;
     this.visibility = visibility;
     this.position = position;
   }
 
-  public Long getQuestionId() {
-    return questionId;
+  public Long getId() {
+    return id;
   }
 
-  public void setQuestionId(Long questionId) {
-    this.questionId = questionId;
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public Long getScreenQuestionLinkId() {
