@@ -6,21 +6,16 @@ import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.PATCH;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.springframework.web.bind.annotation.RequestBody;
-import ru.hhschool.segment.exception.HttpBadRequestException;
-import ru.hhschool.segment.model.dto.ErrorDto;
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
-import ru.hhschool.segment.model.dto.layer.LayerCreateDto;
+import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerSegmentDto;
 import ru.hhschool.segment.model.dto.layer.LayerDtoForList;
-import ru.hhschool.segment.model.dto.screen.ScreenDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.LayerSegmentsDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentSelectedDto;
 import ru.hhschool.segment.service.LayerService;
@@ -95,6 +90,17 @@ public class LayerResource {
     return Response.status(Response.Status.NOT_FOUND).build();
   }
 
+  @GET
+  @Path("/{layerId}/segments/{segmentId}/details")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getCreateLayerSegmentDto(@PathParam("layerId") Long layerId, @PathParam("segmentId") Long segmentId) {
+    Optional<InfoLayerSegmentDto> createLayerSegmentDto = segmentService.getCreateLayerSegmentDto(layerId, segmentId);
+    if (createLayerSegmentDto.isPresent()) {
+      return Response.ok(createLayerSegmentDto).build();
+    }
+    return Response.status(Response.Status.NOT_FOUND).build();
+  }
+
   @PATCH
   @Path("/{layerId}/setArchive")
   @Produces(MediaType.APPLICATION_JSON)
@@ -120,33 +126,7 @@ public class LayerResource {
   @GET
   @Path(value = "/{layerId}/merge")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response joinLayer(@PathParam(value = "layerId") Long layerId) {
-//    try {
-//      Optional<LayerChangeDto> layerChanges = layerService.mergeLayerWithParent(layerId);
-//
-//      if (layerChanges.isPresent() && layerChanges.get().isConflict()) {
-//        return Response
-//            .status(Response.Status.CONFLICT)
-//            .entity(layerChanges.get())
-//            .build();
-//      }
-//      return Response.ok(layerChanges.get()).build();
-//
-//    } catch (
-//        NotFoundException e) {
-//      return Response
-//          .status(Response.Status.NOT_FOUND)
-//          .entity(e.getMessage())
-//          .build();
-//
-//    } catch (
-//        IllegalStateException e) {
-//      return Response.status(Response.Status.METHOD_NOT_ALLOWED)
-//          .entity(e.getMessage())
-//          .build();
-//    }
-    return Response.ok("TEST").build();
-
+  public Response mergeLayer(@PathParam(value = "layerId") Long layerId) {
+    return Response.ok(layerService.mergeLayerWithParent(layerId)).build();
   }
-
 }

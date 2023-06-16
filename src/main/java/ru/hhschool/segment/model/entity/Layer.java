@@ -95,8 +95,8 @@ public class Layer {
   public void setState(LayerStateType state) {
     if (state == LayerStateType.STABLE) {
       this.stabledTime = LocalDateTime.now();
-      this.state = state;
     }
+    this.state = state;
   }
 
   public LocalDateTime getCreateTime() {

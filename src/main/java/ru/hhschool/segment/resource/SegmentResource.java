@@ -69,16 +69,4 @@ public class SegmentResource {
 
     return Response.status(Response.Status.NOT_FOUND).build();
   }
-
-  @GET
-  @Path("/details")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response getSegmentViewDtoListForViewSegmentPage(@QueryParam("layerId") Long layerId, @QueryParam("segmentId") Long segmentId) {
-//    Optional<SegmentSelectedDto> segmentSelectedDto = segmentService.getSegmentSelectedDto(layerId, segmentId);
-//    if (segmentSelectedDto.isPresent()){
-//      return Response.ok(segmentSelectedDto).build();
-//    }
-//    return Response.status(Response.Status.NO_CONTENT).build();
-    return Response.ok("TEST").build();
-  }
 }

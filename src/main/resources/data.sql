@@ -124,16 +124,7 @@ VALUES ('Разряд не ниже 4', 'Разряд не ниже 4', 'DYNAMIC
        ('Наличие опыта работы', 'Заполнение инормации по опыту работы', 'DYNAMIC', 'ACTIVE', '{1, 4, 3}'),             --3
        ('Узкоспециализированные вопросы', 'Заполнение ответов на спецаильные вопросы', 'DYNAMIC', 'ACTIVE', '{2, 5}'), --4
        ('Наличие образования', 'Заполнение информации об образовании', 'STATIC', 'ACTIVE', '{1, 4, 5}'),               --5
-       ('Основная информация', 'Заполнение основной информации', 'STATIC', 'ACTIVE', '{1, 4, 5}'),                     --6
-       ('Неактивный экран', 'Просто Архивный', 'STATIC', 'DISABLED', '{4, 5}'),                                         --7
-       ('Только для Web', 'Только для Web', 'STATIC', 'ACTIVE', '{1}'),                                                --8
-       ('Ios 2.2', 'Просто Архивный', 'STATIC', 'DISABLED', '{4}'),                                                     --9                                       --7
-       ('Ios 1.0', 'Просто Архивный', 'STATIC', 'DISABLED', '{6}'),                                                     --9                                       --7
-       ('Ios 1.10', 'Просто Архивный', 'STATIC', 'DISABLED', '{7}'),                                                    --9                                       --7
-       ('Ios 10.01', 'Просто Архивный', 'STATIC', 'DISABLED', '{8}'),                                                   --9                                       --7
-       ('Ios 10.10', 'Просто Архивный', 'STATIC', 'DISABLED', '{9}'),                                                   --9                                       --7
-       ('Ios 20.4', 'Просто Архивный', 'STATIC', 'DISABLED', '{10}'),                                                   --10                                  --7
-       ('Ios 100.11', 'Просто Архивный', 'STATIC', 'DISABLED', '{11}'); --11
+       ('Основная информация', 'Заполнение основной информации', 'STATIC', 'ACTIVE', '{1, 4, 5}'); --6
 
 INSERT INTO screen_questions (screen_id, question_id)
 VALUES (1, 1),
@@ -162,8 +153,10 @@ VALUES (1, 1),
 
 
 --Первый слой
-INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms)
-VALUES (NULL, 'Первый слой', 'Базовый слой', 'STABLE', '2023-04-12 02:02:00', '{1, 2, 3}'); -- 1
+INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms, stabled_time)
+
+VALUES (NULL, 'Первый слой', 'Базовый слой', 'STABLE', '2023-04-12 02:02:00', '{1, 2, 3}','2023-04-12 02:02:00'); -- 1
+
 
 INSERT INTO segment_state_links (old_id, layer_id, segment_id, state)
 VALUES (NULL, 1, 1, 'ACTIVE'); -- 1
@@ -226,8 +219,10 @@ VALUES (NULL, 1, 1, 1, 6, 26, 1, 'SHOW'),           -- 1
 
 
 --Второй слой
-INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms)
-VALUES (1, 'Второй слой', 'Слой, унаследованный от базового слоя', 'STABLE', '2023-04-13 02:02:00', '{1, 4, 3}');
+
+INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms,stabled_time)
+VALUES (1, 'Второй слой', 'Слой, унаследованный от базового слоя', 'STABLE', '2023-04-13 02:02:00', '{1, 4, 3}','2023-04-13 02:02:00');
+
 -- 2
 
 INSERT INTO segment_state_links (old_id, layer_id, segment_id, state)
@@ -294,8 +289,10 @@ VALUES (NULL, 2, 2, 1, 1, 1, 1, 'SHOW'),           -- 26
 
 
 --Третий слой
-INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms)
-VALUES (2, 'Третий слой', 'Слой, унаследованный от второго слоя', 'STABLE', '2023-04-13 02:02:00', '{1, 4, 5}');
+INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms, stabled_time)
+
+VALUES (2, 'Третий слой', 'Слой, унаследованный от второго слоя', 'STABLE', '2023-04-13 02:02:00', '{1, 4, 5}','2023-04-14 02:02:00');
+
 -- 3
 
 INSERT INTO segment_state_links (old_id, layer_id, segment_id, state)
@@ -317,10 +314,10 @@ INSERT INTO segment_screen_entrypoint_links (old_id, layer_id, segment_id, entry
 VALUES -- (NULL, 3, 2, 1, 1, 1), -- 10 это из прошлого слоя должно прийти
        -- (NULL, 3, 2, 1, 2, 2), -- 11 это из прошлого слоя должно прийти
        -- (NULL, 3, 2, 1, 5, 3), -- 12 это из прошлого слоя должно прийти
-       (13, 3, 2, 1, 4, 5, 'ACTIVE'), -- 20
-       (14, 3, 2, 1, 3, 4, 'DISABLED'), -- 21
+       (13, 3, 2, 1, 4, 5, 'ACTIVE'),  -- 20
+       (14, 3, 2, 1, 3, 4, 'ACTIVE'),  -- 21
 
-       (15, 3, 2, 2, 2, 2, 'ACTIVE'), -- 15
+       (15, 3, 2, 2, 2, 2, 'ACTIVE'),  -- 15
        (16, 3, 2, 2, 1, 1, 'ACTIVE'),
 
        (18, 3, 2, 2, 4, 4, 'DISABLED'),-- 18
@@ -368,14 +365,23 @@ VALUES (26, 3, 2, 1, 1, 1, 1, 'SHOW_PREFILLED'), -- 26 изменены сост
 
 
 --Четвертый слой
-INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms)
-VALUES (1, 'Тестовый слой', 'Слой, унаследованный от второго слоя', 'TEST', '2023-04-14 02:02:00', '{1, 4, 5}');
+INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms, stabled_time)
+VALUES (1, 'Тестовый слой', 'Слой, унаследованный от второго слоя', 'TEST', '2023-04-14 02:02:00', '{1, 4, 5}', null);
+
+INSERT INTO segment_state_links (old_id, layer_id, segment_id, state)
+VALUES (1, 4, 1, 'DISABLED');
+
+INSERT INTO screen_question_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, question_id, question_position, question_visibility)
+VALUES  (31, 4, 2, 1, 5, 5, 1, 'SHOW');
+
+INSERT INTO segment_screen_entrypoint_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, screen_position, screen_state)
+VALUES(19, 4, 2, 2, 5, 4, 'ACTIVE');
 --Пятый слой
-INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms)
-VALUES (1, 'ARCHIVE слой', 'Слой, унаследованный от второго слоя', 'ARCHIVE', '2023-04-15 02:02:00', '{1, 4, 5}');
+INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms, stabled_time)
+VALUES (1, 'ARCHIVE слой', 'Слой, унаследованный от второго слоя', 'ARCHIVE', '2023-04-15 02:02:00', '{1, 4, 5}', null);
 --Шестой слой
-INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms)
-VALUES (1, 'CONFLICT слой', 'Слой, унаследованный от второго слоя', 'CONFLICT', '2023-04-16 02:02:00', '{1, 4, 5}');
+INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms, stabled_time)
+VALUES (1, 'CONFLICT слой', 'Слой, унаследованный от второго слоя', 'CONFLICT', '2023-04-16 02:02:00', '{1, 4, 5}', null);
 --Седьмой слой
 
 
