@@ -401,22 +401,7 @@ public class LayerService {
       List<PlatformDto> platformList = new ArrayList<>();
 
       for (LayerCreateSegmentDto segmentDto : layerCreateDto.getSegments()) {
-        // прописываем для слоя все состояния Сегментов
-        // проверка на состояние в базе не происходит. т.к. есть договоренность, что с фронта приходят только
-        // измененные и новые связи.
-        Segment segment = segmentDao.findById(segmentDto.getId()).orElseThrow(() -> new HttpBadRequestException("Указан не существующий сегмент."));
-        SegmentStateLink oldSegmentStateLink = null;
-        if (segmentDto.getSegmentStateLinkId() != null) {
-          oldSegmentStateLink = segmentStateLinkDao.findById(segmentDto.getSegmentStateLinkId())
-              .orElseThrow(() -> new HttpBadRequestException("Указан не существующий SegmentStateLink"));
-        }
-        SegmentStateLink segmentStateLink = new SegmentStateLink(
-            oldSegmentStateLink,
-            layer,
-            segment,
-            segmentDto.getActiveState()
-        );
-        segmentStateLinkDao.persist(segmentStateLink);
+        saveSegmentStateLink(layer, segmentDto);
 
         for (LinkCreateQuestionDto question : segmentDto.getFields()) {
           // прописывам для полей их обязательность.
@@ -523,6 +508,27 @@ public class LayerService {
     }
 
     return null;
+  }
+
+  /**
+   * прописываем для слоя все состояния Сегментов
+   * проверка на состояние в базе не происходит. т.к. есть договоренность, что с фронта приходят только
+   * измененные и новые связи.
+   */
+  private void saveSegmentStateLink(Layer layer, LayerCreateSegmentDto segmentDto) {
+    Segment segment = segmentDao.findById(segmentDto.getId()).orElseThrow(() -> new HttpBadRequestException("Указан не существующий сегмент."));
+    SegmentStateLink oldSegmentStateLink = null;
+    if (segmentDto.getSegmentStateLinkId() != null) {
+      oldSegmentStateLink = segmentStateLinkDao.findById(segmentDto.getSegmentStateLinkId())
+          .orElseThrow(() -> new HttpBadRequestException("Указан не существующий SegmentStateLink"));
+    }
+    SegmentStateLink segmentStateLink = new SegmentStateLink(
+        oldSegmentStateLink,
+        layer,
+        segment,
+        segmentDto.getActiveState()
+    );
+    segmentStateLinkDao.persist(segmentStateLink);
   }
 
   /**
