@@ -61,6 +61,6 @@ public class LayerMapper {
         LocalDateTime.now().withNano(0),
         platformIdList
     );
-    return null;
+    return layer;
   }
 }

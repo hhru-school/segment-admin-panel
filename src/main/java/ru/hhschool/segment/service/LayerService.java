@@ -9,8 +9,6 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import ru.hhschool.segment.dao.abstracts.EntrypointDao;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
@@ -71,8 +69,6 @@ public class LayerService {
   private final QuestionRequiredLinkDao questionRequiredLinkDao;
   private final ScreenQuestionLinkDao screenQuestionLinkDao;
   private final SegmentScreenEntrypointLinkDao segmentScreenEntrypointLinkDao;
-  @PersistenceContext
-  protected EntityManager em;
 
   @Inject
   public LayerService(
@@ -332,7 +328,6 @@ public class LayerService {
     return true;
   }
 
-
   public List<LayerDtoForList> getAll(List<String> layerStringStateTypes) {
     List<LayerStateType> layerStateTypes = LayerStatusMapper.toStatusList(layerStringStateTypes);
     List<Layer> layerList = layerDao.findAll(layerStateTypes);
@@ -368,11 +363,9 @@ public class LayerService {
 
     // начало транзакции.
     Layer layer = null;
-    em.getTransaction().begin();
     try {
       // Первое сохранение без версий, т.к. необходим layerId, для сохранения линков
-      // версии пропишутся в конце когда будет возможность пройтись по всем линкам статических экранов
-
+      // версии пропишутся в конце когда будет возможность пройтись по всем статических экранов
       layer = LayerMapper.dtoToLayer(layerCreateDto, parentLayer, List.of());
       layerDao.persist(layer);
 
@@ -399,8 +392,9 @@ public class LayerService {
           // 2. ищем динамические и делаем их создание.
           for (LayerCreateScreenDto screenDto : entryPoint.getScreens()) {
             // складываем платформы
-            platformList.addAll(screenDto.getAppVersions());
-
+            if (ScreenType.STATIC == screenDto.getType()) {
+              platformList.addAll(screenDto.getAppVersions());
+            }
             Screen screen = getOrCreateScreen(screenDto);
 
             saveSegmentScreenEntrypointLink(layer, segment, entrypoint, screen, screenDto);
@@ -415,10 +409,8 @@ public class LayerService {
       layerDao.update(layer);
 
       // конец транзакции
-      em.getTransaction().commit();
     } catch (Exception err) {
       // откат
-      em.getTransaction().rollback();
       SQLErrorExtract.extractSQLErrors(err);
     }
 
