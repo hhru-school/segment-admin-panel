@@ -16,7 +16,7 @@ public class LayerCreateScreenDto {
   private List<PlatformDto> appVersions;
   private Integer position;
   private Integer oldPosition;
-  private Boolean isNew;
+  private boolean isNew;
 
 
   public LayerCreateScreenDto() {
@@ -33,7 +33,7 @@ public class LayerCreateScreenDto {
       List<PlatformDto> appVersions,
       Integer position,
       Integer oldPosition,
-      Boolean isNew
+      boolean isNew
   ) {
     this.id = id;
     this.segmentScreenEntrypointLinkId = segmentScreenEntrypointLinkId;
@@ -128,11 +128,11 @@ public class LayerCreateScreenDto {
     this.oldPosition = oldPosition;
   }
 
-  public Boolean isNew() {
+  public boolean isNew() {
     return isNew;
   }
 
-  public void setNew(Boolean aNew) {
+  public void setNew(boolean aNew) {
     isNew = aNew;
   }
 }

@@ -14,7 +14,7 @@ public class LayerCreateSegmentDto {
   private List<String> tags;
   private List<LinkCreateQuestionDto> fields;
   private List<LayerCreateEntrypointDto> entryPoints;
-  private Boolean isNew;
+  private boolean isNew;
 
   public LayerCreateSegmentDto() {
   }
@@ -29,7 +29,7 @@ public class LayerCreateSegmentDto {
       List<String> tags,
       List<LinkCreateQuestionDto> fields,
       List<LayerCreateEntrypointDto> entryPoints,
-      Boolean isNew
+      boolean isNew
   ) {
     this.id = id;
     this.segmentStateLinkId = segmentStateLinkId;
@@ -115,11 +115,11 @@ public class LayerCreateSegmentDto {
     this.entryPoints = entryPoints;
   }
 
-  public Boolean getNew() {
+  public boolean isNew() {
     return isNew;
   }
 
-  public void setNew(Boolean aNew) {
+  public void setNew(boolean aNew) {
     isNew = aNew;
   }
 }
