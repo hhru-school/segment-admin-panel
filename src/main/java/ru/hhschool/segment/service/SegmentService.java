@@ -166,7 +166,7 @@ public class SegmentService {
       Segment segment = link.getSegment();
       List<Role> roles = roleDao.findAll(segment.getRoleList());
       SegmentViewChangeState changeState = getChangeSegmentState(layerId, segment.getId());
-      segmentLayerViewDtos.add(SegmentLayerViewMapper.toDtoForSegmentsInLayerPage(segment, roles, changeState, link.getState()));
+      segmentLayerViewDtos.add(SegmentLayerViewMapper.toDtoForSegmentsInLayerPage(segment, link, roles, changeState));
     }
     segmentLayerViewDtos.sort(Comparator.comparing(SegmentLayerViewDto::getTitle));
     LayerSegmentsDto layerSegmentsDto = LayerSegmentsMapper.toDtoForSegmentsInLayerPage(layer.get(), segmentLayerViewDtos);
