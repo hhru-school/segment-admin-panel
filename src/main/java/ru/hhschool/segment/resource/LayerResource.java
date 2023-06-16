@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.hhschool.segment.exception.HttpBadRequestException;
+import ru.hhschool.segment.mapper.validate.SegmentSelectedToSegmentValidateInfoMapper;
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.createlayer.validate.SegmentValidateInfoDto;
@@ -120,5 +121,17 @@ public class LayerResource {
   @Produces(MediaType.APPLICATION_JSON)
   public Response mergeLayer(@PathParam(value = "layerId") Long layerId) {
     return Response.ok(layerService.mergeLayerWithParent(layerId)).build();
+  }
+
+  @GET
+  @Path("/{layerId}/segments/{segmentId}/merge_validate")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response validateSegment(@PathParam("layerId") Long layerId, @PathParam("segmentId") Long segmentId){
+    Optional<SegmentSelectedDto> segmentSelectedDto = segmentService.getSegmentSelectedDto(layerId, segmentId);
+    List<ValidateResultDto> validateResultDtos = segmentService.validateSegment(SegmentSelectedToSegmentValidateInfoMapper.toDto(segmentSelectedDto.get()));
+    if (validateResultDtos.isEmpty()){
+      return Response.ok().build();
+    }
+    return Response.status(Response.Status.CONFLICT).entity(validateResultDtos).build();
   }
 }
