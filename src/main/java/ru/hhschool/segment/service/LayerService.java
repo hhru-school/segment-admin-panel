@@ -55,7 +55,7 @@ import ru.hhschool.segment.model.entity.SegmentScreenEntrypointLink;
 import ru.hhschool.segment.model.entity.SegmentStateLink;
 import ru.hhschool.segment.model.enums.LayerStateType;
 import ru.hhschool.segment.model.enums.ScreenType;
-import ru.hhschool.segment.util.SQLErrorExtract;
+import ru.hhschool.segment.util.ExceptionMessageExtract;
 
 public class LayerService {
   private final LayerDao layerDao;
@@ -348,7 +348,7 @@ public class LayerService {
     try {
       layerDao.update(layer.get());
     } catch (Exception err) {
-      SQLErrorExtract.extractSQLErrors(err);
+      ExceptionMessageExtract.extractStackErrors(err);
     }
   }
 
@@ -361,7 +361,6 @@ public class LayerService {
     Layer parentLayer = layerDao.findById(layerCreateDto.getParentLayer().getId())
         .orElseThrow(() -> new HttpBadRequestException("Родительский слой не найден."));
 
-    // начало транзакции.
     Layer layer = null;
     try {
       // Первое сохранение без версий, т.к. необходим layerId, для сохранения линков
@@ -408,10 +407,8 @@ public class LayerService {
       layer.setPlatforms(getLayerPlatforms(platformList));
       layerDao.update(layer);
 
-      // конец транзакции
     } catch (Exception err) {
-      // откат
-      SQLErrorExtract.extractSQLErrors(err);
+      ExceptionMessageExtract.extractStackErrors(err);
     }
 
     if (layer == null) {

@@ -19,7 +19,7 @@ import ru.hhschool.segment.model.entity.Question;
 import ru.hhschool.segment.model.entity.Screen;
 import ru.hhschool.segment.model.enums.PlatformType;
 import ru.hhschool.segment.model.enums.ScreenType;
-import ru.hhschool.segment.util.SQLErrorExtract;
+import ru.hhschool.segment.util.ExceptionMessageExtract;
 
 public class ScreenService {
   private final ScreenDao screenDao;
@@ -88,7 +88,7 @@ public class ScreenService {
     try {
       screenDao.persist(screen);
     } catch (Exception err) {
-      SQLErrorExtract.extractSQLErrors(err);
+      ExceptionMessageExtract.extractStackErrors(err);
     }
 
     List<PlatformDto> platformVersions = PlatformMapper.toDtoList(platformDao.findAll(screen.getPlatforms()));

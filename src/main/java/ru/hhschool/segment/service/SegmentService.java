@@ -61,7 +61,7 @@ import ru.hhschool.segment.model.entity.Segment;
 import ru.hhschool.segment.model.entity.SegmentScreenEntrypointLink;
 import ru.hhschool.segment.model.entity.SegmentStateLink;
 import ru.hhschool.segment.model.enums.StateType;
-import ru.hhschool.segment.util.SQLErrorExtract;
+import ru.hhschool.segment.util.ExceptionMessageExtract;
 
 public class SegmentService {
   private final LayerDao layerDao;
@@ -127,7 +127,7 @@ public class SegmentService {
     try {
       segmentDao.persist(segment);
     } catch (Exception err) {
-      SQLErrorExtract.extractSQLErrors(err);
+      ExceptionMessageExtract.extractStackErrors(err);
     }
 
     List<RoleDto> roleList = RoleMapper.roleListToDto(roleDao.findAll(segment.getRoleList()));
