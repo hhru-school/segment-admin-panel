@@ -30,7 +30,6 @@ import ru.hhschool.segment.mapper.PlatformMapper;
 import ru.hhschool.segment.mapper.basicinfo.LayerBasicInfoMapper;
 import ru.hhschool.segment.mapper.layer.LayerStatusMapper;
 import ru.hhschool.segment.mapper.merge.MergeResponseMapper;
-import ru.hhschool.segment.mapper.screen.ScreenMapper;
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.PlatformDto;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
@@ -47,7 +46,6 @@ import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewEntryPoin
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewQuestionDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewRequirementDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewScreenDto;
-import ru.hhschool.segment.model.entity.Entrypoint;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.Question;
 import ru.hhschool.segment.model.entity.QuestionRequiredLink;
@@ -58,6 +56,7 @@ import ru.hhschool.segment.model.entity.SegmentScreenEntrypointLink;
 import ru.hhschool.segment.model.entity.SegmentStateLink;
 import ru.hhschool.segment.model.enums.LayerStateType;
 import ru.hhschool.segment.model.enums.ScreenType;
+import ru.hhschool.segment.util.SQLErrorExtract;
 
 public class LayerService {
   private final LayerDao layerDao;
@@ -353,13 +352,7 @@ public class LayerService {
     try {
       layerDao.update(layer.get());
     } catch (Exception err) {
-      String lastMessage = err.getMessage();
-      Throwable cause = err.getCause();
-      while (cause != null) {
-        lastMessage = cause.getMessage();
-        cause = cause.getCause();
-      }
-      throw new HttpBadRequestException(lastMessage);
+      SQLErrorExtract.extractSQLErrors(err);
     }
   }
 
@@ -383,11 +376,6 @@ public class LayerService {
 
     Layer parentLayer = layerDao.findById(layerCreateDto.getParentLayer().getId())
         .orElseThrow(() -> new HttpBadRequestException("Родительский слой не найден."));
-
-//    List<SegmentStateLink> segmentStateLinks = new ArrayList<>();
-//    List<QuestionRequiredLink> questionRequiredLinks = new ArrayList<>();
-//    List<ScreenQuestionLink> screenQuestionLinks = new ArrayList<>();
-//    List<SegmentScreenEntrypointLink> segmentScreenEntrypointLinks = new ArrayList<>();
 
     // начало транзакции.
     em.getTransaction().begin();
@@ -413,31 +401,23 @@ public class LayerService {
         }
         // идем по точкам входа.
         for (LayerCreateEntrypointDto entryPoint : segmentDto.getEntryPoints()) {
-          // когда идем по скринам
+          // Когда идем по скринам
           // 1. собираем версии
           // 2. ищем динамические и делаем их создание.
           for (LayerCreateScreenDto screenDto : entryPoint.getScreens()) {
-            Screen screen = null;
-            if (screenDto.isNew() && ScreenType.DYNAMIC == screenDto.getType()) {
-              // создаем новый динамический экран,
-              // версии для этого типа [] и вопросы по умолчанию отсутствуют.
-              screen = new Screen(
-                  screenDto.getTitle(),
-                  screenDto.getDescription(),
-                  screenDto.getType(),
-                  screenDto.getState(),
-                  List.of(),
-                  List.of()
-              );
-              screenDao.persist(screen);
-            } else {
-              screen = screenDao.findById(screenDto.getId())
-                  .orElseThrow(() -> new HttpBadRequestException("Указан не существующий экран."));
-            }
-
-
             // складываем платформы
             platformList.addAll(screenDto.getAppVersions());
+
+            Screen screen = getOrCreateScreen(screenDto);
+
+            SegmentScreenEntrypointLink oldSegmentScreenEntrypointLink = segmentScreenEntrypointLinkDao.findById();
+
+
+            SegmentScreenEntrypointLink segmentScreenEntrypointLink = new SegmentScreenEntrypointLink(
+
+            );
+            ScreenQuestionLink screenQuestionLink =
+
           }
         }
 
@@ -459,78 +439,33 @@ public class LayerService {
     } catch (Exception err) {
       // откат
       em.getTransaction().rollback();
-      String lastMessage = err.getMessage();
-      Throwable cause = err.getCause();
-      while (cause != null) {
-        lastMessage = cause.getMessage();
-        cause = cause.getCause();
-      }
-      throw new HttpBadRequestException(lastMessage);
-    }
-
-    // Для начала надо получить все версии статических экранов для данного слоя, а потом на основании их уже делать
-//    выборку версий
-
-    Map<String, SegmentScreenEntrypointLink> segmentScreenEntrypointLinksMap = getLatestSSELInSpace(getSSELInSpace(space));
-// гдето тут надо сделать наслоение из Линков переданных из Создаваемой DTO, т.к. этих данных нет в базе
-
-    // пройдемся по Линкам из нового слоя, те которые есть получим, тех которых нет создаем.
-    // в этом же цикле можно и создавать свежии линки, но сначала надо найти все экраны.
-    // поэтому добавляем только существующие линки. (у которых есть OldId)
-    List<SegmentScreenEntrypointLink> newSegmentScreenEntrypointLinks = new ArrayList<>();
-    for (SegmentScreenEntrypointLinkCreateDto segmentScreenEntrypointLink : layerCreateDto.getSegmentScreenEntrypointLinks()) {
-      Optional<SegmentScreenEntrypointLink> sseLink =
-          segmentScreenEntrypointLinkDao.findById(segmentScreenEntrypointLink.getOldSegmentScreenEntrypointLinkId());
-      if (sseLink.isPresent()) {
-        newSegmentScreenEntrypointLinks.add(sseLink.get());
-      }
-    }
-
-//    Map<String, SegmentScreenEntrypointLink> newSegmentScreenEntrypointLinksMap = getLatestSSELInSpace(
-//    );
-
-    //из линков вытаскиваем все унаследованные STATIC экраны
-    List<Screen> staticActiveScreens = null;
-
-
-    List<DynamicScreenCreateDto> dynamicScreens = layerCreateDto.getDynamicScreens();
-
-    for (
-        DynamicScreenCreateDto dynamicScreen : dynamicScreens) {
-      List<Question> questionList = new ArrayList<>();
-      for (DynamicScreenQuestionCreateDto questionDto : dynamicScreen.getQuestions()) {
-        Question question = questionDao.findById(questionDto.getQuestionId())
-            .orElseThrow(
-                () -> new HttpBadRequestException("Не правильно задан список вопросов.")
-            );
-        questionList.add(question);
-      }
-      Screen screen = ScreenMapper.dtoToScreen(dynamicScreen, questionList);
-      screenDao.persist(screen);
-
-      Segment segment = segmentDao.findById(dynamicScreen.getSegmentId()).orElseThrow(
-          () -> new HttpBadRequestException("Не правильно задан сегмент в динамическом экране.")
-      );
-      Entrypoint entrypoint = entrypointDao.findById(dynamicScreen.getEntrypointId()).orElseThrow(
-          () -> new HttpBadRequestException("Не правильно задана точка в динамическом экране.")
-      );
-
-      SegmentScreenEntrypointLink segmentScreenEntrypointLink = new SegmentScreenEntrypointLink(
-          null,
-          layer,
-          segment,
-          entrypoint,
-          screen,
-          dynamicScreen.getScreenPosition(),
-          dynamicScreen.getScreenState()
-      );
-
-//      ScreenQuestionLink screenQuestionLink =
-
-
+      SQLErrorExtract.extractSQLErrors(err);
     }
 
     return null;
+  }
+
+  /**
+   * Создаем новый динамический экран либо достаем из базы сущность,
+   * версии для динамического типа [] и вопросы по умолчанию отсутствуют.
+   */
+  private Screen getOrCreateScreen(LayerCreateScreenDto screenDto) {
+    Screen screen = null;
+    if (screenDto.isNew() && ScreenType.DYNAMIC == screenDto.getType()) {
+      screen = new Screen(
+          screenDto.getTitle(),
+          screenDto.getDescription(),
+          screenDto.getType(),
+          screenDto.getState(),
+          List.of(),
+          List.of()
+      );
+      screenDao.persist(screen);
+    } else {
+      screen = screenDao.findById(screenDto.getId())
+          .orElseThrow(() -> new HttpBadRequestException("Указан не существующий экран."));
+    }
+    return screen;
   }
 
   /**

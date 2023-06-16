@@ -11,6 +11,7 @@ import ru.hhschool.segment.mapper.EntrypointMapper;
 import ru.hhschool.segment.model.dto.EntrypointCreateDto;
 import ru.hhschool.segment.model.dto.EntrypointDto;
 import ru.hhschool.segment.model.entity.Entrypoint;
+import ru.hhschool.segment.util.SQLErrorExtract;
 
 public class EntrypointService {
   private final EntrypointDao entrypointDao;
@@ -41,13 +42,7 @@ public class EntrypointService {
     try {
       entrypointDao.persist(entrypoint);
     } catch (Exception err) {
-      String lastMessage = err.getMessage();
-      Throwable cause = err.getCause();
-      while (cause != null) {
-        lastMessage = cause.getMessage();
-        cause = cause.getCause();
-      }
-      throw new HttpBadRequestException(lastMessage);
+      SQLErrorExtract.extractSQLErrors(err);
     }
 
     return Optional.of(EntrypointMapper.entrypointToDto(entrypoint));

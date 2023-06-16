@@ -1,15 +1,26 @@
 package ru.hhschool.segment.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import ru.hhschool.segment.dao.abstracts.EntrypointDao;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.dao.abstracts.PlatformDao;
-import ru.hhschool.segment.dao.abstracts.SegmentDao;
-import ru.hhschool.segment.dao.abstracts.RoleDao;
-import ru.hhschool.segment.dao.abstracts.EntrypointDao;
 import ru.hhschool.segment.dao.abstracts.QuestionRequiredLinkDao;
-import ru.hhschool.segment.dao.abstracts.SegmentStateLinkDao;
-import ru.hhschool.segment.dao.abstracts.SegmentScreenEntrypointLinkDao;
+import ru.hhschool.segment.dao.abstracts.RoleDao;
 import ru.hhschool.segment.dao.abstracts.ScreenQuestionLinkDao;
+import ru.hhschool.segment.dao.abstracts.SegmentDao;
+import ru.hhschool.segment.dao.abstracts.SegmentScreenEntrypointLinkDao;
+import ru.hhschool.segment.dao.abstracts.SegmentStateLinkDao;
 import ru.hhschool.segment.exception.HttpBadRequestException;
+import ru.hhschool.segment.mapper.PlatformMapper;
 import ru.hhschool.segment.mapper.RoleMapper;
 import ru.hhschool.segment.mapper.SegmentMapper;
 import ru.hhschool.segment.mapper.createlayer.info.InfoLayerEntryPointMapper;
@@ -17,14 +28,13 @@ import ru.hhschool.segment.mapper.createlayer.info.InfoLayerQuestionMapper;
 import ru.hhschool.segment.mapper.createlayer.info.InfoLayerRequirementMapper;
 import ru.hhschool.segment.mapper.createlayer.info.InfoLayerScreenMapper;
 import ru.hhschool.segment.mapper.createlayer.info.InfoLayerSegmentMapper;
-import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentLayerViewMapper;
 import ru.hhschool.segment.mapper.viewsegments.layerview.LayerSegmentsMapper;
+import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentLayerViewMapper;
 import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentSelectedMapper;
-import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentViewRequirementMapper;
 import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentViewEntryPointMapper;
-import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentViewScreenMapper;
-import ru.hhschool.segment.mapper.PlatformMapper;
 import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentViewQuestionMapper;
+import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentViewRequirementMapper;
+import ru.hhschool.segment.mapper.viewsegments.layerview.SegmentViewScreenMapper;
 import ru.hhschool.segment.model.dto.RoleDto;
 import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerEntryPointDto;
 import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerQuestionDto;
@@ -35,33 +45,23 @@ import ru.hhschool.segment.model.dto.segment.SegmentCreateDto;
 import ru.hhschool.segment.model.dto.segment.SegmentDto;
 import ru.hhschool.segment.model.dto.viewsegments.enums.SegmentViewChangeState;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.LayerSegmentsDto;
-import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentSelectedDto;
-import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewScreenDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentLayerViewDto;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentSelectedDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewEntryPointDto;
-import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewRequirementDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewQuestionDto;
-import ru.hhschool.segment.model.entity.Segment;
-import ru.hhschool.segment.model.entity.Layer;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewRequirementDto;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewScreenDto;
 import ru.hhschool.segment.model.entity.Entrypoint;
+import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.Question;
+import ru.hhschool.segment.model.entity.QuestionRequiredLink;
 import ru.hhschool.segment.model.entity.Role;
 import ru.hhschool.segment.model.entity.ScreenQuestionLink;
+import ru.hhschool.segment.model.entity.Segment;
 import ru.hhschool.segment.model.entity.SegmentScreenEntrypointLink;
-import ru.hhschool.segment.model.entity.QuestionRequiredLink;
 import ru.hhschool.segment.model.entity.SegmentStateLink;
 import ru.hhschool.segment.model.enums.StateType;
-
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.Map;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Collections;
-import java.util.stream.Collectors;
+import ru.hhschool.segment.util.SQLErrorExtract;
 
 public class SegmentService {
   private final LayerDao layerDao;
@@ -127,13 +127,7 @@ public class SegmentService {
     try {
       segmentDao.persist(segment);
     } catch (Exception err) {
-      String lastMessage = err.getMessage();
-      Throwable cause = err.getCause();
-      while (cause != null) {
-        lastMessage = cause.getMessage();
-        cause = cause.getCause();
-      }
-      throw new HttpBadRequestException(lastMessage);
+      SQLErrorExtract.extractSQLErrors(err);
     }
 
     List<RoleDto> roleList = RoleMapper.roleListToDto(roleDao.findAll(segment.getRoleList()));
