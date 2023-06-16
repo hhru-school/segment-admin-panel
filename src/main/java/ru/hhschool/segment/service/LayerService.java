@@ -2,6 +2,7 @@ package ru.hhschool.segment.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -10,23 +11,28 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import ru.hhschool.segment.dao.abstracts.EntrypointDao;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.dao.abstracts.PlatformDao;
+import ru.hhschool.segment.dao.abstracts.QuestionDao;
 import ru.hhschool.segment.dao.abstracts.QuestionRequiredLinkDao;
+import ru.hhschool.segment.dao.abstracts.ScreenDao;
 import ru.hhschool.segment.dao.abstracts.ScreenQuestionLinkDao;
+import ru.hhschool.segment.dao.abstracts.SegmentDao;
 import ru.hhschool.segment.dao.abstracts.SegmentScreenEntrypointLinkDao;
 import ru.hhschool.segment.dao.abstracts.SegmentStateLinkDao;
 import ru.hhschool.segment.exception.HttpBadRequestException;
 import ru.hhschool.segment.exception.HttpNotFoundException;
 import ru.hhschool.segment.mapper.LayerMapper;
 import ru.hhschool.segment.mapper.PlatformMapper;
-import ru.hhschool.segment.mapper.SegmentScreenEntrypointLinkMapper;
 import ru.hhschool.segment.mapper.basicinfo.LayerBasicInfoMapper;
 import ru.hhschool.segment.mapper.layer.LayerStatusMapper;
 import ru.hhschool.segment.mapper.merge.MergeResponseMapper;
+import ru.hhschool.segment.mapper.screen.ScreenMapper;
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.layer.LayerDtoForList;
+import ru.hhschool.segment.model.dto.layer.create.LayerCreateDto;
 import ru.hhschool.segment.model.dto.merge.MergeResponseDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentLayerViewDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentSelectedDto;
@@ -34,9 +40,14 @@ import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewEntryPoin
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewQuestionDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewRequirementDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewScreenDto;
+import ru.hhschool.segment.model.entity.Entrypoint;
 import ru.hhschool.segment.model.entity.Layer;
+import ru.hhschool.segment.model.entity.Platform;
+import ru.hhschool.segment.model.entity.Question;
 import ru.hhschool.segment.model.entity.QuestionRequiredLink;
+import ru.hhschool.segment.model.entity.Screen;
 import ru.hhschool.segment.model.entity.ScreenQuestionLink;
+import ru.hhschool.segment.model.entity.Segment;
 import ru.hhschool.segment.model.entity.SegmentScreenEntrypointLink;
 import ru.hhschool.segment.model.entity.SegmentStateLink;
 import ru.hhschool.segment.model.enums.LayerStateType;
@@ -46,6 +57,10 @@ public class LayerService {
   private final PlatformDao platformDao;
   private final SegmentStateLinkDao segmentStateLinkDao;
   private final SegmentService segmentService;
+  private final EntrypointDao entrypointDao;
+  private final QuestionDao questionDao;
+  private final SegmentDao segmentDao;
+  private final ScreenDao screenDao;
   private final QuestionRequiredLinkDao questionRequiredLinkDao;
   private final ScreenQuestionLinkDao screenQuestionLinkDao;
   private final SegmentScreenEntrypointLinkDao segmentScreenEntrypointLinkDao;
@@ -56,6 +71,10 @@ public class LayerService {
       PlatformDao platformDao,
       SegmentStateLinkDao segmentStateLinkDao,
       SegmentService segmentService,
+      EntrypointDao entrypointDao,
+      QuestionDao questionDao,
+      SegmentDao segmentDao,
+      ScreenDao screenDao,
       QuestionRequiredLinkDao questionRequiredLinkDao,
       ScreenQuestionLinkDao screenQuestionLinkDao,
       SegmentScreenEntrypointLinkDao segmentScreenEntrypointLinkDao
@@ -64,6 +83,10 @@ public class LayerService {
     this.platformDao = platformDao;
     this.segmentStateLinkDao = segmentStateLinkDao;
     this.segmentService = segmentService;
+    this.entrypointDao = entrypointDao;
+    this.questionDao = questionDao;
+    this.segmentDao = segmentDao;
+    this.screenDao = screenDao;
     this.questionRequiredLinkDao = questionRequiredLinkDao;
     this.screenQuestionLinkDao = screenQuestionLinkDao;
     this.segmentScreenEntrypointLinkDao = segmentScreenEntrypointLinkDao;
@@ -344,7 +367,7 @@ public class LayerService {
    * 2.2.
    */
   @Transactional
-  public Optional<ScreenDto> add(LayerCreateDto layerCreateDto) {
+  public Optional<LayerDto> add(LayerCreateDto layerCreateDto) {
     if (layerCreateDto.getParentLayer() == null) {
       throw new HttpBadRequestException("Не указан родительский слой.");
     }
@@ -393,7 +416,7 @@ public class LayerService {
     }
 
     // List<SegmentStateLinkCreateDto> segmentStateLinks = layerCreateDto.getSegmentStateLinks();
-//    List<QuestionRequiredLinkCreateDto> questionRequiredLinks = layerCreateDto.getQuestionRequiredLinks();
+//    List<LinkCreateQuestionDto> questionRequiredLinks = layerCreateDto.getQuestionRequiredLinks();
 //    List<ScreenQuestionLinkCreateDto> screenQuestionLinks = layerCreateDto.getScreenQuestionLinks();
 //    List<SegmentScreenEntrypointLinkCreateDto> segmentScreenEntrypointLinks = layerCreateDto.getSegmentScreenEntrypointLinks();
 
@@ -415,15 +438,14 @@ public class LayerService {
       }
     }
 
-    Map<String, SegmentScreenEntrypointLink> newSegmentScreenEntrypointLinksMap = getLatestSSELInSpace(
-        SegmentScreenEntrypointLinkMapper.
-    );
+//    Map<String, SegmentScreenEntrypointLink> newSegmentScreenEntrypointLinksMap = getLatestSSELInSpace(
+//    );
 
     //из линков вытаскиваем все унаследованные STATIC экраны
-    List<Screen> staticActiveScreens =
+    List<Screen> staticActiveScreens = null;
 
 
-        List < DynamicScreenCreateDto > dynamicScreens = layerCreateDto.getDynamicScreens();
+    List<DynamicScreenCreateDto> dynamicScreens = layerCreateDto.getDynamicScreens();
 
     for (
         DynamicScreenCreateDto dynamicScreen : dynamicScreens) {

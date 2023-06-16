@@ -6,16 +6,21 @@ import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.PATCH;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.springframework.web.bind.annotation.RequestBody;
+import ru.hhschool.segment.exception.HttpBadRequestException;
+import ru.hhschool.segment.model.dto.ErrorDto;
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerSegmentDto;
 import ru.hhschool.segment.model.dto.layer.LayerDtoForList;
+import ru.hhschool.segment.model.dto.layer.create.LayerCreateDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.LayerSegmentsDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentSelectedDto;
 import ru.hhschool.segment.service.LayerService;
@@ -116,7 +121,7 @@ public class LayerResource {
     if (layerCreateDto == null) {
       throw new HttpBadRequestException("Отсутствует необходимый параметр");
     }
-    Optional<ScreenDto> segmentDto = layerService.add(layerCreateDto);
+    Optional<LayerDto> segmentDto = layerService.add(layerCreateDto);
     if (segmentDto.isPresent()) {
       return Response.ok(segmentDto.get()).build();
     }

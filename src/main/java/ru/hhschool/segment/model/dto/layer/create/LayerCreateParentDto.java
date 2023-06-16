@@ -1,4 +1,4 @@
-package ru.hhschool.segment.model.dto.layer;
+package ru.hhschool.segment.model.dto.layer.create;
 
 import java.time.LocalDateTime;
 import ru.hhschool.segment.model.enums.LayerStateType;

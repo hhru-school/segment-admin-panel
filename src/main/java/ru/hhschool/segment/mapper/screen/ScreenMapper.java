@@ -2,7 +2,6 @@ package ru.hhschool.segment.mapper.screen;
 
 import java.util.List;
 import ru.hhschool.segment.model.dto.PlatformDto;
-import ru.hhschool.segment.model.dto.layer.DynamicScreenCreateDto;
 import ru.hhschool.segment.model.dto.screen.ScreenCreateDto;
 import ru.hhschool.segment.model.dto.screen.ScreenDto;
 import ru.hhschool.segment.model.entity.Question;
