@@ -128,7 +128,7 @@ public class LayerCreateScreenDto {
     this.oldPosition = oldPosition;
   }
 
-  public Boolean getNew() {
+  public Boolean isNew() {
     return isNew;
   }
 

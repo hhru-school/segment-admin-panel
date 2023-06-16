@@ -57,6 +57,7 @@ import ru.hhschool.segment.model.entity.Segment;
 import ru.hhschool.segment.model.entity.SegmentScreenEntrypointLink;
 import ru.hhschool.segment.model.entity.SegmentStateLink;
 import ru.hhschool.segment.model.enums.LayerStateType;
+import ru.hhschool.segment.model.enums.ScreenType;
 
 public class LayerService {
   private final LayerDao layerDao;
@@ -415,9 +416,28 @@ public class LayerService {
           // когда идем по скринам
           // 1. собираем версии
           // 2. ищем динамические и делаем их создание.
-          for (LayerCreateScreenDto screen : entryPoint.getScreens()) {
+          for (LayerCreateScreenDto screenDto : entryPoint.getScreens()) {
+            Screen screen = null;
+            if (screenDto.isNew() && ScreenType.DYNAMIC == screenDto.getType()) {
+              // создаем новый динамический экран,
+              // версии для этого типа [] и вопросы по умолчанию отсутствуют.
+              screen = new Screen(
+                  screenDto.getTitle(),
+                  screenDto.getDescription(),
+                  screenDto.getType(),
+                  screenDto.getState(),
+                  List.of(),
+                  List.of()
+              );
+              screenDao.persist(screen);
+            } else {
+              screen = screenDao.findById(screenDto.getId())
+                  .orElseThrow(() -> new HttpBadRequestException("Указан не существующий экран."));
+            }
+
+
             // складываем платформы
-            platformList.addAll(screen.getAppVersions());
+            platformList.addAll(screenDto.getAppVersions());
           }
         }
 
