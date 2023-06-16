@@ -421,12 +421,20 @@ public class LayerService {
     return Optional.of(LayerMapper.toDtoForMainPage(layer));
   }
 
+  /**
+   * Сохранение поля/вопроса относительно экрана, его позиция и видимость.
+   */
   private void saveScreenQuestionLink(Layer layer, Segment segment, Entrypoint entrypoint, Screen screen, LayerCreateScreenDto screenDto) {
     for (LinkCreateScreenQuestionDto questionDto : screenDto.getFields()) {
       ScreenQuestionLink oldScreenQuestionLink = null;
       if (questionDto.getScreenQuestionLinkId() != null) {
         oldScreenQuestionLink = screenQuestionLinkDao.findById(questionDto.getScreenQuestionLinkId())
             .orElseThrow(() -> new HttpBadRequestException("Указано не существующее поле/вопрос."));
+        if (Objects.equals(oldScreenQuestionLink.getQuestionPosition(), questionDto.getPosition())
+            && oldScreenQuestionLink.getQuestionVisibility() == questionDto.getVisibility()
+        ) {
+          return;
+        }
       }
       Question question = questionDao.findById(questionDto.getId())
           .orElseThrow(() -> new HttpBadRequestException("Указано не существующее поле/вопрос."));
@@ -446,13 +454,17 @@ public class LayerService {
 
   /**
    * Прописываем для экранов их позиции и состояния SegmentScreenEntrypointLink.
-   * Проверка на состояние в базе не происходит.
    */
   private void saveSegmentScreenEntrypointLink(Layer layer, Segment segment, Entrypoint entrypoint, Screen screen, LayerCreateScreenDto screenDto) {
     SegmentScreenEntrypointLink oldSegmentScreenEntrypointLink = null;
     if (screenDto.getSegmentScreenEntrypointLinkId() != null) {
       oldSegmentScreenEntrypointLink = segmentScreenEntrypointLinkDao.findById(screenDto.getSegmentScreenEntrypointLinkId())
           .orElseThrow(() -> new HttpBadRequestException("Указан не существующий SegmentScreenEntrypointLink"));
+      if (Objects.equals(oldSegmentScreenEntrypointLink.getScreenPosition(), screenDto.getPosition())
+          && oldSegmentScreenEntrypointLink.getScreenState() == screenDto.getState()
+      ) {
+        return;
+      }
     }
     SegmentScreenEntrypointLink segmentScreenEntrypointLink = new SegmentScreenEntrypointLink(
         oldSegmentScreenEntrypointLink,
@@ -491,13 +503,15 @@ public class LayerService {
 
   /**
    * Прописываем для полей их обязательность QuestionRequiredLink.
-   * Проверка на состояние в базе не происходит.
    */
   private void saveQuestionRequiredLink(Layer layer, Segment segment, Question question, LinkCreateQuestionDto questionDto) {
     QuestionRequiredLink oldQuestionRequiredLink = null;
     if (questionDto.getQuestionRequiredLinkId() != null) {
       oldQuestionRequiredLink = questionRequiredLinkDao.findById(questionDto.getQuestionRequiredLinkId())
           .orElseThrow(() -> new HttpBadRequestException("Указан не существующий QuestionRequiredLink."));
+      if (oldQuestionRequiredLink.isQuestionRequired() == questionDto.isRequired()) {
+        return;
+      }
     }
     QuestionRequiredLink questionRequiredLink = new QuestionRequiredLink(
         oldQuestionRequiredLink,
@@ -518,6 +532,9 @@ public class LayerService {
     if (segmentDto.getSegmentStateLinkId() != null) {
       oldSegmentStateLink = segmentStateLinkDao.findById(segmentDto.getSegmentStateLinkId())
           .orElseThrow(() -> new HttpBadRequestException("Указан не существующий SegmentStateLink"));
+      if (oldSegmentStateLink.getState() == segmentDto.getActiveState()) {
+        return;
+      }
     }
     SegmentStateLink segmentStateLink = new SegmentStateLink(
         oldSegmentStateLink,
