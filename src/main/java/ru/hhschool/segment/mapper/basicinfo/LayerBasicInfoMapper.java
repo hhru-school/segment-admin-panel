@@ -34,7 +34,7 @@ public class LayerBasicInfoMapper {
 
     return entityCollection
         .stream()
-        .map(LayerMapper::toDto)
+        .map(LayerMapper::toDtoForMainPage)
         .sorted(Comparator.comparing(LayerDto::getId, Comparator.reverseOrder()))
         .toList();
   }

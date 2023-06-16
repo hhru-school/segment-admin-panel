@@ -12,7 +12,7 @@ import ru.hhschool.segment.model.enums.LayerStateType;
 import ru.hhschool.segment.model.enums.LayerStatus;
 
 public class LayerMapper {
-  public static LayerDto toDto(Layer entity) {
+  public static LayerDto toDtoForMainPage(Layer entity) {
     LayerDto layerDto = new LayerDto();
     layerDto.setId(entity.getId());
     layerDto.setTitle(entity.getTitle());
@@ -31,7 +31,7 @@ public class LayerMapper {
 
     return entityCollection
         .stream()
-        .map(LayerMapper::toDto)
+        .map(LayerMapper::toDtoForMainPage)
         .sorted(Comparator.comparing(LayerDto::getGroupOfLayerStatus).thenComparing(LayerDto::getId, Comparator.reverseOrder()))
         .toList();
   }

@@ -132,7 +132,7 @@ public class LayerCreateScreenDto {
     return isNew;
   }
 
-  public void setNew(boolean aNew) {
+  public void setIsNew(boolean aNew) {
     isNew = aNew;
   }
 }

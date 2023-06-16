@@ -58,7 +58,7 @@ public class LinkCreateQuestionDto {
     return required;
   }
 
-  public void setRequired(boolean required) {
+  public void setIsRequired(boolean required) {
     this.required = required;
   }
 
@@ -66,7 +66,7 @@ public class LinkCreateQuestionDto {
     return isChanged;
   }
 
-  public void setChanged(boolean changed) {
+  public void setIsChanged(boolean changed) {
     isChanged = changed;
   }
 
@@ -74,7 +74,7 @@ public class LinkCreateQuestionDto {
     return isDisabled;
   }
 
-  public void setDisabled(boolean disabled) {
+  public void setIsDisabled(boolean disabled) {
     isDisabled = disabled;
   }
 
@@ -82,7 +82,7 @@ public class LinkCreateQuestionDto {
     return isNew;
   }
 
-  public void setNew(boolean aNew) {
+  public void setIsNew(boolean aNew) {
     isNew = aNew;
   }
 }

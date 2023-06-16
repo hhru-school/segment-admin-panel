@@ -418,7 +418,7 @@ public class LayerService {
       return Optional.empty();
     }
 
-    return Optional.of(LayerMapper.toDto(layer));
+    return Optional.of(LayerMapper.toDtoForMainPage(layer));
   }
 
   private void saveScreenQuestionLink(Layer layer, Segment segment, Entrypoint entrypoint, Screen screen, LayerCreateScreenDto screenDto) {
