@@ -391,7 +391,7 @@ public class LayerService {
     // начало транзакции.
     em.getTransaction().begin();
     try {
-      // первое сохранение без версий, т.к. необходим layerId, для сохранения линков
+      // Первое сохранение без версий, т.к. необходим layerId, для сохранения линков
       // версии пропишутся в конце когда будет возможность пройтись по всем линкам статических экранов
 
       Layer layer = LayerMapper.dtoToLayer(layerCreateDto, parentLayer, List.of());
@@ -401,11 +401,14 @@ public class LayerService {
       List<PlatformDto> platformList = new ArrayList<>();
 
       for (LayerCreateSegmentDto segmentDto : layerCreateDto.getSegments()) {
-        saveSegmentStateLink(layer, segmentDto);
+        Segment segment = segmentDao.findById(segmentDto.getId())
+            .orElseThrow(() -> new HttpBadRequestException("Указан не существующий сегмент."));
+        saveSegmentStateLink(layer, segment, segmentDto);
 
-        for (LinkCreateQuestionDto question : segmentDto.getFields()) {
-          // прописывам для полей их обязательность.
-
+        for (LinkCreateQuestionDto questionDto : segmentDto.getFields()) {
+          Question question = questionDao.findById(questionDto.getId())
+              .orElseThrow(() -> new HttpBadRequestException("Указан не существующее поле/вопрос."));
+          saveQuestionRequiredLink(layer, segment, question, questionDto);
         }
         // идем по точкам входа.
         for (LayerCreateEntrypointDto entryPoint : segmentDto.getEntryPoints()) {
@@ -511,12 +514,28 @@ public class LayerService {
   }
 
   /**
-   * прописываем для слоя все состояния Сегментов
-   * проверка на состояние в базе не происходит. т.к. есть договоренность, что с фронта приходят только
-   * измененные и новые связи.
+   * Прописываем для полей их обязательность QuestionRequiredLink.
+   * Проверка на состояние в базе не происходит.
    */
-  private void saveSegmentStateLink(Layer layer, LayerCreateSegmentDto segmentDto) {
-    Segment segment = segmentDao.findById(segmentDto.getId()).orElseThrow(() -> new HttpBadRequestException("Указан не существующий сегмент."));
+  private void saveQuestionRequiredLink(Layer layer, Segment segment, Question question, LinkCreateQuestionDto questionDto) {
+    QuestionRequiredLink oldQuestionRequiredLink = questionRequiredLinkDao.findById(questionDto.getQuestionRequiredLinkId())
+        .orElseThrow(() -> new HttpBadRequestException("Указан не существующий QuestionRequiredLink."));
+
+    QuestionRequiredLink questionRequiredLink = new QuestionRequiredLink(
+        oldQuestionRequiredLink,
+        layer,
+        segment,
+        question,
+        questionDto.isRequired()
+    );
+    questionRequiredLinkDao.persist(questionRequiredLink);
+  }
+
+  /**
+   * Прописываем для слоя все состояния Сегментов.
+   * Проверка на состояние в базе не происходит.
+   */
+  private void saveSegmentStateLink(Layer layer, Segment segment, LayerCreateSegmentDto segmentDto) {
     SegmentStateLink oldSegmentStateLink = null;
     if (segmentDto.getSegmentStateLinkId() != null) {
       oldSegmentStateLink = segmentStateLinkDao.findById(segmentDto.getSegmentStateLinkId())
