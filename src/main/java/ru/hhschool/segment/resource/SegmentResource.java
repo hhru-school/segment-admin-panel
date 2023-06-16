@@ -83,6 +83,6 @@ public class SegmentResource {
     if (validateResultDtos.isEmpty()){
       return Response.ok().build();
     }
-    return Response.ok(validateResultDtos).build();
+    return Response.status(Response.Status.CONFLICT).entity(validateResultDtos).build();
   }
 }

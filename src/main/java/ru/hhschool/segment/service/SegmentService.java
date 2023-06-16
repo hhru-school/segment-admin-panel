@@ -30,6 +30,7 @@ import ru.hhschool.segment.model.dto.createlayer.validate.EntrypointValidateResu
 import ru.hhschool.segment.model.dto.createlayer.validate.QuestionValidateResultDto;
 import ru.hhschool.segment.model.dto.createlayer.validate.SegmentValidateInfoDto;
 import ru.hhschool.segment.model.dto.createlayer.validate.ValidateResultDto;
+import ru.hhschool.segment.model.dto.createlayer.validate.enums.ErrorType;
 import ru.hhschool.segment.model.dto.segment.SegmentCreateDto;
 import ru.hhschool.segment.model.dto.segment.SegmentDto;
 import ru.hhschool.segment.model.dto.viewsegments.enums.SegmentViewChangeState;
@@ -386,6 +387,7 @@ public class SegmentService {
           ValidateResultDto<QuestionValidateResultDto> validateResultDto = new ValidateResultDto<>();
           InfoLayerQuestionDto question = infoLayerQuestionDtoMap.get(questionId);
           validateResultDto.setError("Вопрос " + '[' + question.getTitle() + ']' + " является видимым более чем на 1 экране внутри точки входа " + '[' + entrypoint.getTitle() + ']');
+          validateResultDto.setErrorType(ErrorType.FIELD_SHOW);
           validateResultDto.setResult(QuestionValidateResultMapper.toDto(entrypoint, question, ScreenValidateResultMapper.toListDto(infoLayerScreenDtos)));
           validateResultDtos.add(validateResultDto);
         }
@@ -394,6 +396,7 @@ public class SegmentService {
         if (infoLayerScreenDtos.size() > 1){
           ValidateResultDto<EntrypointValidateResultDto> validateResultDto = new ValidateResultDto<>();
           validateResultDto.setError("Внутри точки входа " + '[' + entrypoint.getTitle() + ']' + " на позиции " + position + " располагается более одного активного экрана.");
+          validateResultDto.setErrorType(ErrorType.SCREEN_POSITION);
           validateResultDto.setResult(EntrypointValidateResultMapper.toDto(entrypoint, position, ScreenValidateResultMapper.toListDto(infoLayerScreenDtos)));
           validateResultDtos.add(validateResultDto);
         }
@@ -403,6 +406,7 @@ public class SegmentService {
       if (field.getRequired() && !requireQuestionsMap.containsKey(field.getId())){
         ValidateResultDto validateResultDto = new ValidateResultDto();
         validateResultDto.setError("Вопрос " + '[' + field.getTitle() + ']' + " является обязательным, однако не отображается ни на одном экране.");
+        validateResultDto.setErrorType(ErrorType.FIELD_REQUIRED);
         InfoLayerQuestionDto question = new InfoLayerQuestionDto();
         question.setId(field.getId());
         question.setTitle(field.getTitle());
@@ -410,6 +414,7 @@ public class SegmentService {
         validateResultDtos.add(validateResultDto);
       }
     });
+    validateResultDtos.sort(Comparator.comparing(ValidateResultDto::getErrorType));
     return validateResultDtos;
   }
 }
