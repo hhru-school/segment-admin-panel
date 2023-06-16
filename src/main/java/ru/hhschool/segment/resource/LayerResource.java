@@ -121,9 +121,9 @@ public class LayerResource {
     if (layerCreateDto == null) {
       throw new HttpBadRequestException("Отсутствует необходимый параметр");
     }
-    Optional<LayerDto> segmentDto = layerService.add(layerCreateDto);
-    if (segmentDto.isPresent()) {
-      return Response.ok(segmentDto.get()).build();
+    Optional<LayerDtoForList> layerDto = layerService.add(layerCreateDto);
+    if (layerDto.isPresent()) {
+      return Response.ok(layerDto.get()).build();
     }
     return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorDto("Не удалось создать.")).build();
   }

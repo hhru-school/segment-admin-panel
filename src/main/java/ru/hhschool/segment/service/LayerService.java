@@ -353,7 +353,7 @@ public class LayerService {
   }
 
   @Transactional
-  public Optional<LayerDto> add(LayerCreateDto layerCreateDto) {
+  public Optional<LayerDtoForList> add(LayerCreateDto layerCreateDto) {
     if (layerCreateDto.getParentLayer() == null) {
       throw new HttpBadRequestException("Не указан родительский слой.");
     }
@@ -381,19 +381,18 @@ public class LayerService {
               .orElseThrow(() -> new HttpBadRequestException("Указан не существующее поле/вопрос."));
           saveQuestionRequiredLink(layer, segment, question, questionDto);
         }
-        // идем по точкам входа.
+        // идем по точкам входа
         for (LayerCreateEntrypointDto entryPoint : segmentDto.getEntryPoints()) {
-
           Entrypoint entrypoint = entrypointDao.findById(entryPoint.getId())
               .orElseThrow(() -> new HttpBadRequestException("Указан не существующий Entrypoint."));
-          // Когда идем по экранам
-          // 1. собираем версии и платформы
-          // 2. ищем динамические и делаем их создание.
+          // идем по экранам
           for (LayerCreateScreenDto screenDto : entryPoint.getScreens()) {
             // складываем платформы
             if (ScreenType.STATIC == screenDto.getType()) {
+              // 1. собираем версии и платформы только из Static экранов
               platformList.addAll(screenDto.getAppVersions());
             }
+            // 2. ищем динамические и делаем их создание.
             Screen screen = getOrCreateScreen(screenDto);
 
             saveSegmentScreenEntrypointLink(layer, segment, entrypoint, screen, screenDto);
@@ -402,7 +401,6 @@ public class LayerService {
         }
 
       }
-
       // Находим все максимальные платформы экранов и обновляем версии платформ у Слоя
       layer.setPlatforms(getLayerPlatforms(platformList));
       layerDao.update(layer);
@@ -415,7 +413,7 @@ public class LayerService {
       return Optional.empty();
     }
 
-    return Optional.of(LayerMapper.toDtoForMainPage(layer));
+    return Optional.of(LayerMapper.toDtoForList(layer));
   }
 
   /**
