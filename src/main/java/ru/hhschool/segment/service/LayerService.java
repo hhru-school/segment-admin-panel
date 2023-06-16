@@ -443,7 +443,7 @@ public class LayerService {
           questionDto.getPosition(),
           questionDto.getVisibility()
       );
-
+      screenQuestionLinkDao.persist(screenQuestionLink);
     }
   }
 
