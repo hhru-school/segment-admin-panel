@@ -38,6 +38,7 @@ import ru.hhschool.segment.model.dto.layer.create.LayerCreateEntrypointDto;
 import ru.hhschool.segment.model.dto.layer.create.LayerCreateScreenDto;
 import ru.hhschool.segment.model.dto.layer.create.LayerCreateSegmentDto;
 import ru.hhschool.segment.model.dto.layer.create.LinkCreateQuestionDto;
+import ru.hhschool.segment.model.dto.layer.create.LinkCreateScreenQuestionDto;
 import ru.hhschool.segment.model.dto.merge.MergeResponseDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentLayerViewDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentSelectedDto;
@@ -366,12 +367,13 @@ public class LayerService {
         .orElseThrow(() -> new HttpBadRequestException("Родительский слой не найден."));
 
     // начало транзакции.
+    Layer layer = null;
     em.getTransaction().begin();
     try {
       // Первое сохранение без версий, т.к. необходим layerId, для сохранения линков
       // версии пропишутся в конце когда будет возможность пройтись по всем линкам статических экранов
 
-      Layer layer = LayerMapper.dtoToLayer(layerCreateDto, parentLayer, List.of());
+      layer = LayerMapper.dtoToLayer(layerCreateDto, parentLayer, List.of());
       layerDao.persist(layer);
 
       // по мере прохождения всех вложений собираем Версии приложений.
@@ -393,7 +395,7 @@ public class LayerService {
           Entrypoint entrypoint = entrypointDao.findById(entryPoint.getId())
               .orElseThrow(() -> new HttpBadRequestException("Указан не существующий Entrypoint."));
           // Когда идем по экранам
-          // 1. собираем версии
+          // 1. собираем версии и платформы
           // 2. ищем динамические и делаем их создание.
           for (LayerCreateScreenDto screenDto : entryPoint.getScreens()) {
             // складываем платформы
@@ -402,9 +404,7 @@ public class LayerService {
             Screen screen = getOrCreateScreen(screenDto);
 
             saveSegmentScreenEntrypointLink(layer, segment, entrypoint, screen, screenDto);
-
-//            ScreenQuestionLink screenQuestionLink =
-
+            saveScreenQuestionLink(layer, segment, entrypoint, screen, screenDto);
           }
         }
 
@@ -414,12 +414,6 @@ public class LayerService {
       layer.setPlatforms(getLayerPlatforms(platformList));
       layerDao.update(layer);
 
-      //      Long layerId = layer.getId();
-//      // К нам приходят сегменты и их состояния, надо это прогнать через нашу базу.
-//      // 1. получим все линки с состояниями для всего дерева.
-//      List<Long> layerPlatforms = getLayerPlatforms(layerCreateDto);
-//      List<Layer> space = getLayersInSpace(parentLayer.getId());
-
       // конец транзакции
       em.getTransaction().commit();
     } catch (Exception err) {
@@ -428,7 +422,34 @@ public class LayerService {
       SQLErrorExtract.extractSQLErrors(err);
     }
 
-    return null;
+    if (layer == null) {
+      return Optional.empty();
+    }
+
+    return Optional.of(LayerMapper.toDto(layer));
+  }
+
+  private void saveScreenQuestionLink(Layer layer, Segment segment, Entrypoint entrypoint, Screen screen, LayerCreateScreenDto screenDto) {
+    for (LinkCreateScreenQuestionDto questionDto : screenDto.getFields()) {
+      ScreenQuestionLink oldScreenQuestionLink = null;
+      if (questionDto.getScreenQuestionLinkId() != null) {
+        oldScreenQuestionLink = screenQuestionLinkDao.findById(questionDto.getScreenQuestionLinkId())
+            .orElseThrow(() -> new HttpBadRequestException("Указано не существующее поле/вопрос."));
+      }
+      Question question = questionDao.findById(questionDto.getId())
+          .orElseThrow(() -> new HttpBadRequestException("Указано не существующее поле/вопрос."));
+      ScreenQuestionLink screenQuestionLink = new ScreenQuestionLink(
+          oldScreenQuestionLink,
+          layer,
+          segment,
+          entrypoint,
+          screen,
+          question,
+          questionDto.getPosition(),
+          questionDto.getVisibility()
+      );
+
+    }
   }
 
   /**
