@@ -10,6 +10,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import ru.hhschool.segment.dao.abstracts.EntrypointDao;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
@@ -30,9 +32,14 @@ import ru.hhschool.segment.mapper.layer.LayerStatusMapper;
 import ru.hhschool.segment.mapper.merge.MergeResponseMapper;
 import ru.hhschool.segment.mapper.screen.ScreenMapper;
 import ru.hhschool.segment.model.dto.LayerDto;
+import ru.hhschool.segment.model.dto.PlatformDto;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.layer.LayerDtoForList;
 import ru.hhschool.segment.model.dto.layer.create.LayerCreateDto;
+import ru.hhschool.segment.model.dto.layer.create.LayerCreateEntrypointDto;
+import ru.hhschool.segment.model.dto.layer.create.LayerCreateScreenDto;
+import ru.hhschool.segment.model.dto.layer.create.LayerCreateSegmentDto;
+import ru.hhschool.segment.model.dto.layer.create.LinkCreateQuestionDto;
 import ru.hhschool.segment.model.dto.merge.MergeResponseDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentLayerViewDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentSelectedDto;
@@ -42,7 +49,6 @@ import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewRequireme
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewScreenDto;
 import ru.hhschool.segment.model.entity.Entrypoint;
 import ru.hhschool.segment.model.entity.Layer;
-import ru.hhschool.segment.model.entity.Platform;
 import ru.hhschool.segment.model.entity.Question;
 import ru.hhschool.segment.model.entity.QuestionRequiredLink;
 import ru.hhschool.segment.model.entity.Screen;
@@ -64,6 +70,8 @@ public class LayerService {
   private final QuestionRequiredLinkDao questionRequiredLinkDao;
   private final ScreenQuestionLinkDao screenQuestionLinkDao;
   private final SegmentScreenEntrypointLinkDao segmentScreenEntrypointLinkDao;
+  @PersistenceContext
+  protected EntityManager em;
 
   @Inject
   public LayerService(
@@ -375,13 +383,62 @@ public class LayerService {
     Layer parentLayer = layerDao.findById(layerCreateDto.getParentLayer().getId())
         .orElseThrow(() -> new HttpBadRequestException("Родительский слой не найден."));
 
-    // первое сохранение без версий, т.к. необходим layerId, для сохранения линков
-    // версии пропишутся в конце когда будет возможность пройтись по всем линкам статических экранов
-    Layer layer = LayerMapper.dtoToLayer(layerCreateDto, parentLayer, List.of());
+//    List<SegmentStateLink> segmentStateLinks = new ArrayList<>();
+//    List<QuestionRequiredLink> questionRequiredLinks = new ArrayList<>();
+//    List<ScreenQuestionLink> screenQuestionLinks = new ArrayList<>();
+//    List<SegmentScreenEntrypointLink> segmentScreenEntrypointLinks = new ArrayList<>();
+
+    // начало транзакции.
+    em.getTransaction().begin();
     try {
+      // первое сохранение без версий, т.к. необходим layerId, для сохранения линков
+      // версии пропишутся в конце когда будет возможность пройтись по всем линкам статических экранов
+
+      Layer layer = LayerMapper.dtoToLayer(layerCreateDto, parentLayer, List.of());
       layerDao.persist(layer);
-    } catch (
-        Exception err) {
+
+      // по мере прохождения всех вложений собираем Версии приложений.
+      List<PlatformDto> platformList = new ArrayList<>();
+
+      for (LayerCreateSegmentDto segment : layerCreateDto.getSegments()) {
+        // прописываем для слоя все состояния Сегментов
+        SegmentStateLink segmentStateLink = new SegmentStateLink(
+
+        );
+
+        for (LinkCreateQuestionDto question : segment.getFields()) {
+          // прописывам для полей их обязательность.
+
+        }
+        // идем по точкам входа.
+        for (LayerCreateEntrypointDto entryPoint : segment.getEntryPoints()) {
+          // когда идем по скринам
+          // 1. собираем версии
+          // 2. ищем динамические и делаем их создание.
+          for (LayerCreateScreenDto screen : entryPoint.getScreens()) {
+            // складываем платформы
+            platformList.addAll(screen.getAppVersions());
+          }
+        }
+
+      }
+
+      // Находим все максимальные платформы экранов и обновляем версии платформ у Слоя
+      layer.setPlatforms(getLayerPlatforms(platformList));
+      layerDao.update(layer);
+
+
+      //      Long layerId = layer.getId();
+//      // К нам приходят сегменты и их состояния, надо это прогнать через нашу базу.
+//      // 1. получим все линки с состояними для всего дерева.
+//      List<Long> layerPlatforms = getLayerPlatforms(layerCreateDto);
+//      List<Layer> space = getLayersInSpace(parentLayer.getId());
+
+      // конец транзакции
+      em.getTransaction().commit();
+    } catch (Exception err) {
+      // откат
+      em.getTransaction().rollback();
       String lastMessage = err.getMessage();
       Throwable cause = err.getCause();
       while (cause != null) {
@@ -390,35 +447,6 @@ public class LayerService {
       }
       throw new HttpBadRequestException(lastMessage);
     }
-    Long layerId = layer.getId();
-
-    // К нам приходят сегменты и их состояния, надо это прогнать через нашу базу.
-    // 1. получим все линки с состояними для всего дерева.
-    List<Long> layerPlatforms = getLayerPlatforms(layerCreateDto);
-    List<Layer> space = getLayersInSpace(parentLayer.getId());
-
-    Map<Long, SegmentStateLink> latestSSLInSpace = getLatestSSLInSpace(getSSLInSpace(space));
-
-    // В DTO правильные данные, только изменные и только новые. никаких лишних походов в базу.!!!
-
-    for (SegmentStateLinkCreateDto segmentStateLink : layerCreateDto.getSegmentStateLinks()) {
-      // состояние есть в прошлых слоях?
-      Long segmentId = segmentStateLink.getSegmentId();
-      if (latestSSLInSpace.containsKey(segmentId)) {
-        SegmentStateLink ssl = latestSSLInSpace.get(segmentId);
-        // состояние поменялось?
-        if (ssl.getState() != segmentStateLink.getState()) {
-          // сохраним oldId и создадим новый линк
-        } else {
-          // просто стодаем новый линк
-        }
-      }
-    }
-
-    // List<SegmentStateLinkCreateDto> segmentStateLinks = layerCreateDto.getSegmentStateLinks();
-//    List<LinkCreateQuestionDto> questionRequiredLinks = layerCreateDto.getQuestionRequiredLinks();
-//    List<ScreenQuestionLinkCreateDto> screenQuestionLinks = layerCreateDto.getScreenQuestionLinks();
-//    List<SegmentScreenEntrypointLinkCreateDto> segmentScreenEntrypointLinks = layerCreateDto.getSegmentScreenEntrypointLinks();
 
     // Для начала надо получить все версии статических экранов для данного слоя, а потом на основании их уже делать
 //    выборку версий
@@ -488,20 +516,18 @@ public class LayerService {
   /**
    * Для всех платформ выбираем со старшими версиями. Разбитые по платформам.
    */
-  private List<Long> getLayerPlatforms(LayerCreateDto layerCreateDto) {
-    List<Platform> platformList = platformDao.findAll(layerCreateDto.getPlatformsId());
-    Optional<Platform> androidPlatform = Optional.empty();
-    Optional<Platform> iosPlatform = Optional.empty();
-    Optional<Platform> webPlatform = Optional.empty();
+  private List<Long> getLayerPlatforms(List<PlatformDto> platformDtoList) {
+    Optional<PlatformDto> androidPlatform = Optional.empty();
+    Optional<PlatformDto> iosPlatform = Optional.empty();
+    Optional<PlatformDto> webPlatform = Optional.empty();
 
-    for (Platform platform : platformList) {
-      switch (platform.getPlatform()) {
-        case WEB -> webPlatform = Optional.of(platform);
-        case ANDROID -> androidPlatform = getMaxVersion(androidPlatform, Optional.of(platform));
-        case IOS -> iosPlatform = getMaxVersion(iosPlatform, Optional.of(platform));
+    for (PlatformDto platformDto : platformDtoList) {
+      switch (platformDto.getPlatform()) {
+        case WEB -> webPlatform = Optional.of(platformDto);
+        case ANDROID -> androidPlatform = getMaxVersion(androidPlatform, Optional.of(platformDto));
+        case IOS -> iosPlatform = getMaxVersion(iosPlatform, Optional.of(platformDto));
       }
     }
-
     List<Long> layerPlatforms = new ArrayList<>();
 
     androidPlatform.ifPresent(platform -> layerPlatforms.add(platform.getId()));
@@ -523,15 +549,15 @@ public class LayerService {
    * 4. Если они одинаковы возвращаем первую.
    * 5. Если количество цифр в первой больше ее и возвращаем иначе вернем вторую.
    */
-  private Optional<Platform> getMaxVersion(Optional<Platform> platform1, Optional<Platform> platform2) {
+  private Optional<PlatformDto> getMaxVersion(Optional<PlatformDto> platform1, Optional<PlatformDto> platform2) {
     if (platform1.isEmpty()) {
       return platform2;
     }
     if (platform2.isEmpty()) {
       return platform1;
     }
-    String[] version1 = platform1.get().getApplicationVersion().split("\\.");
-    String[] version2 = platform2.get().getApplicationVersion().split("\\.");
+    String[] version1 = platform1.get().getVersion().split("\\.");
+    String[] version2 = platform2.get().getVersion().split("\\.");
 
     int minSize = Math.min(version1.length, version2.length);
 
