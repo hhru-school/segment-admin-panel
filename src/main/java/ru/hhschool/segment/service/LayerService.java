@@ -46,6 +46,7 @@ import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewEntryPoin
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewQuestionDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewRequirementDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewScreenDto;
+import ru.hhschool.segment.model.entity.Entrypoint;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.entity.Question;
 import ru.hhschool.segment.model.entity.QuestionRequiredLink;
@@ -356,18 +357,6 @@ public class LayerService {
     }
   }
 
-  /**
-   * 1. получить Id layer для этого создать Layer из Dto
-   * 1.1. получить parentLayer
-   * 1.2. получить плотформы и выбрать только самые старшие версии.
-   * 1.3. сохраняем Layer в базу
-   * 2. Сохраняем все DYNAMIC экраны и создаем связи.
-   * 2.1. Получаем все вопросы по ID и формируем список.
-   * 2.2. Сохраняем экран с вопросами в базу, получаем ID
-   * <p>
-   * 2.1. Сохраняем все полученные связи DYNAMIC экранов в базу.
-   * 2.2.
-   */
   @Transactional
   public Optional<LayerDto> add(LayerCreateDto layerCreateDto) {
     if (layerCreateDto.getParentLayer() == null) {
@@ -401,6 +390,9 @@ public class LayerService {
         }
         // идем по точкам входа.
         for (LayerCreateEntrypointDto entryPoint : segmentDto.getEntryPoints()) {
+
+          Entrypoint entrypoint = entrypointDao.findById(entryPoint.getId())
+              .orElseThrow(() -> new HttpBadRequestException("Указан не существующий Entrypoint."));
           // Когда идем по скринам
           // 1. собираем версии
           // 2. ищем динамические и делаем их создание.
@@ -410,13 +402,9 @@ public class LayerService {
 
             Screen screen = getOrCreateScreen(screenDto);
 
-            SegmentScreenEntrypointLink oldSegmentScreenEntrypointLink = segmentScreenEntrypointLinkDao.findById();
+            saveSegmentScreenEntrypointLink(layer, segment, entrypoint, screen, screenDto);
 
-
-            SegmentScreenEntrypointLink segmentScreenEntrypointLink = new SegmentScreenEntrypointLink(
-
-            );
-            ScreenQuestionLink screenQuestionLink =
+//            ScreenQuestionLink screenQuestionLink =
 
           }
         }
@@ -443,6 +431,28 @@ public class LayerService {
     }
 
     return null;
+  }
+
+  /**
+   * Прописываем для экранов их позиции и состояния SegmentScreenEntrypointLink.
+   * Проверка на состояние в базе не происходит.
+   */
+  private void saveSegmentScreenEntrypointLink(Layer layer, Segment segment, Entrypoint entrypoint, Screen screen, LayerCreateScreenDto screenDto) {
+    SegmentScreenEntrypointLink oldSegmentScreenEntrypointLink = null;
+    if (screenDto.getSegmentScreenEntrypointLinkId() != null) {
+      oldSegmentScreenEntrypointLink = segmentScreenEntrypointLinkDao.findById(screenDto.getSegmentScreenEntrypointLinkId())
+          .orElseThrow(() -> new HttpBadRequestException("Указан не существующий SegmentScreenEntrypointLink"));
+    }
+    SegmentScreenEntrypointLink segmentScreenEntrypointLink = new SegmentScreenEntrypointLink(
+        oldSegmentScreenEntrypointLink,
+        layer,
+        segment,
+        entrypoint,
+        screen,
+        screenDto.getPosition(),
+        screenDto.getState()
+    );
+    segmentScreenEntrypointLinkDao.persist(segmentScreenEntrypointLink);
   }
 
   /**
@@ -473,9 +483,11 @@ public class LayerService {
    * Проверка на состояние в базе не происходит.
    */
   private void saveQuestionRequiredLink(Layer layer, Segment segment, Question question, LinkCreateQuestionDto questionDto) {
-    QuestionRequiredLink oldQuestionRequiredLink = questionRequiredLinkDao.findById(questionDto.getQuestionRequiredLinkId())
-        .orElseThrow(() -> new HttpBadRequestException("Указан не существующий QuestionRequiredLink."));
-
+    QuestionRequiredLink oldQuestionRequiredLink = null;
+    if (questionDto.getQuestionRequiredLinkId() != null) {
+      oldQuestionRequiredLink = questionRequiredLinkDao.findById(questionDto.getQuestionRequiredLinkId())
+          .orElseThrow(() -> new HttpBadRequestException("Указан не существующий QuestionRequiredLink."));
+    }
     QuestionRequiredLink questionRequiredLink = new QuestionRequiredLink(
         oldQuestionRequiredLink,
         layer,
