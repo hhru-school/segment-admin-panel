@@ -2,7 +2,6 @@ package ru.hhschool.segment.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -181,7 +180,7 @@ public class LayerService {
         ""
     ));
     margingSegmentStateLinkMap.forEach((id, segmentStateLink) -> {
-      if (segmentStateLink.getOldSegmentStateLink().getId() != parentsSegmentStateLinkMap.get(id).getId()) {
+      if (!Objects.equals(segmentStateLink.getOldSegmentStateLink().getId(), parentsSegmentStateLinkMap.get(id).getId())) {
         segmentStateLink.setOldSegmentStateLink(parentsSegmentStateLinkMap.get(id));
         segmentStateLinkDao.update(segmentStateLink);
       }
@@ -207,7 +206,7 @@ public class LayerService {
             Function.identity(), (link1, link2) -> link1
         ));
     mergingQuestionRequiredLinksMap.forEach((id, questionRequiredLink) -> {
-      if (questionRequiredLink.getOldQuestionRequiredLink().getId() != parentsQuestionRequiredLinksMap.get(id).getId()) {
+      if (!Objects.equals(questionRequiredLink.getOldQuestionRequiredLink().getId(), parentsQuestionRequiredLinksMap.get(id).getId())) {
         questionRequiredLink.setOldQuestionRequiredLink(parentsQuestionRequiredLinksMap.get(id));
         questionRequiredLinkDao.update(questionRequiredLink);
       }
@@ -239,7 +238,7 @@ public class LayerService {
             Function.identity(), (link1, link2) -> link1
         ));
     mergingScreenQuestionLinkMap.forEach((id, screenQuestionLink) -> {
-      if (screenQuestionLink.getOldScreenQuestionLink().getId() != parentsScreenQuestionLinkMap.get(id).getId()) {
+      if (!Objects.equals(screenQuestionLink.getOldScreenQuestionLink().getId(), parentsScreenQuestionLinkMap.get(id).getId())) {
         screenQuestionLink.setOldScreenQuestionLink(parentsScreenQuestionLinkMap.get(id));
         screenQuestionLinkDao.update(screenQuestionLink);
       }
@@ -274,7 +273,7 @@ public class LayerService {
             Function.identity(), (link1, link2) -> link1
         ));
     mergingScreenQuestionLinkMap.forEach((id, segmentScreenEntrypointLink) -> {
-      if (segmentScreenEntrypointLink.getOldSegmentScreenEntrypointLink().getId() != parentsScreenQuestionLinkMap.get(id).getId()) {
+      if (!Objects.equals(segmentScreenEntrypointLink.getOldSegmentScreenEntrypointLink().getId(), parentsScreenQuestionLinkMap.get(id).getId())) {
         segmentScreenEntrypointLink.setOldSegmentScreenEntrypointLink(parentsScreenQuestionLinkMap.get(id));
         segmentScreenEntrypointLinkDao.update(segmentScreenEntrypointLink);
       }
@@ -393,7 +392,7 @@ public class LayerService {
 
           Entrypoint entrypoint = entrypointDao.findById(entryPoint.getId())
               .orElseThrow(() -> new HttpBadRequestException("Указан не существующий Entrypoint."));
-          // Когда идем по скринам
+          // Когда идем по экранам
           // 1. собираем версии
           // 2. ищем динамические и делаем их создание.
           for (LayerCreateScreenDto screenDto : entryPoint.getScreens()) {
@@ -415,10 +414,9 @@ public class LayerService {
       layer.setPlatforms(getLayerPlatforms(platformList));
       layerDao.update(layer);
 
-
       //      Long layerId = layer.getId();
 //      // К нам приходят сегменты и их состояния, надо это прогнать через нашу базу.
-//      // 1. получим все линки с состояними для всего дерева.
+//      // 1. получим все линки с состояниями для всего дерева.
 //      List<Long> layerPlatforms = getLayerPlatforms(layerCreateDto);
 //      List<Layer> space = getLayersInSpace(parentLayer.getId());
 
@@ -460,7 +458,7 @@ public class LayerService {
    * версии для динамического типа [] и вопросы по умолчанию отсутствуют.
    */
   private Screen getOrCreateScreen(LayerCreateScreenDto screenDto) {
-    Screen screen = null;
+    Screen screen;
     if (screenDto.isNew() && ScreenType.DYNAMIC == screenDto.getType()) {
       screen = new Screen(
           screenDto.getTitle(),
@@ -521,6 +519,8 @@ public class LayerService {
    * Для всех платформ выбираем со старшими версиями. Разбитые по платформам.
    */
   private List<Long> getLayerPlatforms(List<PlatformDto> platformDtoList) {
+    List<Long> layerPlatforms = new ArrayList<>();
+
     Optional<PlatformDto> androidPlatform = Optional.empty();
     Optional<PlatformDto> iosPlatform = Optional.empty();
     Optional<PlatformDto> webPlatform = Optional.empty();
@@ -532,7 +532,6 @@ public class LayerService {
         case IOS -> iosPlatform = getMaxVersion(iosPlatform, Optional.of(platformDto));
       }
     }
-    List<Long> layerPlatforms = new ArrayList<>();
 
     androidPlatform.ifPresent(platform -> layerPlatforms.add(platform.getId()));
     iosPlatform.ifPresent(platform -> layerPlatforms.add(platform.getId()));
@@ -583,76 +582,6 @@ public class LayerService {
     }
 
     return platform2;
-  }
-
-  /**
-   * Получить дерево родителей Только, что созданного слоя скопирован из SegmentService,
-   * скорее всего надо вынести в утилитный класс, чтобы была возможность переиспользовать.
-   */
-  private List<Layer> getLayersInSpace(Long layerId) {
-    Optional<Layer> layer = layerDao.findById(layerId);
-    if (layer.isPresent()) {
-      List<Layer> layersInSpace = layerDao.getAllParents(layerId);
-      Collections.reverse(layersInSpace);
-      layersInSpace.add(layer.get());
-      return layersInSpace;
-    }
-    return Collections.EMPTY_LIST;
-  }
-
-  /**
-   * Вытаскиваем все линки на Дерево родителей слоя из базы.
-   */
-  private List<SegmentScreenEntrypointLink> getSSELInSpace(List<Layer> space) {
-    List<SegmentScreenEntrypointLink> segmentScreenEntrypointLinks = new ArrayList<>();
-    for (Layer layer : space) {
-      segmentScreenEntrypointLinks.addAll(segmentScreenEntrypointLinkDao.findAll(layer.getId()));
-    }
-    return segmentScreenEntrypointLinks;
-  }
-
-  /**
-   * схлопываем все линки, оставляем только актуальные для дерева родителей слоя.
-   * скопирован из с небольшими изменениями (title -> id (т.к. пользуемся справочниками, id всегда принадлежат уникальной сущности))
-   * Вернется Map, чтобы была возможность переиспользовать, при поиске oldId
-   */
-  private Map<String, SegmentScreenEntrypointLink> getLatestSSELInSpace(List<SegmentScreenEntrypointLink> links) {
-    Map<String, SegmentScreenEntrypointLink> segmentScreenEntrypointLinkMap = new HashMap<>();
-    for (SegmentScreenEntrypointLink link : links) {
-      String key = String.format(
-          "segment-%s,entrypoint-%s,screen-%s",
-          link.getSegment().getId(),
-          link.getEntrypoint().getId(),
-          link.getScreen().getId()
-      );
-      segmentScreenEntrypointLinkMap.put(key, link);
-    }
-    return segmentScreenEntrypointLinkMap;
-  }
-
-  /**
-   * Получаем все состояния сегментов из дерева родителей скопировано из SegmentService
-   * скорее всего надо вынести в утилитный класс, чтобы была возможность переиспользовать.
-   */
-  private List<SegmentStateLink> getSSLInSpace(List<Layer> layerSpace) {
-    List<SegmentStateLink> questionActivatorLinkList = new ArrayList<>();
-    for (Layer layer : layerSpace) {
-      questionActivatorLinkList.addAll(segmentStateLinkDao.findAll(layer.getId()));
-    }
-    return questionActivatorLinkList;
-  }
-
-  /**
-   * Получаем схлопнутые состояния сегментов из дерева родителей
-   * скопировано из SegmentService
-   * скорее всего надо вынести в утилитный класс, чтобы была возможность переиспользовать.
-   */
-  private Map<Long, SegmentStateLink> getLatestSSLInSpace(List<SegmentStateLink> links) {
-    Map<Long, SegmentStateLink> segmentStateLinkMap = new HashMap<>();
-    for (SegmentStateLink link : links) {
-      segmentStateLinkMap.put(link.getSegment().getId(), link);
-    }
-    return segmentStateLinkMap;
   }
 
 }
