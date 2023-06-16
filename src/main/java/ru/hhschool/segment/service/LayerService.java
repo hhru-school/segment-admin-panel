@@ -1,7 +1,10 @@
 package ru.hhschool.segment.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -12,11 +15,13 @@ import ru.hhschool.segment.dao.abstracts.PlatformDao;
 import ru.hhschool.segment.dao.abstracts.QuestionDao;
 import ru.hhschool.segment.dao.abstracts.ScreenDao;
 import ru.hhschool.segment.dao.abstracts.SegmentDao;
+import ru.hhschool.segment.dao.abstracts.SegmentScreenEntrypointLinkDao;
 import ru.hhschool.segment.dao.abstracts.SegmentStateLinkDao;
 import ru.hhschool.segment.exception.HttpBadRequestException;
 import ru.hhschool.segment.exception.HttpNotFoundException;
 import ru.hhschool.segment.mapper.LayerMapper;
 import ru.hhschool.segment.mapper.PlatformMapper;
+import ru.hhschool.segment.mapper.SegmentScreenEntrypointLinkMapper;
 import ru.hhschool.segment.mapper.basicinfo.LayerBasicInfoMapper;
 import ru.hhschool.segment.mapper.layer.LayerStatusMapper;
 import ru.hhschool.segment.mapper.screen.ScreenMapper;
@@ -27,8 +32,6 @@ import ru.hhschool.segment.model.dto.layer.DynamicScreenCreateDto;
 import ru.hhschool.segment.model.dto.layer.DynamicScreenQuestionCreateDto;
 import ru.hhschool.segment.model.dto.layer.LayerCreateDto;
 import ru.hhschool.segment.model.dto.layer.LayerDtoForList;
-import ru.hhschool.segment.model.dto.layer.QuestionRequiredLinkCreateDto;
-import ru.hhschool.segment.model.dto.layer.ScreenQuestionLinkCreateDto;
 import ru.hhschool.segment.model.dto.layer.SegmentScreenEntrypointLinkCreateDto;
 import ru.hhschool.segment.model.dto.layer.SegmentStateLinkCreateDto;
 import ru.hhschool.segment.model.dto.screen.ScreenDto;
@@ -39,6 +42,7 @@ import ru.hhschool.segment.model.entity.Question;
 import ru.hhschool.segment.model.entity.Screen;
 import ru.hhschool.segment.model.entity.Segment;
 import ru.hhschool.segment.model.entity.SegmentScreenEntrypointLink;
+import ru.hhschool.segment.model.entity.SegmentStateLink;
 import ru.hhschool.segment.model.enums.LayerStateType;
 
 public class LayerService {
@@ -48,6 +52,7 @@ public class LayerService {
   private final ScreenDao screenDao;
   private final SegmentDao segmentDao;
   private final EntrypointDao entrypointDao;
+  private final SegmentScreenEntrypointLinkDao segmentScreenEntrypointLinkDao;
   private final SegmentStateLinkDao segmentStateLinkDao;
 
   @Inject
@@ -56,7 +61,10 @@ public class LayerService {
       PlatformDao platformDao,
       QuestionDao questionDao,
       ScreenDao screenDao,
-      SegmentDao segmentDao, EntrypointDao entrypointDao, SegmentStateLinkDao segmentStateLinkDao
+      SegmentDao segmentDao,
+      EntrypointDao entrypointDao,
+      SegmentScreenEntrypointLinkDao segmentScreenEntrypointLinkDao,
+      SegmentStateLinkDao segmentStateLinkDao
   ) {
     this.layerDao = layerDao;
     this.platformDao = platformDao;
@@ -64,6 +72,7 @@ public class LayerService {
     this.screenDao = screenDao;
     this.segmentDao = segmentDao;
     this.entrypointDao = entrypointDao;
+    this.segmentScreenEntrypointLinkDao = segmentScreenEntrypointLinkDao;
     this.segmentStateLinkDao = segmentStateLinkDao;
   }
 
@@ -134,26 +143,20 @@ public class LayerService {
    */
   @Transactional
   public Optional<ScreenDto> add(LayerCreateDto layerCreateDto) {
-    if (layerCreateDto.getParentLayerId() == null) {
+    if (layerCreateDto.getParentLayer() == null) {
       throw new HttpBadRequestException("Не указан родительский слой.");
     }
 
-    Optional<Layer> parentLayer = layerDao.findById(layerCreateDto.getParentLayerId());
-    if (parentLayer.isEmpty()) {
-      throw new HttpBadRequestException("Родительский слой не найден.");
-    }
+    Layer parentLayer = layerDao.findById(layerCreateDto.getParentLayer().getId())
+        .orElseThrow(() -> new HttpBadRequestException("Родительский слой не найден."));
 
-    List<SegmentStateLinkCreateDto> segmentStateLinks = layerCreateDto.getSegmentStateLinks();
-    List<QuestionRequiredLinkCreateDto> questionRequiredLinks = layerCreateDto.getQuestionRequiredLinks();
-    List<ScreenQuestionLinkCreateDto> screenQuestionLinks = layerCreateDto.getScreenQuestionLinks();
-    List<SegmentScreenEntrypointLinkCreateDto> segmentScreenEntrypointLinks = layerCreateDto.getSegmentScreenEntrypointLinks();
-
-    List<Long> layerPlatforms = getLayerPlatforms(layerCreateDto);
-
-    Layer layer = LayerMapper.dtoToLayer(layerCreateDto, parentLayer.get(), layerPlatforms);
+    // первое сохранение без версий, т.к. необходим layerId, для сохранения линков
+    // версии пропишутся в конце когда будет возможность пройтись по всем линкам статических экранов
+    Layer layer = LayerMapper.dtoToLayer(layerCreateDto, parentLayer, List.of());
     try {
       layerDao.persist(layer);
-    } catch (Exception err) {
+    } catch (
+        Exception err) {
       String lastMessage = err.getMessage();
       Throwable cause = err.getCause();
       while (cause != null) {
@@ -162,12 +165,66 @@ public class LayerService {
       }
       throw new HttpBadRequestException(lastMessage);
     }
-
     Long layerId = layer.getId();
+
+    // К нам приходят сегменты и их состояния, надо это прогнать через нашу базу.
+    // 1. получим все линки с состояними для всего дерева.
+    List<Long> layerPlatforms = getLayerPlatforms(layerCreateDto);
+    List<Layer> space = getLayersInSpace(parentLayer.getId());
+
+    Map<Long, SegmentStateLink> latestSSLInSpace = getLatestSSLInSpace(getSSLInSpace(space));
+
+    // В DTO правильные данные, только изменные и только новые. никаких лишних походов в базу.!!!
+
+    for (SegmentStateLinkCreateDto segmentStateLink : layerCreateDto.getSegmentStateLinks()) {
+      // состояние есть в прошлых слоях?
+      Long segmentId = segmentStateLink.getSegmentId();
+      if (latestSSLInSpace.containsKey(segmentId)) {
+        SegmentStateLink ssl = latestSSLInSpace.get(segmentId);
+        // состояние поменялось?
+        if(ssl.getState() != segmentStateLink.getState()){
+          // сохраним oldId и создадим новый линк
+        }else{
+          // просто стодаем новый линк
+        }
+      }
+    }
+
+    // List<SegmentStateLinkCreateDto> segmentStateLinks = layerCreateDto.getSegmentStateLinks();
+//    List<QuestionRequiredLinkCreateDto> questionRequiredLinks = layerCreateDto.getQuestionRequiredLinks();
+//    List<ScreenQuestionLinkCreateDto> screenQuestionLinks = layerCreateDto.getScreenQuestionLinks();
+//    List<SegmentScreenEntrypointLinkCreateDto> segmentScreenEntrypointLinks = layerCreateDto.getSegmentScreenEntrypointLinks();
+
+    // Для начала надо получить все версии статических экранов для данного слоя, а потом на основании их уже делать
+//    выборку версий
+
+    Map<String, SegmentScreenEntrypointLink> segmentScreenEntrypointLinksMap = getLatestSSELInSpace(getSSELInSpace(space));
+// гдето тут надо сделать наслоение из Линков переданных из Создаваемой DTO, т.к. этих данных нет в базе
+
+    // пройдемся по Линкам из нового слоя, те которые есть получим, тех которых нет создаем.
+    // в этом же цикле можно и создавать свежии линки, но сначала надо найти все экраны.
+    // поэтому добавляем только существующие линки. (у которых есть OldId)
+    List<SegmentScreenEntrypointLink> newSegmentScreenEntrypointLinks = new ArrayList<>();
+    for (SegmentScreenEntrypointLinkCreateDto segmentScreenEntrypointLink : layerCreateDto.getSegmentScreenEntrypointLinks()) {
+      Optional<SegmentScreenEntrypointLink> sseLink =
+          segmentScreenEntrypointLinkDao.findById(segmentScreenEntrypointLink.getOldSegmentScreenEntrypointLinkId());
+      if (sseLink.isPresent()) {
+        newSegmentScreenEntrypointLinks.add(sseLink.get());
+      }
+    }
+
+    Map<String, SegmentScreenEntrypointLink> newSegmentScreenEntrypointLinksMap = getLatestSSELInSpace(
+        SegmentScreenEntrypointLinkMapper.
+    );
+
+    //из линков вытаскиваем все унаследованные STATIC экраны
+    List<Screen> staticActiveScreens =
+
 
     List<DynamicScreenCreateDto> dynamicScreens = layerCreateDto.getDynamicScreens();
 
-    for (DynamicScreenCreateDto dynamicScreen : dynamicScreens) {
+    for (
+        DynamicScreenCreateDto dynamicScreen : dynamicScreens) {
       List<Question> questionList = new ArrayList<>();
       for (DynamicScreenQuestionCreateDto questionDto : dynamicScreen.getQuestions()) {
         Question question = questionDao.findById(questionDto.getQuestionId())
@@ -194,7 +251,7 @@ public class LayerService {
           screen,
           dynamicScreen.getScreenPosition(),
           dynamicScreen.getScreenState()
-          );
+      );
 
 //      ScreenQuestionLink screenQuestionLink =
 
@@ -273,4 +330,75 @@ public class LayerService {
 
     return platform2;
   }
+
+  /**
+   * Получить дерево родителей Только, что созданного слоя скопирован из SegmentService,
+   * скорее всего надо вынести в утилитный класс, чтобы была возможность переиспользовать.
+   */
+  private List<Layer> getLayersInSpace(Long layerId) {
+    Optional<Layer> layer = layerDao.findById(layerId);
+    if (layer.isPresent()) {
+      List<Layer> layersInSpace = layerDao.getAllParents(layerId);
+      Collections.reverse(layersInSpace);
+      layersInSpace.add(layer.get());
+      return layersInSpace;
+    }
+    return Collections.EMPTY_LIST;
+  }
+
+  /**
+   * Вытаскиваем все линки на Дерево родителей слоя из базы.
+   */
+  private List<SegmentScreenEntrypointLink> getSSELInSpace(List<Layer> space) {
+    List<SegmentScreenEntrypointLink> segmentScreenEntrypointLinks = new ArrayList<>();
+    for (Layer layer : space) {
+      segmentScreenEntrypointLinks.addAll(segmentScreenEntrypointLinkDao.findAll(layer.getId()));
+    }
+    return segmentScreenEntrypointLinks;
+  }
+
+  /**
+   * схлопываем все линки, оставляем только актуальные для дерева родителей слоя.
+   * скопирован из с небольшими изменениями (title -> id (т.к. пользуемся справочниками, id всегда принадлежат уникальной сущности))
+   * Вернется Map, чтобы была возможность переиспользовать, при поиске oldId
+   */
+  private Map<String, SegmentScreenEntrypointLink> getLatestSSELInSpace(List<SegmentScreenEntrypointLink> links) {
+    Map<String, SegmentScreenEntrypointLink> segmentScreenEntrypointLinkMap = new HashMap<>();
+    for (SegmentScreenEntrypointLink link : links) {
+      String key = String.format(
+          "segment-%s,entrypoint-%s,screen-%s",
+          link.getSegment().getId(),
+          link.getEntrypoint().getId(),
+          link.getScreen().getId()
+      );
+      segmentScreenEntrypointLinkMap.put(key, link);
+    }
+    return segmentScreenEntrypointLinkMap;
+  }
+
+  /**
+   * Получаем все состояния сегментов из дерева родителей скопировано из SegmentService
+   * скорее всего надо вынести в утилитный класс, чтобы была возможность переиспользовать.
+   */
+  private List<SegmentStateLink> getSSLInSpace(List<Layer> layerSpace) {
+    List<SegmentStateLink> questionActivatorLinkList = new ArrayList<>();
+    for (Layer layer : layerSpace) {
+      questionActivatorLinkList.addAll(segmentStateLinkDao.findAll(layer.getId()));
+    }
+    return questionActivatorLinkList;
+  }
+
+  /**
+   * Получаем схлопнутые состояния сегментов из дерева родителей
+   * скопировано из SegmentService
+   * скорее всего надо вынести в утилитный класс, чтобы была возможность переиспользовать.
+   */
+  private Map<Long, SegmentStateLink> getLatestSSLInSpace(List<SegmentStateLink> links) {
+    Map<Long, SegmentStateLink> segmentStateLinkMap = new HashMap<>();
+    for (SegmentStateLink link : links) {
+      segmentStateLinkMap.put(link.getSegment().getId(), link);
+    }
+    return segmentStateLinkMap;
+  }
+
 }
