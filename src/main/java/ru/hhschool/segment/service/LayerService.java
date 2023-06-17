@@ -319,7 +319,12 @@ public class LayerService {
     Layer mergingLayer = layerDao.findById(layerId)
         .orElseThrow(() -> new HttpNotFoundException("Такого слоя не существует"));
     if (mergingLayer.getState() != LayerStateType.CONFLICT) {
-      throw new HttpNotFoundException("Force merge невозможен");
+      throw new HttpNotFoundException("Статус слоя не позволяет сделать force merge");
+    }
+    Layer lastStableLayer = layerDao.findLastStableLayer();
+    if (!Objects.equals(mergingLayer.getParent().getId(), lastStableLayer.getId())) {
+      mergeLayerWithParent(layerId);
+      return MergeResponseMapper.toDtoResponse(mergingLayer);
     }
     mergingLayer.setState(LayerStateType.STABLE);
     layerDao.update(mergingLayer);
