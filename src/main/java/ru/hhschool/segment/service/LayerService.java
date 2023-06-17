@@ -13,6 +13,7 @@ import ru.hhschool.segment.mapper.PlatformMapper;
 import ru.hhschool.segment.mapper.basicinfo.LayerBasicInfoMapper;
 import ru.hhschool.segment.mapper.layer.LayerStatusMapper;
 import ru.hhschool.segment.mapper.merge.MergeResponseMapper;
+import ru.hhschool.segment.mapper.validate.SegmentSelectedToSegmentValidateInfoMapper;
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.layer.LayerDtoForList;
@@ -115,6 +116,12 @@ public class LayerService {
     segmentLayerViewDtoList.forEach(segmentLayerViewDto -> {
       SegmentSelectedDto selectedDto = segmentService.getSegmentSelectedDto(mergingLayer.getId(), segmentLayerViewDto.getId()).get();
       selectedDtoList.add(selectedDto);
+    });
+
+    selectedDtoList.forEach(segmentSelectedDto -> {
+      if (segmentService.validateSegment(SegmentSelectedToSegmentValidateInfoMapper.toDto(segmentSelectedDto)).size() == 0) {
+        throw new HttpBadRequestException("Ошибка валидации сегмента. Мердж невозможен");
+      }
     });
 
     if (!checkStateSegment(selectedDtoList) ||
@@ -303,5 +310,17 @@ public class LayerService {
       }
       throw new HttpBadRequestException(lastMessage);
     }
+  }
+
+  @Transactional
+  public MergeResponseDto forceMergeLayer(Long layerId) {
+    Layer mergingLayer = layerDao.findById(layerId)
+        .orElseThrow(() -> new HttpNotFoundException("Такого слоя не существует"));
+    if (mergingLayer.getState() != LayerStateType.CONFLICT) {
+      throw new HttpNotFoundException("Force merge невозможен");
+    }
+    mergingLayer.setState(LayerStateType.STABLE);
+    layerDao.update(mergingLayer);
+    return MergeResponseMapper.toDtoResponse(mergingLayer);
   }
 }
