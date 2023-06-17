@@ -119,9 +119,11 @@ public class LayerService {
     });
 
     selectedDtoList.forEach(segmentSelectedDto -> {
-      if (segmentService.validateSegment(SegmentSelectedToSegmentValidateInfoMapper.toDto(segmentSelectedDto)).size() == 0) {
-        throw new HttpBadRequestException("Ошибка валидации сегмента. Мердж невозможен");
-      }
+      segmentService.validateSegment(SegmentSelectedToSegmentValidateInfoMapper.toDto(segmentSelectedDto)).forEach(validateResultDto -> {
+        if (validateResultDto.getResult() != null) {
+          throw new HttpBadRequestException("Ошибка валидации сегмента. Мердж невозможен");
+        }
+      });
     });
 
     if (!checkStateSegment(selectedDtoList) ||
@@ -166,7 +168,7 @@ public class LayerService {
         .collect(Collectors.toMap(questionRequiredLink -> questionRequiredLink.getQuestion().getId(),
             Function.identity(), (link1, link2) -> link1));
     mergingQuestionRequiredLinksMap.forEach((id, questionRequiredLink) -> {
-      if (questionRequiredLink.getOldQuestionRequiredLink().getId() != parentsQuestionRequiredLinksMap.get(id).getId()) {
+      if (parentsQuestionRequiredLinksMap.get(id) != null && !Objects.equals(questionRequiredLink.getOldQuestionRequiredLink().getId(), parentsQuestionRequiredLinksMap.get(id).getId())) {
         questionRequiredLink.setOldQuestionRequiredLink(parentsQuestionRequiredLinksMap.get(id));
         questionRequiredLinkDao.update(questionRequiredLink);
       }
@@ -194,7 +196,7 @@ public class LayerService {
                 link.getQuestion().getTitle()),
             Function.identity(), (link1, link2) -> link1));
     mergingScreenQuestionLinkMap.forEach((id, screenQuestionLink) -> {
-      if (screenQuestionLink.getOldScreenQuestionLink().getId() != parentsScreenQuestionLinkMap.get(id).getId()) {
+      if (parentsScreenQuestionLinkMap.get(id) != null && !Objects.equals(screenQuestionLink.getOldScreenQuestionLink().getId(), parentsScreenQuestionLinkMap.get(id).getId())) {
         screenQuestionLink.setOldScreenQuestionLink(parentsScreenQuestionLinkMap.get(id));
         screenQuestionLinkDao.update(screenQuestionLink);
       }
@@ -222,7 +224,7 @@ public class LayerService {
                 link.getScreen().getTitle()),
             Function.identity(), (link1, link2) -> link1));
     mergingScreenQuestionLinkMap.forEach((id, segmentScreenEntrypointLink) -> {
-      if (segmentScreenEntrypointLink.getOldSegmentScreenEntrypointLink().getId() != parentsScreenQuestionLinkMap.get(id).getId()) {
+      if (parentsScreenQuestionLinkMap.get(id) != null && !Objects.equals(segmentScreenEntrypointLink.getOldSegmentScreenEntrypointLink().getId(), parentsScreenQuestionLinkMap.get(id).getId())) {
         segmentScreenEntrypointLink.setOldSegmentScreenEntrypointLink(parentsScreenQuestionLinkMap.get(id));
         segmentScreenEntrypointLinkDao.update(segmentScreenEntrypointLink);
       }
