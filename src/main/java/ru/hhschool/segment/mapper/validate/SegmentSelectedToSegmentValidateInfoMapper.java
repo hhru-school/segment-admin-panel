@@ -5,7 +5,11 @@ import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerQuestionDto;
 import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerRequirementDto;
 import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerScreenDto;
 import ru.hhschool.segment.model.dto.createlayer.validate.SegmentValidateInfoDto;
-import ru.hhschool.segment.model.dto.viewsegments.layerview.*;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentSelectedDto;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewRequirementDto;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewEntryPointDto;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewScreenDto;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewQuestionDto;
 
 import java.util.List;
 
