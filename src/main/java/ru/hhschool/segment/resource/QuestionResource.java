@@ -1,18 +1,24 @@
 package ru.hhschool.segment.resource;
 
-import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfo;
-import ru.hhschool.segment.service.QuestionService;
-
+import java.util.List;
+import java.util.Optional;
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestBody;
+import ru.hhschool.segment.exception.HttpBadRequestException;
+import ru.hhschool.segment.model.dto.ErrorDto;
+import ru.hhschool.segment.model.dto.question.QuestionCreateDto;
+import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfo;
+import ru.hhschool.segment.model.dto.screen.ScreenDto;
+import ru.hhschool.segment.service.QuestionService;
 
 @Path("/questions")
 public class QuestionResource {
@@ -26,8 +32,10 @@ public class QuestionResource {
   @GET
   @Path(value = "/")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getQuestionDtoListWithAnswers(@QueryParam("searchQuery") @DefaultValue("") String searchQuery,
-                                                @QueryParam("type") List<String> questionTypeStringList) {
+  public Response getQuestionDtoListWithAnswers(
+      @QueryParam("searchQuery") @DefaultValue("") String searchQuery,
+      @QueryParam("type") List<String> questionTypeStringList
+  ) {
     List<QuestionDtoForQuestionsInfo> questionDtoList = questionService.getAllQuestionDtoListForQuestionsInfo(searchQuery, questionTypeStringList);
     if (!questionDtoList.isEmpty()) {
       return Response.ok(questionDtoList).build();
@@ -41,4 +49,19 @@ public class QuestionResource {
   public Response getQuestionDtoInfoWithAnswers(@PathParam("id") Long questionId) {
     return Response.ok(questionService.getQuestionDtoForQuestionInfo(questionId)).build();
   }
+
+  @POST
+  @Path(value = "/add")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response addScreen(@RequestBody QuestionCreateDto questionCreateDto) {
+    if (questionCreateDto == null) {
+      throw new HttpBadRequestException("Отсутствует необходимый параметр");
+    }
+    Optional<ScreenDto> segmentDto = questionService.add(questionCreateDto);
+    if (segmentDto.isPresent()) {
+      return Response.ok(segmentDto.get()).build();
+    }
+    return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorDto("Не удалось создать.")).build();
+  }
+
 }
