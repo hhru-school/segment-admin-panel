@@ -91,6 +91,12 @@ public class QuestionService {
           String.format("Превышена максимальная вложенность MAX_DEPTH_OF_TREE = %d", MAX_DEPTH_OF_TREE)
       );
     }
+    if (questionCreateDto.getType() == null) {
+      throw new HttpBadRequestException("Не указан тип поле или вопрос.");
+    }
+    if (questionCreateDto.getAnswerType() == null) {
+      throw new HttpBadRequestException("Не указан тип ответов.");
+    }
     if (StringUtil.isBlank(questionCreateDto.getTitle())) {
       throw new HttpBadRequestException("Название не может быть пустым.");
     }
@@ -128,6 +134,9 @@ public class QuestionService {
    * В рекурсии создаем вопросы и ответы к ним.
    */
   private Answer getOrCreateAnswer(AnswerCreateDto answerCreateDto, int countDepth) {
+    if (answerCreateDto.getType() == null) {
+      throw new HttpBadRequestException("Не указан тип ответа.");
+    }
     if (StringUtil.isBlank(answerCreateDto.getTitle())) {
       throw new HttpBadRequestException("Название не может быть пустым.");
     }
