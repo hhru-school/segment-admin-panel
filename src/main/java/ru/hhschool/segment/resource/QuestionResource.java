@@ -1,7 +1,6 @@
 package ru.hhschool.segment.resource;
 
 import java.util.List;
-import java.util.Optional;
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -14,10 +13,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.hhschool.segment.exception.HttpBadRequestException;
-import ru.hhschool.segment.model.dto.ErrorDto;
 import ru.hhschool.segment.model.dto.question.QuestionCreateDto;
 import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfo;
-import ru.hhschool.segment.model.dto.screen.ScreenDto;
 import ru.hhschool.segment.service.QuestionService;
 
 @Path("/questions")
@@ -57,11 +54,8 @@ public class QuestionResource {
     if (questionCreateDto == null) {
       throw new HttpBadRequestException("Отсутствует необходимый параметр");
     }
-    Optional<ScreenDto> segmentDto = questionService.add(questionCreateDto);
-    if (segmentDto.isPresent()) {
-      return Response.ok(segmentDto.get()).build();
-    }
-    return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorDto("Не удалось создать.")).build();
+    QuestionDtoForQuestionsInfo questionDto = questionService.add(questionCreateDto);
+    return Response.ok(questionDto).build();
   }
 
 }

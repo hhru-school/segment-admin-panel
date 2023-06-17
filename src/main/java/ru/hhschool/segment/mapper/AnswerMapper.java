@@ -1,6 +1,7 @@
 package ru.hhschool.segment.mapper;
 
 import java.util.List;
+import ru.hhschool.segment.model.dto.question.AnswerCreateDto;
 import ru.hhschool.segment.model.dto.questioninfopage.AnswerDtoForQuestionsInfo;
 import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfo;
 import ru.hhschool.segment.model.entity.Answer;
@@ -16,5 +17,16 @@ public class AnswerMapper {
     answerDtoForQuestionsInfoPage.setPositiveTitle(entity.getPositiveTitle());
     answerDtoForQuestionsInfoPage.setSkipAtResult(entity.isSkipAtResult());
     return answerDtoForQuestionsInfoPage;
+  }
+
+  public static Answer fromDto(AnswerCreateDto answerCreateDto, List<Long> openQuestions) {
+    return new Answer(
+        answerCreateDto.getTitle(),
+        answerCreateDto.getPositiveTitle(),
+        answerCreateDto.getType(),
+        answerCreateDto.isDefaultAnswer(),
+        answerCreateDto.isSkipAtResult(),
+        openQuestions
+    );
   }
 }
