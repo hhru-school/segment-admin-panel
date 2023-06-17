@@ -122,16 +122,5 @@ public class LayerResource {
   public Response mergeLayer(@PathParam(value = "layerId") Long layerId) {
     return Response.ok(layerService.mergeLayerWithParent(layerId)).build();
   }
-
-  @GET
-  @Path("/{layerId}/segments/{segmentId}/merge_validate")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response validateSegment(@PathParam("layerId") Long layerId, @PathParam("segmentId") Long segmentId){
-    Optional<SegmentSelectedDto> segmentSelectedDto = segmentService.getSegmentSelectedDto(layerId, segmentId);
-    List<ValidateResultDto> validateResultDtos = segmentService.validateSegment(SegmentSelectedToSegmentValidateInfoMapper.toDto(segmentSelectedDto.get()));
-    if (validateResultDtos.isEmpty()){
-      return Response.ok().build();
-    }
-    return Response.status(Response.Status.CONFLICT).entity(validateResultDtos).build();
-  }
+  
 }
