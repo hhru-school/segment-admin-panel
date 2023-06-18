@@ -22,6 +22,20 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.web.bind.annotation.RequestBody;
+import ru.hhschool.segment.exception.HttpBadRequestException;
+import ru.hhschool.segment.model.dto.ErrorDto;
+import ru.hhschool.segment.model.dto.LayerDto;
+import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
+import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerSegmentDto;
+import ru.hhschool.segment.model.dto.layer.LayerDtoForList;
+import ru.hhschool.segment.model.dto.layer.create.LayerCreateDto;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.LayerSegmentsDto;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentSelectedDto;
+import ru.hhschool.segment.service.LayerService;
+import ru.hhschool.segment.service.SegmentService;
+
+
 @Path("/layers")
 public class LayerResource {
   private final LayerService layerService;
@@ -103,11 +117,25 @@ public class LayerResource {
   }
 
   @PATCH
-  @Path("/{layerId}/setArchive/")
+  @Path("/{layerId}/setArchive")
   @Produces(MediaType.APPLICATION_JSON)
   public Response setLayerStateToArchive(@PathParam(value = "layerId") Long layerId) {
     layerService.setLayerStateToArchive(layerId);
     return Response.ok("Статус успешно изменен.").build();
+  }
+
+  @POST
+  @Path("/add")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response addLayer(@RequestBody LayerCreateDto layerCreateDto) {
+    if (layerCreateDto == null) {
+      throw new HttpBadRequestException("Отсутствует необходимый параметр");
+    }
+    Optional<LayerDtoForList> layerDto = layerService.add(layerCreateDto);
+    if (layerDto.isPresent()) {
+      return Response.ok(layerDto.get()).build();
+    }
+    return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorDto("Не удалось создать.")).build();
   }
 
   @GET
