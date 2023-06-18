@@ -40,6 +40,7 @@ public class Layer {
   )
   private List<Long> platforms;
 
+
   @Column(name = "stabled_time")
   private LocalDateTime stabledTime;
 

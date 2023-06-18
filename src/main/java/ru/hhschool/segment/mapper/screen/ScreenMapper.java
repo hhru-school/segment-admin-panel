@@ -33,5 +33,4 @@ public class ScreenMapper {
     );
     return screen;
   }
-
 }
