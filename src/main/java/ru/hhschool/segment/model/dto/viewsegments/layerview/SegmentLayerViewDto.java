@@ -7,6 +7,7 @@ import ru.hhschool.segment.model.enums.StateType;
 
 public class SegmentLayerViewDto {
   private Long id;
+  private Long segmentStateLinkId;
   private String title;
   private List<Role> roles;
   private List<String> tags;
@@ -16,8 +17,9 @@ public class SegmentLayerViewDto {
   public SegmentLayerViewDto() {
   }
 
-  public SegmentLayerViewDto(Long id, String title, List<Role> roles, List<String> tags, SegmentViewChangeState changeState, StateType activeState) {
+  public SegmentLayerViewDto(Long id, Long segmentStateLinkId, String title, List<Role> roles, List<String> tags, SegmentViewChangeState changeState, StateType activeState) {
     this.id = id;
+    this.segmentStateLinkId = segmentStateLinkId;
     this.title = title;
     this.roles = roles;
     this.tags = tags;
@@ -31,6 +33,14 @@ public class SegmentLayerViewDto {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public Long getSegmentStateLinkId() {
+    return segmentStateLinkId;
+  }
+
+  public void setSegmentStateLinkId(Long segmentStateLinkId) {
+    this.segmentStateLinkId = segmentStateLinkId;
   }
 
   public String getTitle() {

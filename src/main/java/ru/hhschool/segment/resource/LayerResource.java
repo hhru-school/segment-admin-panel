@@ -18,6 +18,7 @@ import ru.hhschool.segment.exception.HttpBadRequestException;
 import ru.hhschool.segment.model.dto.ErrorDto;
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
+import ru.hhschool.segment.model.dto.layer.LayerDtoForList;
 import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerSegmentDto;
 import ru.hhschool.segment.model.dto.layer.LayerDtoForList;
 import ru.hhschool.segment.model.dto.layer.create.LayerCreateDto;
