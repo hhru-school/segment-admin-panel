@@ -55,7 +55,7 @@ public class LayerMapper {
   }
 
   public static Layer dtoToLayer(LayerCreateDto layerCreateDto, Layer parentLayer, List<Long> platformIdList) {
-    Layer layer = new Layer(
+    return new Layer(
         layerCreateDto.getTitle(),
         parentLayer,
         layerCreateDto.getDescription(),
@@ -63,6 +63,5 @@ public class LayerMapper {
         LocalDateTime.now().withNano(0),
         platformIdList
     );
-    return layer;
   }
 }
