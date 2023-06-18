@@ -465,7 +465,7 @@ public class LayerService {
           if (validateResultDto.getResult() != null) {
             mergingLayer.setState(LayerStateType.CONFLICT);
             layerDao.update(mergingLayer);
-            throw new HttpBadRequestException("Ошибка валидации сегмента. Необходимо отреадактировать слой сделать мердж вручную");
+            throw new HttpBadRequestException("Ошибка валидации сегмента. Необходимо отреадактировать слой и продолжить мердж");
           }
         });
       });
