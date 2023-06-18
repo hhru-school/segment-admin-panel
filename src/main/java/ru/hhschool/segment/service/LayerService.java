@@ -1,15 +1,5 @@
 package ru.hhschool.segment.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import ru.hhschool.segment.dao.abstracts.EntrypointDao;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.dao.abstracts.PlatformDao;
@@ -57,6 +47,17 @@ import ru.hhschool.segment.model.entity.SegmentStateLink;
 import ru.hhschool.segment.model.enums.LayerStateType;
 import ru.hhschool.segment.model.enums.ScreenType;
 import ru.hhschool.segment.util.ExceptionMessageExtract;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class LayerService {
   private final LayerDao layerDao;
@@ -157,7 +158,9 @@ public class LayerService {
     selectedDtoList.forEach(segmentSelectedDto -> {
       segmentService.validateSegment(SegmentSelectedToSegmentValidateInfoMapper.toDto(segmentSelectedDto)).forEach(validateResultDto -> {
         if (validateResultDto.getResult() != null) {
-          throw new HttpBadRequestException("Ошибка валидации сегмента. Мердж невозможен");
+          mergingLayer.setState(LayerStateType.CONFLICT);
+          layerDao.update(mergingLayer);
+          throw new HttpBadRequestException("Ошибка валидации сегмента. Необходимо отреадактировать слой и проджолжить мердж");
         }
       });
     });
@@ -437,7 +440,46 @@ public class LayerService {
     }
     Layer lastStableLayer = layerDao.findLastStableLayer();
     if (!Objects.equals(mergingLayer.getParent().getId(), lastStableLayer.getId())) {
-      mergeLayerWithParent(layerId);
+      mergingLayer.setParent(lastStableLayer);
+      layerDao.update(mergingLayer);
+      List<Layer> parentsOfMergingLayer = layerDao.getAllParents(mergingLayer.getId());
+      Collections.reverse(parentsOfMergingLayer);
+
+      changeOldSegmentStateLinks(mergingLayer, parentsOfMergingLayer);
+      changeOldQuestionRequiredLinks(mergingLayer, parentsOfMergingLayer);
+      changeOldScreenQuestionLinks(mergingLayer, parentsOfMergingLayer);
+      changeOldScreenEntrypointLinks(mergingLayer, parentsOfMergingLayer);
+
+      List<SegmentLayerViewDto> segmentLayerViewDtoList = segmentService
+          .getSegmentViewDtoListForSegmentsInLayerPage(mergingLayer.getId(), "").get()
+          .getSegments();
+
+      List<SegmentSelectedDto> selectedDtoList = new ArrayList<>();
+      segmentLayerViewDtoList.forEach(segmentLayerViewDto -> {
+        SegmentSelectedDto selectedDto = segmentService.getSegmentSelectedDto(mergingLayer.getId(), segmentLayerViewDto.getId()).get();
+        selectedDtoList.add(selectedDto);
+      });
+
+      selectedDtoList.forEach(segmentSelectedDto -> {
+        segmentService.validateSegment(SegmentSelectedToSegmentValidateInfoMapper.toDto(segmentSelectedDto)).forEach(validateResultDto -> {
+          if (validateResultDto.getResult() != null) {
+            mergingLayer.setState(LayerStateType.CONFLICT);
+            layerDao.update(mergingLayer);
+            throw new HttpBadRequestException("Ошибка валидации сегмента. Необходимо отреадактировать слой сделать мердж вручную");
+          }
+        });
+      });
+
+      if (!checkStateSegment(selectedDtoList) ||
+          !checkQuestionVisibilityAndPosition(selectedDtoList) ||
+          !checkScreenPositionAndState(selectedDtoList) ||
+          !checkRequiredQuestion(selectedDtoList)) {
+        mergingLayer.setState(LayerStateType.CONFLICT);
+        layerDao.update(mergingLayer);
+        return MergeResponseMapper.toDtoResponse(mergingLayer);
+      }
+      mergingLayer.setState(LayerStateType.STABLE);
+      layerDao.update(mergingLayer);
       return MergeResponseMapper.toDtoResponse(mergingLayer);
     }
     mergingLayer.setState(LayerStateType.STABLE);
