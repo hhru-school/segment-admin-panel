@@ -463,9 +463,7 @@ public class LayerService {
       selectedDtoList.forEach(segmentSelectedDto -> {
         segmentService.validateSegment(SegmentSelectedToSegmentValidateInfoMapper.toDto(segmentSelectedDto)).forEach(validateResultDto -> {
           if (validateResultDto.getResult() != null) {
-            mergingLayer.setState(LayerStateType.CONFLICT);
-            layerDao.update(mergingLayer);
-            throw new HttpBadRequestException("Ошибка валидации сегмента. Необходимо отреадактировать слой и продолжить мердж");
+            throw new HttpBadRequestException("Ошибка валидации сегмента. Необходимо отредактировать слой и продолжить мердж");
           }
         });
       });
@@ -474,8 +472,6 @@ public class LayerService {
           !checkQuestionVisibilityAndPosition(selectedDtoList) ||
           !checkScreenPositionAndState(selectedDtoList) ||
           !checkRequiredQuestion(selectedDtoList)) {
-        mergingLayer.setState(LayerStateType.CONFLICT);
-        layerDao.update(mergingLayer);
         return MergeResponseMapper.toDtoResponse(mergingLayer);
       }
       mergingLayer.setState(LayerStateType.STABLE);
