@@ -474,9 +474,6 @@ public class LayerService {
           !checkRequiredQuestion(selectedDtoList)) {
         return MergeResponseMapper.toDtoResponse(mergingLayer);
       }
-      mergingLayer.setState(LayerStateType.STABLE);
-      layerDao.update(mergingLayer);
-      return MergeResponseMapper.toDtoResponse(mergingLayer);
     }
     mergingLayer.setState(LayerStateType.STABLE);
     layerDao.update(mergingLayer);
