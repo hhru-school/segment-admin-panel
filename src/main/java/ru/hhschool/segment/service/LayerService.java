@@ -11,6 +11,7 @@ import ru.hhschool.segment.dao.abstracts.SegmentDao;
 import ru.hhschool.segment.dao.abstracts.SegmentScreenEntrypointLinkDao;
 import ru.hhschool.segment.dao.abstracts.SegmentStateLinkDao;
 import ru.hhschool.segment.exception.HttpBadRequestException;
+import ru.hhschool.segment.exception.HttpConflictException;
 import ru.hhschool.segment.exception.HttpNotFoundException;
 import ru.hhschool.segment.mapper.LayerMapper;
 import ru.hhschool.segment.mapper.PlatformMapper;
@@ -29,6 +30,7 @@ import ru.hhschool.segment.model.dto.layer.create.LayerCreateSegmentDto;
 import ru.hhschool.segment.model.dto.layer.create.LinkCreateQuestionDto;
 import ru.hhschool.segment.model.dto.layer.create.LinkCreateScreenQuestionDto;
 import ru.hhschool.segment.model.dto.merge.MergeResponseDto;
+import ru.hhschool.segment.model.dto.merge.enums.MergeErrorType;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentLayerViewDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentSelectedDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentViewEntryPointDto;
@@ -160,7 +162,9 @@ public class LayerService {
         if (validateResultDto.getResult() != null) {
           mergingLayer.setState(LayerStateType.CONFLICT);
           layerDao.update(mergingLayer);
-          throw new HttpBadRequestException("Ошибка валидации сегмента. Необходимо отреадактировать слой и проджолжить мердж");
+          MergeResponseDto mergeResponseDto = MergeResponseMapper.toDtoResponse(mergingLayer);
+          mergeResponseDto.setErrorType(MergeErrorType.VALIDATION_ERROR);
+          throw new HttpConflictException("Ошибка валидации сегмента. Необходимо отредактировать слой и проджолжить мердж", mergeResponseDto);
         }
       });
     });
@@ -171,7 +175,9 @@ public class LayerService {
         !checkRequiredQuestion(selectedDtoList)) {
       mergingLayer.setState(LayerStateType.CONFLICT);
       layerDao.update(mergingLayer);
-      return MergeResponseMapper.toDtoResponse(mergingLayer);
+      MergeResponseDto mergeResponseDto = MergeResponseMapper.toDtoResponse(mergingLayer);
+      mergeResponseDto.setErrorType(MergeErrorType.CONFLICTS_ERROR);
+      throw new HttpConflictException("При проверке конфликтов были найдены конфликты с актуальным стабильным слоем", mergeResponseDto);
     }
     mergingLayer.setState(LayerStateType.STABLE);
     layerDao.update(mergingLayer);
@@ -471,7 +477,9 @@ public class LayerService {
     selectedDtoList.forEach(segmentSelectedDto -> {
       segmentService.validateSegment(SegmentSelectedToSegmentValidateInfoMapper.toDto(segmentSelectedDto)).forEach(validateResultDto -> {
         if (validateResultDto.getResult() != null) {
-          throw new HttpBadRequestException("Ошибка валидации сегмента. Необходимо отредактировать слой и продолжить мердж");
+          MergeResponseDto mergeResponseDto = MergeResponseMapper.toDtoResponse(mergingLayer);
+          mergeResponseDto.setErrorType(MergeErrorType.VALIDATION_ERROR);
+          throw new HttpConflictException("Ошибка валидации сегмента. Необходимо отредактировать слой и проджолжить мердж", mergeResponseDto);
         }
       });
     });
@@ -480,7 +488,9 @@ public class LayerService {
         !checkQuestionVisibilityAndPosition(selectedDtoList) ||
         !checkScreenPositionAndState(selectedDtoList) ||
         !checkRequiredQuestion(selectedDtoList)) {
-      return MergeResponseMapper.toDtoResponse(mergingLayer);
+      MergeResponseDto mergeResponseDto = MergeResponseMapper.toDtoResponse(mergingLayer);
+      mergeResponseDto.setErrorType(MergeErrorType.CONFLICTS_ERROR);
+      throw new HttpConflictException("При выполнении Force Merge был найден новый актуальный слой и найдены конлифкты с ним", mergeResponseDto);
     }
     mergingLayer.setState(LayerStateType.STABLE);
     layerDao.update(mergingLayer);
