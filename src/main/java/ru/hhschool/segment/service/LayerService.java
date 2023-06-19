@@ -158,6 +158,8 @@ public class LayerService {
       List<ValidateResultDto> validateResultDtos = segmentService.validateSegment(SegmentSelectedToSegmentValidateInfoMapper.toDto(selectedDto));
       validateResultDtos.forEach(validateResultDto -> {
         if (validateResultDto.getResult() != null) {
+          mergingLayer.setState(LayerStateType.CONFLICT);
+          layerDao.update(mergingLayer);
           MergeResponseDto mergeResponseDto = MergeResponseMapper.toDtoResponse(mergingLayer);
           mergeResponseDto.setErrorType(MergeErrorType.VALIDATION_ERROR);
           throw new HttpConflictException("Ошибка валидации сегмента. Необходимо отредактировать слой и проджолжить мердж", mergeResponseDto);
