@@ -4,8 +4,10 @@ import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
 import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerSegmentDto;
 import ru.hhschool.segment.model.dto.layer.LayerDtoForList;
+import ru.hhschool.segment.model.dto.merge.MergeResponseDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.LayerSegmentsDto;
 import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentSelectedDto;
+import ru.hhschool.segment.model.enums.LayerStateType;
 import ru.hhschool.segment.service.LayerService;
 import ru.hhschool.segment.service.SegmentService;
 
@@ -150,6 +152,10 @@ public class LayerResource {
   @Path(value = "/{layerId}/forcemerge")
   @Produces(MediaType.APPLICATION_JSON)
   public Response forceMergeLayer(@PathParam(value = "layerId") Long layerId) {
-    return Response.ok(layerService.forceMergeLayer(layerId)).build();
+    MergeResponseDto mergeResponseDto = layerService.forceMergeLayer(layerId);
+    if (mergeResponseDto.getState().equals(LayerStateType.STABLE)){
+      return Response.ok(layerService.forceMergeLayer(layerId)).build();
+    }
+    return Response.status(Response.Status.CONFLICT).entity(mergeResponseDto).build();
   }
 }
