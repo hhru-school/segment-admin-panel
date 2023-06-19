@@ -22,6 +22,7 @@ import ru.hhschool.segment.mapper.validate.SegmentSelectedToSegmentValidateInfoM
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.PlatformDto;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
+import ru.hhschool.segment.model.dto.createlayer.validate.ValidateResultDto;
 import ru.hhschool.segment.model.dto.layer.LayerDtoForList;
 import ru.hhschool.segment.model.dto.layer.create.LayerCreateDto;
 import ru.hhschool.segment.model.dto.layer.create.LayerCreateEntrypointDto;
@@ -154,18 +155,14 @@ public class LayerService {
     List<SegmentSelectedDto> selectedDtoList = new ArrayList<>();
     segmentLayerViewDtoList.forEach(segmentLayerViewDto -> {
       SegmentSelectedDto selectedDto = segmentService.getSegmentSelectedDto(mergingLayer.getId(), segmentLayerViewDto.getId()).get();
-      selectedDtoList.add(selectedDto);
-    });
-
-    selectedDtoList.forEach(segmentSelectedDto -> {
-      segmentService.validateSegment(SegmentSelectedToSegmentValidateInfoMapper.toDto(segmentSelectedDto)).forEach(validateResultDto -> {
+      List<ValidateResultDto> validateResultDtos = segmentService.validateSegment(SegmentSelectedToSegmentValidateInfoMapper.toDto(selectedDto));
+      validateResultDtos.forEach(validateResultDto -> {
         if (validateResultDto.getResult() != null) {
-          mergingLayer.setState(LayerStateType.CONFLICT);
-          layerDao.update(mergingLayer);
           MergeResponseDto mergeResponseDto = MergeResponseMapper.toDtoResponse(mergingLayer);
           mergeResponseDto.setErrorType(MergeErrorType.VALIDATION_ERROR);
           throw new HttpConflictException("Ошибка валидации сегмента. Необходимо отредактировать слой и проджолжить мердж", mergeResponseDto);
         }
+        selectedDtoList.add(selectedDto);
       });
     });
 
@@ -471,19 +468,16 @@ public class LayerService {
     List<SegmentSelectedDto> selectedDtoList = new ArrayList<>();
     segmentLayerViewDtoList.forEach(segmentLayerViewDto -> {
       SegmentSelectedDto selectedDto = segmentService.getSegmentSelectedDto(mergingLayer.getId(), segmentLayerViewDto.getId()).get();
-      selectedDtoList.add(selectedDto);
-    });
-
-    selectedDtoList.forEach(segmentSelectedDto -> {
-      segmentService.validateSegment(SegmentSelectedToSegmentValidateInfoMapper.toDto(segmentSelectedDto)).forEach(validateResultDto -> {
+      List<ValidateResultDto> validateResultDtos = segmentService.validateSegment(SegmentSelectedToSegmentValidateInfoMapper.toDto(selectedDto));
+      validateResultDtos.forEach(validateResultDto -> {
         if (validateResultDto.getResult() != null) {
           MergeResponseDto mergeResponseDto = MergeResponseMapper.toDtoResponse(mergingLayer);
           mergeResponseDto.setErrorType(MergeErrorType.VALIDATION_ERROR);
           throw new HttpConflictException("Ошибка валидации сегмента. Необходимо отредактировать слой и проджолжить мердж", mergeResponseDto);
         }
+        selectedDtoList.add(selectedDto);
       });
     });
-
     if (!checkStateSegment(selectedDtoList) ||
         !checkQuestionVisibilityAndPosition(selectedDtoList) ||
         !checkScreenPositionAndState(selectedDtoList) ||
