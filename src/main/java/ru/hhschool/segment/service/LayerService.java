@@ -152,10 +152,10 @@ public class LayerService {
         .getSegments();
 
     List<SegmentSelectedDto> selectedDtoList = new ArrayList<>();
-    for (SegmentLayerViewDto segmentLayerViewDto : segmentLayerViewDtoList){
+    for (SegmentLayerViewDto segmentLayerViewDto : segmentLayerViewDtoList) {
       SegmentSelectedDto selectedDto = segmentService.getSegmentSelectedDto(mergingLayer.getId(), segmentLayerViewDto.getId()).get();
       List<ValidateResultDto> validateResultDtos = segmentService.validateSegment(SegmentSelectedToSegmentValidateInfoMapper.toDto(selectedDto));
-      if (!validateResultDtos.isEmpty()){
+      if (!validateResultDtos.isEmpty()) {
         mergingLayer.setState(LayerStateType.CONFLICT);
         layerDao.update(mergingLayer);
         return MergeResponseMapper.toDtoResponse(mergingLayer, MergeErrorType.VALIDATION_ERROR,
@@ -171,7 +171,7 @@ public class LayerService {
       mergingLayer.setState(LayerStateType.CONFLICT);
       layerDao.update(mergingLayer);
       return MergeResponseMapper.toDtoResponse(mergingLayer, MergeErrorType.CONFLICTS_ERROR,
-            "При проверке конфликтов были найдены конфликты с актуальным стабильным слоем");
+          "При проверке конфликтов были найдены конфликты с актуальным стабильным слоем");
     }
     mergingLayer.setState(LayerStateType.STABLE);
     layerDao.update(mergingLayer);
@@ -442,9 +442,7 @@ public class LayerService {
     if (!Objects.equals(mergingLayer.getParent().getId(), lastStableLayer.getId())) {
       return checkConflictsAndMerge(mergingLayer, lastStableLayer);
     }
-    mergingLayer.setState(LayerStateType.STABLE);
-    layerDao.update(mergingLayer);
-    return MergeResponseMapper.toDtoResponse(mergingLayer);
+    return validateSegmentsAndMerge(mergingLayer);
   }
 
   public MergeResponseDto checkConflictsAndMerge(Layer mergingLayer, Layer lastStableLayer) {
@@ -463,10 +461,10 @@ public class LayerService {
         .getSegments();
 
     List<SegmentSelectedDto> selectedDtoList = new ArrayList<>();
-    for (SegmentLayerViewDto segmentLayerViewDto : segmentLayerViewDtoList){
+    for (SegmentLayerViewDto segmentLayerViewDto : segmentLayerViewDtoList) {
       SegmentSelectedDto selectedDto = segmentService.getSegmentSelectedDto(mergingLayer.getId(), segmentLayerViewDto.getId()).get();
       List<ValidateResultDto> validateResultDtos = segmentService.validateSegment(SegmentSelectedToSegmentValidateInfoMapper.toDto(selectedDto));
-      if (!validateResultDtos.isEmpty()){
+      if (!validateResultDtos.isEmpty()) {
         return MergeResponseMapper.toDtoResponse(mergingLayer, MergeErrorType.VALIDATION_ERROR,
             "Ошибка валидации сегмента. Необходимо отредактировать слой и продолжить мердж");
       }
@@ -482,6 +480,24 @@ public class LayerService {
     }
     mergingLayer.setState(LayerStateType.STABLE);
     layerDao.update(mergingLayer);
+    return MergeResponseMapper.toDtoResponse(mergingLayer);
+  }
+
+  public MergeResponseDto validateSegmentsAndMerge(Layer mergingLayer) {
+    List<SegmentLayerViewDto> segmentLayerViewDtoList = segmentService
+        .getSegmentViewDtoListForSegmentsInLayerPage(mergingLayer.getId(), "").get()
+        .getSegments();
+    for (SegmentLayerViewDto segmentLayerViewDto : segmentLayerViewDtoList) {
+      SegmentSelectedDto selectedDto = segmentService.getSegmentSelectedDto(mergingLayer.getId(), segmentLayerViewDto.getId()).get();
+      List<ValidateResultDto> validateResultDtos = segmentService.validateSegment(SegmentSelectedToSegmentValidateInfoMapper.toDto(selectedDto));
+      if (!validateResultDtos.isEmpty()) {
+        layerDao.update(mergingLayer);
+        return MergeResponseMapper.toDtoResponse(mergingLayer, MergeErrorType.VALIDATION_ERROR,
+            "Ошибка валидации сегмента. Необходимо отредактировать слой и продолжить мердж");
+      }
+      mergingLayer.setState(LayerStateType.STABLE);
+      layerDao.update(mergingLayer);
+    }
     return MergeResponseMapper.toDtoResponse(mergingLayer);
   }
 
