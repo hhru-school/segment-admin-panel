@@ -1,15 +1,5 @@
 package ru.hhschool.segment.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import ru.hhschool.segment.dao.abstracts.EntrypointDao;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.dao.abstracts.PlatformDao;
@@ -71,6 +61,19 @@ import ru.hhschool.segment.model.entity.SegmentStateLink;
 import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 import ru.hhschool.segment.model.enums.StateType;
 import ru.hhschool.segment.util.ExceptionMessageExtract;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SegmentService {
   private final LayerDao layerDao;
@@ -532,6 +535,21 @@ public class SegmentService {
         validateResultDto.setResult(QuestionValidateResultMapper.toDto(question));
         validateResultDtos.add(validateResultDto);
       }
+    });
+
+    segmentValidateInfoDto.getEntryPoints().forEach(entrypoint -> {
+      Set<InfoLayerScreenDto> screenSet = new HashSet<>();
+      entrypoint.getScreens().forEach(screen -> {
+        if (screenSet.contains(screen)) {
+          ValidateResultDto validateResultDto = new ValidateResultDto();
+          validateResultDto.setError("Экран " + "c  id " + screen.getId() + " имеет" );
+          validateResultDto.setErrorType(ErrorType.FIELD_REQUIRED);
+          validateResultDto.setResult(ScreenValidateResultMapper.toDto(screen));
+          validateResultDtos.add(validateResultDto);
+        } else {
+          screenSet.add(screen);
+        }
+      });
     });
     validateResultDtos.sort(Comparator.comparing(ValidateResultDto::getErrorType));
     return validateResultDtos;
