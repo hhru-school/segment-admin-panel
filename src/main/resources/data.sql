@@ -202,7 +202,7 @@ VALUES (NULL, 1, 1, 1, 6, 26, 1, 'SHOW'),           -- 1
        (NULL, 1, 1, 2, 6, 28, 3, 'SHOW_PREFILLED'), -- 13
        (NULL, 1, 1, 2, 6, 29, 4, 'HIDE_PREFILLED'), -- 14
 
-       (NULL, 1, 1, 2, 2, 5, 1, 'SHOW'),            -- 15
+       (NULL, 1, 1, 2, 2, 5, 1, 'HIDE'),            -- 15
        (NULL, 1, 1, 2, 2, 6, 2, 'HIDE'),            -- 16
 
        (NULL, 1, 1, 2, 3, 7, 1, 'SHOW'),            -- 17
@@ -211,7 +211,7 @@ VALUES (NULL, 1, 1, 1, 6, 26, 1, 'SHOW'),           -- 1
 
        (NULL, 1, 1, 2, 4, 10, 1, 'HIDE'),           -- 20
 
-       (NULL, 1, 1, 2, 5, 11, 1, 'HIDE'),           -- 22
+       (NULL, 1, 1, 2, 5, 11, 1, 'SHOW'),           -- 22
        (NULL, 1, 1, 2, 5, 12, 2, 'SHOW'),           -- 23
        (NULL, 1, 1, 2, 5, 13, 3, 'HIDE'),           -- 24
        (NULL, 1, 1, 2, 5, 14, 4, 'SHOW');
@@ -257,7 +257,7 @@ VALUES (NULL, 2, 2, 1, 1, 1, 1, 'SHOW'),           -- 26
        (NULL, 2, 2, 1, 1, 3, 3, 'SHOW_PREFILLED'), -- 28
        (NULL, 2, 2, 1, 1, 4, 4, 'HIDE_PREFILLED'), -- 29
 
-       (NULL, 2, 2, 1, 2, 5, 1, 'SHOW'),           -- 30
+       (NULL, 2, 2, 1, 2, 5, 1, 'HIDE'),           -- 30
        (NULL, 2, 2, 1, 2, 6, 2, 'SHOW'),           -- 31
 
        (NULL, 2, 2, 1, 5, 22, 1, 'HIDE'),          -- 32
@@ -382,6 +382,10 @@ VALUES (1, 'ARCHIVE слой', 'Слой, унаследованный от вт
 --Шестой слой
 INSERT INTO layers (parent_layer_id, title, description, state, create_time, platforms, stabled_time)
 VALUES (1, 'CONFLICT слой', 'Слой, унаследованный от второго слоя', 'CONFLICT', '2023-04-16 02:02:00', '{1, 4, 5}', null);
+
+--INSERT INTO screen_question_links (old_id, layer_id, segment_id, entrypoint_id, screen_id, question_id, question_position, question_visibility)
+--VALUES (26, 6, 2, 1, 1, 2, 1, 'SHOW'),
+--(26, 6, 2, 1, 2, 2, 1, 'SHOW');
 --Седьмой слой
 
 

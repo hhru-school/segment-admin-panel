@@ -22,8 +22,10 @@ public class LayerBasicInfoMapper {
       layerBasicInfoDto.setLayerStatus(LayerStatus.STABLE);
     } else if (layer.getState().equals(LayerStateType.ARCHIVE)) {
       layerBasicInfoDto.setLayerStatus(LayerStatus.ARCHIVED);
-    } else {
+    } else if (layer.getState().equals(LayerStateType.TEST)) {
       layerBasicInfoDto.setLayerStatus(LayerStatus.EXPERIMENTAL);
+    } else {
+      layerBasicInfoDto.setLayerStatus(LayerStatus.CONFLICT);
     }
     layerBasicInfoDto.setPlatforms(platforms);
     layerBasicInfoDto.setParentLayersList(toDtoListForBasicPage(parents));
