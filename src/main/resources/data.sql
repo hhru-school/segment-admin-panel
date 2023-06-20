@@ -296,9 +296,9 @@ VALUES (2, 'Третий слой', 'Слой, унаследованный от
 -- 3
 
 INSERT INTO segment_state_links (old_id, layer_id, segment_id, state)
-VALUES (NULL, 3, 3, 'ACTIVE'), -- 4
---       (1, 3, 1, 'ACTIVE'),    -- 5
-       (2, 3, 2, 'DISABLED'); -- 6
+VALUES (NULL, 3, 3, 'DISABLED'), -- 4
+       (1, 3, 1, 'ACTIVE'),    -- 5
+       (2, 3, 2, 'ACTIVE'); -- 6
 
 INSERT INTO question_required_links (old_id, layer_id, segment_id, question_id, question_required)
 VALUES (NULL, 3, 3, 7, TRUE),  -- 13
