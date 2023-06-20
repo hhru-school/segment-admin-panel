@@ -86,7 +86,7 @@ public class QuestionService {
    * Если есть открытые ответы, проходим их в рекурсии через getOrCreateAnswer.
    */
   private Question getOrCreateQuestion(QuestionCreateDto questionCreateDto, int countDepth) {
-    if (countDepth++ > MAX_DEPTH_OF_TREE) {
+    if (countDepth++ >= MAX_DEPTH_OF_TREE) {
       throw new HttpBadRequestException(
           String.format("Превышена максимальная вложенность MAX_DEPTH_OF_TREE = %d", MAX_DEPTH_OF_TREE)
       );
@@ -110,6 +110,11 @@ public class QuestionService {
       throw new HttpBadRequestException("Не заданны ответы.");
     }
 
+    if (questionCreateDto.getId() != null) {
+      return questionDao.findById(questionCreateDto.getId())
+          .orElseThrow(() -> new HttpBadRequestException("Указанное поле/вопрос не найден."));
+    }
+
     List<Long> possibleAnswerIdList = new ArrayList<>();
     if (isTypeWithAnswer) {
       for (AnswerCreateDto answerDto : questionCreateDto.getPossibleAnswers()) {
@@ -118,14 +123,9 @@ public class QuestionService {
       }
     }
 
-    Question question;
-    if (questionCreateDto.getId() == null) {
-      question = QuestionMapper.fromDto(questionCreateDto, possibleAnswerIdList);
-      questionDao.persist(question);
-    } else {
-      question = questionDao.findById(questionCreateDto.getId())
-          .orElseThrow(() -> new HttpBadRequestException("Указанное поле/вопрос не найден."));
-    }
+    Question question = QuestionMapper.fromDto(questionCreateDto, possibleAnswerIdList);
+    questionDao.persist(question);
+
     return question;
   }
 
@@ -143,6 +143,12 @@ public class QuestionService {
     if (StringUtil.isBlank(answerCreateDto.getPositiveTitle())) {
       throw new HttpBadRequestException("Утвердительная форма не может быть пустой.");
     }
+
+    if (answerCreateDto.getId() != null) {
+      return answerDao.findById(answerCreateDto.getId())
+          .orElseThrow(() -> new HttpBadRequestException("Указанный ответ не найден."));
+    }
+
     List<Long> openQuestionIdList = new ArrayList<>();
 
     if (answerCreateDto.getOpenQuestions() != null && answerCreateDto.getOpenQuestions().size() > 0) {
@@ -152,14 +158,9 @@ public class QuestionService {
       }
     }
 
-    Answer answer;
-    if (answerCreateDto.getId() == null) {
-      answer = AnswerMapper.fromDto(answerCreateDto, openQuestionIdList);
-      answerDao.persist(answer);
-    } else {
-      answer = answerDao.findById(answerCreateDto.getId())
-          .orElseThrow(() -> new HttpBadRequestException("Указанный ответ не найден."));
-    }
+    Answer answer = AnswerMapper.fromDto(answerCreateDto, openQuestionIdList);
+    answerDao.persist(answer);
+
     return answer;
   }
 
