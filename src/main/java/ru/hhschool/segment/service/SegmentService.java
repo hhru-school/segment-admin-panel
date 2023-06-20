@@ -536,18 +536,17 @@ public class SegmentService {
         validateResultDtos.add(validateResultDto);
       }
     });
-
     segmentValidateInfoDto.getEntryPoints().forEach(entrypoint -> {
-      Set<InfoLayerScreenDto> screenSet = new HashSet<>();
+      Set<String> screenTitleSet = new HashSet<>();
       entrypoint.getScreens().forEach(screen -> {
-        if (screenSet.contains(screen)) {
+        if (screenTitleSet.contains(screen.getTitle())) {
           ValidateResultDto validateResultDto = new ValidateResultDto();
-          validateResultDto.setError("Экран " + "c  id " + screen.getId() + " имеет" );
-          validateResultDto.setErrorType(ErrorType.FIELD_REQUIRED);
+          validateResultDto.setError("Экран " + "c  id " + screen.getId() + " имеет  одинаковый Title c другим экраном " + screen.getTitle());
+          validateResultDto.setErrorType(ErrorType.SCREEN_TITLE);
           validateResultDto.setResult(ScreenValidateResultMapper.toDto(screen));
           validateResultDtos.add(validateResultDto);
         } else {
-          screenSet.add(screen);
+          screenTitleSet.add(screen.getTitle());
         }
       });
     });
