@@ -136,7 +136,11 @@ public class LayerResource {
   @Path(value = "/{layerId}/merge")
   @Produces(MediaType.APPLICATION_JSON)
   public Response mergeLayer(@PathParam(value = "layerId") Long layerId) {
-    return Response.ok(layerService.mergeLayerWithParent(layerId)).build();
+    MergeResponseDto mergeResponseDto = layerService.mergeLayerWithParent(layerId);
+    if (mergeResponseDto.getState().equals(LayerStateType.STABLE)) {
+      return Response.ok(mergeResponseDto).build();
+    }
+    return Response.status(Response.Status.CONFLICT).entity(mergeResponseDto).build();
   }
 
   @GET
