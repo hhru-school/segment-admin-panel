@@ -1,6 +1,7 @@
 package ru.hhschool.segment.mapper.question;
 
 import java.util.List;
+import ru.hhschool.segment.model.dto.question.QuestionCreateDto;
 import ru.hhschool.segment.model.dto.questioninfopage.AnswerDtoForQuestionsInfo;
 import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfo;
 import ru.hhschool.segment.model.entity.Question;
@@ -17,5 +18,15 @@ public class QuestionMapper {
     questionDtoForQuestionsInfo.setAnswersType(question.getAnswerType());
     questionDtoForQuestionsInfo.setPossibleAnswersList(answerDtoList);
     return questionDtoForQuestionsInfo;
+  }
+
+  public static Question fromDto(QuestionCreateDto questionCreateDto, List<Long> answers) {
+    return new Question(
+        questionCreateDto.getTitle(),
+        questionCreateDto.getDescription(),
+        questionCreateDto.getType(),
+        questionCreateDto.getAnswerType(),
+        answers
+    );
   }
 }

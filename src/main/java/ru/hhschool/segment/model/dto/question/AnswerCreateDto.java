@@ -1,39 +1,36 @@
-package ru.hhschool.segment.model.dto;
+package ru.hhschool.segment.model.dto.question;
 
 import java.util.List;
 import ru.hhschool.segment.model.enums.AnswerType;
 
-public class AnswerDto {
+public class AnswerCreateDto {
   private Long id;
   private String title;
   private String positiveTitle;
-  private AnswerType answerType;
+  private AnswerType type;
   private boolean defaultAnswer;
   private boolean skipAtResult;
-  private List<QuestionDto> openQuestionDtoList;
-  private Long layerId;
+  private List<QuestionCreateDto> openQuestions;
 
-  public AnswerDto() {
+  public AnswerCreateDto() {
   }
 
-  public AnswerDto(
+  public AnswerCreateDto(
       Long id,
       String title,
       String positiveTitle,
-      AnswerType answerType,
+      AnswerType type,
       boolean defaultAnswer,
       boolean skipAtResult,
-      List<QuestionDto> openQuestonDtoList,
-      Long layerId
+      List<QuestionCreateDto> openQuestions
   ) {
     this.id = id;
     this.title = title;
     this.positiveTitle = positiveTitle;
-    this.answerType = answerType;
+    this.type = type;
     this.defaultAnswer = defaultAnswer;
     this.skipAtResult = skipAtResult;
-    this.openQuestionDtoList = openQuestonDtoList;
-    this.layerId = layerId;
+    this.openQuestions = openQuestions;
   }
 
   public Long getId() {
@@ -60,12 +57,12 @@ public class AnswerDto {
     this.positiveTitle = positiveTitle;
   }
 
-  public AnswerType getAnswerType() {
-    return answerType;
+  public AnswerType getType() {
+    return type;
   }
 
-  public void setAnswerType(AnswerType answerType) {
-    this.answerType = answerType;
+  public void setType(AnswerType type) {
+    this.type = type;
   }
 
   public boolean isDefaultAnswer() {
@@ -84,19 +81,11 @@ public class AnswerDto {
     this.skipAtResult = skipAtResult;
   }
 
-  public List<QuestionDto> getOpenQuestionDtoList() {
-    return openQuestionDtoList;
+  public List<QuestionCreateDto> getOpenQuestions() {
+    return openQuestions;
   }
 
-  public void setOpenQuestionDtoList(List<QuestionDto> openQuestionDtoList) {
-    this.openQuestionDtoList = openQuestionDtoList;
-  }
-
-  public Long getLayerId() {
-    return layerId;
-  }
-
-  public void setLayerId(Long layerId) {
-    this.layerId = layerId;
+  public void setOpenQuestions(List<QuestionCreateDto> openQuestions) {
+    this.openQuestions = openQuestions;
   }
 }

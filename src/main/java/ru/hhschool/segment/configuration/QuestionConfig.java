@@ -2,6 +2,7 @@ package ru.hhschool.segment.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import ru.hhschool.segment.dao.abstracts.AnswerDao;
 import ru.hhschool.segment.dao.abstracts.QuestionDao;
 import ru.hhschool.segment.dao.impl.QuestionDaoImpl;
 import ru.hhschool.segment.service.AnswerService;
@@ -16,8 +17,13 @@ public class QuestionConfig {
   }
 
   @Bean
-  public QuestionService getQuestionService(QuestionDao questionDao, AnswerService answerService, QuestionFilterService questionFilterService) {
-    return new QuestionService(questionDao, answerService, questionFilterService);
+  public QuestionService getQuestionService(
+      QuestionDao questionDao,
+      AnswerService answerService,
+      QuestionFilterService questionFilterService,
+      AnswerDao answerDao
+  ) {
+    return new QuestionService(questionDao, answerService, questionFilterService, answerDao);
   }
 
   @Bean
