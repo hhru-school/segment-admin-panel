@@ -495,9 +495,9 @@ public class LayerService {
         return MergeResponseMapper.toDtoResponse(mergingLayer, MergeErrorType.VALIDATION_ERROR,
             "Ошибка валидации сегмента. Необходимо отредактировать слой и продолжить мердж");
       }
-      mergingLayer.setState(LayerStateType.STABLE);
-      layerDao.update(mergingLayer);
     }
+    mergingLayer.setState(LayerStateType.STABLE);
+    layerDao.update(mergingLayer);
     return MergeResponseMapper.toDtoResponse(mergingLayer);
   }
 

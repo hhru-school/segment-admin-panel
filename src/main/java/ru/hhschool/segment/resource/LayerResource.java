@@ -154,7 +154,7 @@ public class LayerResource {
   public Response forceMergeLayer(@PathParam(value = "layerId") Long layerId) {
     MergeResponseDto mergeResponseDto = layerService.forceMergeLayer(layerId);
     if (mergeResponseDto.getState().equals(LayerStateType.STABLE)){
-      return Response.ok(layerService.forceMergeLayer(layerId)).build();
+      return Response.ok(mergeResponseDto).build();
     }
     return Response.status(Response.Status.CONFLICT).entity(mergeResponseDto).build();
   }
