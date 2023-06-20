@@ -86,7 +86,7 @@ public class QuestionService {
    * Если есть открытые ответы, проходим их в рекурсии через getOrCreateAnswer.
    */
   private Question getOrCreateQuestion(QuestionCreateDto questionCreateDto, int countDepth) {
-    if (countDepth++ >= MAX_DEPTH_OF_TREE) {
+    if (countDepth++ > MAX_DEPTH_OF_TREE) {
       throw new HttpBadRequestException(
           String.format("Превышена максимальная вложенность MAX_DEPTH_OF_TREE = %d", MAX_DEPTH_OF_TREE)
       );
