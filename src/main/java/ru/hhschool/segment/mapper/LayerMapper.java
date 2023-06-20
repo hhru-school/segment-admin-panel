@@ -1,10 +1,12 @@
 package ru.hhschool.segment.mapper;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.layer.LayerDtoForList;
+import ru.hhschool.segment.model.dto.layer.create.LayerCreateDto;
 import ru.hhschool.segment.model.entity.Layer;
 import ru.hhschool.segment.model.enums.LayerStateType;
 import ru.hhschool.segment.model.enums.LayerStatus;
@@ -34,19 +36,32 @@ public class LayerMapper {
         .toList();
   }
 
+  public static LayerDtoForList toDtoForList(Layer layer) {
+    return new LayerDtoForList(
+        layer.getId(),
+        layer.getTitle(),
+        layer.getDescription(),
+        layer.getState(),
+        layer.getCreateTime()
+    );
+  }
+
   public static List<LayerDtoForList> toLayerForListDto(List<Layer> layerList) {
     if (layerList == null) {
       return List.of();
     }
 
-    return layerList.stream().map(
-        layer -> new LayerDtoForList(
-            layer.getId(),
-            layer.getTitle(),
-            layer.getDescription(),
-            layer.getState(),
-            layer.getCreateTime()
-        )
-    ).toList();
+    return layerList.stream().map(LayerMapper::toDtoForList).toList();
+  }
+
+  public static Layer dtoToLayer(LayerCreateDto layerCreateDto, Layer parentLayer, List<Long> platformIdList) {
+    return new Layer(
+        layerCreateDto.getTitle(),
+        parentLayer,
+        layerCreateDto.getDescription(),
+        LayerStateType.TEST,
+        LocalDateTime.now().withNano(0),
+        platformIdList
+    );
   }
 }

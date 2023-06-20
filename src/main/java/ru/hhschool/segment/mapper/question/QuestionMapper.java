@@ -2,9 +2,12 @@ package ru.hhschool.segment.mapper.question;
 
 import java.util.List;
 import ru.hhschool.segment.model.dto.question.QuestionCreateDto;
+import java.util.List;
 import ru.hhschool.segment.model.dto.questioninfopage.AnswerDtoForQuestionsInfo;
 import ru.hhschool.segment.model.dto.questioninfopage.QuestionDtoForQuestionsInfo;
 import ru.hhschool.segment.model.entity.Question;
+
+import java.util.List;
 
 public class QuestionMapper {
 

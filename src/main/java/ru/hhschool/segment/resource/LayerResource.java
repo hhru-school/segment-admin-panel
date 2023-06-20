@@ -1,25 +1,34 @@
 package ru.hhschool.segment.resource;
 
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.bind.annotation.RequestBody;
+import ru.hhschool.segment.exception.HttpBadRequestException;
+import ru.hhschool.segment.model.dto.ErrorDto;
+import ru.hhschool.segment.model.dto.LayerDto;
+import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
+import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerSegmentDto;
+import ru.hhschool.segment.model.dto.layer.LayerDtoForList;
+import ru.hhschool.segment.model.dto.layer.create.LayerCreateDto;
+import ru.hhschool.segment.model.dto.merge.MergeResponseDto;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.LayerSegmentsDto;
+import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentSelectedDto;
+import ru.hhschool.segment.model.enums.LayerStateType;
+import ru.hhschool.segment.service.LayerService;
+import ru.hhschool.segment.service.SegmentService;
+
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.PATCH;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import ru.hhschool.segment.model.dto.LayerDto;
-import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
-import ru.hhschool.segment.model.dto.layer.LayerDtoForList;
-import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerSegmentDto;
-import ru.hhschool.segment.model.dto.viewsegments.layerview.LayerSegmentsDto;
-import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentSelectedDto;
-import ru.hhschool.segment.service.LayerService;
-import ru.hhschool.segment.service.SegmentService;
+import java.util.List;
+import java.util.Optional;
+
 
 @Path("/layers")
 public class LayerResource {
@@ -82,9 +91,9 @@ public class LayerResource {
   @GET
   @Path("/{layerId}/segments/{segmentId}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getSegmentViewDtoListForViewSegmentPage(@PathParam("layerId") Long layerId, @PathParam("segmentId") Long segmentId){
+  public Response getSegmentViewDtoListForViewSegmentPage(@PathParam("layerId") Long layerId, @PathParam("segmentId") Long segmentId) {
     Optional<SegmentSelectedDto> segmentSelectedDto = segmentService.getSegmentSelectedDto(layerId, segmentId);
-    if (segmentSelectedDto.isPresent()){
+    if (segmentSelectedDto.isPresent()) {
       return Response.ok(segmentSelectedDto).build();
     }
     return Response.status(Response.Status.NOT_FOUND).build();
@@ -93,26 +102,55 @@ public class LayerResource {
   @GET
   @Path("/{layerId}/segments/{segmentId}/details")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getCreateLayerSegmentDto(@PathParam("layerId") Long layerId, @PathParam("segmentId") Long segmentId){
+  public Response getCreateLayerSegmentDto(@PathParam("layerId") Long layerId, @PathParam("segmentId") Long segmentId) {
     Optional<InfoLayerSegmentDto> createLayerSegmentDto = segmentService.getCreateLayerSegmentDto(layerId, segmentId);
-    if (createLayerSegmentDto.isPresent()){
+    if (createLayerSegmentDto.isPresent()) {
       return Response.ok(createLayerSegmentDto).build();
     }
     return Response.status(Response.Status.NOT_FOUND).build();
   }
 
   @PATCH
-  @Path("/{layerId}/setArchive/")
+  @Path("/{layerId}/setArchive")
   @Produces(MediaType.APPLICATION_JSON)
   public Response setLayerStateToArchive(@PathParam(value = "layerId") Long layerId) {
     layerService.setLayerStateToArchive(layerId);
     return Response.ok("Статус успешно изменен.").build();
   }
 
+  @POST
+  @Path("/add")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response addLayer(@RequestBody LayerCreateDto layerCreateDto) {
+    if (layerCreateDto == null) {
+      throw new HttpBadRequestException("Отсутствует необходимый параметр");
+    }
+    Optional<LayerDtoForList> layerDto = layerService.add(layerCreateDto);
+    if (layerDto.isPresent()) {
+      return Response.ok(layerDto.get()).build();
+    }
+    return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorDto("Не удалось создать.")).build();
+  }
+
   @GET
   @Path(value = "/{layerId}/merge")
   @Produces(MediaType.APPLICATION_JSON)
   public Response mergeLayer(@PathParam(value = "layerId") Long layerId) {
-    return Response.ok(layerService.mergeLayerWithParent(layerId)).build();
+    MergeResponseDto mergeResponseDto = layerService.mergeLayerWithParent(layerId);
+    if (mergeResponseDto.getState().equals(LayerStateType.STABLE)) {
+      return Response.ok(mergeResponseDto).build();
+    }
+    return Response.status(Response.Status.CONFLICT).entity(mergeResponseDto).build();
+  }
+
+  @GET
+  @Path(value = "/{layerId}/forcemerge")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response forceMergeLayer(@PathParam(value = "layerId") Long layerId) {
+    MergeResponseDto mergeResponseDto = layerService.forceMergeLayer(layerId);
+    if (mergeResponseDto.getState().equals(LayerStateType.STABLE)) {
+      return Response.ok(mergeResponseDto).build();
+    }
+    return Response.status(Response.Status.CONFLICT).entity(mergeResponseDto).build();
   }
 }
