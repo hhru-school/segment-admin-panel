@@ -1,5 +1,15 @@
 package ru.hhschool.segment.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import ru.hhschool.segment.dao.abstracts.EntrypointDao;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.dao.abstracts.PlatformDao;
@@ -17,10 +27,12 @@ import ru.hhschool.segment.mapper.PlatformMapper;
 import ru.hhschool.segment.mapper.basicinfo.LayerBasicInfoMapper;
 import ru.hhschool.segment.mapper.layer.LayerStatusMapper;
 import ru.hhschool.segment.mapper.merge.MergeResponseMapper;
+import ru.hhschool.segment.mapper.validate.CreateLayerToSegmentValidateInfoMapper;
 import ru.hhschool.segment.mapper.validate.SegmentSelectedToSegmentValidateInfoMapper;
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.PlatformDto;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
+import ru.hhschool.segment.model.dto.createlayer.validate.SegmentValidateInfoDto;
 import ru.hhschool.segment.model.dto.createlayer.validate.ValidateResultDto;
 import ru.hhschool.segment.model.dto.layer.LayerDtoForList;
 import ru.hhschool.segment.model.dto.layer.create.LayerCreateDto;
@@ -49,17 +61,6 @@ import ru.hhschool.segment.model.entity.SegmentStateLink;
 import ru.hhschool.segment.model.enums.LayerStateType;
 import ru.hhschool.segment.model.enums.ScreenType;
 import ru.hhschool.segment.util.ExceptionMessageExtract;
-
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class LayerService {
   private final LayerDao layerDao;
@@ -159,7 +160,8 @@ public class LayerService {
         mergingLayer.setState(LayerStateType.CONFLICT);
         layerDao.update(mergingLayer);
         return MergeResponseMapper.toDtoResponse(mergingLayer, MergeErrorType.VALIDATION_ERROR,
-            "Ошибка валидации сегмента. Необходимо отредактировать слой и продолжить мердж");
+            "Ошибка валидации сегмента. Необходимо отредактировать слой и продолжить мердж"
+        );
       }
       selectedDtoList.add(selectedDto);
     }
@@ -171,7 +173,8 @@ public class LayerService {
       mergingLayer.setState(LayerStateType.CONFLICT);
       layerDao.update(mergingLayer);
       return MergeResponseMapper.toDtoResponse(mergingLayer, MergeErrorType.CONFLICTS_ERROR,
-          "При проверке конфликтов были найдены конфликты с актуальным стабильным слоем");
+          "При проверке конфликтов были найдены конфликты с актуальным стабильным слоем"
+      );
     }
     mergingLayer.setState(LayerStateType.STABLE);
     layerDao.update(mergingLayer);
@@ -216,7 +219,10 @@ public class LayerService {
         ));
     mergingQuestionRequiredLinksMap.forEach((id, questionRequiredLink) -> {
 
-      if (parentsQuestionRequiredLinksMap.get(id) != null && !Objects.equals(questionRequiredLink.getOldQuestionRequiredLink().getId(), parentsQuestionRequiredLinksMap.get(id).getId())) {
+      if (parentsQuestionRequiredLinksMap.get(id) != null && !Objects.equals(
+          questionRequiredLink.getOldQuestionRequiredLink().getId(),
+          parentsQuestionRequiredLinksMap.get(id).getId()
+      )) {
         questionRequiredLink.setOldQuestionRequiredLink(parentsQuestionRequiredLinksMap.get(id));
         questionRequiredLinkDao.update(questionRequiredLink);
       }
@@ -249,7 +255,10 @@ public class LayerService {
         ));
     mergingScreenQuestionLinkMap.forEach((id, screenQuestionLink) -> {
 
-      if (parentsScreenQuestionLinkMap.get(id) != null && !Objects.equals(screenQuestionLink.getOldScreenQuestionLink().getId(), parentsScreenQuestionLinkMap.get(id).getId())) {
+      if (parentsScreenQuestionLinkMap.get(id) != null && !Objects.equals(
+          screenQuestionLink.getOldScreenQuestionLink().getId(),
+          parentsScreenQuestionLinkMap.get(id).getId()
+      )) {
         screenQuestionLink.setOldScreenQuestionLink(parentsScreenQuestionLinkMap.get(id));
         screenQuestionLinkDao.update(screenQuestionLink);
       }
@@ -285,7 +294,10 @@ public class LayerService {
         ));
     mergingScreenQuestionLinkMap.forEach((id, segmentScreenEntrypointLink) -> {
 
-      if (parentsScreenQuestionLinkMap.get(id) != null && !Objects.equals(segmentScreenEntrypointLink.getOldSegmentScreenEntrypointLink().getId(), parentsScreenQuestionLinkMap.get(id).getId())) {
+      if (parentsScreenQuestionLinkMap.get(id) != null && !Objects.equals(
+          segmentScreenEntrypointLink.getOldSegmentScreenEntrypointLink().getId(),
+          parentsScreenQuestionLinkMap.get(id).getId()
+      )) {
         segmentScreenEntrypointLink.setOldSegmentScreenEntrypointLink(parentsScreenQuestionLinkMap.get(id));
         segmentScreenEntrypointLinkDao.update(segmentScreenEntrypointLink);
       }
@@ -372,7 +384,6 @@ public class LayerService {
     if (layerCreateDto.getParentLayer() == null) {
       throw new HttpBadRequestException("Не указан родительский слой.");
     }
-
     Layer parentLayer = layerDao.findById(layerCreateDto.getParentLayer().getId())
         .orElseThrow(() -> new HttpBadRequestException("Родительский слой не найден."));
 
@@ -420,6 +431,8 @@ public class LayerService {
       layer.setPlatforms(getLayerPlatforms(platformList));
       layerDao.update(layer);
 
+      createLayerValidate(layer, layerCreateDto);
+
     } catch (Exception err) {
       ExceptionMessageExtract.extractStackErrors(err);
     }
@@ -429,6 +442,27 @@ public class LayerService {
     }
 
     return Optional.of(LayerMapper.toDtoForList(layer));
+  }
+
+  /**
+   * Валидация создаваемого сегмента.
+   */
+  private void createLayerValidate(Layer layer, LayerCreateDto layerCreateDto) {
+    for (LayerCreateSegmentDto segmentDto : layerCreateDto.getSegments()) {
+      SegmentSelectedDto segmentSelectedDto = segmentService.getSegmentSelectedDto(layer.getId(), segmentDto.getId()).get();
+
+      SegmentValidateInfoDto segmentValidateInfoDto = CreateLayerToSegmentValidateInfoMapper.toDto(
+          segmentSelectedDto,
+          segmentDto.getFields(),
+          segmentDto.getEntryPoints()
+      );
+
+      List<ValidateResultDto> validateResultDtos = segmentService.validateSegment(segmentValidateInfoDto);
+      if (!validateResultDtos.isEmpty()) {
+        throw new HttpBadRequestException("Найдены ошибки при проверке конфликтов.");
+      }
+
+    }
   }
 
   @Transactional
@@ -466,7 +500,8 @@ public class LayerService {
       List<ValidateResultDto> validateResultDtos = segmentService.validateSegment(SegmentSelectedToSegmentValidateInfoMapper.toDto(selectedDto));
       if (!validateResultDtos.isEmpty()) {
         return MergeResponseMapper.toDtoResponse(mergingLayer, MergeErrorType.VALIDATION_ERROR,
-            "Ошибка валидации сегмента. Необходимо отредактировать слой и продолжить мердж");
+            "Ошибка валидации сегмента. Необходимо отредактировать слой и продолжить мердж"
+        );
       }
       selectedDtoList.add(selectedDto);
     }
@@ -476,7 +511,8 @@ public class LayerService {
         !checkScreenPositionAndState(selectedDtoList) ||
         !checkRequiredQuestion(selectedDtoList)) {
       return MergeResponseMapper.toDtoResponse(mergingLayer, MergeErrorType.CONFLICTS_ERROR,
-          "При проверке конфликтов были найдены конфликты с актуальным стабильным слоем");
+          "При проверке конфликтов были найдены конфликты с актуальным стабильным слоем"
+      );
     }
     mergingLayer.setState(LayerStateType.STABLE);
     layerDao.update(mergingLayer);
@@ -493,7 +529,8 @@ public class LayerService {
       if (!validateResultDtos.isEmpty()) {
         layerDao.update(mergingLayer);
         return MergeResponseMapper.toDtoResponse(mergingLayer, MergeErrorType.VALIDATION_ERROR,
-            "Ошибка валидации сегмента. Необходимо отредактировать слой и продолжить мердж");
+            "Ошибка валидации сегмента. Необходимо отредактировать слой и продолжить мердж"
+        );
       }
     }
     mergingLayer.setState(LayerStateType.STABLE);
