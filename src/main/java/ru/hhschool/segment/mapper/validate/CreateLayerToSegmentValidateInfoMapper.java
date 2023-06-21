@@ -10,16 +10,15 @@ import ru.hhschool.segment.model.dto.layer.create.LayerCreateEntrypointDto;
 import ru.hhschool.segment.model.dto.layer.create.LayerCreateScreenDto;
 import ru.hhschool.segment.model.dto.layer.create.LinkCreateQuestionDto;
 import ru.hhschool.segment.model.dto.layer.create.LinkCreateScreenQuestionDto;
-import ru.hhschool.segment.model.dto.viewsegments.layerview.SegmentSelectedDto;
 
 public class CreateLayerToSegmentValidateInfoMapper {
   public static SegmentValidateInfoDto toDto(
-      SegmentSelectedDto segmentSelectedDto,
+      Long segmentId,
       List<LinkCreateQuestionDto> fields,
       List<LayerCreateEntrypointDto> entryPoints
   ) {
     return new SegmentValidateInfoDto(
-        segmentSelectedDto.getSegmentId(),
+        segmentId,
         toInfoLayerRequirementDto(fields),
         toInfoLayerEntryPointDto(entryPoints)
     );

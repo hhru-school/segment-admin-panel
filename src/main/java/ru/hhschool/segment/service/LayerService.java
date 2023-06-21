@@ -387,6 +387,8 @@ public class LayerService {
     Layer parentLayer = layerDao.findById(layerCreateDto.getParentLayer().getId())
         .orElseThrow(() -> new HttpBadRequestException("Родительский слой не найден."));
 
+    createLayerValidate(layerCreateDto);
+
     Layer layer = null;
     try {
       // Первое сохранение без версий, т.к. необходим layerId, для сохранения линков
@@ -431,8 +433,6 @@ public class LayerService {
       layer.setPlatforms(getLayerPlatforms(platformList));
       layerDao.update(layer);
 
-      createLayerValidate(layer, layerCreateDto);
-
     } catch (Exception err) {
       ExceptionMessageExtract.extractStackErrors(err);
     }
@@ -447,19 +447,18 @@ public class LayerService {
   /**
    * Валидация создаваемого сегмента.
    */
-  private void createLayerValidate(Layer layer, LayerCreateDto layerCreateDto) {
+  private void createLayerValidate(LayerCreateDto layerCreateDto) {
     for (LayerCreateSegmentDto segmentDto : layerCreateDto.getSegments()) {
-      SegmentSelectedDto segmentSelectedDto = segmentService.getSegmentSelectedDto(layer.getId(), segmentDto.getId()).get();
 
       SegmentValidateInfoDto segmentValidateInfoDto = CreateLayerToSegmentValidateInfoMapper.toDto(
-          segmentSelectedDto,
+          segmentDto.getId(),
           segmentDto.getFields(),
           segmentDto.getEntryPoints()
       );
 
       List<ValidateResultDto> validateResultDtos = segmentService.validateSegment(segmentValidateInfoDto);
       if (!validateResultDtos.isEmpty()) {
-        throw new HttpBadRequestException("Найдены ошибки при проверке конфликтов.");
+        throw new HttpBadRequestException("Найдены ошибки при валидации.");
       }
 
     }
