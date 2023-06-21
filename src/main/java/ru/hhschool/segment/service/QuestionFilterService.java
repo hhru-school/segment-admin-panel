@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class QuestionFilterService {
-  Map<String, QuestionDtoForQuestionsInfo> filtredQuestionDtoMap = new HashMap<>();
+  Map<Long, QuestionDtoForQuestionsInfo> filtredQuestionDtoMap = new HashMap<>();
 
   public List<QuestionDtoForQuestionsInfo> filterQuestionDtoListByString(String searchQuery, List<QuestionDtoForQuestionsInfo> questionDtoList) {
     filtredQuestionDtoMap.clear();
@@ -26,7 +26,7 @@ public class QuestionFilterService {
     String titleLower = questionDto.getTitle().toLowerCase().trim();
     if (titleLower.contains(searchStringLower)) {
       questionDto.setSearchedObject(true);
-      filtredQuestionDtoMap.putIfAbsent(questionDto.getTitle(), questionDto);
+      filtredQuestionDtoMap.putIfAbsent(questionDto.getId(), questionDto);
     }
   }
 
@@ -35,7 +35,7 @@ public class QuestionFilterService {
       String titleLower = answerDto.getTitle().toLowerCase().trim();
       if (titleLower.contains(searchStringLower)) {
         answerDto.setSearchedObject(true);
-        filtredQuestionDtoMap.putIfAbsent(mainQuestionDto.getTitle(), mainQuestionDto);
+        filtredQuestionDtoMap.putIfAbsent(mainQuestionDto.getId(), mainQuestionDto);
       }
       checkOpenQuestion(answerDto, questionDto, searchStringLower);
     });
@@ -46,7 +46,7 @@ public class QuestionFilterService {
       String titleLower = questionDto.getTitle().toLowerCase().trim();
       if (titleLower.contains(searchStringLower)) {
         questionDto.setSearchedObject(true);
-        filtredQuestionDtoMap.putIfAbsent(mainQuestionDto.getTitle(), mainQuestionDto);
+        filtredQuestionDtoMap.putIfAbsent(mainQuestionDto.getId(), mainQuestionDto);
       }
       checkAnswer(questionDto, mainQuestionDto, searchStringLower);
     });
