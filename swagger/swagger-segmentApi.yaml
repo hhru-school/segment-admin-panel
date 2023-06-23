@@ -1,0 +1,1137 @@
+openapi: 3.0.3
+info:
+  title: Segment 1.0
+  description: |-
+    This is admin panel of Segment.
+  contact:
+    email: baddan@mail.ru
+  version: 1.0.1
+servers:
+  - url: http://localhost
+paths:
+# Entrypoints
+  /entrypoints/:
+    get:
+      tags:
+        - entrypoints
+      summary: Получить справочник "Точки Входа" 
+      description: возвращает имена "Точек входа".
+      operationId: getAllEntrypoint
+      parameters: 
+      responses:
+        '204':
+          description: No Content
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntrypointDto'
+
+  /entrypoints:
+    post:
+      tags:
+        - entrypoints
+      summary: Добавляет в справочник "Точки Входа" 
+      description: добавлят "Точеку входа" и вернет созданную сущность "точку входа".
+      operationId: addEntrypoint
+      requestBody:
+         content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntrypointCreateDto'
+      responses:
+        '400':
+          description: Bad Request
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntrypointDto'
+
+  /entrypoints/{entrypointId}:
+    get:
+      tags:
+        - entrypoints
+      summary: Получить состояния вопросов/полей по "Точке Входа" 
+      description: возвращает массив
+      operationId: getEntrypointById
+      parameters: 
+        - name: entrypointId
+          in: path
+          required: true
+          schema: 
+            type: number
+      responses:
+        '404':
+          description: Not found
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntrypointDto'
+
+# Platforms
+  /platforms:
+    get:
+      tags:
+        - platforms
+      summary: Получить весь спосок Версий приложений
+      description:
+      operationId: getAllPlatforms
+      parameters:
+      responses:
+        '204':
+          description: No Content
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlatformVersionListDto'
+
+# Roles
+  /roles:
+    get:
+      tags:
+        - roles
+      summary: Получить весь спосок ролей
+      description:
+      operationId: getAllRoles
+      parameters:
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoleDto'
+  /roles/{roleId}:
+    get:
+      tags:
+        - roles
+      summary: Получить роль по ID
+      description:
+      operationId: getRoleById
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema: 
+            type: integer
+            format: int64
+          example: 123
+      responses:
+        '404':
+          description: Not found
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleDto'
+
+# Screens
+  /screens/:
+    get:
+      tags:
+        - screens
+      summary: Получить экраны 
+      description: возвращает список экранов.
+      operationId: getAllScreens
+      parameters:
+        - name: androidId
+          in: query
+          description: ID из таблицы platforms
+          schema: 
+            type: integer
+            format: int64
+          example: 10
+        - name: iosId
+          in: query
+          description: ID из таблицы platforms
+          schema: 
+            type: integer
+            format: int64
+          example: 123
+        - name: web
+          in: query
+          schema: 
+            type: boolean
+          example: true
+      responses:
+        '204':
+          description: No Content
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScreenDto'
+
+  /screens:
+    post:
+      tags:
+        - screens
+      summary: Добавляет в справочник "Экран" 
+      description: добавлят "Экран" и вернет созданную сущность "экран".
+      operationId: addScreen
+      requestBody:
+         content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScreenCreateDto'
+      responses:
+        '400':
+          description: Bad Request
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScreenDto'
+
+  /screens/{screenId}:
+    get:
+      tags:
+        - screens
+      summary: Получить состояния вопросов/полей по "Точке Входа" 
+      description: возвращает массив
+      operationId: getScreenById
+      parameters: 
+        - name: screenId
+          in: path
+          required: true
+          schema: 
+            type: number
+      responses:
+        '404':
+          description: Not found
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScreenDto'
+
+# Segments
+  /segments:
+    get:
+      tags:
+        - segments
+      summary: Получить весь спосок сегменов
+      description:
+      operationId: getAllSegments
+      parameters:
+        - name: searchQuery
+          in: query
+          required: false
+          schema: 
+            type: string
+          example: Программист
+      responses:
+        '204':
+          description: No Content
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SegmentDto'
+
+  /segments/{segmentId}:
+    get:
+      tags:
+        - segments
+      summary: Получить сермент по ID
+      description:
+      operationId: getSegmentById
+      parameters:
+        - name: segmentId
+          in: path
+          required: true
+          schema: 
+            type: integer
+            format: int64
+          example: 123
+      responses:
+        '404':
+          description: Not found
+        '400':
+          description: Отсутствует необходимый параметр
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SegmentDto'
+
+  /segments/:
+    post:
+      tags:
+        - segments
+      summary: Добавляет в справочник "Сегмент" 
+      description: добавлят "Сегмент" и вернет созданную сущность "сегмент".
+      operationId: addSegments
+      requestBody:
+         content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SegmentCreateDto'
+      responses:
+        '400':
+          description: Bad Request
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SegmentDto'
+
+# Layers
+  /layers:
+    get:
+      tags:
+        - layers
+      summary: Получить весь спосок слоёв
+      description:
+      operationId: getLayerDtoListForMainPage
+      parameters:
+      responses:
+        '204':
+          description: No Content
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LayerDto'
+
+  /layers/list:
+    get:
+      tags:
+        - layers
+      summary: Список слоев, для выпадашки, с возможностью фильтра по типу.
+      description:
+      operationId: getLayerFilteredList
+      parameters:
+        - name: LayerId
+          in: path
+          required: true
+          schema: 
+            type: number
+        - name: state
+          in: query
+          required: false
+          schema: 
+            type: array
+            items:
+              $ref: '#/components/schemas/LayerStateType'
+      responses:
+        '204':
+          description: No content
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LayerDtoForList'
+
+  /layers/{layerId}:
+    get:
+      tags:
+        - layers
+      summary: Информацию о слое, вместе со всеми родителями.
+      description:
+      operationId: getLayerDtoListForBasicInfoPage
+      parameters:
+        - name: LayerId
+          in: path
+          required: true
+          schema: 
+            type: number
+      responses:
+        '404':
+          description: Not found
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LayerBasicInfoDto'
+
+  /layers/{layerId}/segments:
+    get:
+      tags:
+        - layers
+      summary: Получить список сегментов в слое.
+      description:
+      operationId: getSegmentViewDtoListForAllLayerSegmentsPage
+      parameters:
+        - name: LayerId
+          in: path
+          required: true
+          schema: 
+            type: number
+        - name: searchQuery
+          in: query
+          required: false
+          schema: 
+            type: string
+      responses:
+        '204':
+          description: No content
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LayerSegmentsDto'
+
+  /layers/{layerId}/segments/{segmentId}:
+    get:
+      tags:
+        - layers
+      summary: Получить сегмент в слое.
+      description:
+      operationId: getSegmentViewDtoListForViewSegmentPage
+      parameters:
+        - name: LayerId
+          in: path
+          required: true
+          schema: 
+            type: number
+        - name: segmentId
+          in: path
+          required: true
+          schema: 
+            type: number
+      responses:
+        '404':
+          description: NOT_FOUND
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SegmentSelectedDto'
+
+  /layers/{layerId}/segments/{segmentId}/details:
+    get:
+      tags:
+        - layers
+      summary: Получить сегмент в слое сущности с ID.
+      description:
+      operationId: getCreateLayerSegmentDto
+      parameters:
+        - name: LayerId
+          in: path
+          required: true
+          schema: 
+            type: number
+        - name: segmentId
+          in: path
+          required: true
+          schema: 
+            type: number
+      responses:
+        '404':
+          description: NOT_FOUND
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InfoLayerSegmentDto'
+
+  /layers/{layerId}/setArchive:
+    patch:
+      tags:
+        - layers
+      summary: Получить список сегментов в слое.
+      description:
+      operationId: setLayerStateToArchive
+      parameters:
+        - name: LayerId
+          in: path
+          required: true
+          schema: 
+            type: number
+      responses:
+        '404':
+          description: Not found
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                const: "Статус успешно изменен."
+
+  /layers/{layerId}/merge:
+    get:
+      tags:
+        - layers
+      summary: Сделать слой стабильным, объединить с родительским
+      description:
+      operationId: mergeLayer
+      parameters: 
+        - name: LayerId
+          in: path
+          required: true
+          schema: 
+            type: number
+      responses:
+        '404':
+          description: Not found (Такой слой не найден)
+        '405':
+          description: Not allowed (уже стабильный/ возможна бесконечная рекусия/ Parent not found/ More that one Stable child.)
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MergeResponseDto'
+                  
+components:
+  schemas:
+#Screens
+    ScreenDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Программист
+        description:
+          type: string
+          example: IT специалист
+        type:
+          type: array
+          items:
+            $ref: '#/components/schemas/StateType'
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScreenFieldDto'
+        appVersions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlatformDto'
+
+    ScreenFieldDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Ваш пол
+
+    ScreenCreateDto:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Программист
+        description:
+          type: string
+          example: IT специалист
+        type:
+          type: array
+          items:
+            $ref: '#/components/schemas/StateType'
+        platformsId:
+          type: array
+          items:
+            type: integer
+            format: int64
+            example: [10, 20]
+        questionsId:
+          type: array
+          items:
+            type: integer
+            format: int64
+            example: [10, 20]
+      
+#Segments
+    SegmentDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        parentSegment:
+          $ref: '#/components/schemas/SegmentViewDto'
+        createTime:
+          type: string
+          format: date-time
+          example: 2023-03-01T18:16:15.12312
+        title:
+          type: string
+          example: Программист
+        description:
+          type: string
+          example: IT специалист
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleDto'
+        tags:
+          type: array
+          items: 
+            type: string
+
+    SegmentCreateDto:
+      type: object
+      properties:
+        parentSegmentId:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Программист
+        description:
+          type: string
+          example: IT специалист
+        rolesId:
+          type: array
+          items:
+            type: integer
+            format: int64
+        tags:
+          type: array
+          items: 
+            type: string
+
+    SegmentViewDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Программист
+
+    SegmentLayerViewDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Программист
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleDto'
+        tags:
+          type: array
+          items: 
+            type: string
+        changeState:
+          $ref: '#/components/schemas/SegmentViewChangeState'
+        activeState:
+          $ref: '#/components/schemas/StateType'
+  
+    SegmentSelectedDto:
+      type: object
+      properties:
+        layerId:
+          type: integer
+          format: int64
+          example: 10
+        layerTitle:
+          type: string
+          example: Программист
+        segmentId:
+          type: integer
+          format: int64
+          example: 10
+        activeState:
+          $ref: '#/components/schemas/StateType'
+        oldActiveState:
+          $ref: '#/components/schemas/StateType'
+        parentSegmentId:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Программист
+        description:
+          type: string
+          example: Программист
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleDto'
+        tags:
+          type: array
+          items: 
+            type: string
+        fields:
+          type: array
+          items: 
+            $ref: '#/components/schemas/SegmentViewRequirementDto'
+        entryPoints:
+          type: array
+          items: 
+            $ref: '#/components/schemas/SegmentViewEntryPointDto'
+
+    SegmentViewRequirementDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Программист
+        required:
+          type: boolean
+        isChanged:
+          type: boolean
+        state:
+          $ref: '#/components/schemas/StateType'
+        isNew:
+          type: boolean
+
+    SegmentViewEntryPointDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Программист
+        description:
+          type: string
+          example: описание Программист Java
+        screens:
+          type: array
+          items: 
+            $ref: '#/components/schemas/SegmentViewScreenDto'
+
+    SegmentViewScreenDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Программист
+        description:
+          type: string
+          example: описание Программист Java
+        type:
+          $ref: '#/components/schemas/ScreenType'
+        state:
+          $ref: '#/components/schemas/StateType'
+        oldState:
+          $ref: '#/components/schemas/StateType'
+        isNew:
+          type: boolean
+        oldPosition:
+          type: integer
+          format: int32
+          example: 4
+        appVersions:
+          type: array
+          items: 
+            $ref: '#/components/schemas/PlatformDto'
+        fields:
+          type: array
+          items: 
+            $ref: '#/components/schemas/SegmentViewQuestionDto'
+
+    SegmentViewQuestionDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Программист
+        isNew:
+          type: boolean
+        visibility:
+          $ref: '#/components/schemas/QuestionVisibilityType'
+        oldVisibility:
+          $ref: '#/components/schemas/QuestionVisibilityType'
+        oldPosition:
+          type: integer
+          format: int32
+          example: 4
+
+    InfoLayerSegmentDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        segmentStateLinkId:
+          type: integer
+          format: int64
+          example: 10
+        activeState:
+          $ref: '#/components/schemas/StateType'
+        title:
+          type: string
+          example: Программист
+        description:
+          type: string
+          example: Программист
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleDto'
+        tags:
+          type: array
+          items: 
+            type: string
+        fields:
+          type: array
+          items: 
+            $ref: '#/components/schemas/InfoLayerRequirementDto'
+        entryPoints:
+          type: array
+          items: 
+            $ref: '#/components/schemas/InfoLayerEntryPointDto'
+
+    InfoLayerRequirementDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        questionRequiredLinkId:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Программист
+        required:
+          type: boolean
+   
+    InfoLayerEntryPointDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Программист
+        description:
+          type: string
+          example: описание Программист Java
+        screens:
+          type: array
+          items: 
+            $ref: '#/components/schemas/InfoLayerScreenDto'
+
+    InfoLayerScreenDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        segmentScreenEntrypointLinkId:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Программист
+        description:
+          type: string
+          example: описание Программист Java
+        type:
+          $ref: '#/components/schemas/ScreenType'
+        state:
+          $ref: '#/components/schemas/StateType'
+        position:
+          type: integer
+          format: int32
+          example: 4
+        appVersions:
+          type: array
+          items: 
+            $ref: '#/components/schemas/PlatformDto'
+        fields:
+          type: array
+          items: 
+            $ref: '#/components/schemas/InfoLayerQuestionDto'
+
+    InfoLayerQuestionDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        screenQuestionLinkId:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Программист
+        visibility:
+          $ref: '#/components/schemas/QuestionVisibilityType'
+        position:
+          type: integer
+          format: int32
+          example: 4
+
+#Platform
+    PlatformVersionListDto:
+      type: object
+      properties:
+        platform:
+          $ref: '#/components/schemas/PlatformType'
+        versions:
+          $ref: '#/components/schemas/PlatformDto'
+
+    PlatformDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        platform:
+          $ref: '#/components/schemas/PlatformType'
+        version:
+          type: string
+          example: Повар
+#Role
+    RoleDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: Повар
+
+#Entrypoints
+    EntrypointDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Точка входа onboard
+        description:
+          type: string
+          example: Описание onboard
+
+    EntrypointCreateDto:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Точка входа onboard
+        description:
+          type: string
+          example: Описание onboard
+
+# Layers
+    LayerDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: title #7
+        creationTime:
+          type: string
+          format: date-time
+          example: 2023-03-01T18:16:15.12312
+        layerStatus:
+          type: string
+          examples: 
+            - EXPEREMENTAL
+            - ARCHIVED
+            - STABLE
+
+    LayerDtoForList:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: title #7
+        description:
+          type: string
+          example: Описание #7
+        state:
+          $ref: '#/components/schemas/LayerStateType'
+        creationTime:
+          type: string
+          format: date-time
+          example: 2023-03-01T18:16:15.12312
+        
+        
+    LayerSegmentsDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: title #7
+        segments:
+          type: array
+          items:
+            $ref: '#/components/schemas/SegmentLayerViewDto'
+
+    MergeResponseDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        state:
+          $ref: '#/components/schemas/LayerStateType'
+
+    # Layers Information
+    LayerBasicInfoDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: title #7
+        description:
+          type: string
+          example: title #7
+        creationTime:
+          type: string
+          example: 2023-03-01T18:16:15.12312
+        layerStatus:
+          type: string
+          examples:
+            - EXPEREMENTAL
+            - ARCHIVED
+            - STABLE
+        parentLayersList:
+          type: array
+          items:
+            $ref: '#/components/schemas/LayerDto'
+
+#enums
+    LayerStateType:
+      enum: 
+        - STABLE
+        - ARCHIVE
+        - TEST
+        - CONFLICT
+
+    StateType:
+      enum: 
+        - ACTIVE
+        - DISABLED
+
+    PlatformType:
+      enum:  
+        - ANDROID
+        - IOS
+        - WEB
+
+    QuestionVisibilityType:
+      enum: 
+        - SHOW
+        - HIDE
+        - SHOW_PREFILLED
+        - HIDE_PREFILLED
+
+    EntityStatus:
+      enum: 
+        - CREATED
+        - ARCHIVED
+        - NOT_LINKED
+        - CONFLICT
+    SegmentViewChangeState:
+      enum: 
+        - NOT_CHANGED
+        - CHANGED
+        - NEW
+
+    ScreenType:
+      enum: 
+        - STATIC
+        - DYNAMIC
+
