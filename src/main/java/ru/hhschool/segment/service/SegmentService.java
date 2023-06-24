@@ -34,10 +34,7 @@ import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerQuestionDto;
 import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerRequirementDto;
 import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerScreenDto;
 import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerSegmentDto;
-import ru.hhschool.segment.model.dto.createlayer.validate.EntrypointValidateResultDto;
-import ru.hhschool.segment.model.dto.createlayer.validate.QuestionValidateResultDto;
-import ru.hhschool.segment.model.dto.createlayer.validate.SegmentValidateInfoDto;
-import ru.hhschool.segment.model.dto.createlayer.validate.ValidateResultDto;
+import ru.hhschool.segment.model.dto.createlayer.validate.*;
 import ru.hhschool.segment.model.dto.createlayer.validate.enums.ErrorType;
 import ru.hhschool.segment.model.dto.segment.SegmentCreateDto;
 import ru.hhschool.segment.model.dto.segment.SegmentDto;
@@ -474,7 +471,6 @@ public class SegmentService {
     segmentValidateInfoDto.getEntryPoints().forEach(entrypoint -> {
       Map<Long, InfoLayerQuestionDto> infoLayerQuestionDtoMap = new HashMap<>();
       Map<Long, List<InfoLayerScreenDto>> validateVisibilityMap = new HashMap<>();
-      Map<Integer, InfoLayerScreenDto> infoLayerScreenDtoMap = new HashMap<>();
       Map<Integer, List<InfoLayerScreenDto>> validateScreenPositionMap = new HashMap<>();
       entrypoint.getScreens().stream()
           .filter(screen -> screen.getState().equals(StateType.ACTIVE))
@@ -483,7 +479,6 @@ public class SegmentService {
             List<InfoLayerScreenDto> screens = validateScreenPositionMap.getOrDefault(screenPosition, new ArrayList<>());
             screens.add(screen);
             validateScreenPositionMap.put(screenPosition, screens);
-            infoLayerScreenDtoMap.putIfAbsent(screenPosition, screen);
             screen.getFields().forEach(field -> {
               if (field.getVisibility().equals(QuestionVisibilityType.SHOW) || field.getVisibility().equals(QuestionVisibilityType.SHOW_PREFILLED)) {
                 Long questionId = field.getId();
@@ -536,19 +531,23 @@ public class SegmentService {
         validateResultDtos.add(validateResultDto);
       }
     });
+    Map<String, List<InfoLayerScreenDto>> validateScreenTitleMap = new HashMap<>();
     segmentValidateInfoDto.getEntryPoints().forEach(entrypoint -> {
-      Set<String> screenTitleSet = new HashSet<>();
       entrypoint.getScreens().forEach(screen -> {
-        if (screenTitleSet.contains(screen.getTitle())) {
-          ValidateResultDto validateResultDto = new ValidateResultDto();
-          validateResultDto.setError("Экран " + "c  id " + screen.getId() + " имеет  одинаковый Title c другим экраном " + screen.getTitle());
-          validateResultDto.setErrorType(ErrorType.SCREEN_TITLE);
-          validateResultDto.setResult(ScreenValidateResultMapper.toDto(screen));
-          validateResultDtos.add(validateResultDto);
-        } else {
-          screenTitleSet.add(screen.getTitle());
-        }
+        String screenTitle = screen.getTitle();
+        List<InfoLayerScreenDto> screens = validateScreenTitleMap.getOrDefault(screenTitle, new ArrayList<>());
+        screens.add(screen);
+        validateScreenTitleMap.put(screenTitle, screens);
       });
+    });
+    validateScreenTitleMap.forEach((title, infoLayerScreenDtos) -> {
+      if (infoLayerScreenDtos.size() > 1) {
+        ValidateResultDto<List<ScreenValidateResultDto>> validateResultDto = new ValidateResultDto<>();
+        validateResultDto.setError("Имеется несколько экранов с одинаковым названием " + '[' + title + ']');
+        validateResultDto.setErrorType(ErrorType.SCREEN_POSITION);
+        validateResultDto.setResult(ScreenValidateResultMapper.toListDto(infoLayerScreenDtos));
+        validateResultDtos.add(validateResultDto);
+      }
     });
     validateResultDtos.sort(Comparator.comparing(ValidateResultDto::getErrorType));
     return validateResultDtos;
