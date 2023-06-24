@@ -1,15 +1,5 @@
 package ru.hhschool.segment.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import ru.hhschool.segment.dao.abstracts.EntrypointDao;
 import ru.hhschool.segment.dao.abstracts.LayerDao;
 import ru.hhschool.segment.dao.abstracts.PlatformDao;
@@ -44,10 +34,7 @@ import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerQuestionDto;
 import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerRequirementDto;
 import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerScreenDto;
 import ru.hhschool.segment.model.dto.createlayer.info.InfoLayerSegmentDto;
-import ru.hhschool.segment.model.dto.createlayer.validate.EntrypointValidateResultDto;
-import ru.hhschool.segment.model.dto.createlayer.validate.QuestionValidateResultDto;
-import ru.hhschool.segment.model.dto.createlayer.validate.SegmentValidateInfoDto;
-import ru.hhschool.segment.model.dto.createlayer.validate.ValidateResultDto;
+import ru.hhschool.segment.model.dto.createlayer.validate.*;
 import ru.hhschool.segment.model.dto.createlayer.validate.enums.ErrorType;
 import ru.hhschool.segment.model.dto.segment.SegmentCreateDto;
 import ru.hhschool.segment.model.dto.segment.SegmentDto;
@@ -71,6 +58,19 @@ import ru.hhschool.segment.model.entity.SegmentStateLink;
 import ru.hhschool.segment.model.enums.QuestionVisibilityType;
 import ru.hhschool.segment.model.enums.StateType;
 import ru.hhschool.segment.util.ExceptionMessageExtract;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SegmentService {
   private final LayerDao layerDao;
@@ -471,7 +471,6 @@ public class SegmentService {
     segmentValidateInfoDto.getEntryPoints().forEach(entrypoint -> {
       Map<Long, InfoLayerQuestionDto> infoLayerQuestionDtoMap = new HashMap<>();
       Map<Long, List<InfoLayerScreenDto>> validateVisibilityMap = new HashMap<>();
-      Map<Integer, InfoLayerScreenDto> infoLayerScreenDtoMap = new HashMap<>();
       Map<Integer, List<InfoLayerScreenDto>> validateScreenPositionMap = new HashMap<>();
       entrypoint.getScreens().stream()
           .filter(screen -> screen.getState().equals(StateType.ACTIVE))
@@ -480,7 +479,6 @@ public class SegmentService {
             List<InfoLayerScreenDto> screens = validateScreenPositionMap.getOrDefault(screenPosition, new ArrayList<>());
             screens.add(screen);
             validateScreenPositionMap.put(screenPosition, screens);
-            infoLayerScreenDtoMap.putIfAbsent(screenPosition, screen);
             screen.getFields().forEach(field -> {
               if (field.getVisibility().equals(QuestionVisibilityType.SHOW) || field.getVisibility().equals(QuestionVisibilityType.SHOW_PREFILLED)) {
                 Long questionId = field.getId();
@@ -530,6 +528,24 @@ public class SegmentService {
         question.setId(field.getId());
         question.setTitle(field.getTitle());
         validateResultDto.setResult(QuestionValidateResultMapper.toDto(question));
+        validateResultDtos.add(validateResultDto);
+      }
+    });
+    Map<String, List<InfoLayerScreenDto>> validateScreenTitleMap = new HashMap<>();
+    segmentValidateInfoDto.getEntryPoints().forEach(entrypoint -> {
+      entrypoint.getScreens().forEach(screen -> {
+        String screenTitle = screen.getTitle();
+        List<InfoLayerScreenDto> screens = validateScreenTitleMap.getOrDefault(screenTitle, new ArrayList<>());
+        screens.add(screen);
+        validateScreenTitleMap.put(screenTitle, screens);
+      });
+    });
+    validateScreenTitleMap.forEach((title, infoLayerScreenDtos) -> {
+      if (infoLayerScreenDtos.size() > 1) {
+        ValidateResultDto<List<ScreenValidateResultDto>> validateResultDto = new ValidateResultDto<>();
+        validateResultDto.setError("Имеется несколько экранов с одинаковым названием " + '[' + title + ']');
+        validateResultDto.setErrorType(ErrorType.SCREEN_POSITION);
+        validateResultDto.setResult(ScreenValidateResultMapper.toListDto(infoLayerScreenDtos));
         validateResultDtos.add(validateResultDto);
       }
     });
