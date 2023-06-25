@@ -27,10 +27,12 @@ import ru.hhschool.segment.mapper.PlatformMapper;
 import ru.hhschool.segment.mapper.basicinfo.LayerBasicInfoMapper;
 import ru.hhschool.segment.mapper.layer.LayerStatusMapper;
 import ru.hhschool.segment.mapper.merge.MergeResponseMapper;
+import ru.hhschool.segment.mapper.validate.CreateLayerToSegmentValidateInfoMapper;
 import ru.hhschool.segment.mapper.validate.SegmentSelectedToSegmentValidateInfoMapper;
 import ru.hhschool.segment.model.dto.LayerDto;
 import ru.hhschool.segment.model.dto.PlatformDto;
 import ru.hhschool.segment.model.dto.basicinfo.LayerBasicInfoDto;
+import ru.hhschool.segment.model.dto.createlayer.validate.SegmentValidateInfoDto;
 import ru.hhschool.segment.model.dto.createlayer.validate.ValidateResultDto;
 import ru.hhschool.segment.model.dto.layer.LayerDtoForList;
 import ru.hhschool.segment.model.dto.layer.create.LayerCreateDto;
@@ -382,9 +384,10 @@ public class LayerService {
     if (layerCreateDto.getParentLayer() == null) {
       throw new HttpBadRequestException("Не указан родительский слой.");
     }
-
     Layer parentLayer = layerDao.findById(layerCreateDto.getParentLayer().getId())
         .orElseThrow(() -> new HttpBadRequestException("Родительский слой не найден."));
+
+    createLayerValidate(layerCreateDto);
 
     Layer layer = null;
     try {
@@ -444,6 +447,26 @@ public class LayerService {
     }
 
     return Optional.of(LayerMapper.toDtoForList(layer));
+  }
+
+  /**
+   * Валидация создаваемого сегмента.
+   */
+  private void createLayerValidate(LayerCreateDto layerCreateDto) {
+    for (LayerCreateSegmentDto segmentDto : layerCreateDto.getSegments()) {
+
+      SegmentValidateInfoDto segmentValidateInfoDto = CreateLayerToSegmentValidateInfoMapper.toDto(
+          segmentDto.getId(),
+          segmentDto.getFields(),
+          segmentDto.getEntryPoints()
+      );
+
+      List<ValidateResultDto> validateResultDtos = segmentService.validateSegment(segmentValidateInfoDto);
+      if (!validateResultDtos.isEmpty()) {
+        throw new HttpBadRequestException("Найдены ошибки при валидации.");
+      }
+
+    }
   }
 
   @Transactional
